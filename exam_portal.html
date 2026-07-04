@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Odyssey - Secure Examination Room</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#e9edf2;--panel:rgba(255,255,255,.88);--ink:#17202c;--muted:#657184;--line:rgba(23,32,44,.12);--blue:#1d4ed8;--teal:#0f766e;--gold:#d6a246;--green:#15803d;--red:#b91c1c;--shadow:0 22px 70px rgba(15,23,42,.13);--head:"Newsreader",Georgia,serif;--body:Manrope,system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:var(--body);background:linear-gradient(135deg,rgba(29,78,216,.13),transparent 34%),radial-gradient(circle at 82% 8%,rgba(15,118,110,.14),transparent 28%),linear-gradient(180deg,#f5f7fa,#dfe5ec)}
+button,input{font:inherit}
+.shell{max-width:1320px;margin:0 auto;padding:22px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);font-weight:900}
+.mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--teal));color:white;display:grid;place-items:center;font-family:var(--head);font-size:24px;box-shadow:0 16px 36px rgba(29,78,216,.22)}
+.status{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:18px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+.exam-head{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;color:var(--teal)}
+h1,h2,h3{font-family:var(--head);margin:0;color:var(--ink)}
+h1{font-size:clamp(30px,4.5vw,52px);line-height:1.02;margin-top:6px}
+.desc{color:var(--muted);line-height:1.6;margin:8px 0 0;max-width:760px}
+.question-card{padding:24px;min-height:520px}
+.q-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.q-index{font-weight:900;color:var(--muted)}
+.tools{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;background:var(--blue);color:white;padding:11px 14px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn.secondary{background:rgba(29,78,216,.10);color:var(--blue);border:1px solid rgba(29,78,216,.14)}
+.btn.warning{background:rgba(214,162,70,.16);color:#8a5a04;border:1px solid rgba(214,162,70,.24)}
+.btn.danger{background:rgba(185,28,28,.12);color:var(--red);border:1px solid rgba(185,28,28,.18)}
+.prompt{font-family:var(--head);font-size:clamp(23px,3vw,34px);line-height:1.18;margin:0 0 20px}
+.options{display:grid;gap:12px}
+.option{width:100%;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.66);padding:15px 16px;text-align:left;cursor:pointer;display:flex;gap:12px;align-items:flex-start;color:var(--ink);transition:.18s}
+.option:hover{border-color:rgba(29,78,216,.34);transform:translateY(-1px);box-shadow:0 12px 30px rgba(15,23,42,.08)}
+.option.selected{border-color:rgba(15,118,110,.5);background:rgba(15,118,110,.10)}
+.letter{width:30px;height:30px;border-radius:11px;background:rgba(29,78,216,.10);color:var(--blue);display:grid;place-items:center;font-weight:900;flex:0 0 auto}
+.option.selected .letter{background:var(--teal);color:white}
+.navrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px;flex-wrap:wrap}
+.side{position:sticky;top:18px;display:grid;gap:18px}
+.timer-card{padding:18px}
+.clock{font-family:var(--head);font-size:34px;line-height:1;margin:8px 0 4px}
+.timer{font-family:var(--head);font-size:46px;line-height:1;color:var(--blue)}
+.timer.low{color:var(--red)}
+.map-card{padding:18px}
+.map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.qmap{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.dot{aspect-ratio:1;border-radius:999px;border:1px solid rgba(23,32,44,.18);background:white;color:var(--ink);display:grid;place-items:center;font-weight:900;cursor:pointer;position:relative}
+.dot.answered{background:var(--green);color:white;border-color:var(--green)}
+.dot.current{outline:3px solid rgba(29,78,216,.24)}
+.dot.flagged::after{content:"";position:absolute;right:3px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(255,255,255,.75)}
+.integrity{padding:18px}
+.event-list{display:grid;gap:8px;margin-top:10px;max-height:170px;overflow:auto}
+.event{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:12px;padding:8px;background:rgba(255,255,255,.46)}
+.warning-banner{display:none;margin:0 24px 18px;padding:12px 14px;border-radius:16px;background:rgba(214,162,70,.16);border:1px solid rgba(214,162,70,.28);color:#6f4a08;font-weight:800}
+.warning-banner.show{display:block}
+.submit-summary{display:none;position:fixed;inset:0;background:rgba(15,23,42,.48);z-index:20;place-items:center;padding:20px}
+.summary-box{max-width:520px;width:100%;padding:24px;background:white;border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.25)}
+.summary-box h2{font-size:30px;margin-bottom:8px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.side{position:static}.qmap{grid-template-columns:repeat(8,1fr)}.shell{padding:16px}}
+@media(max-width:560px){.exam-head{display:block}.qmap{grid-template-columns:repeat(5,1fr)}.timer{font-size:38px}.clock{font-size:28px}}
+</style>
+<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
+<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
+<link rel="stylesheet" href="assets/odyssey-dashboard-minimal.css" />
+<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <a class="brand" href="student_portal.html"><span class="mark">O</span><span>Odyssey Examination Room</span></a>
+    <div class="status">
+      <span class="pill" id="studentBadge">Student mode</span>
+      <button class="btn secondary" id="fullscreenBtn" type="button">Enter fullscreen</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <main class="panel">
+      <div class="exam-head">
+        <div>
+          <div class="eyebrow" id="examCourse">Secure exam session</div>
+          <h1 id="examTitle">Odyssey course assessment</h1>
+          <p class="desc">Questions are shuffled for this student. Use the review flag for questions you want to revisit, and the question map to track progress.</p>
+        </div>
+        <a class="btn secondary" href="student_portal.html">Exit room</a>
+      </div>
+      <div class="warning-banner" id="warningBanner">Activity warning recorded. Please stay in the exam room until submission.</div>
+      <section class="question-card" id="questionCard"></section>
+    </main>
+
+    <aside class="side">
+      <section class="panel timer-card">
+        <div class="eyebrow">Time control</div>
+        <div class="clock" id="clock">--:--</div>
+        <div class="timer" id="timer">--:--</div>
+        <p class="desc">The timer is saved locally so accidental refreshes keep the same session window.</p>
+      </section>
+
+      <section class="panel map-card">
+        <div class="map-head"><h2>Question map</h2><span class="pill" id="mapCount">0 total</span></div>
+        <div class="qmap" id="questionMap"></div>
+      </section>
+
+      <section class="panel integrity">
+        <div class="eyebrow">Exam safety</div>
+        <p class="desc">This page can request fullscreen, block common copy actions, and log tab changes. True device lock requires secure browser, kiosk mode, MDM, or proctoring software.</p>
+        <div class="event-list" id="eventList"></div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<div class="submit-summary" id="submitSummary" role="dialog" aria-modal="true">
+  <div class="summary-box">
+    <h2>Exam submitted</h2>
+    <p class="desc" id="summaryText"></p>
+    <button class="btn" type="button" onclick="location.href='student_portal.html'">Return to portal</button>
+  </div>
+</div>
+
+<script src="js/i18n.js" defer></script>
+<script src="assets/odyssey-portal-translations.js" defer></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+<script>
+const FALLBACK_QUESTIONS = [
+  {id:'q1',prompt:'Which study strategy best improves long-term retention for most learners?',options:['Rereading the same page repeatedly','Spaced retrieval practice','Highlighting every paragraph','Studying only the night before']},
+  {id:'q2',prompt:'A course with instructor interaction should usually include which added support?',options:['Priority student questions and feedback','Only a different thumbnail','No access to practice materials','Fewer lessons']},
+  {id:'q3',prompt:'What does a reliable online assessment need most?',options:['Clear timing, saved answers, and submission records','Hidden instructions','Random page reloads','No student progress indicators']},
+  {id:'q4',prompt:'Which item belongs in a professional course catalog card?',options:['Field, discipline, subject, language, and price options','Only the course color','Instructor private phone number','Unlabeled buttons']},
+  {id:'q5',prompt:'Why should uploaded videos use a structured player?',options:['To support captions, progress, quality choices, and stable playback','To hide all controls','To remove transcripts','To make lessons harder to resume']},
+  {id:'q6',prompt:'What is the safest way to truly restrict a device during an exam?',options:['A dedicated secure browser or managed kiosk mode','A normal webpage alone','A larger timer font','A different background image']},
+  {id:'q7',prompt:'Which signal should turn a question map circle green?',options:['The student has selected an answer','The student hovered the question','The timer is running','The page is in fullscreen']},
+  {id:'q8',prompt:'What should a clear-answer button do?',options:['Remove the selected answer for the current question','Submit the whole exam','Delete all questions','Turn off the timer']},
+  {id:'q9',prompt:'Why shuffle questions per student?',options:['To reduce answer sharing while preserving fairness','To make grading impossible','To hide the total number of questions','To change the exam duration randomly']},
+  {id:'q10',prompt:'Which notification timing is useful for scheduled exams?',options:['A reminder one week before the exam','Only after the exam is over','Every minute forever','Never notifying enrolled learners']},
+  {id:'q11',prompt:'What should happen when a student leaves the exam tab?',options:['Record an integrity event and warn the student','Erase all answers instantly','Ignore it in all cases','Open a search page']},
+  {id:'q12',prompt:'Which feature helps students review uncertain answers before submission?',options:['Flag for review','Changing the course price','Deleting the sidebar','Disabling the question map']}
+];
+const params = new URLSearchParams(location.search);
+const exams = readJSON('odyssey_instructor_exams', []);
+const requestedExam = params.get('exam');
+const marketplaceTest = readJSON('odyssey_selected_market_test', null);
+const exam = exams.find(e => String(e.id) === String(requestedExam)) || (marketplaceTest ? {id:`market-${marketplaceTest.id}`,title:marketplaceTest.title,course:marketplaceTest.subject,duration:marketplaceTest.time,randomize:true,pass:70} : null) || exams[0] || {id:'demo',title:'Odyssey readiness assessment',course:'Platform foundations',duration:45,randomize:true,pass:70};
+const student = readJSON('odyssey_student_profile', {});
+const seedLabel = student.email || student.name || localStorage.getItem('odyssey_exam_student_seed') || cryptoRandomSeed();
+localStorage.setItem('odyssey_exam_student_seed', seedLabel);
+const questions = exam.randomize === false ? FALLBACK_QUESTIONS : shuffleForStudent(FALLBACK_QUESTIONS, `${exam.id}:${seedLabel}`);
+const stateKey = `odyssey_exam_state_${exam.id}_${hashString(seedLabel)}`;
+let state = readJSON(stateKey, {answers:{},flagged:{},events:[],startedAt:Date.now(),submittedAt:null});
+let activeIndex = Number(localStorage.getItem(`${stateKey}_active`) || 0);
+let submitted = Boolean(state.submittedAt);
+
+function readJSON(key, fallback){try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback))}catch(e){return fallback}}
+function writeJSON(key, value){localStorage.setItem(key, JSON.stringify(value))}
+function PT(text, vars){return window.OdysseyPortalT ? window.OdysseyPortalT(text, vars) : text}
+function cryptoRandomSeed(){return `${Date.now()}-${Math.random().toString(16).slice(2)}`}
+function hashString(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)}
+function mulberry32(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function shuffleForStudent(items, seed){const arr=items.map(x=>({...x}));const random=mulberry32(parseInt(hashString(seed),36));for(let i=arr.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr.map(q=>({...q,options:[...q.options].sort(()=>random()-.5)}))}
+function saveState(){writeJSON(stateKey,state)}
+function logEvent(label){state.events.unshift({label,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})});state.events=state.events.slice(0,20);saveState();warningBanner.classList.add('show');renderEvents()}
+function timeLeftMs(){return Math.max(0, state.startedAt + Number(exam.duration || 45) * 60000 - Date.now())}
+function fmt(ms){const total=Math.ceil(ms/1000);const m=Math.floor(total/60);const s=total%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+function renderQuestion(){
+  const q = questions[activeIndex];
+  localStorage.setItem(`${stateKey}_active`, activeIndex);
+  questionCard.innerHTML = `
+    <div class="q-top">
+      <div class="q-index">${PT('Question {current} of {total}', {current: activeIndex + 1, total: questions.length})}</div>
+      <div class="tools">
+        <button class="btn warning" type="button" onclick="toggleFlag()">${state.flagged[q.id] ? PT('Remove flag') : PT('Flag for review')}</button>
+        <button class="btn danger" type="button" onclick="clearAnswer()">${PT('Clear answer')}</button>
+      </div>
+    </div>
+    <h2 class="prompt">${q.prompt}</h2>
+    <div class="options">
+      ${q.options.map((opt,i)=>`<button class="option ${state.answers[q.id]===opt?'selected':''}" type="button" onclick="answerCurrent(${JSON.stringify(opt).replace(/"/g,'&quot;')})"><span class="letter">${String.fromCharCode(65+i)}</span><span>${opt}</span></button>`).join('')}
+    </div>
+    <div class="navrow">
+      <button class="btn secondary" type="button" onclick="moveQuestion(-1)" ${activeIndex===0?'disabled':''}>${PT('Previous')}</button>
+      <div class="tools">
+        <button class="btn secondary" type="button" onclick="moveQuestion(1)" ${activeIndex===questions.length-1?'disabled':''}>${PT('Next')}</button>
+        <button class="btn" type="button" onclick="submitExam()">${PT('Submit exam')}</button>
+      </div>
+    </div>`;
+  renderMap();
+}
+function renderMap(){
+  mapCount.textContent = `${questions.length} total`;
+  questionMap.innerHTML = questions.map((q,i)=>`<button class="dot ${state.answers[q.id]?'answered':''} ${state.flagged[q.id]?'flagged':''} ${i===activeIndex?'current':''}" type="button" onclick="activeIndex=${i};renderQuestion()">${i+1}</button>`).join('');
+}
+function renderEvents(){
+  eventList.innerHTML = state.events.length ? state.events.map(e=>`<div class="event"><b>${e.time}</b> ${e.label}</div>`).join('') : `<div class="event">${PT('No warnings recorded.')}</div>`;
+}
+function answerCurrent(option){state.answers[questions[activeIndex].id]=option;saveState();renderQuestion()}
+function clearAnswer(){delete state.answers[questions[activeIndex].id];saveState();renderQuestion()}
+function toggleFlag(){const id=questions[activeIndex].id;state.flagged[id]=!state.flagged[id];if(!state.flagged[id])delete state.flagged[id];saveState();renderQuestion()}
+function moveQuestion(delta){activeIndex=Math.min(questions.length-1,Math.max(0,activeIndex+delta));renderQuestion()}
+function tick(){
+  const now = new Date();
+  clock.textContent = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const left = timeLeftMs();
+  timer.textContent = fmt(left);
+  timer.classList.toggle('low', left < 5 * 60000);
+  if(left <= 0 && !submitted) submitExam(true);
+}
+function submitExam(auto){
+  if(submitted) return;
+  submitted = true;
+  state.submittedAt = new Date().toISOString();
+  state.autoSubmitted = Boolean(auto);
+  saveState();
+  const answered = Object.keys(state.answers).length;
+  const flagged = Object.keys(state.flagged).length;
+  summaryText.textContent = `${answered} of ${questions.length} questions answered. ${flagged} question${flagged===1?'':'s'} flagged for review. ${state.events.length} integrity event${state.events.length===1?'':'s'} recorded.`;
+  submitSummary.style.display = 'grid';
+}
+fullscreenBtn.addEventListener('click', async () => {
+  try{await document.documentElement.requestFullscreen();fullscreenBtn.textContent='Fullscreen active'}catch(e){logEvent('Fullscreen request was blocked by the browser.')}
+});
+document.addEventListener('fullscreenchange', () => {if(!document.fullscreenElement) logEvent('Fullscreen exited.')});
+document.addEventListener('visibilitychange', () => {if(document.hidden) logEvent('Exam tab was hidden or another tab was opened.')});
+window.addEventListener('blur', () => logEvent('Exam window lost focus.'));
+['copy','cut','paste','contextmenu'].forEach(type => document.addEventListener(type, e => {e.preventDefault();logEvent(`${type} action blocked.`)}));
+window.addEventListener('beforeunload', e => {if(!submitted){e.preventDefault();e.returnValue=''}});
+examTitle.textContent = exam.title || 'Odyssey course assessment';
+examCourse.textContent = `${exam.course || 'Course'} · ${Number(exam.duration || 45)} min · pass ${exam.pass || 70}%`;
+studentBadge.textContent = student.name ? student.name : 'Student mode';
+renderQuestion();
+renderEvents();
+tick();
+setInterval(tick, 1000);
+document.addEventListener('odyssey:languageChanged', () => {renderQuestion();renderEvents();});
+</script>
+<script src="assets/odyssey-global-motion.js" defer></script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+</body>
+</html>

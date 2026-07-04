@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="robots" content="noindex,nofollow" />
+<title>Odyssey Certificate Verification</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#101621;--panel:rgba(255,255,255,.88);--panel-strong:#fff;--text:#17202c;--muted:#657083;--line:rgba(23,32,44,.14);--primary:#173a5e;--accent:#0f766e;--gold:#d79a31;--danger:#b42318;--success:#157a55;--shadow:0 28px 90px rgba(3,10,22,.28);--head:"Newsreader",Georgia,serif;--font:Manrope,system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:var(--font);color:var(--text);background:radial-gradient(circle at 16% 10%,rgba(15,118,110,.28),transparent 28%),radial-gradient(circle at 88% 18%,rgba(215,154,49,.22),transparent 26%),linear-gradient(135deg,#0b111b,#172235 52%,#0c1719);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;background:url("assets/odyssey-road-hero-fast.jpg") center/cover;opacity:.14;filter:saturate(.9) contrast(1.05);pointer-events:none}
+button,input{font:inherit}
+.shell{position:relative;z-index:1;width:min(1180px,calc(100% - 32px));margin:0 auto;padding:28px 0 42px}
+.topbar{display:flex;justify-content:space-between;gap:18px;align-items:center;color:#f8fafc;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:12px}.mark{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-weight:900;box-shadow:0 18px 48px rgba(15,118,110,.26)}.brand strong{font-family:var(--head);font-size:25px}.topbar span{color:rgba(248,250,252,.72);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.75fr);gap:22px;align-items:stretch}
+.intro,.lookup,.result-card,.trust-card{border:1px solid rgba(255,255,255,.16);border-radius:26px;background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(255,255,255,.78));box-shadow:var(--shadow);backdrop-filter:blur(22px)}
+.intro{position:relative;overflow:hidden;padding:34px;min-height:420px}.intro::after{content:"";position:absolute;right:-90px;bottom:-110px;width:310px;height:310px;border-radius:50%;background:rgba(215,154,49,.18)}.intro > *{position:relative;z-index:1}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:8px 11px;background:rgba(255,255,255,.62);color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+h1{font-family:var(--head);font-size:clamp(38px,5.5vw,72px);line-height:1;margin:18px 0 14px;font-weight:650;letter-spacing:0}
+.intro p{color:var(--muted);line-height:1.72;font-size:16px;max-width:720px;margin:0}
+.security-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:26px}.security{border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(255,255,255,.50)}.security b{display:block;font-size:13px}.security span{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:5px}
+.lookup{padding:24px}.lookup h2,.result-card h2,.trust-card h2{font-family:var(--head);font-size:24px;font-weight:650;margin:0 0 12px}.field{display:grid;gap:7px;margin-bottom:13px}.field label{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.field input{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--panel-strong);color:var(--text);padding:13px 14px;outline:none}.field input:focus{border-color:rgba(15,118,110,.62);box-shadow:0 0 0 4px rgba(15,118,110,.10)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:14px;padding:12px 15px;font-weight:900;cursor:pointer;background:var(--primary);color:#fff;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn.secondary{background:rgba(23,58,94,.10);color:var(--primary)}.btn.gold{background:var(--gold);color:#162033}
+.notice{margin-top:15px;padding:12px 13px;border:1px solid rgba(23,58,94,.13);border-radius:16px;color:var(--muted);font-size:12px;line-height:1.55;background:rgba(255,255,255,.48)}
+.results{display:grid;grid-template-columns:1fr .72fr;gap:22px;margin-top:22px}.result-card,.trust-card{padding:24px;display:none}.result-card.show,.trust-card.show{display:block}
+.status{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}.status.ok{color:var(--success);background:rgba(21,122,85,.11)}.status.bad{color:var(--danger);background:rgba(180,35,24,.10)}
+.identity{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center;margin:18px 0}.seal{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--primary),var(--accent));font-family:var(--head);font-size:28px;font-weight:800}.identity h3{font-family:var(--head);font-size:28px;margin:0;font-weight:650}.identity p{margin:4px 0 0;color:var(--muted)}
+.timeline{display:grid;gap:11px;margin-top:18px}.record{position:relative;border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(255,255,255,.54)}.record h3{margin:0;font-family:var(--head);font-size:20px;font-weight:650}.record p{margin:6px 0 0;color:var(--muted);line-height:1.5;font-size:13px}.meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:12px}.meta{border-radius:13px;background:rgba(23,58,94,.07);padding:9px}.meta span{display:block;color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase}.meta b{display:block;font-size:13px;margin-top:3px}
+.trust-list{display:grid;gap:10px}.trust-item{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.50)}.trust-item b{display:block}.trust-item span{display:block;color:var(--muted);font-size:12px;line-height:1.5;margin-top:4px}
+.code-map{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}.code-map p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.footer{color:rgba(248,250,252,.66);font-size:12px;line-height:1.6;text-align:center;margin-top:28px}
+@media(max-width:980px){.hero,.results{grid-template-columns:1fr}.security-row,.meta-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){.shell{width:min(100% - 20px,1180px);padding-top:18px}.topbar{align-items:flex-start;flex-direction:column}.intro,.lookup,.result-card,.trust-card{border-radius:20px;padding:20px}.security-row,.meta-grid{grid-template-columns:1fr}h1{font-size:38px}}
+</style>
+<script defer src="js/i18n.js"></script>
+<script defer src="assets/odyssey-portal-translations.js"></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+</head>
+<body>
+<main class="shell">
+  <header class="topbar">
+    <div class="brand"><div class="mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><strong>Odyssey Verify</strong></div>
+    <span>Independent credential verification</span>
+  </header>
+  <section class="hero">
+    <div class="intro">
+      <span class="eyebrow">Employer and institution lookup</span>
+      <h1>Verify an Odyssey certificate without entering the student portal.</h1>
+      <p>Enter the student's legal name and 12-digit certificate code to confirm the certificate, course completion, instructor, issuing institution, dates, and the learner's verified Odyssey education history.</p>
+      <div class="security-row">
+        <div class="security"><b>Code pattern</b><span>The first digit identifies the education category. The second digit identifies the discipline family.</span></div>
+        <div class="security"><b>Name match</b><span>The lookup requires the student's name and certificate code together to reduce casual scraping.</span></div>
+        <div class="security"><b>Private by design</b><span>This page is standalone and intentionally not added to the main site navigation.</span></div>
+      </div>
+    </div>
+    <form class="lookup" id="verifyForm">
+      <h2>Certificate lookup</h2>
+      <div class="field"><label for="studentName">Student name</label><input id="studentName" autocomplete="name" placeholder="Example: Odyssey Student" required /></div>
+      <div class="field"><label for="verifyCode">12-digit certificate code</label><input id="verifyCode" inputmode="numeric" maxlength="14" placeholder="Example: 184827391052" required /></div>
+      <div class="actions"><button class="btn" type="submit">Verify certificate</button><button class="btn secondary" type="button" onclick="loadSample()">Try sample</button><button class="btn secondary" type="button" onclick="clearLookup()">Clear</button></div>
+      <div class="notice">For a production release, this lookup should connect to Odyssey's certificate registry API, with rate limiting, audit logs, and institution-controlled privacy permissions.</div>
+    </form>
+  </section>
+  <section class="results">
+    <div class="result-card" id="resultCard"></div>
+    <aside class="trust-card" id="trustCard"></aside>
+  </section>
+  <div class="footer">Odyssey Verify is a standalone credential verification surface. It is not linked from the main Odyssey navigation in this prototype.</div>
+</main>
+<script>
+const sampleRecords=[{studentName:'Odyssey Student',studentId:'OST-0428-2026',code:'184827391052',status:'Verified',category:'University course',discipline:'Technology and AI',course:'Machine Learning A-Z: Python & R',instructor:'Prof Chen Wei',position:'Senior AI Lecturer',institution:'Odyssey Global Learning Institute',recognized:true,start:'May 12, 2026',completion:'June 23, 2026',midterm:'88%',final:'93%',level:'Intermediate',certificate:'Certificate of Completion'},{studentName:'Odyssey Student',studentId:'OST-0428-2026',code:'368420719384',status:'Verified',category:'Language exam',discipline:'English language',course:'IELTS Academic Band 8+ Strategy',instructor:'Dr James Hartley',position:'Language Exam Specialist',institution:'Odyssey Global Learning Institute',recognized:true,start:'April 8, 2026',completion:'June 2, 2026',midterm:'84%',final:'91%',level:'Advanced',certificate:'Language Exam Preparation Certificate'}];
+function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch(e){return fallback}}
+function normalizeName(name){return String(name||'').trim().replace(/\s+/g,' ').toLowerCase()}
+function onlyDigits(value){return String(value||'').replace(/\D/g,'').slice(0,12)}
+function hashDigits(text,len){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619)}let out='';let seed=h>>>0;while(out.length<len){seed=Math.imul(seed^seed>>>13,1597334677)>>>0;out+=String(seed).padStart(10,'0')}return out.slice(0,len)}
+function certFieldDigit(course){const f=String(course.field||'').toLowerCase();if(f.includes('university'))return'1';if(f.includes('k-12')||f.includes('high school'))return'2';if(f.includes('language'))return'3';if(f.includes('vocational'))return'4';if(f.includes('entrance'))return'5';if(f.includes('professional'))return'6';return'9'}
+function certDisciplineDigit(course){const d=[course.discipline,course.subject,course.title].join(' ').toLowerCase();if(/engineering|structural|civil|mechanical|electrical|chemical/.test(d))return'1';if(/human|history|law|philosophy|linguistic|literature|governance|social/.test(d))return'2';if(/medicine|medical|biology|anatomy|health|nursing|pharmacy|dental|veterinary/.test(d))return'3';if(/business|finance|accounting|marketing|management/.test(d))return'4';if(/math|physics|chemistry|science|calculus|statistics/.test(d))return'5';if(/language|ielts|toefl|french|japanese|english/.test(d))return'6';if(/art|music|design|fashion|culinary|creative/.test(d))return'7';if(/ai|data|computer|programming|web|app|technology/.test(d))return'8';return'9'}
+function certificateCode(course,profile){const base=[profile.email,profile.name,course.id,course.title,course.instructor,course.field,course.subject].join('|');return certFieldDigit(course)+certDisciplineDigit(course)+hashDigits(base,10)}
+function categoryFromCode(code){return{1:'University course',2:'K-12 course',3:'Language exam',4:'Vocational skill',5:'Entrance exam',6:'Professional certification',9:'General Odyssey learning'}[code[0]]||'Unclassified'}
+function disciplineFromCode(code){return{1:'Engineering',2:'Humanities and social studies',3:'Medicine and biological studies',4:'Business and finance',5:'Mathematics and science',6:'Language studies',7:'Arts and design',8:'Technology and AI',9:'General discipline'}[code[1]]||'Unclassified'}
+function dynamicRecords(){const profile=readJSON('odyssey_student_profile',{name:'Odyssey Student',email:'student@example.com'});const courses=readJSON('odyssey_enrolled_courses',[]);const settings=readJSON('odyssey_certificate_settings',{});return courses.filter(c=>c.cert!==false&&c.certificate!==false).map(c=>{const s=settings[c.id]||{};const code=certificateCode(c,profile);return{studentName:profile.name||'Odyssey Student',studentId:'LOCAL-DEMO-STUDENT',code,status:'Verified',category:categoryFromCode(code),discipline:disciplineFromCode(code),course:c.title,instructor:c.instructor||s.signature||'Odyssey Instructor',position:s.position||'Odyssey Instructor',institution:s.institution||'Odyssey Global Learning',recognized:!!s.officialRecognition,start:c.startedAt?new Date(c.startedAt).toLocaleDateString():'Pending registry date',completion:new Date().toLocaleDateString(),midterm:(s.midtermPass||c.certificateMidtermPass||70)+'% threshold',final:(s.finalPass||c.certificateFinalPass||70)+'% threshold',level:c.level||'Verified course',certificate:'Certificate of Completion'}})}
+function allRecords(){const merged=[...sampleRecords,...dynamicRecords()];const seen=new Set();return merged.filter(r=>{const key=r.studentName+'|'+r.code+'|'+r.course;if(seen.has(key))return false;seen.add(key);return true})}
+function escapeHTML(value){return String(value||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function renderVerified(match,history){resultCard.className='result-card show';trustCard.className='trust-card show';resultCard.innerHTML=`<span class="status ok">Verified certificate</span><div class="identity"><div class="seal"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><div><h3>${escapeHTML(match.studentName)}</h3><p>Student ID: ${escapeHTML(match.studentId)} · ${escapeHTML(match.certificate)}</p></div></div><div class="timeline">${history.map(r=>`<article class="record"><h3>${escapeHTML(r.course)}</h3><p>${escapeHTML(r.category)} · ${escapeHTML(r.discipline)} · ${escapeHTML(r.level)}</p><div class="meta-grid"><div class="meta"><span>Instructor</span><b>${escapeHTML(r.instructor)}</b></div><div class="meta"><span>Start</span><b>${escapeHTML(r.start)}</b></div><div class="meta"><span>Completed</span><b>${escapeHTML(r.completion)}</b></div><div class="meta"><span>Institution</span><b>${escapeHTML(r.institution)}</b></div><div class="meta"><span>Midterm</span><b>${escapeHTML(r.midterm)}</b></div><div class="meta"><span>Final</span><b>${escapeHTML(r.final)}</b></div></div></article>`).join('')}</div>`;trustCard.innerHTML=`<h2>Verification details</h2><div class="trust-list"><div class="trust-item"><b>Certificate code</b><span>${escapeHTML(match.code)}</span></div><div class="trust-item"><b>Instructor position</b><span>${escapeHTML(match.position)}</span></div><div class="trust-item"><b>Institution recognition</b><span>${match.recognized?'Officially recognized by the listed institution.':'Odyssey completion record. Institution recognition was not marked as official.'}</span></div><div class="trust-item"><b>Result</b><span>The submitted name and 12-digit code matched a certificate in the Odyssey verification registry prototype.</span></div></div><div class="code-map"><p><b>Code reading:</b> first digit ${match.code[0]} = ${escapeHTML(categoryFromCode(match.code))}; second digit ${match.code[1]} = ${escapeHTML(disciplineFromCode(match.code))}; final ten digits are generated from learner, course, and instructor identifiers.</p></div>`}
+function renderMissing(name,code){resultCard.className='result-card show';trustCard.className='trust-card show';resultCard.innerHTML=`<span class="status bad">No verified match</span><div class="identity"><div class="seal">?</div><div><h3>Certificate not found</h3><p>No Odyssey record matched the submitted name and code.</p></div></div><div class="record"><h3>Submitted lookup</h3><p>Student name: ${escapeHTML(name||'Not entered')}<br>Certificate code: ${escapeHTML(code||'Not entered')}</p></div>`;trustCard.innerHTML=`<h2>Next steps</h2><div class="trust-list"><div class="trust-item"><b>Check formatting</b><span>The certificate code must contain exactly 12 digits.</span></div><div class="trust-item"><b>Confirm legal name</b><span>Use the name printed on the certificate, including spacing and order.</span></div><div class="trust-item"><b>Privacy note</b><span>This prototype does not expose records unless both name and code are entered.</span></div></div>`}
+function verifyCertificate(event){event.preventDefault();const name=studentName.value.trim();const code=onlyDigits(verifyCode.value);verifyCode.value=code.replace(/(\d{4})(?=\d)/g,'$1 ').trim();if(code.length!==12){renderMissing(name,code);return}const records=allRecords();const match=records.find(r=>r.code===code&&normalizeName(r.studentName)===normalizeName(name));if(!match){renderMissing(name,code);return}renderVerified(match,records.filter(r=>normalizeName(r.studentName)===normalizeName(match.studentName)))}
+function loadSample(){studentName.value='Odyssey Student';verifyCode.value='1848 2739 1052';verifyCertificate(new Event('submit'))}
+function clearLookup(){studentName.value='';verifyCode.value='';resultCard.className='result-card';trustCard.className='trust-card';resultCard.innerHTML='';trustCard.innerHTML=''}
+verifyCode.addEventListener('input',()=>{const code=onlyDigits(verifyCode.value);verifyCode.value=code.replace(/(\d{4})(?=\d)/g,'$1 ').trim()})
+verifyForm.addEventListener('submit',verifyCertificate)
+</script>
+<script src="assets/odyssey-global-motion.js" defer></script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+</body>
+</html>

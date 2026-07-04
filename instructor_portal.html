@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Odyssey - Instructor Portal</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#e8edf2;--panel:rgba(255,255,255,.82);--panel-strong:#fff;--text:#132033;--muted:#637084;--line:rgba(19,32,51,.13);
+  --primary:#184e77;--accent:#2a9d8f;--warm:#e9a23b;--rose:#c2416b;--success:#16855a;--danger:#d73745;
+  --soft:#edf4f8;--shadow:0 24px 70px rgba(13,28,48,.13);--radius:18px;--font:Manrope, system-ui, sans-serif;--head:"Newsreader", Georgia, serif;
+}
+[data-theme="dark"]{--bg:#101823;--panel:rgba(23,34,48,.86);--panel-strong:#172233;--text:#f4f8fb;--muted:#a7b4c3;--line:rgba(255,255,255,.13);--soft:#1b2a3c;--shadow:0 26px 80px rgba(0,0,0,.38)}
+[data-scheme="voyage"]{--primary:#184e77;--accent:#2a9d8f;--warm:#e9a23b;--rose:#c2416b}
+[data-scheme="studio"]{--primary:#3f3f46;--accent:#0f766e;--warm:#c08432;--rose:#be3455}
+[data-scheme="nebula"]{--primary:#5b3cc4;--accent:#0ea5b7;--warm:#f59e0b;--rose:#db2777}
+[data-scheme="summit"]{--primary:#24553d;--accent:#287c8e;--warm:#d79c27;--rose:#b43d57}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;font-family:var(--font);color:var(--text);
+  background:
+    radial-gradient(circle at 6% 12%,rgba(42,157,143,.20),transparent 26%),
+    radial-gradient(circle at 98% 2%,rgba(233,162,59,.18),transparent 28%),
+    linear-gradient(135deg,rgba(24,78,119,.12),transparent 44%),
+    var(--bg);
+}
+[data-theme="dark"] body{background:radial-gradient(circle at 8% 8%,rgba(42,157,143,.16),transparent 28%),radial-gradient(circle at 96% 0%,rgba(233,162,59,.12),transparent 28%),linear-gradient(135deg,rgba(91,60,196,.12),transparent 42%),var(--bg)}
+button,input,textarea,select{font:inherit}
+.portal{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;padding:22px 16px;background:rgba(255,255,255,.88);border-right:1px solid var(--line);overflow:auto}
+[data-theme="dark"] .sidebar{background:rgba(13,20,31,.80)}
+.brand{display:flex;align-items:center;gap:12px;color:var(--text);text-decoration:none;margin:0 8px 18px}
+.brand-mark{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:white;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 18px 36px rgba(24,78,119,.24)}
+.brand strong{font-family:var(--head);font-size:23px}
+.profile-mini{display:grid;grid-template-columns:58px 1fr;gap:11px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:10px;background:rgba(255,255,255,.44);margin-bottom:16px}
+[data-theme="dark"] .profile-mini{background:rgba(255,255,255,.04)}
+.avatar{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;overflow:hidden;color:white;font-weight:900;background:linear-gradient(145deg,var(--primary),var(--accent),var(--warm));box-shadow:0 18px 32px rgba(24,78,119,.20)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.profile-mini b{display:block;font-family:var(--head);font-size:15px}.profile-mini span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.tools-label{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.14em;margin:18px 10px 10px}
+.navbtn{width:100%;display:flex;align-items:center;gap:11px;border:0;background:transparent;color:var(--text);padding:11px 12px;border-radius:14px;font-weight:850;cursor:pointer;text-align:left;margin-bottom:4px;transition:.18s;text-decoration:none}
+.navbtn:hover,.navbtn.active{background:rgba(42,157,143,.12);color:var(--primary);transform:translateX(3px)}
+.logout{margin-top:14px;background:rgba(215,55,69,.10);color:var(--danger)}
+.main{padding:28px;overflow:hidden}
+.hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:30px;padding:30px;min-height:312px;background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(255,255,255,.52)),var(--panel);box-shadow:var(--shadow);margin-bottom:22px}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,rgba(24,34,50,.94),rgba(24,34,50,.64))}
+.hero-copy{position:relative;z-index:2;max-width:720px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.48);font-size:12px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+[data-theme="dark"] .eyebrow{background:rgba(255,255,255,.06)}
+.hero h1{font-family:var(--head);font-size:clamp(33px,4.5vw,62px);line-height:1.01;margin:14px 0 12px}
+.hero p{margin:0;color:var(--muted);font-size:16px;line-height:1.65;max-width:690px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.stage3d{position:absolute;right:24px;top:32px;width:min(36vw,430px);height:260px;perspective:900px;pointer-events:none}
+.orbital{position:absolute;inset:20px;border-radius:36px;transform:rotateX(58deg) rotateZ(-18deg);background:linear-gradient(135deg,rgba(24,78,119,.94),rgba(42,157,143,.82));box-shadow:0 36px 86px rgba(24,78,119,.24)}
+.orbital::before{content:"";position:absolute;inset:26px;border:2px solid rgba(255,255,255,.34);border-radius:50%;transform:rotate(8deg)}
+.orbital::after{content:"";position:absolute;right:46px;top:48px;width:86px;height:86px;border-radius:26px;background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.38));box-shadow:0 24px 60px rgba(0,0,0,.18)}
+.float-card{position:absolute;left:22px;bottom:14px;width:210px;border:1px solid rgba(255,255,255,.52);border-radius:20px;padding:14px;background:rgba(255,255,255,.82);box-shadow:0 24px 60px rgba(13,28,48,.16)}
+[data-theme="dark"] .float-card{background:rgba(20,30,45,.78)}
+.float-card b{display:block;font-family:var(--head);font-size:28px}.float-card span{font-size:12px;color:var(--muted);font-weight:800}
+.quick-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.stat-card{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
+.stat-card::after{content:"";position:absolute;right:-22px;bottom:-28px;width:92px;height:92px;border-radius:28px;background:linear-gradient(135deg,var(--primary),var(--accent));opacity:.12;transform:rotate(18deg)}
+.stat-card span{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.stat-card strong{display:block;font-family:var(--head);font-size:28px;margin-top:6px}
+.panel{display:none}.panel.active{display:block}
+.grid{display:grid;grid-template-columns:1.45fr .95fr;gap:18px}.triple{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:19px;box-shadow:var(--shadow)}
+.card h2{font-family:var(--head);font-size:23px;margin:0 0 14px}.card h3{font-family:var(--head);margin:0 0 10px;font-size:18px}
+.course{display:grid;grid-template-columns:78px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px;background:rgba(255,255,255,.46);transition:border-color .18s ease,box-shadow .18s ease;content-visibility:auto;contain-intrinsic-size:1px 170px}
+[data-theme="dark"] .course{background:rgba(255,255,255,.04)}
+.course:hover{box-shadow:0 16px 36px rgba(15,23,42,.10);border-color:rgba(42,157,143,.32)}
+.thumb{width:78px;height:78px;border-radius:20px;display:grid;place-items:center;font-size:31px;color:white;background:linear-gradient(135deg,var(--primary),var(--accent),var(--warm))}
+.course h3{font-size:17px;margin:0}.meta,.desc{color:var(--muted);font-size:13px;line-height:1.45}.meta{margin-top:4px}.desc{margin-top:7px}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pill{font-size:12px;font-weight:900;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:6px 9px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:0;border-radius:13px;padding:10px 13px;font-weight:900;cursor:pointer;background:var(--primary);color:white;text-decoration:none;display:inline-flex;align-items:center;gap:7px;justify-content:center}
+.btn.secondary{background:rgba(42,157,143,.12);color:var(--primary)}.btn.warm{background:var(--warm);color:#1e293b}.btn.danger{background:rgba(215,55,69,.11);color:var(--danger)}
+.list{display:grid;gap:10px}.item{padding:12px 13px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.42);font-size:14px;color:var(--muted)}
+[data-theme="dark"] .item{background:rgba(255,255,255,.04)}.item b{display:block;color:var(--text);margin-bottom:3px}.item small{display:block;color:var(--muted);font-weight:800;margin-top:6px}
+.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.mini-metric{border:1px solid var(--line);border-radius:14px;padding:9px;background:rgba(255,255,255,.34)}.mini-metric b{font-family:var(--head);font-size:18px}.mini-metric span{display:block;color:var(--muted);font-size:11px;font-weight:850}
+.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+input,textarea,select{width:100%;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:var(--panel-strong);color:var(--text)}textarea{min-height:104px;resize:vertical}
+.check-list{display:grid;gap:10px}.check-list label{display:flex;align-items:center;gap:9px;color:var(--muted);font-weight:750}.check-list input{width:auto}
+.form-section{margin-top:16px;padding:14px;border:1px solid rgba(42,157,143,.18);border-radius:18px;background:rgba(255,255,255,.32)}
+[data-theme="dark"] .form-section{background:rgba(255,255,255,.04)}
+.form-section h3{margin:0 0 10px}
+.upload-choice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.upload-choice .item{min-height:104px}
+.muted-note{display:block;color:var(--muted);font-size:12px;font-weight:760;line-height:1.45;margin-top:6px}
+.qa-price-row{transition:.18s}
+.qa-price-row.disabled{opacity:.48;filter:saturate(.65)}
+.session-planner{display:grid;gap:12px;margin-top:12px}
+.session-card{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.44);padding:13px;content-visibility:auto;contain-intrinsic-size:1px 210px}
+[data-theme="dark"] .session-card{background:rgba(255,255,255,.04)}
+.session-card summary{cursor:pointer;font-weight:900;color:var(--text);list-style:none}
+.session-card summary::-webkit-details-marker{display:none}
+.session-card summary span{display:block;color:var(--muted);font-size:12px;font-weight:760;margin-top:3px}
+.session-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.message-card{display:grid;grid-template-columns:64px 1fr;gap:12px;border:1px solid var(--line);border-radius:18px;padding:13px;margin-bottom:12px;background:linear-gradient(135deg,rgba(255,255,255,.70),rgba(255,255,255,.42));box-shadow:0 12px 30px rgba(15,23,42,.06)}
+[data-theme="dark"] .message-card{background:rgba(255,255,255,.05)}
+.student-photo{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;overflow:hidden;color:white;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent),var(--warm))}
+.student-photo img{width:100%;height:100%;object-fit:cover}
+.message-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.message-head h3{margin:0 0 4px}
+.student-meta{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.student-chip{font-size:11px;font-weight:900;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:5px 8px}
+.message-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.student-profile-panel{margin-bottom:12px;border:1px solid rgba(42,157,143,.22);border-radius:18px;padding:13px;background:linear-gradient(135deg,rgba(42,157,143,.10),rgba(233,162,59,.08))}
+.publisher-card{margin-top:18px;background:linear-gradient(135deg,rgba(24,78,119,.10),rgba(42,157,143,.08));border-color:rgba(42,157,143,.22)}
+.modal{position:fixed;inset:0;z-index:500;display:none;place-items:center;padding:20px;background:rgba(13,20,31,.56);backdrop-filter:blur(10px)}
+.modal.open,.modal.active{display:grid}.modal-box{width:min(1040px,100%);max-height:92vh;overflow:auto;background:var(--panel-strong);border:1px solid var(--line);border-radius:26px;box-shadow:0 34px 100px rgba(0,0,0,.32);padding:22px}.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}.modal-head h2{font-family:var(--head);font-size:28px;margin:0}.modal-head p{color:var(--muted);margin:5px 0 0;line-height:1.5}.modal-grid{display:grid;grid-template-columns:1.25fr .85fr;gap:18px}.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.form-grid .wide{grid-column:1/-1}.ai-panel{border:1px solid rgba(42,157,143,.22);border-radius:20px;padding:16px;background:linear-gradient(135deg,rgba(42,157,143,.12),rgba(233,162,59,.10))}.ai-agent{border:1px solid var(--line);border-radius:15px;padding:11px;margin-top:10px;background:rgba(255,255,255,.42)}[data-theme="dark"] .ai-agent{background:rgba(255,255,255,.05)}.ai-agent b{display:block;margin-bottom:4px;color:var(--text)}.ai-agent span{font-size:12px;color:var(--muted);line-height:1.5}.price-toggle{display:flex;gap:10px;flex-wrap:wrap}.price-toggle label{flex:1;min-width:130px;border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--panel);font-weight:850;color:var(--muted);cursor:pointer}.price-toggle input{width:auto;margin-right:7px}
+.bar{height:11px;border-radius:999px;background:rgba(42,157,143,.13);overflow:hidden}.bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--accent),var(--warm))}
+.certificate-options{display:none;margin-top:12px;padding:14px;border:1px solid rgba(233,162,59,.28);border-radius:18px;background:linear-gradient(135deg,rgba(233,162,59,.12),rgba(42,157,143,.08))}
+.certificate-options.open{display:block}.signature-box{font-family:var(--head);font-size:24px;min-height:66px;display:grid;align-items:center;border:1px dashed rgba(42,157,143,.42);border-radius:16px;padding:12px;background:rgba(255,255,255,.36)}
+.student-row{display:grid;grid-template-columns:1fr 120px;gap:12px;align-items:center;margin-bottom:12px}
+.theme-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.theme-card{border:1px solid var(--line);border-radius:18px;padding:13px;cursor:pointer;background:var(--panel-strong);transition:.18s}.theme-card:hover,.theme-card.active{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 18px 42px rgba(15,23,42,.10)}.theme-preview{height:58px;border-radius:14px;margin-bottom:9px}
+.theme-card[data-scheme="voyage"] .theme-preview{background:linear-gradient(135deg,#184e77,#2a9d8f,#e9a23b)}.theme-card[data-scheme="studio"] .theme-preview{background:linear-gradient(135deg,#27272a,#0f766e,#c08432)}.theme-card[data-scheme="nebula"] .theme-preview{background:linear-gradient(135deg,#5b3cc4,#0ea5b7,#db2777)}.theme-card[data-scheme="summit"] .theme-preview{background:linear-gradient(135deg,#24553d,#287c8e,#d79c27)}
+.footer-note{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 8px}
+.brand strong{font-size:20px;font-weight:650}.profile-mini b{font-size:14px;font-weight:650}.navbtn{font-size:13.5px;font-weight:760}.tools-label,.stat-card span,.field label{font-size:10.5px}.hero h1{font-size:clamp(30px,3.8vw,52px);font-weight:650;line-height:1.08}.hero p{font-size:15px}.eyebrow{font-size:11px;font-weight:760}.stat-card strong,.float-card b{font-size:24px;font-weight:650}.card h2{font-size:20px;font-weight:650}.card h3{font-size:16.5px;font-weight:650}.course h3{font-size:16px;font-weight:650}.mini-metric b{font-size:16px;font-weight:650}.btn{font-size:13.5px;font-weight:760}.item,.desc,.meta{font-size:13px}.theme-card b{font-weight:750}
+
+.subscription-status{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.plan-ribbon{border-radius:22px;padding:20px;color:white;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:var(--shadow)}.plan-ribbon h3{font-family:var(--head);font-size:28px;margin:0 0 8px}.plan-limits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}.plan-limit{border:1px solid rgba(255,255,255,.28);border-radius:15px;padding:10px;background:rgba(255,255,255,.12)}.plan-limit b{display:block;font-family:var(--head);font-size:22px}.subscription-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.sub-plan{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:22px;padding:18px;background:var(--panel);box-shadow:0 18px 48px rgba(15,23,42,.10)}.sub-plan::after{content:"";position:absolute;right:-42px;top:-42px;width:130px;height:130px;border-radius:36px;background:var(--plan);opacity:.18;transform:rotate(18deg)}.sub-plan h3{font-family:var(--head);font-size:25px;margin:0 0 6px}.sub-plan .sub-price{font-family:var(--head);font-size:42px;font-weight:900;margin:8px 0}.sub-plan .sub-price small{font-family:var(--font);font-size:12px;color:var(--muted)}.sub-plan p{color:var(--muted);line-height:1.55;font-size:13px}.sub-plan ul{display:grid;gap:8px;padding:0;margin:14px 0}.sub-plan li{list-style:none;padding:9px 10px;border-radius:13px;background:var(--soft);font-size:12px;font-weight:850;color:var(--text)}@media(max-width:940px){.subscription-status,.subscription-plans{grid-template-columns:1fr}.plan-limits{grid-template-columns:1fr}}
+@media(max-width:1120px){.quick-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stage3d{opacity:.42;right:-90px}.grid,.split{grid-template-columns:1fr}.triple{grid-template-columns:1fr 1fr}.course{grid-template-columns:68px 1fr}.actions{grid-column:1/-1;justify-content:flex-start}.thumb{width:68px;height:68px}.upload-choice,.session-tools{grid-template-columns:1fr}}
+@media(max-width:780px){.portal{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.main{padding:18px}.quick-stats,.theme-grid,.triple,.metric-strip,.modal-grid,.form-grid{grid-template-columns:1fr}.hero{padding:23px}.stage3d{display:none}.student-row,.message-card{grid-template-columns:1fr}.navbtn:hover,.navbtn.active{transform:none}}
+</style>
+<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
+<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
+<link rel="stylesheet" href="assets/odyssey-dashboard-minimal.css" />
+<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+</head>
+<body class="instructor-portal">
+<div class="portal">
+  <aside class="sidebar">
+    <a class="brand" href="learnworld_landing.html"><span class="brand-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></span><strong>Odyssey</strong></a>
+    <div data-i18n-switcher></div>
+    <div class="profile-mini">
+      <div class="avatar" id="sideAvatar">IS</div>
+      <div><b id="sideName">Instructor Studio</b><span id="sideTitle">Verified teacher workspace</span></div>
+    </div>
+    <div class="tools-label">Instructor tools</div>
+    <button class="navbtn active" data-target="dashboard"><span>Dashboard</span></button>
+    <button class="navbtn" data-target="profile"><span>Instructor profile</span></button>
+    <button class="navbtn" data-target="courses"><span>Courses & materials</span></button>
+    <button class="navbtn" data-target="videoStudio"><span>Video studio</span></button>
+    <button class="navbtn" data-target="create"><span>Post a course</span></button>
+    <button class="navbtn" data-target="students"><span>Student analytics</span></button>
+    <button class="navbtn" data-target="inbox"><span>Inbox & replies</span></button>
+    <button class="navbtn" data-target="exams"><span>Exam administration</span></button>
+    <button class="navbtn" data-target="marketExams"><span>Marketplace tests</span></button>
+    <button class="navbtn" data-target="certificates"><span>Certificate</span></button>
+    <button class="navbtn" data-target="payouts"><span>Payouts & income</span></button>
+    <button class="navbtn subscription-nav" type="button" onclick="openSubscriptionModal()"><span>Subscriptions</span></button>
+    <button class="navbtn" data-target="settings"><span>Account settings</span></button>
+    <button class="navbtn" data-target="appearance"><span>Appearance</span></button>
+    <a class="navbtn" href="learnworld_catalog.html"><span>Course catalog</span></a>
+    <button class="navbtn logout" onclick="logoutPortal()"><span>Log out</span></button>
+  </aside>
+  <main class="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Odyssey instructor command center</span>
+        <h1>Teach beautifully, manage clearly, and grow with confidence.</h1>
+        <p>Publish courses, administer exams, answer student questions, track income, and shape your public instructor profile from one polished workspace.</p>
+        <div class="hero-actions">
+          <button class="btn" onclick="showPanel('create')">Post a new course</button>
+          <button class="btn secondary" onclick="showPanel('exams')">Schedule an exam</button>
+          <button class="btn warm" onclick="showPanel('inbox','reply')">Answer students</button>
+        </div>
+      </div>
+      <div class="stage3d" aria-hidden="true">
+        <div class="orbital"></div>
+        <div class="float-card"><b id="heroStudents">0</b><span>active enrolled students</span></div>
+      </div>
+    </section>
+    <section class="quick-stats" id="summaryStats"></section>
+
+    <section id="dashboard" class="panel active">
+      <div class="grid">
+        <div class="card"><h2>Course studio</h2><div id="dashCourses"></div></div>
+        <div class="list">
+          <div class="card"><h2>Today</h2><div id="todayList"></div></div>
+          <div class="card"><h2>Revenue pulse</h2><div id="incomePulse"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="profile" class="panel">
+      <div class="grid">
+        <div class="card">
+          <h2>Instructor profile</h2>
+          <div class="split">
+            <div class="field"><label>Profile photo</label><input id="profilePhoto" type="file" accept="image/*"></div>
+            <div class="field"><label>Display name</label><input id="profileName"></div>
+          </div>
+          <div class="split">
+            <div class="field"><label>Professional title</label><input id="profileTitle"></div>
+            <div class="field"><label>Email</label><input id="profileEmail"></div>
+          </div>
+          <div class="field"><label>Public bio</label><textarea id="profileBio"></textarea></div>
+          <button class="btn" onclick="saveProfile()">Save profile</button>
+        </div>
+        <div class="card">
+          <h2>Public proof</h2>
+          <div class="metric-strip" id="profileProof"></div>
+          <div class="item" style="margin-top:12px"><b>Instructor promise</b>Fast answers, useful resources, fair exams, and course updates students can trust.</div>
+          <div class="publisher-card item">
+            <h2>Exam marketplace publishing</h2>
+            <p class="desc">Post free diagnostics or paid exam packs under your instructor profile. Odyssey will show subject, difficulty, time, question count, files, price, and payment preference on the Tests marketplace.</p>
+            <button class="btn warm" onclick="openExamPublisher()">Post a marketplace exam</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="courses" class="panel">
+      <div class="grid">
+        <div class="card"><h2>Courses uploaded</h2><div id="courseList"></div></div>
+        <div class="card">
+          <h2>Private course files</h2>
+          <p class="desc">Upload lesson notes, worksheets, reading packs, and other downloadable resources to Odyssey's private storage.</p>
+          <div class="field"><label>Course</label><select id="materialCourse"></select></div>
+          <div class="field"><label>Course materials</label><input id="materialFiles" type="file" multiple></div>
+          <button class="btn" onclick="uploadCourseMaterials()">Upload files</button>
+          <div id="storageStatus" class="item" style="margin-top:12px"><b>Storage status</b>Sign in to connect private uploads.</div>
+          <div id="storageObjectList" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="videoStudio" class="panel">
+      <div class="grid">
+        <div class="card">
+          <h2>Production video studio</h2>
+          <p class="desc">Use resumable private uploads instead of sending large videos through the website server. Odyssey creates a secure upload session, sends the file straight to the streaming network, then processes adaptive playback in the background.</p>
+          <div class="field"><label>Course</label><select id="videoCourse"></select></div>
+          <div class="split"><div class="field"><label>Lesson title</label><input id="videoTitle" placeholder="Introduction to the course"></div><div class="field"><label>Lesson number</label><input id="videoLessonNumber" type="number" min="1" value="1"></div></div>
+          <div class="field"><label>Video file</label><input id="videoFile" type="file" accept="video/*"></div>
+          <div class="upload-choice">
+            <div class="item"><b>Recommended</b>Resumable private upload for large videos, unstable connections, and secure playback.</div>
+            <div class="item"><b>Alternative</b>Import from a trusted cloud URL later if the instructor already hosts master files.</div>
+            <div class="item"><b>Avoid</b>Normal form upload through the app server for huge videos, because it is slower and easier to interrupt.</div>
+          </div>
+          <button class="btn" id="videoUploadButton" onclick="uploadLessonVideo()">Upload lesson video</button>
+          <div class="item" id="videoUploadStatus" style="margin-top:12px"><b>Ready</b>Select a production course and video file.</div>
+          <div class="bar" style="margin-top:12px"><span id="videoUploadProgress" style="width:0"></span></div>
+        </div>
+        <div class="card">
+          <h2>Processing library</h2>
+          <p class="desc">Uploads become playable only after Mux confirms transcoding and creates a signed playback ID.</p>
+          <div id="videoLibrary"><div class="item"><b>No course selected</b>Choose a course to view its video assets.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="create" class="panel">
+      <div class="grid">
+        <div class="card">
+          <h2>Post a course</h2>
+          <div class="split"><div class="field"><label>Course title</label><input id="newTitle" placeholder="Advanced IELTS Writing Lab"></div><div class="field"><label>Field</label><select id="newField"><option>Language Exam</option><option>Entrance Exam</option><option>High School</option><option>University</option><option>Vocational</option><option>Professional Certification</option></select></div></div>
+          <div class="split"><div class="field"><label>Discipline</label><select id="newDiscipline"><option>Languages & Literature</option><option>Mathematics</option><option>Engineering</option><option>Medicine & Health Sciences</option><option>Business & Finance</option><option>AI & Data Science</option><option>Culinary Arts & Baking</option><option>Fine Arts</option></select></div><div class="field"><label>Subject</label><input id="newSubject" placeholder="IELTS Academic Writing, Calculus, Python..."></div></div>
+          <div class="split"><div class="field"><label>Country</label><select id="newCountry"><option>United States</option><option>United Kingdom</option><option>Canada</option><option>Australia</option><option>Germany</option><option>France</option><option>Spain</option><option>Italy</option><option>Iran</option><option>Turkey</option><option>United Arab Emirates</option><option>Saudi Arabia</option><option>India</option><option>China</option><option>Japan</option><option>South Korea</option><option>Brazil</option><option>Mexico</option><option>South Africa</option><option>Global / Online</option></select></div><div class="field"><label>Course level</label><select id="newLevel"><option>Intermediate</option><option>Advanced</option><option>Expert</option></select></div></div>
+          <div class="split"><div class="field"><label>Teaching language</label><select id="newLanguage"><option>English</option><option>Arabic</option><option>Persian / Farsi</option><option>French</option><option>Spanish</option><option>German</option><option>Italian</option><option>Portuguese</option><option>Turkish</option><option>Hindi</option><option>Mandarin</option><option>Japanese</option><option>Korean</option><option>Russian</option></select></div><div class="field"><label>Number of sessions</label><input id="newSessions" type="number" min="1" max="60" value="12" oninput="renderSessionPlanner()"></div></div>
+          <div class="form-section">
+            <h3>Session video plan</h3>
+            <span class="muted-note">A separate session window appears for each lesson. Add the title, objective, draft video file, and extra notes for that session. Final large video uploads should still go through the Video Studio for private streaming.</span>
+            <div class="session-planner" id="sessionPlanner"></div>
+          </div>
+          <div class="form-section">
+            <h3>Pricing and support</h3>
+            <div class="split"><div class="field"><label>Course price without Q&A (USD)</label><input id="newPriceBase" type="number" min="0" value="49"></div><div class="field qa-price-row" id="qaPriceRow"><label>Course price with Q&A service (USD)</label><input id="newPriceQA" type="number" min="0" value="79"></div></div>
+            <div class="check-list">
+              <label><input id="newExcludeQA" type="checkbox" onchange="toggleQAPricing()"> Exclude this course from Q&A service</label>
+              <label><input id="newInteraction" type="checkbox" checked> Offer student interaction and problem help</label>
+            </div>
+            <span class="muted-note">Q&A can be sold as a premium support version, while the lower price remains available for self-paced learners.</span>
+          </div>
+          <div class="split"><div class="field"><label>Estimated duration</label><input id="newDuration" placeholder="6 weeks"></div><div class="field"><label>Weekly workload</label><input id="newWorkload" placeholder="3-5 hours per week"></div></div>
+          <div class="split"><div class="field"><label>Video lessons</label><input id="newVideos" type="number" min="0" value="12"></div><div class="field"><label>Documents / files</label><input id="newContents" type="number" min="0" value="18"></div></div>
+          <div class="field"><label>Learning outcomes</label><textarea id="newOutcomes" placeholder="By the end, students will be able to write stronger essays, solve exam-style problems, or build a portfolio project."></textarea></div>
+          <div class="split"><div class="field"><label>Prerequisites</label><input id="newPrerequisites" placeholder="Basic grammar, algebra, Python basics..."></div><div class="field"><label>Refund window</label><select id="newRefundWindow"><option>7 days</option><option>14 days</option><option>30 days</option><option>No refunds after first lesson is completed</option></select></div></div>
+          <div class="form-section">
+            <h3>Course content uploads</h3>
+            <div class="field"><label>PDFs, textbooks, slides, and files</label><input id="newCourseFiles" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.zip,image/*"></div>
+            <div class="field"><label>Textbook / reference library</label><input id="newMaterialFiles" type="file" multiple accept=".pdf,.epub,.doc,.docx,.ppt,.pptx,.zip"></div>
+            <span class="muted-note">Use this for PDFs, textbooks, slides, worksheets, datasets, rubrics, and starter files. Videos should use the session planner for draft names and the Video Studio for secure streaming.</span>
+          </div>
+          <div class="check-list">
+            <label><input id="newCertificate" type="checkbox" checked onchange="toggleCourseCertificateOptions(true)"> Issue certificate after completion</label>
+            <label><input id="newPractice" type="checkbox" checked> Include practice tests and assignments</label>
+            <label><input id="newDownloads" type="checkbox"> Allow downloadable offline resources</label>
+            <label><input id="newCohortLive" type="checkbox"> Add optional live cohort sessions</label>
+            <label><input id="newSubtitles" type="checkbox" checked> Prepare subtitles / transcript for uploaded videos</label>
+          </div>
+          <div class="certificate-options open" id="courseCertificateOptions">
+            <div class="item"><b>Certificate requirement</b>Certificate courses must administer at least two exams: one midterm and one final. Students must pass both thresholds before a certificate is issued.</div>
+            <div class="split"><div class="field"><label>Midterm passing threshold (%)</label><input id="newMidtermPass" type="number" min="0" max="100" value="70"></div><div class="field"><label>Final passing threshold (%)</label><input id="newFinalPass" type="number" min="0" max="100" value="70"></div></div>
+          </div>
+          <br><button class="btn" onclick="publishCourse()">Publish course</button>
+        </div>
+        <div class="card">
+          <h2>Instructor checklist</h2>
+          <div class="list">
+            <div class="item"><b>Catalog placement</b>Field, discipline, subject, country, level, and language help students find the course.</div>
+            <div class="item"><b>Pricing clarity</b>Keep the self-paced price separate from the Q&A-supported price so learners can choose.</div>
+            <div class="item"><b>Video handling</b>Use the Video studio for large lessons. It is safer than direct app-server upload because it supports resumable transfer and private streaming.</div>
+            <div class="item"><b>Course content</b>Add PDFs, slides, assignments, datasets, and rubrics before submitting for catalog review.</div>
+            <div class="item"><b>Certificate path</b>Certificate courses should include formal assessments and a passing score.</div>
+            <div class="item"><b>Revenue rule</b>Demo payout uses a 70% instructor share for paid enrollments.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="students" class="panel">
+      <div class="card"><h2>Enrollment panel</h2><div id="studentAnalytics"></div></div>
+    </section>
+
+    <section id="inbox" class="panel">
+      <div class="grid">
+        <div class="card"><h2>Student questions</h2><div id="inboxList"></div></div>
+        <div class="card" id="replyWorkspace">
+          <h2>Reply workspace</h2>
+          <div id="selectedStudentProfile" class="student-profile-panel"><b>No student selected</b><span class="muted-note">Choose a message to view the learner profile, country, ID, course context, and support history.</span></div>
+          <div class="field"><label>Selected question</label><input id="replySubject" readonly></div>
+          <div class="field"><label>Your answer</label><textarea id="replyBody" placeholder="Write a clear, helpful answer for the student..."></textarea></div>
+          <button class="btn" onclick="sendReply()">Send answer</button>
+          <button class="btn secondary" onclick="seedQuestion()">Add sample question</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="exams" class="panel">
+      <div class="grid">
+        <div class="card">
+          <h2>Administer an exam</h2>
+          <div class="split"><div class="field"><label>Course</label><select id="examCourse"></select></div><div class="field"><label>Exam title</label><input id="examTitle" placeholder="Final certification exam"></div></div>
+          <div class="split"><div class="field"><label>Question file</label><input id="examFile" type="file"></div><div class="field"><label>Passing score</label><input id="examPass" type="number" min="0" max="100" value="70"></div></div>
+          <div class="split"><div class="field"><label>Exam date</label><input id="examDate" type="date"></div><div class="field"><label>Start time</label><input id="examStart" type="time"></div></div>
+          <div class="split"><div class="field"><label>Time limit in minutes</label><input id="examDuration" type="number" min="5" value="90"></div><div class="field"><label>Attempts allowed</label><input id="examAttempts" type="number" min="1" value="1"></div></div>
+          <div class="check-list">
+            <label><input id="examRandom" type="checkbox" checked> Randomize question order</label>
+            <label><input id="examProctor" type="checkbox"> Require proctoring / identity check</label>
+            <label><input id="examNotify" type="checkbox" checked> Send notification one week before the exam</label>
+          </div>
+          <br><button class="btn" onclick="scheduleExam()">Administer exam</button>
+        </div>
+        <div class="card"><h2>Scheduled exams</h2><div id="examList"></div></div>
+      </div>
+    </section>
+
+    <section id="marketExams" class="panel">
+      <div class="grid">
+        <div class="card">
+          <h2>Marketplace tests</h2>
+          <p class="desc">Manage exams and test packs you sell or offer for free in the public Tests marketplace.</p>
+          <br><button class="btn warm" onclick="openExamPublisher()">Post a marketplace exam</button>
+          <div id="marketExamList" style="margin-top:14px"></div>
+        </div>
+        <div class="card">
+          <h2>AI exam quality agents</h2>
+          <div class="item"><b>Question clarity agent</b>Checks if questions are direct, unambiguous, and aligned with the subject.</div>
+          <div class="item"><b>Difficulty balance agent</b>Suggests a better mix of easy, medium, and hard questions.</div>
+          <div class="item"><b>Rubric and timing agent</b>Reviews time allocation, scoring logic, and learner instructions.</div>
+          <button class="btn secondary" onclick="openExamPublisher()">Optimize a new exam</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="certificates" class="panel">
+      <div class="grid">
+        <div class="card">
+          <h2>Certificate issuance system</h2>
+          <p class="desc">Configure how Odyssey issues certificates for your courses, including institution recognition, professor signature, verification code policy, and exam thresholds.</p>
+          <div class="split"><div class="field"><label>Course</label><select id="certCourse"></select></div><div class="field"><label>Institution name</label><input id="certInstitution" placeholder="University / academy / institute name"></div></div>
+          <div class="split"><div class="field"><label>Professor position</label><input id="certPosition" placeholder="Associate Professor, Senior Instructor..."></div><div class="field"><label>Institution emblem</label><input id="certEmblem" type="file" accept="image/*"></div></div>
+          <div class="check-list">
+            <label><input id="certCourseCompletion" type="checkbox" checked> Certificate confirms completion of the course</label>
+            <label><input id="certInstitutionCertified" type="checkbox"> My institution certifies this course completion</label>
+            <label><input id="certOfficialRecognition" type="checkbox"> My institution officially recognizes the issued certificate</label>
+            <label><input id="certPublicVerify" type="checkbox" checked> Allow employers to verify the 12-digit code</label>
+          </div>
+          <div class="split" style="margin-top:12px"><div class="field"><label>Midterm threshold (%)</label><input id="certMidtermPass" type="number" min="0" max="100" value="70"></div><div class="field"><label>Final threshold (%)</label><input id="certFinalPass" type="number" min="0" max="100" value="70"></div></div>
+          <div class="field"><label>E-signature</label><input id="certSignature" placeholder="Type your signature exactly as it should appear"></div>
+          <div class="signature-box" id="signaturePreview">Professor signature preview</div>
+          <br><button class="btn" onclick="saveCertificateSettings()">Save certificate settings</button>
+        </div>
+        <div class="card">
+          <h2>Issued certificate rules</h2>
+          <div id="certificateSettingsList"></div>
+          <div class="item"><b>Verification pattern</b>First digit = course category. Second digit = discipline family. Remaining digits are deterministic from student, course, instructor, and completion data.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="payouts" class="panel">
+      <div class="grid">
+        <div class="card"><h2>Payout & income records</h2><div id="payoutList"></div></div>
+        <div class="card">
+          <h2>Payout settings</h2>
+          <div class="field"><label>Preferred payout method</label><select id="payoutMethod"><option>Bank transfer</option><option>PayPal</option><option>Wise</option><option>Local wallet</option></select></div>
+          <div class="field"><label>Account holder</label><input id="payoutName"></div>
+          <div class="field"><label>Monthly income goal</label><input id="incomeGoal" type="number" value="5000"></div>
+          <button class="btn secondary" onclick="savePayoutSettings()">Save payout settings</button>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="subscriptions" class="panel">
+      <div class="subscription-status">
+        <div class="card">
+          <h2>Subscription plan</h2>
+          <div class="plan-ribbon" id="currentPlanRibbon"></div>
+          <div class="hero-actions"><button class="btn" onclick="openSubscriptionModal()">Compare and purchase plans</button></div>
+        </div>
+        <div class="card">
+          <h2>Why upgrade?</h2>
+          <div class="list">
+            <div class="item"><b>Publish more</b>Increase active course and exam publishing limits as your catalog grows.</div>
+            <div class="item"><b>See more student data</b>Unlock richer dashboards with progress, completion, engagement, cohort, revenue, and exam analytics.</div>
+            <div class="item"><b>Operate as a team</b>Institutional subscriptions support departments, multiple instructors, certificate identity, and larger exam programs.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="settings" class="panel">
+      <div class="grid">
+        <div class="card">
+          <h2>Account settings</h2>
+          <div class="split"><div class="field"><label>Phone number</label><input id="settingsPhone"></div><div class="field"><label>City / region</label><input id="settingsCity"></div></div>
+          <div class="split"><div class="field"><label>Time zone</label><select id="settingsTimezone"><option>Americas / Eastern</option><option>Europe / London</option><option>Asia / Tehran</option><option>Asia / Dubai</option><option>Asia / Singapore</option></select></div><div class="field"><label>Teaching language</label><select id="settingsLanguage"><option>English</option><option>Arabic</option><option>Persian / Farsi</option><option>French</option><option>Spanish</option></select></div></div>
+          <div class="field"><label>Office hours</label><input id="settingsOffice" placeholder="Mon-Wed 17:00-19:00"></div>
+          <button class="btn" onclick="saveSettings()">Save settings</button>
+        </div>
+        <div class="list">
+          <div class="card"><h2>Security</h2><div class="field"><label>Password</label><input type="password" value="placeholder"></div><button class="btn secondary" onclick="alert('Password reset workflow will be connected to the backend.')">Change password</button></div>
+	          <div class="card"><h2>Notifications & privacy</h2><div class="check-list"><label><input id="mailDigest" type="checkbox" checked> Weekly instructor digest</label><label><input id="studentAlerts" type="checkbox" checked> New question alerts</label><label><input id="examAlerts" type="checkbox" checked> Exam schedule alerts</label><label><input id="publicProfile" type="checkbox" checked> Public instructor profile</label><label><input id="analyticsCookies" type="checkbox"> Teaching analytics cookies</label></div><br><button class="btn secondary" onclick="saveNotificationSettings()">Save preferences</button></div>
+	          <div class="card"><h2>Your data</h2><p class="desc">Export your profile, courses, exams, videos, messages, payouts, certificates, and account records.</p><button class="btn secondary" onclick="OdysseyPrivacy.download()">Download my data</button><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><div id="privacyDeletionStatus" class="item">Checking deletion status...</div><div class="split" style="margin-top:12px"><button class="btn secondary" onclick="OdysseyPrivacy.requestDeletion('privacyDeletionStatus')">Request deletion</button><button class="btn secondary" onclick="OdysseyPrivacy.cancelDeletion('privacyDeletionStatus')">Cancel deletion</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="appearance" class="panel">
+      <div class="card">
+        <h2>Appearance & sidebar tools</h2>
+        <div class="split"><button class="btn secondary" onclick="setPortalMode('light')">Light mode</button><button class="btn secondary" onclick="setPortalMode('dark')">Dark mode</button></div>
+        <br>
+        <div class="theme-grid">
+          <div class="theme-card" data-scheme="voyage"><div class="theme-preview"></div><b>Voyage Professional</b><p class="desc">Deep blue, teal, and gold for a serious global academy.</p></div>
+          <div class="theme-card" data-scheme="studio"><div class="theme-preview"></div><b>Studio Slate</b><p class="desc">A calm expert workspace for daily course administration.</p></div>
+          <div class="theme-card" data-scheme="nebula"><div class="theme-preview"></div><b>Nebula Mentor</b><p class="desc">More color and energy for creative instructors.</p></div>
+          <div class="theme-card" data-scheme="summit"><div class="theme-preview"></div><b>Summit Calm</b><p class="desc">Green-blue focus for coaching, exams, and long sessions.</p></div>
+        </div>
+      </div>
+    </section>
+    <div class="footer-note">Odyssey instructor portal - designed for teachers serving learners worldwide.</div>
+  </main>
+</div>
+
+<div class="modal" id="subscriptionModal" role="dialog" aria-modal="true" aria-labelledby="subscriptionModalTitle">
+  <div class="modal-box" style="width:min(1180px,100%)">
+    <div class="modal-head">
+      <div><h2 id="subscriptionModalTitle">Choose your Odyssey subscription</h2><p>Compare publishing limits, dashboard depth, and growth tools. Purchases are saved locally in this demo.</p></div>
+      <button class="btn danger" onclick="closeSubscriptionModal()">Close</button>
+    </div>
+    <div class="subscription-plans" id="subscriptionPlanGrid"></div>
+  </div>
+</div>
+
+<div class="modal" id="examPublisherModal" role="dialog" aria-modal="true" aria-labelledby="marketExamModalTitle">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h2 id="marketExamModalTitle">Post a marketplace exam</h2>
+        <p>Create a free or paid exam listing with catalog placement, question files, timing, difficulty, AI quality guidance, and payment preferences.</p>
+      </div>
+      <button class="btn danger" onclick="closeExamPublisher()">Close</button>
+    </div>
+    <div class="modal-grid">
+      <div>
+        <div class="form-grid">
+          <div class="field wide"><label>Exam title</label><input id="marketExamTitle" placeholder="IELTS Writing Mock Exam 4"></div>
+          <div class="field"><label>Field</label><select id="marketExamField" onchange="updateMarketDisciplines()"></select></div>
+          <div class="field"><label>Discipline</label><select id="marketExamDiscipline" onchange="updateMarketSubjects()"></select></div>
+          <div class="field"><label>Subject</label><select id="marketExamSubject"></select></div>
+          <div class="field"><label>Difficulty</label><select id="marketExamLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>Expert</option></select></div>
+          <div class="field"><label>Number of questions</label><input id="marketExamQuestions" type="number" min="1" value="40"></div>
+          <div class="field"><label>Allocated time in minutes</label><input id="marketExamTime" type="number" min="5" value="60"></div>
+          <div class="field"><label>Question files</label><input id="marketExamFiles" type="file" multiple></div>
+          <div class="field"><label>Language</label><select id="marketExamLanguage"><option>English</option><option>Arabic</option><option>Persian</option><option>French</option><option>Spanish</option><option>Hindi</option><option>Mandarin</option></select></div>
+          <div class="field wide"><label>Exam description from instructor</label><textarea id="marketExamDescription" placeholder="Explain what the exam measures, who it is for, what students receive, and how results should be interpreted."></textarea></div>
+        </div>
+        <div class="split">
+          <div class="field">
+            <label>Price model</label>
+            <div class="price-toggle">
+              <label><input type="radio" name="marketPriceType" value="free" checked onchange="toggleMarketPrice()"> Free exam</label>
+              <label><input type="radio" name="marketPriceType" value="paid" onchange="toggleMarketPrice()"> Paid exam</label>
+            </div>
+          </div>
+          <div class="field"><label>Price in USD</label><input id="marketExamPrice" type="number" min="0" value="0" disabled></div>
+        </div>
+        <div class="split">
+          <div class="field"><label>Preferred payment method</label><select id="marketExamPayment"><option>Odyssey checkout</option><option>Bank transfer</option><option>PayPal</option><option>Wise</option><option>Local wallet</option></select></div>
+          <div class="field"><label>Exam icon</label><select id="marketExamIcon"><option>📝</option><option>📐</option><option>🧬</option><option>🗣️</option><option>⚕️</option><option>🤖</option><option>🏅</option></select></div>
+        </div>
+        <div class="check-list">
+          <label><input id="marketExamTimed" type="checkbox" checked> Timed exam</label>
+          <label><input id="marketExamSolutions" type="checkbox" checked> Include solutions or explanations</label>
+          <label><input id="marketExamCertificate" type="checkbox"> Certificate-ready after passing</label>
+          <label><input id="marketExamShuffle" type="checkbox" checked> Shuffle questions for every student</label>
+        </div>
+        <br>
+        <button class="btn" onclick="publishMarketExam()">Publish to Tests marketplace</button>
+        <button class="btn secondary" onclick="runExamAIAgents()">Run AI exam agents</button>
+      </div>
+      <aside class="ai-panel">
+        <h2>AI exam optimization</h2>
+        <p class="desc">This is a front-end AI-agent workspace ready to connect to your future AI API. For now, it generates structured guidance from the exam details you enter.</p>
+        <div id="aiExamOutput">
+          <div class="ai-agent"><b>Question clarity agent</b><span>Upload or describe your question file, then run the agents to receive clarity guidance.</span></div>
+          <div class="ai-agent"><b>Difficulty balance agent</b><span>Reviews whether the level, question count, and timing feel balanced.</span></div>
+          <div class="ai-agent"><b>Rubric agent</b><span>Suggests instructions, scoring, and solution notes for fair administration.</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<script src="js/i18n.js" defer></script>
+<script src="assets/odyssey-portal-translations.js" defer></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+<script src="js/storage-client.js"></script>
+<script src="js/privacy-client.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@2"></script>
+<script>
+const SUBSCRIPTION_PLANS={free:{name:'Free',price:0,courses:5,exams:20,color:'linear-gradient(135deg,#64748b,#94a3b8)',desc:'For new instructors who want to publish a focused starter catalog and test exam publishing before upgrading.',features:['5 active published courses','20 published exams','Basic dashboard and enrollment overview','Standard review queue','Community support']},pro:{name:'Pro',price:15,courses:25,exams:100,color:'linear-gradient(135deg,#7c3aed,#06b6d4)',desc:'For solo instructors who publish several courses, sell exam packs, and want deeper student progress and revenue analytics.',features:['25 active published courses','100 published exams','Advanced student progress analytics','Completion, engagement, and revenue dashboards','CSV roster and exam exports','Priority course review signals']},institutional:{name:'Institutional',price:40,courses:100,exams:'Unlimited',color:'linear-gradient(135deg,#071c2b,#d6a246)',desc:'For schools, academies, and organizations running many subjects, instructors, cohorts, and large assessment programs.',features:['100 active published courses','Unlimited exam publishing','Department and team workspace','Institution-level analytics by subject and cohort','Certificate branding and institution identity','Partner onboarding support']}};
+function getSubscriptionPlan(){return localStorage.getItem('odyssey_subscription_plan')||'free'}
+function setSubscriptionPlan(plan){localStorage.setItem('odyssey_subscription_plan',plan);renderSubscriptionPanel();closeSubscriptionModal();alert(SUBSCRIPTION_PLANS[plan].name+' plan selected for this demo.')}
+function renderSubscriptionPanel(){if(!window.currentPlanRibbon)return;const plan=SUBSCRIPTION_PLANS[getSubscriptionPlan()]||SUBSCRIPTION_PLANS.free;currentPlanRibbon.style.background=plan.color;currentPlanRibbon.innerHTML='<h3>'+plan.name+' plan</h3><p>'+plan.desc+'</p><div class="plan-limits"><div class="plan-limit"><b>'+plan.courses+'</b><span>active courses</span></div><div class="plan-limit"><b>'+plan.exams+'</b><span>published exams</span></div><div class="plan-limit"><b>'+(plan.price?'$'+plan.price:'$0')+'</b><span>per month</span></div></div>'}
+function openSubscriptionModal(){renderSubscriptionPlans();document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));document.querySelector('.subscription-nav')?.classList.add('active');subscriptionModal.classList.add('active')}
+function closeSubscriptionModal(){subscriptionModal.classList.remove('active')}
+function renderSubscriptionPlans(){if(!window.subscriptionPlanGrid)return;const active=getSubscriptionPlan();subscriptionPlanGrid.innerHTML=Object.entries(SUBSCRIPTION_PLANS).map(([key,plan])=>`<article class="sub-plan" style="--plan:${plan.color}"><h3>${plan.name}</h3><div class="sub-price">${plan.price?'$'+plan.price:'Free'}${plan.price?'<small> / month</small>':''}</div><p>${plan.desc}</p><ul>${plan.features.map(feature=>'<li>'+feature+'</li>').join('')}</ul><button class="btn ${key===active?'secondary':''}" onclick="setSubscriptionPlan('${key}')">${key===active?'Current plan':'Upgrade to '+plan.name}</button></article>`).join('')}
+const fallbackCourses=[
+  {id:101,title:'IELTS Academic Band 8+ Strategy',field:'Language Exam',discipline:'Languages & Literature',subject:'IELTS Writing and Speaking',country:'United Kingdom',level:'Advanced',language:'English',sessions:32,price:89,priceBase:89,priceQA:129,qaIncluded:true,students:12480,likes:9340,videos:32,contents:58,materials:22,assignments:12,revenue:777216,status:'Published',interaction:true,certificate:true,emoji:'LA'},
+  {id:102,title:'Machine Learning Projects with Python',field:'Vocational',discipline:'AI & Data Science',subject:'Machine Learning',country:'United States',level:'Expert',language:'English',sessions:46,price:129,priceBase:129,priceQA:179,qaIncluded:true,students:8620,likes:7031,videos:46,contents:74,materials:31,assignments:18,revenue:778386,status:'Published',interaction:true,certificate:true,emoji:'AI'},
+  {id:103,title:'Global Calculus for Entrance Exams',field:'Entrance Exam',discipline:'Mathematics',subject:'Calculus',country:'Global / Online',level:'Intermediate',language:'English',sessions:28,price:59,priceBase:59,priceQA:0,qaIncluded:false,students:5210,likes:4164,videos:28,contents:44,materials:16,assignments:14,revenue:215243,status:'Updating',interaction:false,certificate:false,emoji:'MA'}
+];
+const fallbackPayouts=[
+  {date:'2026-06-01',course:'IELTS Academic Band 8+ Strategy',gross:24600,share:17220,status:'Paid'},
+  {date:'2026-05-01',course:'Machine Learning Projects with Python',gross:31270,share:21889,status:'Paid'},
+  {date:'2026-04-01',course:'Global Calculus for Entrance Exams',gross:17810,share:12467,status:'Paid'}
+];
+const MARKET_TAXONOMY={
+  'Language Exam':{'English Proficiency':['IELTS Writing','IELTS Speaking','TOEFL iBT','PTE Academic','Duolingo English Test'],'French':['DELF B1','DELF B2','DALF C1'],'Japanese':['JLPT N5-N3','JLPT N2-N1']},
+  'Entrance Exam':{'South Asian Exams':['JEE Advanced Mathematics','NEET Biology','JAMB UTME','Konkur Mathematics'],'American Exams':['SAT Math','ACT Science','MCAT Organic Chemistry','LSAT Reasoning'],'East Asian Exams':['Gaokao Physics','EJU Mathematics']},
+  'University':{'Medicine & Health Sciences':['Anatomy','Physiology','Biochemistry','Pharmacology'],'Engineering':['Calculus','Structural Analysis','Circuits','Thermodynamics'],'Business & Finance':['Accounting','Corporate Finance','Marketing Analytics']},
+  'Vocational':{'AI & Data Science':['Machine Learning','Python Data Analysis','SQL Practice'],'Culinary Arts & Baking':['Pastry Theory','Kitchen Safety','Menu Costing'],'Design & Creative':['UX Research','Graphic Design','Portfolio Review']},
+  'Professional Certification':{'Civil Service & Government':['Public Administration','Policy Reasoning','Ethics and Governance'],'Technology Certification':['Cloud Foundations','Cybersecurity Basics','Project Management']}
+};
+let selectedMessageIndex=null;
+function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch(e){return fallback}}
+function writeJSON(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function latinDigits(value){return String(value ?? '').replace(/[\u06F0-\u06F9]/g,d=>d.charCodeAt(0)-0x06F0).replace(/[\u0660-\u0669]/g,d=>d.charCodeAt(0)-0x0660)}
+function fmt(n){return latinDigits(Number(n||0).toLocaleString('en-US'))}
+function money(n){return '$'+fmt(n)}
+function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function defaultStudentProfile(seed={}){
+  const names=['Mina Farhadi','Aarav Mehta','Leila Haddad','Daniel Okonkwo','Sofia Alvarez'];
+  const countries=['Iran','India','United Arab Emirates','Nigeria','Spain'];
+  const idx=Math.abs(Number(seed.courseId||0)+String(seed.subject||seed.body||'').length)%names.length;
+  const id=String(seed.studentId||Math.abs((String(seed.subject||'OD')+String(seed.createdAt||Date.now())).split('').reduce((a,c)=>a+c.charCodeAt(0),0)*7919)).padStart(12,'0').slice(0,12);
+  return {name:seed.studentName||names[idx],country:seed.studentCountry||countries[idx],city:seed.studentCity||'Global campus',id:latinDigits(id),level:seed.studentLevel||'Active learner',goal:seed.studentGoal||'Improve exam performance',timezone:seed.studentTimezone||'Asia / Tehran',photo:seed.studentPhoto||'',email:seed.studentEmail||'student@odyssey.example',courseId:seed.courseId||getCourses()[0]?.id};
+}
+function selectedMarketPriceType(){return document.querySelector('input[name="marketPriceType"]:checked')?.value||'free'}
+function marketExamFeatures(){return [marketExamTimed.checked?'Timed':'',marketExamSolutions.checked?'Solutions':'',marketExamCertificate.checked?'Certificate':'',marketExamShuffle.checked?'Shuffled':''].filter(Boolean)}
+function setupMarketTaxonomy(){marketExamField.innerHTML=Object.keys(MARKET_TAXONOMY).map(f=>`<option>${f}</option>`).join('');updateMarketDisciplines()}
+function updateMarketDisciplines(){const disciplines=Object.keys(MARKET_TAXONOMY[marketExamField.value]||{});marketExamDiscipline.innerHTML=disciplines.map(d=>`<option>${d}</option>`).join('');updateMarketSubjects()}
+function updateMarketSubjects(){const subjects=(MARKET_TAXONOMY[marketExamField.value]||{})[marketExamDiscipline.value]||[];marketExamSubject.innerHTML=subjects.map(s=>`<option>${s}</option>`).join('')}
+function toggleMarketPrice(){const paid=selectedMarketPriceType()==='paid';marketExamPrice.disabled=!paid;if(!paid)marketExamPrice.value=0}
+function openExamPublisher(){setupMarketTaxonomy();toggleMarketPrice();examPublisherModal.classList.add('open');marketExamTitle.focus()}
+function closeExamPublisher(){examPublisherModal.classList.remove('open')}
+function getCertificateSettings(){return readJSON('odyssey_certificate_settings',{})}
+function setCertificateSettings(settings){writeJSON('odyssey_certificate_settings',settings)}
+function toggleCourseCertificateOptions(showAlert){courseCertificateOptions.classList.toggle('open',newCertificate.checked);if(newCertificate.checked&&showAlert)alert('Certificate courses must include at least two formal exams: a midterm and a final. Students must pass both thresholds before a certificate is issued.')}
+function toggleQAPricing(){const excluded=newExcludeQA.checked;newPriceQA.disabled=excluded;newInteraction.disabled=excluded;newInteraction.checked=!excluded;if(excluded)newPriceQA.value='';else if(!newPriceQA.value)newPriceQA.value=Number(newPriceBase.value||0)+30;qaPriceRow.classList.toggle('disabled',excluded)}
+function renderSessionPlanner(){
+  if(!window.sessionPlanner)return;
+  const count=Math.min(60,Math.max(1,Number(newSessions.value||1)));
+  const existing=[...sessionPlanner.querySelectorAll('.session-card')].map(card=>({
+    title:card.querySelector('.session-title')?.value||'',
+    objective:card.querySelector('.session-objective')?.value||'',
+    duration:card.querySelector('.session-duration')?.value||'',
+    notes:card.querySelector('.session-notes')?.value||''
+  }));
+  sessionPlanner.innerHTML=Array.from({length:count},(_,i)=>{
+    const old=existing[i]||{};
+    return `<details class="session-card" ${i<2?'open':''} data-session="${i+1}">
+      <summary>Session ${i+1}<span>${escapeHTML(old.title||'Add video title, objective, and materials for this lesson')}</span></summary>
+      <div class="session-tools">
+        <div class="field"><label>Session video title</label><input class="session-title" value="${escapeHTML(old.title)}" placeholder="Lesson ${i+1}: Core concept"></div>
+        <div class="field"><label>Target duration</label><input class="session-duration" value="${escapeHTML(old.duration)}" placeholder="18 min"></div>
+        <div class="field"><label>Draft video file</label><input class="session-video-file" type="file" accept="video/*"></div>
+        <div class="field"><label>Session materials</label><input class="session-material-file" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,image/*"></div>
+      </div>
+      <div class="field"><label>Learning objective</label><input class="session-objective" value="${escapeHTML(old.objective)}" placeholder="What should students be able to do after this session?"></div>
+      <div class="field"><label>Instructor notes</label><textarea class="session-notes" placeholder="Add quiz ideas, examples, or upload reminders...">${escapeHTML(old.notes)}</textarea></div>
+    </details>`;
+  }).join('');
+}
+function collectSessionPlan(){
+  return [...document.querySelectorAll('#sessionPlanner .session-card')].map((card,i)=>({
+    number:i+1,
+    title:card.querySelector('.session-title')?.value.trim()||`Session ${i+1}`,
+    objective:card.querySelector('.session-objective')?.value.trim()||'',
+    duration:card.querySelector('.session-duration')?.value.trim()||'',
+    notes:card.querySelector('.session-notes')?.value.trim()||'',
+    draftVideoFileName:card.querySelector('.session-video-file')?.files?.[0]?.name||'',
+    materialFileNames:[...(card.querySelector('.session-material-file')?.files||[])].map(f=>f.name)
+  }));
+}
+function uuidValue(value){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value||''))?String(value):null}
+function storageLink(id,metadataKey){const linked=uuidValue(id);return linked?{[metadataKey]:linked,metadata:{}}:{metadata:{[`local${metadataKey.charAt(0).toUpperCase()+metadataKey.slice(1)}`]:String(id||'')}}}
+async function uploadToOdyssey(file,purpose,links={}){if(!window.OdysseyStorage)throw new Error('Storage client is unavailable.');return OdysseyStorage.uploadFile(file,{purpose,...links})}
+async function renderStorageObjects(){if(!window.storageObjectList)return;try{const objects=await OdysseyStorage.listObjects();storageStatus.innerHTML=`<b>Private storage connected</b>${objects.length} uploaded object${objects.length===1?'':'s'} available.`;storageObjectList.innerHTML=objects.length?objects.slice(0,12).map(object=>`<div class="item"><b>${object.originalFilename}</b>${object.purpose.replaceAll('_',' ')}<small>${Math.max(1,Math.round(object.sizeBytes/1024))} KB · ${object.status}</small>${object.status==='ready'?`<button class="btn secondary" style="margin-top:8px" onclick="OdysseyStorage.downloadObject('${object.id}')">Download</button>`:''}</div>`).join(''):'<div class="item"><b>No private files yet</b>Uploaded materials, exam files, profile images, signatures, and emblems will appear here.</div>'}catch(error){storageStatus.innerHTML='<b>Local preview mode</b>Sign in through the Odyssey backend to use private object storage.';storageObjectList.innerHTML=''}}
+async function uploadCourseMaterials(){const files=[...materialFiles.files];if(!files.length){alert('Choose one or more course files first.');return}const links=storageLink(materialCourse.value,'courseId');storageStatus.innerHTML='<b>Uploading</b>Please keep this page open while Odyssey secures your files.';try{for(const file of files)await uploadToOdyssey(file,'course_material',links);materialFiles.value='';await renderStorageObjects();alert('Course materials uploaded to private storage.')}catch(error){storageStatus.innerHTML=`<b>Upload unavailable</b>${error.message}`;alert(error.message)}}
+function getCourses(){const courses=readJSON('odyssey_instructor_courses',[]);return courses.length?courses:fallbackCourses}
+function setCourses(courses){writeJSON('odyssey_instructor_courses',courses)}
+function getProfile(){return readJSON('odyssey_instructor_profile',{name:'Dr. Nadia Rahman',title:'Senior Odyssey Instructor',email:'instructor@odyssey.example',bio:'I help learners turn ambitious goals into clear weekly progress through practical lessons, fair assessments, and responsive support.',phone:'+1 555 0134',city:'Global Studio',timezone:'Asia / Tehran',language:'English',office:'Mon-Wed 17:00-19:00',photo:''})}
+function totals(){const courses=getCourses();return {courses,totalVideos:courses.reduce((a,c)=>a+Number(c.videos||0),0),totalContents:courses.reduce((a,c)=>a+Number(c.contents||0),0),totalMaterials:courses.reduce((a,c)=>a+Number(c.materials||0),0),students:courses.reduce((a,c)=>a+Number(c.students||0),0),likes:courses.reduce((a,c)=>a+Number(c.likes||0),0),income:courses.reduce((a,c)=>a+Number(c.revenue||0),0)}}
+function showPanel(id,target){document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.target===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));requestAnimationFrame(()=>{const el=target==='reply'?document.getElementById('replyWorkspace'):document.querySelector(`#${id}`);(el||document.body).scrollIntoView({behavior:'smooth',block:target==='reply'?'center':'start'});if(target==='reply')replyBody.focus({preventScroll:true})})}
+function renderStats(){const t=totals();summaryStats.innerHTML=`<div class="stat-card"><span>Courses uploaded</span><strong>${fmt(t.courses.length)}</strong></div><div class="stat-card"><span>Videos</span><strong>${fmt(t.totalVideos)}</strong></div><div class="stat-card"><span>Contents</span><strong>${fmt(t.totalContents)}</strong></div><div class="stat-card"><span>Students</span><strong>${fmt(t.students)}</strong></div><div class="stat-card"><span>Likes</span><strong>${fmt(t.likes)}</strong></div>`;heroStudents.textContent=fmt(t.students);profileProof.innerHTML=`<div class="mini-metric"><b>${fmt(t.courses.length)}</b><span>Courses</span></div><div class="mini-metric"><b>${fmt(t.totalVideos)}</b><span>Videos</span></div><div class="mini-metric"><b>${fmt(t.totalMaterials)}</b><span>Materials</span></div><div class="mini-metric"><b>${fmt(t.likes)}</b><span>Likes</span></div>`}
+function renderCourse(c){const base=Number(c.priceBase??c.price??0);const qa=Number(c.priceQA||0);return `<div class="course"><div class="thumb">${c.emoji||'OD'}</div><div><h3>${c.title}</h3><div class="meta">${c.field} · ${c.discipline} · ${c.subject} · ${c.country||'Global / Online'} · ${c.level||'Intermediate'} · ${c.language}</div><div class="metric-strip"><div class="mini-metric"><b>${fmt(c.students)}</b><span>Students</span></div><div class="mini-metric"><b>${fmt(c.likes)}</b><span>Likes</span></div><div class="mini-metric"><b>${fmt(c.videos)}</b><span>Videos</span></div><div class="mini-metric"><b>${fmt(c.contents+c.materials)}</b><span>Files</span></div></div><div class="pill-row"><span class="pill">${fmt(c.sessions)} sessions</span><span class="pill">Self-paced ${money(base)}</span><span class="pill">${c.qaIncluded?`With Q&A ${money(qa||base)}`:'No Q&A service'}</span><span class="pill">${c.certificate?'Certificate':'No certificate'}</span><span class="pill">${c.status}</span></div></div><div class="actions"><button class="btn secondary" onclick="duplicateCourse(${c.id})">Duplicate</button><button class="btn danger" onclick="retireCourse(${c.id})">Retire</button></div></div>`}
+function renderCourses(){const courses=getCourses();dashCourses.innerHTML=courses.map(renderCourse).join('');courseList.innerHTML=courses.map(renderCourse).join('');examCourse.innerHTML=courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('');certCourse.innerHTML=courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('');materialCourse.innerHTML=courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('');renderStats();renderStudentAnalytics();renderIncome();renderCertificateSettings()}
+async function loadProductionVideoCourses(){
+  try{
+    const response=await fetch('/api/instructor/courses',{credentials:'same-origin'});
+    if(!response.ok)throw new Error('Sign in to load production courses.');
+    const payload=await response.json();
+    const courses=payload.courses||[];
+    videoCourse.innerHTML=courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('');
+    if(!courses.length)videoCourse.innerHTML='<option value="">Create a production course first</option>';
+    await loadVideoLibrary();
+  }catch(error){
+    videoCourse.innerHTML='<option value="">Production sign-in required</option>';
+    videoUploadStatus.innerHTML=`<b>Video service waiting</b>${error.message}`;
+  }
+}
+async function loadVideoLibrary(){
+  if(!videoCourse.value){videoLibrary.innerHTML='<div class="item"><b>No production course selected</b>Create or select a course first.</div>';return}
+  try{
+    const response=await fetch(`/api/courses/${encodeURIComponent(videoCourse.value)}/videos`,{credentials:'same-origin'});
+    const payload=await response.json();
+    if(!response.ok)throw new Error(payload.error||'Videos could not be loaded.');
+    const videos=payload.videos||[];
+    videoLibrary.innerHTML=videos.length?videos.map(video=>`<div class="item"><b>${video.title}</b>${video.status}<small>${video.durationSeconds?Math.round(video.durationSeconds/60)+' min · ':''}${video.provider} · ${video.playbackId?'Secure playback ready':'Processing playback'}</small>${video.status==='ready'?`<a class="btn secondary" style="margin-top:10px" href="course_player.html?asset=${encodeURIComponent(video.id)}">Preview secure player</a>`:''}</div>`).join(''):'<div class="item"><b>No videos yet</b>Upload the first lesson for this course.</div>';
+  }catch(error){videoLibrary.innerHTML=`<div class="item"><b>Library unavailable</b>${error.message}</div>`}
+}
+function uploadDirectVideo(url,file,onProgress){
+  if(window.UpChunk?.createUpload){
+    return new Promise((resolve,reject)=>{
+      const upload=UpChunk.createUpload({endpoint:url,file,chunkSize:5120,attempts:5,dynamicChunkSize:true});
+      upload.on('progress',event=>onProgress(Math.round(event.detail||0)));
+      upload.on('success',resolve);
+      upload.on('error',event=>reject(new Error(event.detail?.message||'The resumable video upload failed.')));
+    });
+  }
+  return new Promise((resolve,reject)=>{
+    const request=new XMLHttpRequest();
+    request.open('PUT',url);
+    request.setRequestHeader('Content-Type',file.type||'application/octet-stream');
+    request.upload.onprogress=event=>{if(event.lengthComputable)onProgress(Math.round(event.loaded/event.total*100))};
+    request.onload=()=>request.status>=200&&request.status<300?resolve():reject(new Error(`Upload failed with HTTP ${request.status}.`));
+    request.onerror=()=>reject(new Error('The video upload connection was interrupted.'));
+    request.send(file);
+  });
+}
+async function uploadLessonVideo(){
+  const file=videoFile.files[0];
+  if(!videoCourse.value||!file){videoUploadStatus.innerHTML='<b>Missing information</b>Select a production course and video file.';return}
+  videoUploadButton.disabled=true;
+  videoUploadStatus.innerHTML='<b>Preparing secure upload</b>Odyssey is requesting a private resumable upload session.';
+  videoUploadProgress.style.width='2%';
+  try{
+    const response=await fetch('/api/instructor/videos/upload-session',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({courseId:videoCourse.value,title:videoTitle.value.trim()||file.name.replace(/\.[^.]+$/,''),lessonNumber:Number(videoLessonNumber.value||1),originalFilename:file.name,mimeType:file.type||'video/mp4'})});
+    const payload=await response.json();
+    if(!response.ok)throw new Error(payload.error||'Upload session could not be created.');
+    await uploadDirectVideo(payload.uploadSession.uploadUrl,file,percent=>{videoUploadProgress.style.width=`${percent}%`;videoUploadStatus.innerHTML=`<b>Uploading ${percent}%</b>Keep this tab open until the transfer is complete.`});
+    videoUploadProgress.style.width='100%';
+    videoUploadStatus.innerHTML='<b>Upload received</b>Mux is now processing the video. Odyssey will unlock playback after the verified ready webhook.';
+    videoFile.value='';
+    setTimeout(loadVideoLibrary,2500);
+  }catch(error){
+    videoUploadStatus.innerHTML=`<b>Upload stopped</b>${error.message}`;
+    videoUploadProgress.style.width='0';
+  }finally{videoUploadButton.disabled=false}
+}
+function renderToday(){const messages=readJSON('odyssey_student_messages',[]);const exams=readJSON('odyssey_instructor_exams',[]);todayList.innerHTML=`<div class="item"><b>${messages.length} student questions</b>Answer the newest questions from enrolled learners.</div><div class="item"><b>${exams.length} scheduled exams</b>Review dates, time limits, and notification windows.</div><div class="item"><b>3 course updates suggested</b>Refresh downloadable resources and add short practice prompts.</div>`}
+function renderIncome(){const t=totals();incomePulse.innerHTML=`<div class="item"><b>${money(t.income)}</b>Lifetime estimated instructor revenue across published courses.</div><div class="item"><b>${money(Math.round(t.income*.12))}</b>Projected next payout based on current pace.</div>`;const payouts=readJSON('odyssey_instructor_payouts',fallbackPayouts);payoutList.innerHTML=payouts.map(p=>`<div class="item"><b>${p.date} · ${p.status}</b>${p.course}<small>Gross ${money(p.gross)} · Instructor share ${money(p.share)}</small></div>`).join('')}
+function renderStudentAnalytics(){const courses=getCourses();const max=Math.max(...courses.map(c=>c.students),1);studentAnalytics.innerHTML=courses.map(c=>`<div class="student-row"><div><b>${c.title}</b><div class="bar"><span style="width:${Math.round(c.students/max*100)}%"></span></div><div class="desc">${fmt(c.students)} enrolled students · ${fmt(c.likes)} likes · ${money(c.revenue)} revenue</div></div><button class="btn secondary">View roster</button></div>`).join('')}
+async function publishCourse(){const courses=getCourses();const title=newTitle.value.trim()||'New Odyssey Course';const wantsCertificate=newCertificate.checked;const qaIncluded=!newExcludeQA.checked;const selectedFiles=[...newCourseFiles.files];const materialFilesSelected=[...newMaterialFiles.files];const sessionPlan=collectSessionPlan();const sessionMaterials=sessionPlan.flatMap(s=>s.materialFileNames);const course={id:Date.now(),title,field:newField.value,discipline:newDiscipline.value,subject:newSubject.value||'General subject',country:newCountry.value,level:newLevel.value,language:newLanguage.value,sessions:Number(newSessions.value||1),price:Number(newPriceBase.value||0),priceBase:Number(newPriceBase.value||0),priceQA:qaIncluded?Number(newPriceQA.value||newPriceBase.value||0):0,qaIncluded,students:0,likes:0,videos:Number(newVideos.value||0),contents:Number(newContents.value||0)+selectedFiles.length+materialFilesSelected.length+sessionMaterials.length,materials:(newDownloads.checked?6:2)+selectedFiles.length+materialFilesSelected.length+sessionMaterials.length,assignments:newPractice.checked?8:0,revenue:0,status:'Draft review',interaction:qaIncluded&&newInteraction.checked,certificate:wantsCertificate,certificateMidtermPass:wantsCertificate?Number(newMidtermPass.value||70):null,certificateFinalPass:wantsCertificate?Number(newFinalPass.value||70):null,certificateRequiredExams:wantsCertificate?['midterm','final']:[],duration:newDuration.value,workload:newWorkload.value,outcomes:newOutcomes.value.trim(),prerequisites:newPrerequisites.value.trim(),refundWindow:newRefundWindow.value,liveCohort:newCohortLive.checked,subtitles:newSubtitles.checked,sessionPlan,contentFileNames:selectedFiles.map(f=>f.name),materialFileNames:materialFilesSelected.map(f=>f.name),contentStorageObjectIds:[],emoji:title.slice(0,2).toUpperCase()};courses.unshift(course);setCourses(courses);const uploadFiles=[...selectedFiles,...materialFilesSelected];if(uploadFiles.length){for(const file of uploadFiles){try{const object=await uploadToOdyssey(file,'course_material',{...storageLink(course.id,'courseId'),metadata:{...storageLink(course.id,'courseId').metadata,courseTitle:title,source:'course_publisher'}});course.contentStorageObjectIds.push(object.id)}catch(error){console.warn('Course content file stored only in local preview.',error)}}setCourses(getCourses().map(c=>c.id===course.id?course:c));newCourseFiles.value='';newMaterialFiles.value='';renderStorageObjects()}if(wantsCertificate){alert('Certificate enabled. Remember: this course must administer at least two exams, a midterm and a final, and students must pass both thresholds.');const settings=getCertificateSettings();settings[course.id]={courseId:course.id,institution:'',position:getProfile().title||'Instructor',completion:true,institutionCertified:false,officialRecognition:false,publicVerify:true,midtermPass:course.certificateMidtermPass,finalPass:course.certificateFinalPass,signature:getProfile().name,emblem:''};setCertificateSettings(settings)}renderAll();alert(uploadFiles.length?'Course created and material files attached. Use Video studio for secure lesson videos.':'Course created in your instructor studio. Use Video studio for secure lesson videos.')}
+function duplicateCourse(id){const courses=getCourses();const c=courses.find(x=>x.id===id);if(!c)return;courses.unshift({...c,id:Date.now(),title:c.title+' - new cohort',students:0,likes:0,revenue:0,status:'Draft review'});setCourses(courses);renderAll()}
+function retireCourse(id){setCourses(getCourses().map(c=>c.id===id?{...c,status:'Retired'}:c));renderAll()}
+function messageList(){const msgs=readJSON('odyssey_student_messages',[]);return msgs.length?msgs:[{to:'Dr. Nadia Rahman',subject:'Clarifying the final project',body:'Could you explain what should be included in the final project submission?',courseId:101,createdAt:new Date().toISOString(),studentName:'Mina Farhadi',studentCountry:'Iran',studentCity:'Shiraz',studentLevel:'Advanced IELTS learner',studentGoal:'Band 8 writing score',studentTimezone:'Asia / Tehran',studentId:'246810357913'}]}
+function renderInbox(){const seeded=messageList();inboxList.innerHTML=seeded.map((m,i)=>{const s=defaultStudentProfile(m);const initials=s.name.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();return `<div class="message-card"><div class="student-photo">${s.photo?`<img src="${s.photo}" alt="">`:initials}</div><div><div class="message-head"><div><h3>${escapeHTML(m.subject||'Student question')}</h3><div class="desc">${escapeHTML(m.body||'')}</div></div><span class="student-chip">${m.reply?'Answered':'Awaiting reply'}</span></div><div class="student-meta"><span class="student-chip">${escapeHTML(s.name)}</span><span class="student-chip">${escapeHTML(s.country)}</span><span class="student-chip">ID ${s.id}</span><span class="student-chip">${escapeHTML(s.level)}</span><span class="student-chip">${escapeHTML(s.timezone)}</span></div><small>${escapeHTML(s.goal)} · ${escapeHTML(s.email)}</small><div class="message-tools"><button class="btn secondary" onclick="selectMessage(${i})">Reply</button><button class="btn secondary" onclick="selectMessage(${i}, true)">View profile</button></div></div></div>`}).join('')}
+function selectMessage(i,onlyProfile=false){const list=messageList();const m=list[i]||{};const s=defaultStudentProfile(m);selectedMessageIndex=i;replySubject.value=m.subject||'Student question';selectedStudentProfile.innerHTML=`<div class="message-card" style="margin:0"><div class="student-photo">${s.photo?`<img src="${s.photo}" alt="">`:s.name.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div><div><h3>${escapeHTML(s.name)}</h3><div class="student-meta"><span class="student-chip">${escapeHTML(s.country)} · ${escapeHTML(s.city)}</span><span class="student-chip">12-digit ID ${s.id}</span><span class="student-chip">${escapeHTML(s.level)}</span><span class="student-chip">${escapeHTML(s.timezone)}</span></div><div class="desc"><b>Goal:</b> ${escapeHTML(s.goal)}<br><b>Email:</b> ${escapeHTML(s.email)}<br><b>Course ID:</b> ${escapeHTML(s.courseId)}</div></div></div>`;if(!onlyProfile)replyBody.focus();replyWorkspace.scrollIntoView({behavior:'smooth',block:'center'})}
+function sendReply(){if(selectedMessageIndex===null){alert('Select a student question first.');return}let refreshed=readJSON('odyssey_student_messages',[]);if(!refreshed.length){refreshed=messageList()}refreshed[selectedMessageIndex]={...refreshed[selectedMessageIndex],reply:replyBody.value||'Thanks for your question. I will add a clearer note in the course resources.',repliedAt:new Date().toISOString()};writeJSON('odyssey_student_messages',refreshed);replyBody.value='';selectedMessageIndex=null;renderInbox();alert('Answer sent to the student inbox.')}
+function seedQuestion(){const msgs=readJSON('odyssey_student_messages',[]);msgs.unshift({to:getProfile().name,subject:'Practice test feedback',body:'Can you review my answer structure before the mock exam?',courseId:getCourses()[0]?.id,createdAt:new Date().toISOString(),studentName:'Aarav Mehta',studentCountry:'India',studentCity:'Mumbai',studentLevel:'Intermediate learner',studentGoal:'Score higher on weekly mock exams',studentTimezone:'Asia / Kolkata',studentEmail:'aarav.student@odyssey.example',studentId:'135790246802'});writeJSON('odyssey_student_messages',msgs);renderInbox();renderToday()}
+async function scheduleExam(){const exams=readJSON('odyssey_instructor_exams',[]);const course=getCourses().find(c=>String(c.id)===String(examCourse.value));const localId=Date.now();let storedFile=null;const selectedFile=examFile.files[0];if(selectedFile){try{storedFile=await uploadToOdyssey(selectedFile,'exam_question_file',{...storageLink(course?.id,'courseId'),metadata:{...storageLink(course?.id,'courseId').metadata,localExamId:String(localId)}})}catch(error){console.warn('Private exam upload unavailable; preserving local file reference.',error)}}const exam={id:localId,courseId:course?.id,course:course?.title||'Course',title:examTitle.value||'Course exam',file:selectedFile?.name||'Question file pending',storageObjectId:storedFile?.id||null,date:examDate.value,start:examStart.value,duration:Number(examDuration.value||90),pass:Number(examPass.value||70),attempts:Number(examAttempts.value||1),randomize:examRandom.checked,proctor:examProctor.checked,notified:examNotify.checked};exams.unshift(exam);writeJSON('odyssey_instructor_exams',exams);if(examNotify.checked)queueStudentNotification(exam);examFile.value='';renderExams();renderToday();renderStorageObjects();alert(storedFile?'Exam scheduled and question file secured.':'Exam scheduled. Connect private storage to secure the question file.')}
+function queueStudentNotification(exam){const notifs=readJSON('odyssey_student_notifications',[]);const d=exam.date?new Date(exam.date+'T00:00:00'):new Date();d.setDate(d.getDate()-7);notifs.unshift({type:'exam',courseId:exam.courseId,title:'Upcoming exam: '+exam.title,body:`${exam.course} exam starts on ${exam.date||'the selected date'} at ${exam.start||'the scheduled time'}.`,sendOn:d.toISOString().slice(0,10),createdAt:new Date().toISOString()});writeJSON('odyssey_student_notifications',notifs)}
+function renderExams(){const exams=readJSON('odyssey_instructor_exams',[]);examList.innerHTML=exams.length?exams.map(e=>`<div class="item"><b>${e.title}</b>${e.course}<small>${e.date||'No date'} at ${e.start||'No time'} · ${e.duration} min · pass ${e.pass}% · ${e.file}</small><a class="btn secondary" style="margin-top:10px" href="exam_portal.html?exam=${e.id}">Preview exam room</a></div>`).join(''):'<div class="item"><b>No exams yet</b>Schedule an exam to administer it to enrolled students.</div>'}
+function renderMarketExams(){const p=getProfile();const tests=readJSON('odyssey_market_tests',[]).filter(t=>t.ownerEmail===p.email||t.instructor===p.name);marketExamList.innerHTML=tests.length?tests.map(t=>`<div class="item"><b>${t.title}</b>${t.field} · ${t.discipline} · ${t.subject}<small>${t.level} · ${t.questions} questions · ${t.time} min · ${Number(t.price)===0?'Free':money(t.price)} · ${t.paymentMethod||'Odyssey checkout'} · ${t.fileNames?.join(', ')||'No files listed'}</small><a class="btn secondary" style="margin-top:10px" href="tests_marketplace.html">View marketplace</a></div>`).join(''):'<div class="item"><b>No marketplace tests yet</b>Post an exam from your profile or from this panel to sell it in the Tests marketplace.</div>'}
+async function publishMarketExam(){const p=getProfile();const title=marketExamTitle.value.trim();if(!title){alert('Add an exam title first.');return}const tests=readJSON('odyssey_market_tests',[]);const price=selectedMarketPriceType()==='free'?0:Number(marketExamPrice.value||0);const selectedFiles=[...marketExamFiles.files];const uploaded=[];for(const file of selectedFiles){try{uploaded.push(await uploadToOdyssey(file,'exam_question_file',{metadata:{marketplaceTitle:title}}))}catch(error){console.warn('Marketplace file upload unavailable.',error)}}tests.unshift({id:Date.now(),title,subject:marketExamSubject.value,field:marketExamField.value,discipline:marketExamDiscipline.value,instructor:p.name,ownerEmail:p.email,level:marketExamLevel.value,time:Number(marketExamTime.value||60),questions:Number(marketExamQuestions.value||40),price,rating:5.0,students:0,icon:marketExamIcon.value,language:marketExamLanguage.value,features:marketExamFeatures(),description:marketExamDescription.value.trim()||'Instructor-published exam with structured timing, clear outcomes, and practice value for Odyssey learners.',paymentMethod:marketExamPayment.value,fileNames:selectedFiles.map(f=>f.name),storageObjectIds:uploaded.map(object=>object.id),aiOptimized:aiExamOutput.innerText.includes('Recommended')});writeJSON('odyssey_market_tests',tests);marketExamTitle.value='';marketExamDescription.value='';marketExamFiles.value='';closeExamPublisher();renderMarketExams();renderStorageObjects();alert(uploaded.length===selectedFiles.length?'Exam and question files published securely.':'Exam published. Some files remain in local preview mode.')}
+function runExamAIAgents(){const questions=Number(marketExamQuestions.value||0);const time=Number(marketExamTime.value||0);const level=marketExamLevel.value;const subject=marketExamSubject.value||'the selected subject';const pace=questions&&time?Math.round(time*60/questions):0;const description=marketExamDescription.value.trim();aiExamOutput.innerHTML=`<div class="ai-agent"><b>Question clarity agent</b><span>Recommended: keep each ${subject} question focused on one measurable skill, avoid double negatives, and add answer explanations for the most common mistakes.${description.length<80?' Add a richer instructor description so learners understand the exam goal.':''}</span></div><div class="ai-agent"><b>Difficulty balance agent</b><span>Recommended: for a ${level} exam, use about 25% warm-up, 50% target-level, and 25% challenge questions. Current pacing is about ${pace||'not enough data for'} seconds per question.</span></div><div class="ai-agent"><b>Rubric and timing agent</b><span>Recommended: include scoring rules, passing threshold, allowed attempts, and whether uploaded files contain solutions. ${pace&&pace<50?'The current time limit may feel tight; consider reducing questions or adding time.':'The timing looks workable for a structured practice exam.'}</span></div>`}
+function saveCertificateSettings(){const settings=getCertificateSettings();const courseId=certCourse.value;if(!courseId){alert('Choose a course first.');return}settings[courseId]={courseId,institution:certInstitution.value,position:certPosition.value||getProfile().title,completion:certCourseCompletion.checked,institutionCertified:certInstitutionCertified.checked,officialRecognition:certOfficialRecognition.checked,publicVerify:certPublicVerify.checked,midtermPass:Number(certMidtermPass.value||70),finalPass:Number(certFinalPass.value||70),signature:certSignature.value||getProfile().name,emblem:settings[courseId]?.emblem||''};setCertificateSettings(settings);const courses=getCourses().map(c=>String(c.id)===String(courseId)?{...c,certificate:true,certificateMidtermPass:settings[courseId].midtermPass,certificateFinalPass:settings[courseId].finalPass,certificateRequiredExams:['midterm','final']}:c);setCourses(courses);renderCertificateSettings();alert('Certificate settings saved.')}
+function renderCertificateSettings(){if(!window.certificateSettingsList)return;const settings=getCertificateSettings();const courses=getCourses();certificateSettingsList.innerHTML=courses.filter(c=>c.certificate).map(c=>{const s=settings[c.id]||{};return `<div class="item"><b>${c.title}</b>${s.institution||'No institution added'}<small>Midterm ${s.midtermPass||c.certificateMidtermPass||70}% · Final ${s.finalPass||c.certificateFinalPass||70}% · ${s.officialRecognition?'Officially recognized':'Odyssey completion certificate'}</small></div>`}).join('')||'<div class="item"><b>No certificate courses yet</b>Enable certificates while posting a course, then define certificate rules here.</div>'}
+function previewSignature(){signaturePreview.textContent=certSignature.value||getProfile().name||'Professor signature preview'}
+function saveProfile(){const p=getProfile();p.name=profileName.value;p.title=profileTitle.value;p.email=profileEmail.value;p.bio=profileBio.value;writeJSON('odyssey_instructor_profile',p);renderProfile();alert('Instructor profile saved.')}
+function renderProfile(){const p=getProfile();profileName.value=p.name;profileTitle.value=p.title;profileEmail.value=p.email;profileBio.value=p.bio;settingsPhone.value=p.phone||'';settingsCity.value=p.city||'';settingsTimezone.value=p.timezone||'Asia / Tehran';settingsLanguage.value=p.language||'English';settingsOffice.value=p.office||'';sideName.textContent=p.name;sideTitle.textContent=p.title;if(p.photo){sideAvatar.innerHTML=`<img src="${p.photo}" alt="">`}else{sideAvatar.textContent=(p.name||'IS').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()}}
+function saveSettings(){const p=getProfile();p.phone=settingsPhone.value;p.city=settingsCity.value;p.timezone=settingsTimezone.value;p.language=settingsLanguage.value;p.office=settingsOffice.value;writeJSON('odyssey_instructor_profile',p);renderProfile();alert('Settings saved.')}
+function saveNotificationSettings(){writeJSON('odyssey_instructor_notifications',{mailDigest:mailDigest.checked,studentAlerts:studentAlerts.checked,examAlerts:examAlerts.checked,publicProfile:publicProfile.checked,analyticsCookies:analyticsCookies.checked});alert('Notification preferences saved.')}
+function savePayoutSettings(){writeJSON('odyssey_instructor_payout_settings',{method:payoutMethod.value,name:payoutName.value,goal:incomeGoal.value});alert('Payout settings saved.')}
+function setPortalMode(mode){document.documentElement.dataset.theme=mode;localStorage.setItem('odyssey_instructor_mode',mode)}
+function logoutPortal(){localStorage.removeItem('odyssey_demo_logged_in');location.href='auth.html?mode=login'}
+function renderAll(){renderProfile();renderCourses();renderToday();renderInbox();renderExams();renderMarketExams();renderIncome();renderSubscriptionPanel()}
+document.querySelectorAll('.navbtn[data-target]').forEach(btn=>btn.addEventListener('click',()=>showPanel(btn.dataset.target)));
+document.querySelectorAll('.theme-card').forEach(card=>card.addEventListener('click',()=>{document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('active'));card.classList.add('active');document.documentElement.dataset.scheme=card.dataset.scheme;localStorage.setItem('odyssey_instructor_scheme',card.dataset.scheme)}));
+profilePhoto.addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;const p=getProfile();try{const object=await uploadToOdyssey(file,'profile_image',{publicRead:true});p.photoStorageObjectId=object.id}catch(error){console.warn('Profile image stored only in local preview.',error)}const reader=new FileReader();reader.onload=()=>{p.photo=reader.result;writeJSON('odyssey_instructor_profile',p);renderProfile();renderStorageObjects()};reader.readAsDataURL(file)});
+certSignature.addEventListener('input',previewSignature);
+certCourse.addEventListener('change',()=>{const s=getCertificateSettings()[certCourse.value]||{};certInstitution.value=s.institution||'';certPosition.value=s.position||getProfile().title;certCourseCompletion.checked=s.completion!==false;certInstitutionCertified.checked=!!s.institutionCertified;certOfficialRecognition.checked=!!s.officialRecognition;certPublicVerify.checked=s.publicVerify!==false;certMidtermPass.value=s.midtermPass||70;certFinalPass.value=s.finalPass||70;certSignature.value=s.signature||getProfile().name;previewSignature()});
+certEmblem.addEventListener('change',async e=>{const file=e.target.files[0];if(!file||!certCourse.value)return;let object=null;try{object=await uploadToOdyssey(file,'institute_emblem',{...storageLink(certCourse.value,'courseId'),metadata:{...storageLink(certCourse.value,'courseId').metadata,institution:certInstitution.value}})}catch(error){console.warn('Institution emblem stored only in local preview.',error)}const reader=new FileReader();reader.onload=()=>{const settings=getCertificateSettings();settings[certCourse.value]={...(settings[certCourse.value]||{}),emblem:reader.result,emblemName:file.name,emblemStorageObjectId:object?.id||null};setCertificateSettings(settings);renderCertificateSettings();renderStorageObjects()};reader.readAsDataURL(file)});
+examPublisherModal.addEventListener('click',e=>{if(e.target===examPublisherModal)closeExamPublisher()});
+videoCourse.addEventListener('change',loadVideoLibrary);
+document.addEventListener('DOMContentLoaded',()=>{document.documentElement.dataset.theme=localStorage.getItem('odyssey_instructor_mode')||'light';document.documentElement.dataset.scheme=localStorage.getItem('odyssey_instructor_scheme')||'voyage';const active=document.querySelector(`.theme-card[data-scheme="${document.documentElement.dataset.scheme}"]`);if(active)active.classList.add('active');const settings=readJSON('odyssey_instructor_notifications',{});['mailDigest','studentAlerts','examAlerts','publicProfile','analyticsCookies'].forEach(id=>{if(settings[id]!==undefined)document.getElementById(id).checked=settings[id]});const payout=readJSON('odyssey_instructor_payout_settings',{});payoutMethod.value=payout.method||'Bank transfer';payoutName.value=payout.name||getProfile().name;incomeGoal.value=payout.goal||5000;setupMarketTaxonomy();toggleCourseCertificateOptions(false);toggleQAPricing();renderSessionPlanner();renderAll();renderStorageObjects();loadProductionVideoCourses();OdysseyPrivacy.refresh('privacyDeletionStatus');certCourse.dispatchEvent(new Event('change'));if(location.hash==='#marketExams')showPanel('marketExams');if(location.hash==='#certificates')showPanel('certificates');if(location.hash==='#subscriptions')openSubscriptionModal()});
+</script>
+<script src="assets/odyssey-global-motion.js" defer></script>
+<script src="assets/odyssey-dashboard-refinement.js" defer></script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+</body>
+</html>

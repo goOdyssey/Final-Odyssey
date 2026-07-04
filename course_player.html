@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title data-i18n="portal_course_player_title">Odyssey - Course Player</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#eef1f4;--panel:rgba(255,255,255,.86);--text:#17202c;--muted:#667085;--line:rgba(23,32,44,.12);
+  --purple:#1d4ed8;--pink:#0f766e;--gold:#d6a246;--green:#0f766e;--blue:#2563eb;
+  --danger:#dc2626;--shadow:0 24px 70px rgba(15,23,42,.12);--radius:20px;
+  --font:Manrope, system-ui, sans-serif;--head:"Newsreader", Georgia, serif;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;background:
+    linear-gradient(135deg,rgba(29,78,216,.10),transparent 32%),
+    radial-gradient(circle at 100% 12%,rgba(15,118,110,.12),transparent 30%),
+    var(--bg);
+  color:var(--text);font-family:var(--font);
+}
+button,input,textarea{font:inherit}
+.shell{max-width:1240px;margin:0 auto;padding:22px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+.back{color:var(--purple);text-decoration:none;font-weight:900;display:inline-flex;align-items:center;gap:8px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 344px;gap:18px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero{overflow:hidden}
+.stage{
+  min-height:430px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:stretch;padding:18px;position:relative;color:white;
+  background:linear-gradient(135deg,#17202c,var(--purple),var(--pink));
+}
+.stage::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 0,rgba(255,255,255,.18),transparent 30%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.38));pointer-events:none}
+.stage-content{position:relative;z-index:1;max-width:760px}
+.video-shell{position:relative;z-index:1;border:1px solid rgba(255,255,255,.18);border-radius:18px;overflow:hidden;background:#070b14;box-shadow:0 26px 70px rgba(0,0,0,.28);min-height:360px;display:grid}
+.video-shell video{width:100%;height:100%;min-height:360px;object-fit:cover;background:#070b14}
+.video-empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:26px;background:linear-gradient(135deg,rgba(15,23,42,.58),rgba(15,118,110,.24));}
+.video-empty strong{font-family:var(--head);font-size:30px;display:block;margin-bottom:8px}
+.video-empty span{color:rgba(255,255,255,.78);line-height:1.5;max-width:520px;display:block}
+.player-side{position:relative;z-index:1;display:grid;gap:12px;align-content:start}
+.player-card{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12);border-radius:16px;padding:14px;backdrop-filter:blur(14px)}
+.player-card label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:rgba(255,255,255,.7);margin-bottom:6px}
+.player-card select,.player-card input{width:100%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.14);color:white;border-radius:12px;padding:10px}
+.player-card select option{color:#17202c}
+.server-state{display:flex;align-items:center;gap:8px;font-weight:900}.server-dot{width:10px;height:10px;border-radius:999px;background:#f59e0b;box-shadow:0 0 0 6px rgba(245,158,11,.15)}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:900;color:rgba(255,255,255,.72)}
+h1,h2,h3{font-family:var(--head)}
+h1{font-size:clamp(30px,5vw,56px);line-height:1.02;margin:10px 0 8px}
+.stage p{font-size:17px;line-height:1.55;margin:0;max-width:700px;color:rgba(255,255,255,.84)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;padding:16px;border-top:1px solid var(--line)}
+.btn{
+  border:0;border-radius:14px;padding:11px 14px;font-weight:900;cursor:pointer;background:var(--purple);
+  color:white;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn.secondary{background:rgba(29,78,216,.10);color:var(--purple)}
+.btn.danger{background:rgba(220,38,38,.12);color:var(--danger)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.card{padding:18px}
+.card h2{margin:0 0 14px;font-size:22px}
+.lesson{width:100%;display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;text-align:left;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.38);padding:12px;margin-bottom:10px;cursor:pointer;color:var(--text)}
+.lesson.active{border-color:rgba(29,78,216,.45);background:rgba(29,78,216,.10)}
+.lesson.done .num{background:var(--green)}
+.num{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--pink));display:grid;place-items:center;color:white;font-weight:900}
+.lesson-title{font-weight:900}
+.lesson-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.check{color:var(--green);font-weight:900}
+.resource,.message{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;background:rgba(255,255,255,.34)}
+.resource b,.message b{display:block;margin-bottom:3px}
+.muted{color:var(--muted)}
+.progress-box{padding:18px;margin-bottom:18px}
+.progress-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-weight:900}
+.bar{height:12px;background:rgba(29,78,216,.13);border-radius:999px;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--pink),var(--gold));border-radius:999px;transition:width .25s}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.32)}
+.stat strong{display:block;font-family:var(--head);font-size:22px}
+.field{display:grid;gap:6px;margin-bottom:12px}
+.field label{font-size:12px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+textarea,input{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--text);padding:12px}
+textarea{min-height:120px;resize:vertical}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);opacity:0;background:#20162e;color:white;border-radius:999px;padding:12px 16px;font-weight:900;box-shadow:0 18px 50px rgba(0,0,0,.22);transition:.25s;z-index:20}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.watch-status{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;color:var(--muted);font-size:12px;font-weight:900}
+@media(max-width:940px){.layout,.content-grid,.stage{grid-template-columns:1fr}.stage{min-height:320px}.shell{padding:16px}.video-shell video,.video-shell{min-height:260px}}
+</style>
+<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
+<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
+<link rel="stylesheet" href="assets/odyssey-dashboard-minimal.css" />
+<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <a class="back" href="student_portal.html"><span aria-hidden="true">←</span><span data-i18n="player_back">Back to student portal</span></a>
+    <div data-i18n-switcher></div>
+  </div>
+
+  <div class="layout">
+    <main>
+      <section class="panel hero">
+        <div class="stage" id="courseStage">
+          <div class="video-shell">
+            <video id="lessonVideo" controls preload="metadata" playsinline></video>
+            <div class="video-empty" id="videoEmpty">
+              <div><strong>Server-ready video player</strong><span>Upload a video URL from your backend or CDN later. Odyssey will keep progress, notes, captions, speed, and lesson navigation in one stable player.</span></div>
+            </div>
+          </div>
+          <div class="player-side">
+            <div class="stage-content">
+              <div class="eyebrow" id="courseMeta">Odyssey lesson workspace</div>
+              <h1 id="courseTitle">Course video stream</h1>
+              <p id="lessonSummary">Video streaming, notes, downloads, and lesson navigation will be connected to your backend here.</p>
+            </div>
+            <div class="player-card">
+              <label for="qualitySelect">Stream quality</label>
+              <select id="qualitySelect"><option>Auto</option><option>1080p</option><option>720p</option><option>Audio saver</option></select>
+            </div>
+            <div class="player-card">
+              <label for="speedSelect">Playback speed</label>
+              <select id="speedSelect"><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2">2x</option></select>
+            </div>
+            <div class="player-card">
+              <label>Online classroom</label>
+              <div class="server-state"><span class="server-dot"></span><span id="serverStatus">Live server pending</span></div>
+              <p style="margin:8px 0 0;color:rgba(255,255,255,.72);line-height:1.45">Connect your class server here when ready for live sessions, attendance, replay, and chat.</p>
+            </div>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="completeBtn" type="button" data-i18n="player_mark_complete">Mark lesson complete</button>
+          <span class="watch-status" id="watchStatus" aria-live="polite"></span>
+          <button class="btn secondary" id="nextBtn" type="button" data-i18n="player_next_lesson">Next lesson</button>
+          <button class="btn secondary" id="saveNotesBtn" type="button">Save notes</button>
+          <button class="btn danger" id="refundBtn" type="button" data-i18n="player_cancel_enrollment">Cancel enrollment / request refund</button>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section class="panel card">
+          <h2>Lesson notes</h2>
+          <div class="field">
+            <label for="lessonNotes">Private notes for this lesson</label>
+            <textarea id="lessonNotes" placeholder="Capture formulas, reminders, questions, or practice goals..."></textarea>
+          </div>
+        </section>
+        <section class="panel card">
+          <h2 data-i18n="player_resources">Resources</h2>
+          <div id="resourceList"></div>
+        </section>
+        <section class="panel card">
+          <h2>Transcript & captions</h2>
+          <div class="resource"><b>Smart transcript</b><span class="muted" id="transcriptText">Transcript text will appear here after the uploaded video is processed by your media server.</span></div>
+          <button class="btn secondary" type="button" id="captionBtn">Captions ready</button>
+        </section>
+        <section class="panel card">
+          <h2>Live class room</h2>
+          <div class="resource"><b>Server connection</b><span class="muted">When your class server is ready, this area can open live sessions, attendance records, replay links, chat, and instructor screen sharing.</span></div>
+          <button class="btn secondary" type="button" id="joinClassBtn">Join live class</button>
+        </section>
+      </div>
+    </main>
+
+    <aside>
+      <section class="panel progress-box">
+        <div class="progress-top"><span data-i18n="portal_progress_label">Progress</span><span id="progressText">0%</span></div>
+        <div class="bar"><span id="progressBar"></span></div>
+        <div class="stat-grid">
+          <div class="stat"><strong id="doneCount">0</strong><span class="muted">completed</span></div>
+          <div class="stat"><strong id="totalCount">0</strong><span class="muted">lessons</span></div>
+        </div>
+      </section>
+
+      <section class="panel card">
+        <h2 data-i18n="player_lessons">Lessons</h2>
+        <div id="lessonList"></div>
+      </section>
+
+      <section class="panel card" style="margin-top:18px">
+        <h2 data-i18n="player_discussion">Ask your instructor</h2>
+        <div class="field">
+          <label for="questionText">Question</label>
+          <textarea id="questionText" placeholder="Ask about this lesson..."></textarea>
+        </div>
+        <button class="btn" id="sendQuestionBtn" type="button" data-i18n="portal_send">Send message</button>
+        <div id="messageList" style="margin-top:14px"></div>
+      </section>
+    </aside>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/i18n.js" defer></script>
+<script src="assets/odyssey-portal-translations.js" defer></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+<script>
+const COURSE_LIBRARY = [
+  {id:1,title:'Complete JEE Advanced Mathematics',instructor:'Rajesh Venkataraman',description:'Entrance Exam · South Asian Exams · JEE Advanced (India)',emoji:'📐',field:'Entrance Exam',level:'Advanced',hours:120,progress:16},
+  {id:2,title:'NEET Biology Master Class',instructor:'Dr Priya Sharma',description:'Entrance Exam · South Asian Exams · NEET-UG (India)',emoji:'🧬',field:'Entrance Exam',level:'Advanced',hours:95,progress:22},
+  {id:8,title:'IELTS Academic Band 8+ Strategy',instructor:'Dr James Hartley',description:'Language Exam · English Proficiency · IELTS Academic Writing',emoji:'🗣️',field:'Language Exam',level:'Advanced',hours:35,progress:64},
+  {id:24,title:'Machine Learning A-Z: Python & R',instructor:'Prof Chen Wei',description:'Vocational · AI & Data Science · Machine Learning',emoji:'🤖',field:'Vocational',level:'Intermediate',hours:110,progress:38}
+];
+const LESSONS = [
+  {title:'Orientation and learning plan',duration:'8 min',summary:'Set your goals, download the starter resources, and choose a weekly study rhythm.'},
+  {title:'Core concepts',duration:'24 min',summary:'Work through the concepts that anchor the course with guided examples.'},
+  {title:'Practice lab',duration:'35 min',summary:'Apply the lesson in a structured practice session with immediate reflection.'},
+  {title:'Instructor review',duration:'18 min',summary:'Review common mistakes and compare your approach with the instructor walkthrough.'},
+  {title:'Checkpoint quiz',duration:'12 min',summary:'Test your understanding and decide whether to continue or revisit prior lessons.'}
+];
+const RESOURCES = [
+  {title:'Lesson workbook',body:'PDF notes, examples, and guided practice prompts.'},
+  {title:'Practice quiz',body:'Self-check questions connected to this lesson.'},
+  {title:'Download pack',body:'Offline video placeholder, transcript, and reference links.'}
+];
+const params = new URLSearchParams(location.search);
+const courseId = Number(params.get('course')) || 8;
+const productionAssetId = params.get('asset') || '';
+let activeLesson = Number(localStorage.getItem(`odyssey_active_lesson_${courseId}`) || 0);
+let productionHls = null;
+let lastProgressSentAt = 0;
+let watchSegments = [];
+let lastTrackedTime = 0;
+let isSeeking = false;
+const COMPLETION_THRESHOLD = 0.95;
+
+function T(k){return window.OdysseyI18n ? window.OdysseyI18n.t(k) : k}
+function readJSON(key, fallback){try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback))}catch(e){return fallback}}
+function writeJSON(key, value){localStorage.setItem(key, JSON.stringify(value))}
+function getEnrolled(){return readJSON('odyssey_enrolled_courses', [])}
+function saveEnrolled(courses){writeJSON('odyssey_enrolled_courses', courses)}
+function getCourse(){
+  const enrolled = getEnrolled();
+  return enrolled.find(c => Number(c.id) === courseId) || COURSE_LIBRARY.find(c => c.id === courseId) || COURSE_LIBRARY[0];
+}
+function getDone(){return readJSON(`odyssey_done_lessons_${courseId}`, [])}
+function saveDone(done){writeJSON(`odyssey_done_lessons_${courseId}`, done)}
+function noteKey(){return `odyssey_course_notes_${courseId}_${activeLesson}`}
+function watchKey(){return `odyssey_watch_segments_${courseId}_${activeLesson}`}
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('show'), 2200);
+}
+function progressPercent(){
+  return Math.round((getDone().length / LESSONS.length) * 100);
+}
+function videoDuration(){
+  return Number.isFinite(lessonVideo.duration) && lessonVideo.duration > 0 ? lessonVideo.duration : 0;
+}
+function mergeSegments(segments){
+  return segments
+    .filter(s => Array.isArray(s) && Number.isFinite(s[0]) && Number.isFinite(s[1]) && s[1] > s[0])
+    .sort((a,b) => a[0] - b[0])
+    .reduce((merged, seg) => {
+      const last = merged[merged.length - 1];
+      if(last && seg[0] <= last[1] + 0.35) last[1] = Math.max(last[1], seg[1]);
+      else merged.push([Math.max(0, seg[0]), seg[1]]);
+      return merged;
+    }, []);
+}
+function watchedSeconds(){
+  return watchSegments.reduce((sum, seg) => sum + Math.max(0, seg[1] - seg[0]), 0);
+}
+function watchedRatio(){
+  const duration = videoDuration();
+  return duration ? Math.min(1, watchedSeconds() / duration) : 0;
+}
+function saveWatchSegments(){
+  writeJSON(watchKey(), watchSegments.slice(-80));
+}
+function resetWatchTracker(){
+  watchSegments = mergeSegments(readJSON(watchKey(), []));
+  lastTrackedTime = Math.max(0, lessonVideo.currentTime || 0);
+  isSeeking = false;
+  updateWatchUi();
+}
+function addWatchSegment(start, end){
+  const duration = videoDuration();
+  if(!duration) return;
+  const safeStart = Math.max(0, Math.min(start, duration));
+  const safeEnd = Math.max(0, Math.min(end, duration));
+  if(safeEnd - safeStart < 0.15) return;
+  watchSegments = mergeSegments([...watchSegments, [safeStart, safeEnd]]);
+  saveWatchSegments();
+}
+function recordWatchTick(force=false){
+  const duration = videoDuration();
+  if(!duration){
+    updateWatchUi();
+    return;
+  }
+  const current = Math.max(0, Math.min(lessonVideo.currentTime || 0, duration));
+  const previous = Math.max(0, Math.min(lastTrackedTime || 0, duration));
+  const maxStep = Math.max(3.2, Number(lessonVideo.playbackRate || 1) * 3.2);
+  const delta = current - previous;
+  if(!isSeeking && delta > 0 && (delta <= maxStep || (force && duration - previous <= maxStep))){
+    addWatchSegment(previous, current);
+  }
+  lastTrackedTime = current;
+  updateWatchUi();
+}
+function completionEligible(){
+  const duration = videoDuration();
+  if(!duration) return false;
+  const nearEnd = lessonVideo.ended || lessonVideo.currentTime >= duration - 1.25;
+  return nearEnd && watchedRatio() >= COMPLETION_THRESHOLD;
+}
+function updateWatchUi(){
+  const done = getDone();
+  const alreadyDone = done.includes(activeLesson);
+  const duration = videoDuration();
+  const percent = Math.round(watchedRatio() * 100);
+  if(typeof watchStatus !== 'undefined'){
+    if(alreadyDone) watchStatus.textContent = 'Completed';
+    else if(!duration) watchStatus.textContent = 'Completion unlocks after full video playback';
+    else watchStatus.textContent = `${Math.min(100, percent)}% watched`;
+  }
+  completeBtn.disabled = alreadyDone || !completionEligible();
+  completeBtn.title = alreadyDone ? 'Lesson completed' : 'Watch the full lesson video to unlock completion';
+}
+function syncPortalProgress(){
+  const percent = progressPercent();
+  const enrolled = getEnrolled();
+  const idx = enrolled.findIndex(c => Number(c.id) === courseId);
+  if(idx >= 0){
+    enrolled[idx].progress = percent;
+    enrolled[idx].lastLesson = activeLesson;
+    saveEnrolled(enrolled);
+  }
+}
+function renderShell(){
+  const course = getCourse();
+  courseTitle.textContent = `${course.emoji || '🎓'} ${course.title}`;
+  courseMeta.textContent = `${course.instructor} · ${course.level || 'Course'} · ${course.hours || 0}h`;
+  courseStage.style.background = `linear-gradient(135deg,#20162e,${colorForCourse(course.field)},#ff4d8d)`;
+  totalCount.textContent = LESSONS.length;
+  loadVideo(course);
+  renderLessons();
+  renderResources();
+  renderMessages();
+}
+function colorForCourse(field){
+  if(field === 'Language Exam') return '#2563eb';
+  if(field === 'Vocational') return '#10b981';
+  if(field === 'University') return '#7c3aed';
+  return '#f97316';
+}
+function renderLessons(){
+  const done = getDone();
+  const current = LESSONS[activeLesson];
+  lessonSummary.textContent = current.summary;
+  lessonNotes.value = localStorage.getItem(noteKey()) || '';
+  lessonList.innerHTML = LESSONS.map((lesson, index) => `
+    <button class="lesson ${index === activeLesson ? 'active' : ''} ${done.includes(index) ? 'done' : ''}" type="button" onclick="selectLesson(${index})">
+      <span class="num">${done.includes(index) ? '✓' : index + 1}</span>
+      <span><span class="lesson-title">${lesson.title}</span><span class="lesson-meta">${lesson.duration}</span></span>
+      <span class="check">${done.includes(index) ? 'Done' : ''}</span>
+    </button>
+  `).join('');
+  doneCount.textContent = done.length;
+  const percent = progressPercent();
+  progressText.textContent = `${percent}%`;
+  progressBar.style.width = `${percent}%`;
+  updateWatchUi();
+  nextBtn.disabled = activeLesson >= LESSONS.length - 1;
+}
+function renderResources(){
+  resourceList.innerHTML = RESOURCES.map(r => `<div class="resource"><b>${r.title}</b><span class="muted">${r.body}</span></div>`).join('');
+}
+async function loadVideo(course){
+  resetWatchTracker();
+  if(productionAssetId){
+    lessonVideo.pause();
+    videoEmpty.style.display='grid';
+    videoEmpty.innerHTML='<div><strong>Authorizing secure playback</strong><span>Odyssey is checking enrollment and preparing a short-lived private stream.</span></div>';
+    try{
+      const response=await fetch(`/api/student/videos/${encodeURIComponent(productionAssetId)}/playback`,{method:'POST',credentials:'same-origin'});
+      const payload=await response.json();
+      if(!response.ok)throw new Error(payload.error||'Playback could not be authorized.');
+      if(productionHls){productionHls.destroy();productionHls=null}
+      if(window.Hls&&Hls.isSupported()){
+        productionHls=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:90});
+        productionHls.loadSource(payload.playbackUrl);
+        productionHls.attachMedia(lessonVideo);
+      }else if(lessonVideo.canPlayType('application/vnd.apple.mpegurl')){
+        lessonVideo.src=payload.playbackUrl;
+      }else{
+        throw new Error('This browser cannot play secure HLS video.');
+      }
+      videoEmpty.style.display='none';
+      courseTitle.textContent=payload.asset.title;
+      courseMeta.textContent='Private Odyssey stream · '+payload.asset.provider;
+      serverStatus.textContent='Secure playback authorized';
+      updateWatchUi();
+      return;
+    }catch(error){
+      videoEmpty.style.display='grid';
+      videoEmpty.innerHTML=`<div><strong>Playback unavailable</strong><span>${error.message}</span></div>`;
+      updateWatchUi();
+      return;
+    }
+  }
+  const videos = readJSON('odyssey_course_videos', {});
+  const record = videos[courseId]?.[activeLesson] || course.videoUrl || '';
+  lessonVideo.pause();
+  if(record){
+    lessonVideo.src = record;
+    videoEmpty.style.display = 'none';
+  }else{
+    lessonVideo.removeAttribute('src');
+    lessonVideo.load();
+    videoEmpty.style.display = 'grid';
+  }
+  lessonVideo.playbackRate = Number(speedSelect.value || 1);
+  serverStatus.textContent = course.liveServerUrl ? 'Live classroom available' : 'Live server pending';
+  joinClassBtn.disabled = !course.liveServerUrl;
+  updateWatchUi();
+}
+async function sendProductionProgress(force=false){
+  if(!productionAssetId||!lessonVideo.duration)return;
+  const now=Date.now();
+  if(!force&&now-lastProgressSentAt<15000)return;
+  lastProgressSentAt=now;
+  const percent=Math.min(100,Math.round(lessonVideo.currentTime/lessonVideo.duration*100));
+  try{
+    await fetch(`/api/student/videos/${encodeURIComponent(productionAssetId)}/progress`,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({watchedSeconds:Math.round(lessonVideo.currentTime),percentComplete:percent})});
+  }catch(error){console.warn('Progress sync will retry.',error)}
+}
+function renderMessages(){
+  const messages = readJSON('odyssey_student_messages', []);
+  const own = messages.filter(m => Number(m.courseId) === courseId).slice(0, 3);
+  messageList.innerHTML = own.length ? own.map(m => `<div class="message"><b>${m.subject}</b><span class="muted">${m.body}</span></div>`).join('') : '<div class="muted">No course questions yet.</div>';
+}
+function selectLesson(index){
+  localStorage.setItem(noteKey(), lessonNotes.value);
+  activeLesson = index;
+  localStorage.setItem(`odyssey_active_lesson_${courseId}`, activeLesson);
+  loadVideo(getCourse());
+  renderLessons();
+}
+function markComplete(options={}){
+  if(!completionEligible()){
+    showToast('Watch the full lesson video to unlock completion');
+    updateWatchUi();
+    return;
+  }
+  const done = getDone();
+  if(!done.includes(activeLesson)){
+    done.push(activeLesson);
+    saveDone(done.sort((a,b) => a - b));
+    syncPortalProgress();
+    renderLessons();
+    showToast(options.auto ? 'Lesson completed automatically' : 'Lesson marked complete');
+  }
+}
+function nextLesson(){
+  if(activeLesson < LESSONS.length - 1) selectLesson(activeLesson + 1);
+}
+function saveNotes(){
+  localStorage.setItem(noteKey(), lessonNotes.value);
+  showToast('Notes saved');
+}
+function sendQuestion(){
+  const body = questionText.value.trim();
+  if(!body){showToast('Write a question first');return}
+  const course = getCourse();
+  const messages = readJSON('odyssey_student_messages', []);
+  messages.unshift({
+    courseId,
+    to: course.instructor,
+    subject: `${course.title}: ${LESSONS[activeLesson].title}`,
+    body
+  });
+  writeJSON('odyssey_student_messages', messages);
+  questionText.value = '';
+  renderMessages();
+  showToast(T('portal_message_sent'));
+}
+function requestRefund(){
+  const course = getCourse();
+  const requests = readJSON('odyssey_refund_requests', []);
+  requests.unshift({courseId, title: course.title, date: new Date().toISOString()});
+  writeJSON('odyssey_refund_requests', requests);
+  saveEnrolled(getEnrolled().filter(c => Number(c.id) !== courseId));
+  showToast(T('player_refund_requested'));
+  setTimeout(() => location.href = 'student_portal.html', 900);
+}
+completeBtn.addEventListener('click', markComplete);
+nextBtn.addEventListener('click', nextLesson);
+saveNotesBtn.addEventListener('click', saveNotes);
+sendQuestionBtn.addEventListener('click', sendQuestion);
+refundBtn.addEventListener('click', requestRefund);
+speedSelect.addEventListener('change', () => {lessonVideo.playbackRate = Number(speedSelect.value || 1); showToast(`Speed set to ${speedSelect.value}x`)});
+lessonVideo.addEventListener('play',()=>{lastTrackedTime = lessonVideo.currentTime || 0});
+lessonVideo.addEventListener('seeking',()=>{isSeeking = true; lastTrackedTime = lessonVideo.currentTime || 0});
+lessonVideo.addEventListener('seeked',()=>{isSeeking = false; lastTrackedTime = lessonVideo.currentTime || 0; updateWatchUi()});
+lessonVideo.addEventListener('loadedmetadata', resetWatchTracker);
+lessonVideo.addEventListener('timeupdate',()=>{recordWatchTick(false);sendProductionProgress(false)});
+lessonVideo.addEventListener('ended',()=>{recordWatchTick(true);sendProductionProgress(true);if(completionEligible()) markComplete({auto:true})});
+qualitySelect.addEventListener('change', () => showToast(`${qualitySelect.value} quality selected`));
+captionBtn.addEventListener('click', () => showToast('Captions will activate after media processing is connected'));
+joinClassBtn.addEventListener('click', () => {
+  const course = getCourse();
+  if(course.liveServerUrl) location.href = course.liveServerUrl;
+  else showToast('Live class server is not connected yet');
+});
+document.addEventListener('DOMContentLoaded', renderShell);
+document.addEventListener('odyssey:languageChanged', renderShell);
+</script>
+<script src="assets/odyssey-global-motion.js" defer></script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+</body>
+</html>
