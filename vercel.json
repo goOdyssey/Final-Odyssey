@@ -1,0 +1,42 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/learnworld_landing.html"
+    },
+    {
+      "source": "/learnworld-landing",
+      "destination": "/learnworld_landing.html"
+    },
+    {
+      "source": "/learnworld-landing.html",
+      "destination": "/learnworld_landing.html"
+    },
+    {
+      "source": "/learnworld_landing",
+      "destination": "/learnworld_landing.html"
+    },
+    {
+      "source": "/auth",
+      "destination": "/auth.html"
+    },
+    {
+      "source": "/catalog",
+      "destination": "/learnworld_catalog.html"
+    },
+    {
+      "source": "/dashboard/student",
+      "destination": "/student_portal.html"
+    },
+    {
+      "source": "/dashboard/instructor",
+      "destination": "/instructor_portal.html"
+    },
+    {
+      "source": "/dashboard/admin",
+      "destination": "/admin_dashboard.html"
+    }
+  ]
+}
