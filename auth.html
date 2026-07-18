@@ -1572,11 +1572,53 @@ function togglePw(id, btn) {
   btn.textContent = inp.type === 'password' ? '👁' : '🙈';
 }
 
+async function renderAuthDiagnostics() {
+  const cfg = window.ODYSSEY_SUPABASE || {};
+  document.body.innerHTML = `
+    <main style="min-height:100vh;display:grid;place-items:center;background:#0f172a;color:#e5e7eb;font-family:Inter,system-ui,sans-serif;padding:18px">
+      <section style="width:min(760px,100%);background:#111827;border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.35)">
+        <h1 style="margin:0 0 10px;font-family:Georgia,serif;font-size:36px;color:#fff">Auth Diagnostics</h1>
+        <p style="color:#aab4c5;line-height:1.55">This checks whether Odyssey can see your Supabase configuration. The anon key is hidden except for its length.</p>
+        <div id="diagRows" style="display:grid;gap:10px;margin-top:18px"></div>
+        <button id="clearDiagConfig" style="display:inline-flex;margin-top:18px;margin-right:8px;border:0;border-radius:12px;background:#334155;color:#fff;font-weight:800;padding:11px 14px;cursor:pointer">Clear browser-stored config</button>
+        <a href="auth.html?mode=signup" style="display:inline-flex;margin-top:18px;border:0;border-radius:12px;background:#2563eb;color:#fff;text-decoration:none;font-weight:800;padding:11px 14px">Back to sign up</a>
+      </section>
+    </main>`;
+  const rows = [
+    ['Enabled', cfg.enabled ? '<span style="color:#34d399">Yes</span>' : '<span style="color:#fb7185">No</span>'],
+    ['Source', cfg.source || 'unknown'],
+    ['Project URL', cfg.url && !cfg.url.includes('YOUR_PROJECT_REF') ? `<code style="word-break:break-all">${cfg.url}</code>` : '<span style="color:#fb7185">Missing or placeholder</span>'],
+    ['Anon key length', cfg.anonKey ? String(cfg.anonKey.length) : '<span style="color:#fb7185">Missing</span>']
+  ];
+  try {
+    if (window.OdysseySupabase?.isConfigured?.()) {
+      const sb = await OdysseySupabase.client();
+      const { data, error } = await sb.auth.getSession();
+      rows.push(['SDK load', error ? `<span style="color:#fb7185">${error.message}</span>` : '<span style="color:#34d399">Loaded</span>']);
+      rows.push(['Current session', data.session ? '<span style="color:#34d399">Signed in</span>' : '<span style="color:#fbbf24">Not signed in</span>']);
+    } else {
+      rows.push(['SDK load', '<span style="color:#fbbf24">Skipped because config is not enabled</span>']);
+    }
+  } catch (error) {
+    rows.push(['SDK load', `<span style="color:#fb7185">${String(error.message || error)}</span>`]);
+  }
+  document.getElementById('diagRows').innerHTML = rows.map(([key, value]) => `<div style="display:grid;grid-template-columns:180px 1fr;gap:12px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.04)"><b style="color:#fff">${key}</b><span>${value}</span></div>`).join('');
+  document.getElementById('clearDiagConfig').onclick = () => {
+    localStorage.removeItem('ODYSSEY_SUPABASE_URL');
+    localStorage.removeItem('ODYSSEY_SUPABASE_ANON_KEY');
+    location.reload();
+  };
+}
+
 // ════════════════════════════
 // INIT
 // ════════════════════════════
 (function init() {
   const params = new URLSearchParams(window.location.search);
+  if (params.get('diagnostics') === '1') {
+    renderAuthDiagnostics();
+    return;
+  }
   setMode(params.get('mode') || 'signup');
   if (params.get('role') === 'institution') {
     selectRole('institution');
