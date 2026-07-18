@@ -10,6 +10,12 @@
     return !!(cfg.enabled && cfg.url && cfg.anonKey && !String(cfg.url).includes('YOUR_PROJECT_REF'));
   }
 
+  function assertConfigured(){
+    if (!isConfigured()) {
+      throw new Error('Supabase is not connected yet. Add your Project URL and anon public key in js/supabase-config.js, then redeploy.');
+    }
+  }
+
   function loadSdk(){
     if (window.supabase) return Promise.resolve(window.supabase);
     return new Promise((resolve,reject)=>{
@@ -30,7 +36,7 @@
   }
 
   async function client(){
-    if (!isConfigured()) return null;
+    assertConfigured();
     if (window.__odysseySupabaseClient) return window.__odysseySupabaseClient;
     const sdk = await loadSdk();
     window.__odysseySupabaseClient = sdk.createClient(config().url, config().anonKey, {
@@ -116,14 +122,19 @@
 
   async function signUp({email,password,role,metadata}){
     const sb = await client();
-    if (!sb) return null;
     const { data, error } = await sb.auth.signUp({
       email,
       password,
-      options: { data: { ...(metadata || {}), role } }
+      options: {
+        data: { ...(metadata || {}), role },
+        emailRedirectTo: `${location.origin}${location.pathname}?mode=login`
+      }
     });
     if (error) throw error;
     if (data.user && data.session) await ensureProfile(data.user, role);
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      throw new Error('This email is already registered. Please log in instead.');
+    }
     return data;
   }
 
@@ -139,13 +150,12 @@
 
   async function signOut(){
     const sb = await client();
-    if (sb) await sb.auth.signOut();
+    await sb.auth.signOut();
     localStorage.removeItem('odyssey_demo_logged_in');
   }
 
   async function adminSummary(){
     const sb = await client();
-    if (!sb) return null;
     const { data, error } = await sb.rpc('admin_dashboard_summary');
     if (error) throw error;
     return data;
@@ -153,7 +163,6 @@
 
   async function adminCollections(){
     const sb = await client();
-    if (!sb) return null;
     const queries = await Promise.all([
       sb.from('admin_student_overview').select('*').order('created_at',{ascending:false}).limit(500),
       sb.from('admin_instructor_overview').select('*').order('created_at',{ascending:false}).limit(500),
@@ -194,7 +203,6 @@
 
   async function adminStudentDetail(studentId){
     const sb = await client();
-    if (!sb) return null;
     const { data, error } = await sb.rpc('admin_student_full_detail', { target_student_id: studentId });
     if (error) throw error;
     return data;
@@ -202,7 +210,6 @@
 
   async function adminInstructorDetail(instructorId){
     const sb = await client();
-    if (!sb) return null;
     const { data, error } = await sb.rpc('admin_instructor_full_detail', { target_instructor_id: instructorId });
     if (error) throw error;
     return data;
@@ -210,14 +217,12 @@
 
   async function setUserStatus(id,status){
     const sb = await client();
-    if (!sb) return null;
     const { error } = await sb.rpc('admin_set_user_status', { target_user_id: id, new_status: status });
     if (error) throw error;
   }
 
   async function setCourseStatus(id,status){
     const sb = await client();
-    if (!sb) return null;
     const { error } = await sb.rpc('admin_set_course_status', { target_course_id: id, new_status: status });
     if (error) throw error;
   }

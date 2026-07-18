@@ -1235,7 +1235,21 @@ function uGoStep(from,to){
 }
 function buildInstitutionSummary(){const d={'Institution':val('u_name'),'Country':val('u_country'),'Type':val('u_type'),'Primary field':val('u_field'),'Subjects':val('u_subjects'),'Instructors':val('u_instructors'),'Business email':val('u_email'),'Contact':val('u_contact')};document.getElementById('u_summary').innerHTML=Object.entries(d).map(([k,v])=>'<strong>'+k+':</strong> '+v).join('<br>')}
 function institutionProfileFromForm(){return {name:val('u_name')||'Odyssey Institution',country:val('u_country'),city:val('u_city'),type:val('u_type'),field:val('u_field'),subjects:val('u_subjects'),instructors:Number(val('u_instructors')||0),expectedCourses:Number(val('u_courses')||0),languages:val('u_languages'),email:val('u_email'),contact:val('u_contact'),title:val('u_title'),phone:val('u_phone'),subscription:'institutional'}}
-async function submitInstitution(){if(!document.getElementById('u_agree1').checked){alert('Please confirm institutional authorization and terms.');return}const profile=institutionProfileFromForm();if(!isBusinessEmail(profile.email)){alert('Please use a business or institutional email address.');return}if(window.OdysseySupabase?.isConfigured?.()){try{await OdysseySupabase.signUp({email:profile.email,password:document.getElementById('u_pw')?.value||'',role:'institution',metadata:{full_name:profile.name,institution_name:profile.name,institution_type:profile.type,business_email:profile.email,subject_area:profile.field,instructor_count:profile.instructors,country:profile.country,city:profile.city}});localStorage.setItem('odyssey_institution_profile',JSON.stringify(profile));localStorage.setItem('odyssey_demo_logged_in','institution');localStorage.setItem('odyssey_subscription_plan','institutional');showSuccess('institution');return}catch(error){alert(error.message||'Supabase institution sign-up failed.');return}}const api=await platformAuth('register',{email:profile.email,password:document.getElementById('u_pw')?.value||'',fullName:profile.name,role:'institution'});if(api===false)return;localStorage.setItem('odyssey_institution_profile',JSON.stringify(profile));localStorage.setItem('odyssey_demo_logged_in','institution');localStorage.setItem('odyssey_subscription_plan','institutional');showSuccess('institution')}
+async function submitInstitution(){
+  if(!document.getElementById('u_agree1').checked){alert('Please confirm institutional authorization and terms.');return}
+  const profile=institutionProfileFromForm();
+  if(!isBusinessEmail(profile.email)){alert('Please use a business or institutional email address.');return}
+  if(!requireSupabaseAuth()) return;
+  try{
+    const result=await OdysseySupabase.signUp({
+      email:profile.email,
+      password:document.getElementById('u_pw')?.value||'',
+      role:'institution',
+      metadata:{full_name:profile.name,institution_name:profile.name,institution_type:profile.type,business_email:profile.email,subject_area:profile.field,instructor_count:profile.instructors,expected_active_courses:profile.expectedCourses,country:profile.country,city:profile.city}
+    });
+    finishSupabaseSignup('institution',profile,result);
+  }catch(error){alert(authErrorMessage(error))}
+}
 
 function buildStudentSummary() {
   const d = {
@@ -1327,24 +1341,59 @@ document.getElementById('termsModal').addEventListener('click', function(e) {
 // SUBMIT
 // ════════════════════════════
 
-async function platformAuth(path, payload) {
-  if (location.protocol === 'file:') return null;
-  try {
-    const response = await fetch(`/api/auth/${path}`, {
-      method: 'POST',
-      headers: {'content-type': 'application/json'},
-      body: JSON.stringify(payload),
-      credentials: 'same-origin'
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      alert(data.error || 'Authentication failed. Please try again.');
-      return false;
-    }
-    return data;
-  } catch (error) {
-    return null;
+function authErrorMessage(error) {
+  const text = String(error?.message || error || 'Authentication failed. Please try again.');
+  if (/Failed to fetch|NetworkError|Supabase SDK/i.test(text)) return 'Odyssey could not reach Supabase. Check your internet connection and redeploy with the correct Supabase URL and anon public key.';
+  if (/Invalid login credentials/i.test(text)) return 'The email or password is incorrect.';
+  if (/Email not confirmed/i.test(text)) return 'Please confirm your email first, then log in.';
+  if (/User already registered|already registered/i.test(text)) return 'This email is already registered. Please log in instead.';
+  if (/Password should be at least/i.test(text)) return 'Password is too short. Use at least 8 characters.';
+  return text;
+}
+
+function showSupabaseSetup() {
+  const existing = document.getElementById('supabaseSetupBox');
+  if (existing) { existing.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  const box = document.createElement('div');
+  box.id = 'supabaseSetupBox';
+  box.style.cssText = 'position:fixed;z-index:99999;left:50%;top:50%;transform:translate(-50%,-50%);width:min(520px,calc(100vw - 28px));background:#fff;border:1px solid rgba(17,24,39,.15);border-radius:24px;box-shadow:0 30px 100px rgba(0,0,0,.35);padding:22px;color:#17202c;font-family:Inter,system-ui,sans-serif';
+  box.innerHTML = `
+    <button type="button" onclick="this.closest('#supabaseSetupBox').remove()" style="float:right;border:0;background:#f1f5f9;border-radius:999px;width:34px;height:34px;font-weight:900;cursor:pointer">×</button>
+    <h2 style="margin:0 38px 8px 0;font-family:Georgia,serif;font-size:30px">Connect Supabase</h2>
+    <p style="margin:0 0 14px;color:#667085;line-height:1.55">Authentication cannot run because this deployed page still has placeholder Supabase values. Paste the Project URL and anon public key once for this browser, or hard-code them in <b>js/supabase-config.js</b> and redeploy.</p>
+    <label style="display:block;font-size:12px;font-weight:900;margin:12px 0 6px">Project URL</label>
+    <input id="setupSupabaseUrl" placeholder="https://your-project.supabase.co" style="width:100%;height:44px;border:1px solid #d0d5dd;border-radius:12px;padding:0 12px;font:inherit">
+    <label style="display:block;font-size:12px;font-weight:900;margin:12px 0 6px">anon public key</label>
+    <input id="setupSupabaseAnon" placeholder="eyJhbGciOi..." style="width:100%;height:44px;border:1px solid #d0d5dd;border-radius:12px;padding:0 12px;font:inherit">
+    <button type="button" onclick="OdysseySupabaseConfig.save(document.getElementById('setupSupabaseUrl').value,document.getElementById('setupSupabaseAnon').value)" style="width:100%;height:46px;border:0;border-radius:14px;background:#173a5e;color:#fff;font-weight:900;margin-top:16px;cursor:pointer">Save and reload</button>
+  `;
+  document.body.appendChild(box);
+}
+
+function requireSupabaseAuth() {
+  if (window.OdysseySupabase?.isConfigured?.()) return true;
+  showSupabaseSetup();
+  return false;
+}
+
+function finishSupabaseSignup(role, profile, result) {
+  if (role === 'student') localStorage.setItem('odyssey_student_profile', JSON.stringify(profile));
+  if (role === 'instructor') localStorage.setItem('odyssey_instructor_profile', JSON.stringify(profile));
+  if (role === 'institution') {
+    localStorage.setItem('odyssey_institution_profile', JSON.stringify(profile));
+    localStorage.setItem('odyssey_subscription_plan', 'institutional');
   }
+  if (result?.session) {
+    localStorage.setItem('odyssey_demo_logged_in', role);
+    if (role === 'student') saveStudentProfileAndRedirect();
+    else showSuccess(role);
+    return;
+  }
+  showSuccess(role);
+  document.getElementById('sTitle').textContent = 'Check your email';
+  document.getElementById('sMsg').textContent = 'Your Odyssey account was created in Supabase. Please confirm your email, then return here and log in.';
+  document.getElementById('sCta').textContent = 'Go to login';
+  document.getElementById('sCta').href = 'auth.html?mode=login';
 }
 
 function studentProfileFromForm() {
@@ -1372,46 +1421,28 @@ async function submitStudent() {
     return;
   }
   const profile = studentProfileFromForm();
-  if (window.OdysseySupabase?.isConfigured?.()) {
-    try {
-      await OdysseySupabase.signUp({
-        email: profile.email,
-        password: document.getElementById('s_pw')?.value || '',
-        role: 'student',
-        metadata: {
-          full_name: profile.name,
-          country: profile.country,
-          city: profile.city,
-          learning_goal: document.getElementById('s_goal')?.value || '',
-          grade_level: document.getElementById('s_level')?.value || '',
-          preferred_language: document.getElementById('s_lang')?.value || 'en'
-        }
-      });
-      localStorage.setItem('odyssey_student_profile', JSON.stringify(profile));
-      localStorage.setItem('odyssey_demo_logged_in', 'student');
-      saveStudentProfileAndRedirect();
-      return;
-    } catch (error) {
-      alert(error.message || 'Supabase student sign-up failed.');
-      return;
-    }
-  }
-  const api = await platformAuth('register', {
-    email: profile.email,
-    password: document.getElementById('s_pw')?.value || '',
-    fullName: profile.name,
-    role: 'student'
-  });
-  if (api === false) return;
-  if (api) {
-    localStorage.setItem('odyssey_student_profile', JSON.stringify(profile));
-    localStorage.setItem('odyssey_demo_logged_in', 'student');
-    const afterLogin = localStorage.getItem('odyssey_after_login');
-    if (afterLogin) localStorage.removeItem('odyssey_after_login');
-    window.location.href = api.redirectTo || afterLogin || (api.user.role === 'institution' ? 'instructor_portal.html#subscriptions' : (api.user.role === 'instructor' ? 'instructor_portal.html' : 'student_portal.html'));
+  if (!requireSupabaseAuth()) return;
+  try {
+    const result = await OdysseySupabase.signUp({
+      email: profile.email,
+      password: document.getElementById('s_pw')?.value || '',
+      role: 'student',
+      metadata: {
+        full_name: profile.name,
+        country: profile.country,
+        city: profile.city,
+        learning_goal: document.getElementById('s_goal')?.value || '',
+        grade_level: document.getElementById('s_level')?.value || '',
+        school_name: document.getElementById('s_school')?.value || '',
+        preferred_language: document.getElementById('s_lang')?.value || 'en'
+      }
+    });
+    finishSupabaseSignup('student', profile, result);
+    return;
+  } catch (error) {
+    alert(authErrorMessage(error));
     return;
   }
-  saveStudentProfileAndRedirect();
 }
 
 function instructorProfileFromForm() {
@@ -1442,44 +1473,27 @@ async function submitInstructor() {
     return;
   }
   const profile = instructorProfileFromForm();
-  if (window.OdysseySupabase?.isConfigured?.()) {
-    try {
-      await OdysseySupabase.signUp({
-        email: profile.email,
-        password: document.getElementById('i_pw')?.value || '',
-        role: 'instructor',
-        metadata: {
-          full_name: profile.name,
-          title: profile.title,
-          bio: profile.bio,
-          country: document.getElementById('i_country')?.value || '',
-          city: profile.city,
-          teaching_languages: profile.language || 'English'
-        }
-      });
-      localStorage.setItem('odyssey_instructor_profile', JSON.stringify(profile));
-      localStorage.setItem('odyssey_demo_logged_in', 'instructor');
-      showSuccess('instructor');
-      return;
-    } catch (error) {
-      alert(error.message || 'Supabase instructor sign-up failed.');
-      return;
-    }
-  }
-  const api = await platformAuth('register', {
-    email: profile.email,
-    password: document.getElementById('i_pw')?.value || '',
-    fullName: profile.name,
-    role: 'instructor'
-  });
-  if (api === false) return;
-  localStorage.setItem('odyssey_instructor_profile', JSON.stringify(profile));
-  localStorage.setItem('odyssey_demo_logged_in', 'instructor');
-  if (api && api.redirectTo) {
-    window.location.href = api.redirectTo;
+  if (!requireSupabaseAuth()) return;
+  try {
+    const result = await OdysseySupabase.signUp({
+      email: profile.email,
+      password: document.getElementById('i_pw')?.value || '',
+      role: 'instructor',
+      metadata: {
+        full_name: profile.name,
+        title: profile.title,
+        bio: profile.bio,
+        country: document.getElementById('i_country')?.value || '',
+        city: profile.city,
+        teaching_languages: profile.language || 'English'
+      }
+    });
+    finishSupabaseSignup('instructor', profile, result);
+    return;
+  } catch (error) {
+    alert(authErrorMessage(error));
     return;
   }
-  showSuccess('instructor');
 }
 
 function showSuccess(role) {
@@ -1511,83 +1525,19 @@ async function submitLogin() {
   const email = document.getElementById('l_email').value;
   const pw = document.getElementById('l_pw').value;
   if (!email.includes('@') || pw.length < 1) { alert(authT('auth_login_missing_alert')); return; }
-  if (window.OdysseySupabase?.isConfigured?.()) {
-    try {
-      const result = await OdysseySupabase.signIn(email, pw);
-      const role = result.profile?.role || loginRole || 'student';
-      localStorage.setItem('odyssey_demo_logged_in', role);
-      const profileKey = role === 'instructor' || role === 'institution' ? 'odyssey_instructor_profile' : 'odyssey_student_profile';
-      localStorage.setItem(profileKey, JSON.stringify({email, name: result.profile?.full_name || email}));
-      const afterLogin = localStorage.getItem('odyssey_after_login');
-      if (afterLogin) localStorage.removeItem('odyssey_after_login');
-      window.location.href = afterLogin || result.redirectTo || 'student_portal.html';
-      return;
-    } catch (error) {
-      alert(error.message || 'Supabase login failed.');
-      return;
-    }
-  }
-  const api = await platformAuth('login', { email, password: pw });
-  if (api === false) return;
-  if (api?.mfaRequired) {
-    const code = prompt('Enter the 6-digit code from your authenticator app, or a recovery code.');
-    if (!code) return;
-    const verified = await platformAuth('mfa/verify', { code });
-    if (!verified || verified === false) return;
-    localStorage.setItem('odyssey_demo_logged_in', verified.user.role);
-    window.location.href = verified.redirectTo || 'admin_dashboard.html';
-    return;
-  }
-  if (api && api.user) {
-    localStorage.setItem('odyssey_demo_logged_in', api.user.role);
-    if (api.user.role === 'student') {
-      const profile = JSON.parse(localStorage.getItem('odyssey_student_profile') || '{}');
-      profile.email = api.user.email;
-      profile.name = api.user.fullName || profile.name || 'Odyssey Student';
-      localStorage.setItem('odyssey_student_profile', JSON.stringify(profile));
-    }
-    if (api.user.role === 'instructor') {
-      const profile = JSON.parse(localStorage.getItem('odyssey_instructor_profile') || '{}');
-      profile.email = api.user.email;
-      profile.name = api.user.fullName || profile.name || 'Odyssey Instructor';
-      localStorage.setItem('odyssey_instructor_profile', JSON.stringify(profile));
-    }
+  if (!requireSupabaseAuth()) return;
+  try {
+    const result = await OdysseySupabase.signIn(email, pw);
+    const role = result.profile?.role || loginRole || 'student';
+    localStorage.setItem('odyssey_demo_logged_in', role);
+    const profileKey = role === 'instructor' || role === 'institution' ? 'odyssey_instructor_profile' : 'odyssey_student_profile';
+    localStorage.setItem(profileKey, JSON.stringify({email, name: result.profile?.full_name || email}));
     const afterLogin = localStorage.getItem('odyssey_after_login');
     if (afterLogin) localStorage.removeItem('odyssey_after_login');
-    window.location.href = api.redirectTo || afterLogin || 'student_portal.html';
-    return;
+    window.location.href = afterLogin || result.redirectTo || 'student_portal.html';
+  } catch (error) {
+    alert(authErrorMessage(error));
   }
-  const institutionProfile = JSON.parse(localStorage.getItem('odyssey_institution_profile') || '{}');
-  const isInstitutionLogin = institutionProfile.email && institutionProfile.email.toLowerCase() === email.toLowerCase();
-  if (isInstitutionLogin) {
-    localStorage.setItem('odyssey_demo_logged_in', 'institution');
-    window.location.href = 'instructor_portal.html#subscriptions';
-    return;
-  }
-  const instructorProfile = JSON.parse(localStorage.getItem('odyssey_instructor_profile') || '{}');
-  const isInstructorLogin = instructorProfile.email && instructorProfile.email.toLowerCase() === email.toLowerCase();
-  if (isInstructorLogin) {
-    localStorage.setItem('odyssey_demo_logged_in', 'instructor');
-    window.location.href = 'instructor_portal.html';
-    return;
-  }
-  if (loginRole === 'instructor') {
-    localStorage.setItem('odyssey_demo_logged_in', 'instructor');
-    const profile = JSON.parse(localStorage.getItem('odyssey_instructor_profile') || '{}');
-    profile.email = email;
-    if (!profile.name) profile.name = 'Odyssey Instructor';
-    localStorage.setItem('odyssey_instructor_profile', JSON.stringify(profile));
-    window.location.href = 'instructor_portal.html';
-    return;
-  }
-  localStorage.setItem('odyssey_demo_logged_in', 'student');
-  const profile = JSON.parse(localStorage.getItem('odyssey_student_profile') || '{}');
-  profile.email = email;
-  if (!profile.name) profile.name = 'Odyssey Student';
-  localStorage.setItem('odyssey_student_profile', JSON.stringify(profile));
-  const afterLogin = localStorage.getItem('odyssey_after_login');
-  if (afterLogin) localStorage.removeItem('odyssey_after_login');
-  window.location.href = afterLogin || 'student_portal.html';
 }
 
 // ════════════════════════════

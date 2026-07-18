@@ -18,4 +18,18 @@
     anonKey: finalAnonKey,
     enabled: looksReady
   };
+
+  window.OdysseySupabaseConfig = {
+    isReady: () => looksReady,
+    save(nextUrl, nextAnonKey){
+      localStorage.setItem('ODYSSEY_SUPABASE_URL', String(nextUrl || '').trim());
+      localStorage.setItem('ODYSSEY_SUPABASE_ANON_KEY', String(nextAnonKey || '').trim());
+      location.reload();
+    },
+    clear(){
+      localStorage.removeItem('ODYSSEY_SUPABASE_URL');
+      localStorage.removeItem('ODYSSEY_SUPABASE_ANON_KEY');
+      location.reload();
+    }
+  };
 }());
