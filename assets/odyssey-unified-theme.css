@@ -1,0 +1,165 @@
+/* Odyssey unified visual system: shared look, lighter motion cost. */
+:root{
+  --pink:#c2416b!important;
+  --pink2:#eaa4bb!important;
+  --purple:#17202c!important;
+  --purple2:#64748b!important;
+  --yellow:#c99736!important;
+  --yellow2:#f0d58a!important;
+  --cyan:#287c8e!important;
+  --cyan2:#8bd4df!important;
+  --green:#0f766e!important;
+  --green2:#8fd3c7!important;
+  --orange:#c56f32!important;
+  --orange2:#e4a06e!important;
+  --bg:#eef1f4!important;
+  --cream:#eef1f4!important;
+  --text:#17202c!important;
+  --navy:#17202c!important;
+  --muted:#667085!important;
+  --border:rgba(15,23,42,.12)!important;
+  --ff-head:"Newsreader", Georgia, serif!important;
+  --ff-display:"Newsreader", Georgia, serif!important;
+  --ff-body:Manrope, system-ui, sans-serif!important;
+  --font:Manrope, system-ui, sans-serif!important;
+  --head:"Newsreader", Georgia, serif!important;
+}
+html{background:#eef1f4}
+body{
+  font-family:Manrope,system-ui,sans-serif!important;
+  color:#17202c!important;
+  letter-spacing:0!important;
+  background:
+    radial-gradient(circle at 8% 4%,rgba(15,118,110,.14),transparent 28%),
+    radial-gradient(circle at 92% 0%,rgba(201,151,54,.13),transparent 30%),
+    linear-gradient(180deg,#e7edf3 0%,#f6f8fb 44%,#e7edf3 100%)!important;
+}
+h1,h2,h3,.section-title,.page-hero h1,.about-hero h1,.mission-text h2,.form-title,.card h2,.course-title,.nav-logo-text,.left-logo-text,.brand strong{
+  font-family:"Newsreader",Georgia,serif!important;
+  letter-spacing:0!important;
+}
+h1,.page-hero h1,.about-hero h1{font-weight:650!important}
+h2,h3,.section-title,.form-title,.card h2{font-weight:650!important}
+nav{
+  background:rgba(255,255,255,.84)!important;
+  border:1px solid rgba(15,23,42,.10)!important;
+  box-shadow:0 18px 50px rgba(15,23,42,.10)!important;
+  backdrop-filter:none!important;
+}
+.nav-logo-mark,.left-logo-mark,.brand-mark,.footer-logo-mark{
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#17202c,#0f766e 62%,#c99736)!important;
+  box-shadow:0 12px 28px rgba(15,23,42,.20)!important;
+}
+.nav-logo-text,.nav-logo-text span{color:#17202c!important}
+.nav-links a,.nav-right a{color:#667085!important}
+.nav-links a:hover,.nav-links a.active,.nav-right a:hover{color:#0f766e!important;background:rgba(15,118,110,.08)!important}
+.nav-cta,.btn,.btn-next,.btn-sub,.cta-submit,.btn-hero-primary,.search-btn,.btn-enroll{
+  background:linear-gradient(135deg,#17202c,#0f766e)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 14px 30px rgba(15,23,42,.18)!important;
+}
+.nav-login,.btn.secondary,.btn-back,.btn-hero-secondary{
+  background:rgba(255,255,255,.62)!important;
+  color:#17202c!important;
+  border:1px solid rgba(15,23,42,.14)!important;
+  box-shadow:none!important;
+}
+.page-hero,.about-hero,.search-hero,.welcome{
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.76),rgba(255,255,255,.48)),
+    radial-gradient(circle at 15% 20%,rgba(15,118,110,.16),transparent 28%),
+    radial-gradient(circle at 84% 10%,rgba(201,151,54,.14),transparent 28%)!important;
+  filter:none!important;
+}
+.page-tag,.section-tag,.hero-pill,.chip,.cat-count,.exam-tag,.fbadge{
+  background:rgba(255,255,255,.62)!important;
+  color:#0f766e!important;
+  border:1px solid rgba(15,23,42,.10)!important;
+  box-shadow:none!important;
+}
+.grad,.h1-line2{
+  background:linear-gradient(90deg,#0f766e,#287c8e,#c99736)!important;
+  -webkit-background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  background-clip:text!important;
+}
+.card,.course-card,.cat-card,.step-card,.instr-card,.testi-card,.exam-card,.search-wrap,.modal-box,.item,.theme-card,.role-card,.summary-box,.left-feat,.info-card,.faq-item{
+  border:1px solid rgba(15,23,42,.11)!important;
+  background-color:rgba(255,255,255,.80)!important;
+  box-shadow:0 16px 42px rgba(15,23,42,.08)!important;
+  backdrop-filter:none!important;
+}
+.cat-card:hover,.exam-card:hover,.step-card:hover,.instr-card:hover,.testi-card:hover,.role-card:hover{
+  transform:translateY(-4px)!important;
+}
+footer,.regions{
+  background:linear-gradient(135deg,#0a101b,#17202c 58%,#0f3f3d)!important;
+}
+.cta-section{background:linear-gradient(135deg,#17202c,#0f766e 64%,#c56f32)!important}
+
+/* Auth page alignment with landing page. */
+.auth-layout{
+  background:
+    radial-gradient(circle at 12% 8%,rgba(15,118,110,.16),transparent 28%),
+    radial-gradient(circle at 90% 0%,rgba(201,151,54,.14),transparent 28%),
+    #eef1f4!important;
+}
+.auth-left{
+  background:
+    linear-gradient(90deg,rgba(10,16,27,.78),rgba(10,16,27,.30)),
+    url("odyssey-road-hero-fast.jpg") center/cover!important;
+  padding:46px!important;
+}
+.auth-left::after{
+  content:"";
+  position:absolute;
+  inset:24px;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:30px;
+  pointer-events:none;
+}
+.auth-left .blob{display:none!important}
+.left-content h2{
+  font-size:clamp(34px,4.6vw,62px)!important;
+  line-height:1.04!important;
+  font-weight:650!important;
+  max-width:620px!important;
+}
+.left-content p{color:rgba(255,255,255,.74)!important;font-size:15px!important;max-width:440px!important}
+.left-feat{
+  background:rgba(255,255,255,.10)!important;
+  border:1px solid rgba(255,255,255,.15)!important;
+  border-radius:16px!important;
+  padding:11px!important;
+}
+.auth-right{
+  background:rgba(255,255,255,.82)!important;
+  box-shadow:inset 1px 0 0 rgba(15,23,42,.08)!important;
+}
+.mode-switcher,.fi,.fsel,.fta,.pill,.btn-google{
+  background:rgba(255,255,255,.74)!important;
+  border-color:rgba(15,23,42,.12)!important;
+}
+.mode-btn.active,.pill.on,.role-card.selected{
+  background:linear-gradient(135deg,#17202c,#0f766e)!important;
+  color:#fff!important;
+}
+.role-card.selected .role-name,.role-card.selected .role-desc{color:#fff!important}
+.fsec{color:#0f766e!important;border-top-color:rgba(15,23,42,.08)!important}
+.modal-overlay{backdrop-filter:none!important;background:rgba(10,16,27,.68)!important}
+
+/* Performance: keep visual polish, avoid expensive global filters. */
+.blob,.bl1,.bl2,.bl3{filter:none!important}
+.odyssey-global-depth{opacity:.55!important}
+.odyssey-scroll-lift{transform:none!important;transition:none!important}
+@media(max-width:900px){
+  .auth-layout{display:block!important}
+  .auth-left{display:none!important}
+  .auth-right{min-height:100vh!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important}
+  .odyssey-global-depth,.scroll-depth-scene,.odyssey-dynamic-bg{display:none!important}
+}

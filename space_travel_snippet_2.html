@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Space Travel - Interstellar Production Evolved</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['"Instrument Serif"', 'serif'],
+            body: ['"Barlow"', 'sans-serif'],
+          },
+          borderRadius: {
+            DEFAULT: '9999px',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      margin: 0;
+      overflow-x: hidden;
+      font-family: 'Barlow', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Subtle Liquid Glass Pill/Card */
+    .liquid-glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      position: relative;
+    }
+    .liquid-glass::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    
+    /* Strong Liquid Glass Setup for Larger Sections */
+    .liquid-glass-strong {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(50px);
+      -webkit-backdrop-filter: blur(50px);
+      position: relative;
+    }
+    .liquid-glass-strong::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    video {
+      display: block;
+    }
+  </style>
+
+  <!-- React & Framer Motion CDN UMD Base -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+  <script src="https://unpkg.com/framer-motion@11.11.17/dist/framer-motion.js"></script>
+</head>
+<body>
+  
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+    
+    // Explicit injection for environment variables mapping
+    window.Motion = window.FramerMotion;
+    const { motion } = window.Motion;
+
+    /* ==============================================================
+     * ICONS
+     * ============================================================== */
+    const PlayIcon = ({ className }) => (
+      <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    );
+
+    const ArrowUpRight = ({ className }) => (
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 17L17 7M7 7h10v10" />
+      </svg>
+    );
+
+    /* ==============================================================
+     * FADING VIDEO
+     * ============================================================== */
+    const FadingVideo = ({ src, className, style }) => {
+      const videoRef = useRef(null);
+      const rafRef = useRef(null);
+      const fadingOutRef = useRef(false);
+      
+      const FADE_MS = 500;
+      const FADE_OUT_LEAD = 0.55;
+
+      const fadeTo = (targetOpacity) => {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        
+        let startOpacity = 0;
+        if (videoRef.current) {
+          const inlineOpacity = parseFloat(videoRef.current.style.opacity);
+          if (!isNaN(inlineOpacity)) startOpacity = inlineOpacity;
+        }
+        
+        const startTime = performance.now();
+
+        const tick = (now) => {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / FADE_MS, 1);
+          const newOpacity = startOpacity + (targetOpacity - startOpacity) * progress;
+          
+          if (videoRef.current) {
+            videoRef.current.style.opacity = newOpacity;
+          }
+          
+          if (progress < 1) {
+            rafRef.current = requestAnimationFrame(tick);
+          }
+        };
+        rafRef.current = requestAnimationFrame(tick);
+      };
+
+      const handleLoadedData = () => {
+        if (!videoRef.current) return;
+        videoRef.current.style.opacity = 0;
+        fadingOutRef.current = false;
+        videoRef.current.play().catch(e => console.log('Autoplay warning:', e));
+        fadeTo(1);
+      };
+
+      const handleTimeUpdate = () => {
+        if (!videoRef.current) return;
+        const { duration, currentTime } = videoRef.current;
+        if (duration > 0 && (duration - currentTime) <= FADE_OUT_LEAD) {
+          if (!fadingOutRef.current) {
+            fadingOutRef.current = true;
+            fadeTo(0);
+          }
+        }
+      };
+
+      const handleEnded = () => {
+        if (!videoRef.current) return;
+        fadingOutRef.current = false;
+        videoRef.current.currentTime = 0;
+        videoRef.current.play().catch(e => console.log('Re-play warning:', e));
+        fadeTo(1);
+      };
+
+      useEffect(() => {
+        return () => {
+          if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        };
+      }, []);
+
+      return (
+        <video
+          ref={videoRef}
+          src={src}
+          className={className}
+          style={{ opacity: 0, ...style }}
+          onLoadedData={handleLoadedData}
+          onTimeUpdate={handleTimeUpdate}
+          onEnded={handleEnded}
+          muted
+          playsInline
+        />
+      );
+    };
+    window.FadingVideo = FadingVideo;
+
+    /* ==============================================================
+     * BLUR TEXT
+     * ============================================================== */
+    const BlurText = ({ text, className }) => {
+      const containerRef = useRef(null);
+      const [inView, setInView] = useState(false);
+
+      useEffect(() => {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (entries[0].isIntersecting) {
+              setInView(true);
+              observer.disconnect();
+            }
+          },
+          { threshold: 0.1 }
+        );
+        
+        if (containerRef.current) observer.observe(containerRef.current);
+        
+        return () => observer.disconnect();
+      }, []);
+
+      const words = text.split(' ');
+
+      return (
+        <div ref={containerRef} className={className} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {words.map((word, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, filter: 'blur(10px)' }}
+              animate={inView ? { opacity: [0, 1], filter: ['blur(10px)', 'blur(0px)'] } : {}}
+              transition={{ duration: 0.8, delay: i * 0.1, times: [0, 1] }}
+              style={{ marginRight: '0.25em' }}
+            >
+              {word}
+            </motion.span>
+          ))}
+        </div>
+      );
+    };
+    window.BlurText = BlurText;
+
+    /* ==============================================================
+     * CAPABILITY CARD
+     * ============================================================== */
+    const CapabilityCard = ({ title, pills, body, icon }) => (
+      <div className="liquid-glass-strong rounded-3xl p-8 flex flex-col items-start h-full pb-10">
+        <div className="w-14 h-14 rounded liquid-glass flex items-center justify-center mb-8">
+          {icon}
+        </div>
+        <div className="flex flex-wrap gap-2 mb-6">
+          {pills.map((pill, i) => (
+            <span key={i} className="text-xs font-body border border-white/20 rounded px-4 py-1.5 text-white/90 tracking-wider uppercase">
+              {pill}
+            </span>
+          ))}
+        </div>
+        <h3 className="text-3xl font-heading italic text-white mb-4">{title}</h3>
+        <p className="font-body text-white/70 leading-relaxed text-sm">
+          {body}
+        </p>
+      </div>
+    );
+    window.CapabilityCard = CapabilityCard;
+
+    /* ==============================================================
+     * MAIN APP
+     * ============================================================== */
+    const App = () => {
+      // Cinematic Public Videos For Concept Structure 
+      const heroVideoLoc = "https://cdn.pixabay.com/video/2021/08/17/85376-589578160_large.mp4";
+      const scopeVideoLoc = "https://cdn.pixabay.com/video/2021/04/18/71415-538059032_large.mp4";
+
+      return (
+        <main className="w-full bg-black text-white">
+          
+          {/* SECTION 1: HERO VIEW */}
+          <section className="relative w-full h-screen min-h-[850px] flex flex-col pt-8 pb-10 overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none z-0">
+              <FadingVideo
+                src={heroVideoLoc}
+                className="absolute left-1/2 top-0 w-[120%] h-[120%] max-w-none object-cover -translate-x-1/2 object-top"
+              />
+            </div>
+            
+            <nav className="relative z-10 w-full max-w-[1400px] mx-auto px-6 flex items-center justify-between">
+              <div className="w-12 h-12 rounded bg-white text-black flex items-center justify-center font-heading italic font-bold text-3xl pb-1">
+                a
+              </div>
+
+              <div className="liquid-glass rounded p-2 hidden lg:flex items-center gap-4">
+                <div className="flex items-center gap-8 px-6 font-body text-sm text-white/80 font-medium">
+                  <a href="#" className="hover:text-white transition-colors">Home</a>
+                  <a href="#" className="hover:text-white transition-colors">Voyages</a>
+                  <a href="#" className="hover:text-white transition-colors">Worlds</a>
+                  <a href="#" className="hover:text-white transition-colors">Innovation</a>
+                  <a href="#" className="hover:text-white transition-colors">Plan Launch</a>
+                </div>
+                <button className="bg-white text-black px-6 py-2.5 rounded font-body text-sm font-semibold hover:bg-white/90 transition-colors">
+                  Claim a Spot
+                </button>
+              </div>
+
+              <div className="w-12 lg:block hidden"></div>
+            </nav>
+
+            <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-4 mt-8">
+              <div className="liquid-glass rounded px-5 py-2.5 mb-8 text-[11px] font-semibold tracking-[0.2em] uppercase text-white/90 inline-flex items-center gap-3 shadow-2xl">
+                <span className="w-1.5 h-1.5 rounded bg-white block animate-pulse"></span>
+                Next-Gen Spaceflight
+              </div>
+
+              <BlurText 
+                text="Venture Past Our Sky Across the Universe" 
+                className="text-6xl sm:text-7xl md:text-8xl lg:text-[100px] font-heading italic max-w-5xl leading-[0.88] mb-6 drop-shadow-2xl" 
+              />
+
+              <p className="font-body text-lg md:text-xl text-white/80 max-w-xl mx-auto mb-10 leading-relaxed shadow-sm">
+                Experience the true cinematic scale of interstellar travel. Book your place among the stars with absolute production evolution.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4 mb-20 text-sm">
+                <button className="bg-white text-black px-8 py-4 rounded font-body font-semibold hover:bg-white/90 transition-colors">
+                  Start Your Voyage
+                </button>
+                <button className="liquid-glass rounded px-8 py-4 font-body font-medium text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                  <PlayIcon className="w-4 h-4" />
+                  View Liftoff
+                </button>
+              </div>
+            </div>
+
+            <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row items-end justify-between gap-8 pb-4">
+              <div className="flex gap-4">
+                <div className="liquid-glass rounded-2xl p-5 text-left w-[170px]">
+                  <div className="text-4xl font-heading italic text-white mb-2 leading-none">34.5 Min</div>
+                  <div className="text-[10px] text-white/60 font-body uppercase tracking-[0.1em] font-semibold">Average Orbit</div>
+                </div>
+                <div className="liquid-glass rounded-2xl p-5 text-left w-[170px]">
+                  <div className="text-4xl font-heading italic text-white mb-2 leading-none">2.8B+</div>
+                  <div className="text-[10px] text-white/60 font-body uppercase tracking-[0.1em] font-semibold">Miles Traveled</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-8 text-white/50 font-body text-xs font-bold uppercase tracking-[0.15em]">
+                <span className="hover:text-white transition-colors cursor-pointer">Aeon</span>
+                <span className="hover:text-white transition-colors cursor-pointer">Vela</span>
+                <span className="hover:text-white transition-colors cursor-pointer">Apex</span>
+                <span className="hover:text-white transition-colors cursor-pointer">Orbit</span>
+                <span className="hover:text-white transition-colors cursor-pointer">Zeno</span>
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION 2: CAPABILITIES */}
+          <section className="relative min-h-screen flex flex-col justify-center py-32 w-full overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none z-0">
+              <FadingVideo
+                src={scopeVideoLoc}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <div className="relative z-10 max-w-[1400px] mx-auto px-6 w-full flex-1 flex flex-col justify-center">
+              <div className="mb-20">
+                <div className="text-white/60 font-body text-sm tracking-[0.2em] font-semibold uppercase mb-6">// Capabilities</div>
+                <h2 className="text-6xl md:text-[80px] font-heading italic text-white leading-none">Production evolved</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <CapabilityCard 
+                  title="AI Scenery"
+                  pills={["Generative", "Real-time", "8K Resolution", "Dynamic"]}
+                  body="Infinite, unrepeating landscapes generated on the fly, matching the cinematic mood of every planetary encounter."
+                  icon={<ArrowUpRight className="w-6 h-6 text-white" />}
+                />
+                <CapabilityCard 
+                  title="Batch Production"
+                  pills={["Scalable", "Efficient", "Automated", "High-Fidelity"]}
+                  body="Rendering full planetary systems simultaneously with highly optimized pipelines for stellar visuals without delay."
+                  icon={<ArrowUpRight className="w-6 h-6 text-white" />}
+                />
+                <CapabilityCard 
+                  title="Smart Lighting"
+                  pills={["Raytraced", "Volumetric", "Physical", "Adaptive"]}
+                  body="Physically accurate star emission and atmospheric scattering algorithms mapping every photon."
+                  icon={<ArrowUpRight className="w-6 h-6 text-white" />}
+                />
+              </div>
+            </div>
+          </section>
+        </main>
+      );
+    }
+    window.App = App;
+    
+    // Mount App To Document
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+<script src="assets/odyssey-global-motion.js" defer></script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+</body>
+</html>

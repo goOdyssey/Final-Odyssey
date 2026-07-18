@@ -1,0 +1,177 @@
+/* Final demo polish: dashboard themes, single sidebar icons, and safe multilingual header sizing. */
+html[data-theme]{
+  --ody-panel:var(--panel);
+  --ody-ink:var(--text);
+  --ody-muted:var(--muted);
+  --ody-line:var(--line);
+}
+
+html[data-scheme="atlas"]{--portal-a:#1d4ed8;--portal-b:#0f766e;--portal-c:#d97706;--portal-bg-soft:rgba(29,78,216,.12)}
+html[data-scheme="executive"]{--portal-a:#0f172a;--portal-b:#475569;--portal-c:#b45309;--portal-bg-soft:rgba(51,65,85,.14)}
+html[data-scheme="aurora"]{--portal-a:#7c3aed;--portal-b:#0891b2;--portal-c:#db2777;--portal-bg-soft:rgba(124,58,237,.14)}
+html[data-scheme="sage"]{--portal-a:#166534;--portal-b:#0f766e;--portal-c:#a16207;--portal-bg-soft:rgba(22,101,52,.14)}
+html[data-scheme="voyage"]{--portal-a:#184e77;--portal-b:#2a9d8f;--portal-c:#e9a23b;--portal-bg-soft:rgba(24,78,119,.14)}
+html[data-scheme="studio"]{--portal-a:#27272a;--portal-b:#0f766e;--portal-c:#c08432;--portal-bg-soft:rgba(63,63,70,.14)}
+html[data-scheme="nebula"]{--portal-a:#5b3cc4;--portal-b:#0ea5b7;--portal-c:#db2777;--portal-bg-soft:rgba(91,60,196,.16)}
+html[data-scheme="summit"]{--portal-a:#24553d;--portal-b:#287c8e;--portal-c:#d79c27;--portal-bg-soft:rgba(36,85,61,.14)}
+
+body:has(.portal){
+  background:
+    radial-gradient(circle at 8% 10%,color-mix(in srgb,var(--portal-a,#1d4ed8) 22%,transparent),transparent 30%),
+    radial-gradient(circle at 94% 4%,color-mix(in srgb,var(--portal-c,#d97706) 18%,transparent),transparent 30%),
+    linear-gradient(135deg,color-mix(in srgb,var(--portal-b,#0f766e) 10%,transparent),transparent 46%),
+    var(--bg)!important;
+  color:var(--text)!important;
+}
+body.student-portal{
+  --portal-surface-shape:28px;
+  --portal-panel-angle:135deg;
+}
+body.instructor-portal{
+  --portal-surface-shape:18px;
+  --portal-panel-angle:155deg;
+}
+body.student-portal:has(.portal){
+  background:
+    radial-gradient(circle at 8% 10%,color-mix(in srgb,var(--portal-a,#1d4ed8) 24%,transparent),transparent 30%),
+    radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--portal-c,#d97706) 18%,transparent),transparent 34%),
+    linear-gradient(180deg,color-mix(in srgb,var(--portal-b,#0f766e) 10%,transparent),transparent 52%),
+    var(--bg)!important;
+}
+body.instructor-portal:has(.portal){
+  background:
+    linear-gradient(120deg,color-mix(in srgb,var(--portal-a,#184e77) 16%,transparent),transparent 42%),
+    radial-gradient(circle at 94% 4%,color-mix(in srgb,var(--portal-c,#e9a23b) 18%,transparent),transparent 28%),
+    radial-gradient(circle at 12% 82%,color-mix(in srgb,var(--portal-b,#2a9d8f) 16%,transparent),transparent 30%),
+    var(--bg)!important;
+}
+html[data-theme="dark"] body:has(.portal){
+  background:
+    radial-gradient(circle at 8% 10%,color-mix(in srgb,var(--portal-a,#1d4ed8) 26%,transparent),transparent 30%),
+    radial-gradient(circle at 94% 4%,color-mix(in srgb,var(--portal-c,#d97706) 16%,transparent),transparent 31%),
+    linear-gradient(135deg,color-mix(in srgb,var(--portal-b,#0f766e) 14%,transparent),transparent 46%),
+    var(--bg)!important;
+}
+
+.portal,.portal .main,.portal .sidebar,.portal .card,.portal .panel,.portal .item,.portal .course,.portal .stat-card,.portal .theme-card,.portal .profile-mini,.portal .message-card,.portal .session-card,.portal .mini-metric,.portal .sub-plan,.portal .modal-box,.portal input,.portal textarea,.portal select{
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
+.portal .sidebar{
+  background:color-mix(in srgb,var(--panel-strong) 84%,transparent)!important;
+}
+.portal .card,.portal .panel.active,.portal .item,.portal .course,.portal .stat-card,.portal .theme-card,.portal .profile-mini,.portal .message-card,.portal .session-card,.portal .mini-metric,.portal .sub-plan,.portal .modal-box{
+  background:linear-gradient(var(--portal-panel-angle,135deg),color-mix(in srgb,var(--panel) 94%,transparent),color-mix(in srgb,var(--soft) 42%,transparent))!important;
+  box-shadow:var(--shadow)!important;
+}
+body.student-portal .portal .card,body.student-portal .portal .course,body.student-portal .portal .stat-card,body.student-portal .portal .theme-card,body.student-portal .portal .welcome{
+  border-radius:var(--portal-surface-shape)!important;
+}
+body.instructor-portal .portal .card,body.instructor-portal .portal .course,body.instructor-portal .portal .stat-card,body.instructor-portal .portal .theme-card,body.instructor-portal .portal .hero{
+  border-radius:var(--portal-surface-shape)!important;
+}
+body.instructor-portal .portal .card,body.instructor-portal .portal .stat-card,body.instructor-portal .portal .course{
+  border-left:4px solid color-mix(in srgb,var(--portal-b,#2a9d8f) 55%,transparent)!important;
+}
+.portal .welcome,.portal .hero{
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--panel-strong) 90%,transparent),color-mix(in srgb,var(--soft) 48%,transparent)),
+    radial-gradient(circle at 92% 18%,color-mix(in srgb,var(--portal-b,#0f766e) 22%,transparent),transparent 34%)!important;
+  color:var(--text)!important;
+}
+.portal .welcome::after,.portal .stat-card::after{
+  background:linear-gradient(135deg,var(--portal-a,#1d4ed8),var(--portal-b,#0f766e),var(--portal-c,#d97706))!important;
+  opacity:.16!important;
+}
+.portal .btn:not(.danger),.portal .mode-toggle.active{
+  background:linear-gradient(135deg,var(--portal-a,#1d4ed8),var(--portal-b,#0f766e))!important;
+  color:#fff!important;
+}
+.portal .btn.secondary:not(.mode-toggle){
+  background:color-mix(in srgb,var(--portal-a,#1d4ed8) 12%,transparent)!important;
+  color:var(--portal-a,#1d4ed8)!important;
+}
+html[data-theme="dark"] .portal .btn.secondary:not(.mode-toggle){
+  color:#dbeafe!important;
+}
+.portal .theme-card.active{
+  border-color:var(--portal-b,#0f766e)!important;
+  box-shadow:0 18px 48px color-mix(in srgb,var(--portal-a,#1d4ed8) 22%,transparent)!important;
+}
+.portal .desc,.portal .meta,.portal .footer-note,.portal .field label,.portal .profile-mini span,.portal .sub-plan p,.portal .modal-head p,.portal .item small,.portal .student-chip,.portal .pill,.portal .session-pill{
+  color:var(--muted)!important;
+}
+.portal input,.portal textarea,.portal select{
+  background:var(--panel-strong)!important;
+}
+
+body.instructor-portal .portal .navbtn .nav-ico{
+  display:none!important;
+}
+body.instructor-portal .portal .sidebar .navbtn::before{
+  content:"◼"!important;
+  display:block!important;
+  width:30px!important;
+  height:30px!important;
+  flex:0 0 30px!important;
+  border-radius:11px!important;
+  background:
+    radial-gradient(circle at 28% 22%,rgba(255,255,255,.92),rgba(255,255,255,.24) 28%,transparent 46%),
+    linear-gradient(135deg,var(--portal-a,#184e77),var(--portal-b,#2a9d8f) 55%,var(--portal-c,#e9a23b))!important;
+  color:#fff!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:17px!important;
+  line-height:1!important;
+  text-shadow:0 1px 4px rgba(0,0,0,.22)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.38),0 10px 24px color-mix(in srgb,var(--portal-a,#184e77) 26%,transparent)!important;
+  opacity:.96!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+}
+body.instructor-portal .portal .sidebar .navbtn[data-target="dashboard"]::before{content:"📊"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="profile"]::before{content:"👨‍🏫"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="courses"]::before{content:"📚"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="videoStudio"]::before{content:"🎥"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="create"]::before{content:"🧩"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="students"]::before{content:"📈"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="inbox"]::before{content:"💬"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="exams"]::before{content:"🧾"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="marketExams"]::before{content:"🧪"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="certificates"]::before{content:"🏅"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="payouts"]::before{content:"💳"!important}
+body.instructor-portal .portal .sidebar .navbtn.subscription-nav::before{content:"💎"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="settings"]::before{content:"⚙️"!important}
+body.instructor-portal .portal .sidebar .navbtn[data-target="appearance"]::before{content:"🎨"!important}
+body.instructor-portal .portal .sidebar .navbtn[href*="learnworld_catalog"]::before{content:"🔎"!important}
+body.instructor-portal .portal .sidebar .navbtn.logout::before{content:"🚪"!important}
+
+nav{
+  width:calc(100% - 24px)!important;
+  max-width:1480px!important;
+  padding:11px 16px!important;
+  gap:8px!important;
+}
+.nav-logo-text{font-size:clamp(17px,1.15vw,20px)!important}
+.nav-links{gap:2px!important;min-width:0!important}
+.nav-links a{
+  font-size:clamp(14px,1.02vw,15.5px)!important;
+  padding:8px clamp(7px,.72vw,13px)!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  font-weight:800!important;
+}
+.nav-login,.nav-cta{
+  font-size:clamp(13px,.95vw,15px)!important;
+  padding:8px clamp(10px,.9vw,16px)!important;
+}
+html[lang="de"] .nav-links a,html[lang="nl"] .nav-links a,html[lang="ar"] .nav-links a,html[lang="fa"] .nav-links a,html[lang="ur"] .nav-links a{
+  font-size:clamp(12.5px,.88vw,14px)!important;
+  padding-inline:clamp(5px,.52vw,9px)!important;
+}
+@media(max-width:1120px){
+  .nav-links a{font-size:12.5px!important;padding-inline:6px!important}
+  .nav-logo-text{font-size:16px!important}
+  .nav-login{display:none!important}
+}

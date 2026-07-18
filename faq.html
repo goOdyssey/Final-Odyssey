@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title data-i18n="faq_title_attr_odyssey_help_centre_faqs">Odyssey — Help Centre &amp; FAQs</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--pink:#ff4d8d;--purple:#7c3aed;--purple2:#a78bfa;--yellow:#fbbf24;--cyan:#06b6d4;--green:#10b981;--orange:#f97316;--bg:#faf7ff;--text:#1a0a2e;--muted:#6b5b8a;--white:#ffffff;--radius:16px;--radius-sm:10px;--radius-pill:999px;--ff-head:"Newsreader", Georgia, serif;--ff-body:Manrope, system-ui, sans-serif}html{scroll-behavior:smooth}body{font-family:var(--ff-body);background:var(--bg);color:var(--text);overflow-x:hidden}
+nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;width:calc(100% - 48px);max-width:1100px;background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);border-radius:var(--radius-pill);border:2px solid rgba(124,58,237,0.15);box-shadow:0 8px 32px rgba(124,58,237,0.12)}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none}.nav-logo-mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:white;font-size:12px}.nav-logo-text{font-family:var(--ff-head);font-size:17px;font-weight:900;color:var(--text)}.nav-logo-text span{color:var(--purple)}
+.nav-links{display:flex;align-items:center;gap:2px}.nav-links a{padding:7px 13px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;transition:all 0.2s}.nav-links a:hover{background:var(--bg);color:var(--purple)}
+.nav-cta{padding:6px 13px;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;border-radius:var(--radius-pill);font-size:12px;font-weight:700;text-decoration:none;transition:all 0.2s;box-shadow:0 4px 14px rgba(124,58,237,0.35)}
+.page-hero{padding:130px 24px 60px;background:linear-gradient(160deg,#faf7ff 0%,#f0e8ff 50%,#fce7f3 100%);text-align:center;position:relative;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.3;pointer-events:none}.blob1{width:400px;height:400px;background:#a78bfa;top:-80px;left:-80px}.blob2{width:300px;height:300px;background:#ff85b3;top:0;right:-60px}
+.hero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+.page-tag{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:var(--radius-pill);background:rgba(124,58,237,0.1);color:var(--purple);font-size:12px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:18px}
+.page-hero h1{font-family:var(--ff-head);font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:14px;color:var(--text)}
+.grad{background:linear-gradient(90deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-hero p{font-size:15px;color:var(--muted);font-weight:500;line-height:1.7}
+/* Search */
+.faq-search-wrap{max-width:520px;margin:28px auto 0;position:relative}
+.faq-search{width:100%;padding:14px 20px 14px 48px;border:2px solid rgba(124,58,237,0.15);border-radius:var(--radius-pill);font-family:var(--ff-body);font-size:14px;color:var(--text);background:white;outline:none;transition:border-color 0.2s;box-shadow:0 4px 20px rgba(124,58,237,0.08)}
+.faq-search:focus{border-color:var(--purple)}
+.faq-search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--muted);pointer-events:none}
+/* Main */
+.faq-main{max-width:800px;margin:0 auto;padding:60px 24px 100px}
+.faq-section{margin-bottom:52px}
+.faq-section-title{font-family:var(--ff-head);font-size:18px;font-weight:900;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:2px solid rgba(124,58,237,0.1)}
+.faq-item{background:white;border:2px solid rgba(124,58,237,0.08);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden;transition:border-color 0.2s}
+.faq-item:hover{border-color:rgba(124,58,237,0.2)}
+.faq-item.open{border-color:rgba(124,58,237,0.3);box-shadow:0 4px 20px rgba(124,58,237,0.08)}
+.faq-q{padding:18px 22px;font-size:15px;font-weight:700;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none;font-family:var(--ff-head)}
+.faq-arrow{font-size:16px;transition:transform 0.3s;color:var(--purple);flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s;font-size:14px;color:var(--muted);font-weight:500;line-height:1.8;padding:0 22px}
+.faq-item.open .faq-a{max-height:400px;padding:0 22px 18px}
+.faq-a a{color:var(--purple);text-decoration:none}.faq-a a:hover{text-decoration:underline}
+/* Still need help */
+.still-help{background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:var(--radius);padding:40px;text-align:center;color:white;margin-top:48px}
+.still-help h3{font-family:var(--ff-head);font-size:22px;font-weight:900;margin-bottom:8px}
+.still-help p{font-size:14px;opacity:0.8;margin-bottom:20px;font-weight:500}
+.still-help a{display:inline-block;padding:12px 28px;background:white;color:var(--purple);border-radius:var(--radius-pill);font-size:14px;font-weight:800;text-decoration:none;transition:all 0.2s}
+.still-help a:hover{transform:scale(1.05);box-shadow:0 8px 20px rgba(0,0,0,0.2)}
+footer{background:#0f0520;padding:40px 24px 28px;text-align:center}
+.footer-logo-wrap{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;margin-bottom:14px}
+.footer-logo-mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:white;font-size:12px}
+.footer-logo-text{font-family:var(--ff-head);font-size:16px;font-weight:900;color:white}
+.footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.2s;font-weight:500}.footer-links a:hover{color:white}
+footer p{font-size:11px;color:rgba(255,255,255,0.15);font-weight:500}
+@media(max-width:768px){nav{width:calc(100% - 24px);padding:10px 14px;top:8px}.nav-links{display:none}}
+
+<style id="final-lang-integrity-style">
+header .i18n-dropdown,.nav .i18n-dropdown,.navbar .i18n-dropdown{top:calc(100% + 8px)!important;bottom:auto!important;z-index:2147483647!important;max-height:min(420px,70vh)!important;overflow:auto!important;}
+footer .i18n-dropdown,.site-footer .i18n-dropdown{top:auto!important;bottom:calc(100% + 8px)!important;z-index:2147483647!important;max-height:min(420px,70vh)!important;overflow:auto!important;}
+.i18n-switcher,.i18n-dropdown{z-index:2147483647!important;}
+</style>
+</style><script defer="" src="js/i18n.js"></script>
+<script defer src="assets/odyssey-portal-translations.js"></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+
+<style id="odyssey-switcher-viewport-safety-net">
+#i18n-floating{overflow:visible!important;}
+#i18n-floating .i18n-dropdown{top:auto!important;bottom:calc(100% + 10px)!important;max-height:min(420px,calc(100vh - 96px))!important;overflow-y:auto!important;z-index:2147483647!important;}
+</style>
+<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
+<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
+<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+</head><body>
+<nav>
+<a class="nav-logo" href="learnworld_landing.html"><div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="nav-logo-text"><span>Odyssey</span></span></a>
+<div class="nav-links"><a href="learnworld_landing.html"><span data-i18n="nav_home">Home</span></a><a href="learnworld_catalog.html"><span data-i18n="nav_courses">Courses</span></a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a href="stories.html"><span data-i18n="footer_stories">Stories</span></a></div>
+<span data-i18n-switcher=""></span>
+<a class="nav-cta" data-i18n="faq_browse_courses" href="learnworld_catalog.html">Browse courses →</a>
+</nav>
+<div class="page-hero">
+<div class="blob blob1"></div><div class="blob blob2"></div>
+<div class="hero-inner">
+<div class="page-tag" data-i18n="faq_tag">💡 Help Centre</div>
+<h1 data-i18n="faq_title">Frequently Asked Questions</h1>
+<p data-i18n="faq_sub">Everything you need to know about Odyssey — for students, instructors, and institutions.</p>
+<div class="faq-search-wrap">
+<span class="faq-search-icon">🔍</span>
+<input class="faq-search" data-i18n-placeholder="ph_faq_search" oninput="filterFaqs(this.value)" placeholder="Search questions…" type="text"/>
+</div>
+</div>
+</div>
+<div class="faq-main">
+<div class="faq-section" id="section-students">
+<div class="faq-section-title" data-i18n="faq_students_title">🎒 For Students</div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_free">Is Odyssey free to use?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_free">Creating a student account and browsing all 840,000+ courses is completely free. Individual courses are priced by their instructors — many are offered at no cost, and paid courses use local-currency pricing to stay affordable wherever you are.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_enrol">How do I enrol in a course?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_enrol">Click any course card in the <a data-i18n="auto_faq_catalogue_a6f272c8" href="learnworld_catalog.html">catalogue</a>, then click "Enrol now." For free courses, access is instant. For paid courses, you'll be taken to our secure checkout — we accept credit/debit cards, PayPal, and local payment methods in 80+ countries.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_offline">Can I download courses for offline viewing?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_offline">Yes! Our mobile app (iOS and Android) lets you download any course for offline access. This is especially important for learners in areas with limited connectivity — we compress videos for low-bandwidth download too.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_cert">How do I get my certificate after completing a course?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_cert">Once you complete all lessons and pass the final assessment (where required), a verified digital certificate is automatically issued to your profile. You can download it as a PDF, share it on LinkedIn, or have the institution verify it directly via our <a data-i18n="auto_faq_accreditations_portal_13ba48d7" href="accreditations.html">Accreditations portal</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_satisfied">Can I get a refund if I'm not satisfied?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_satisfied">Absolutely. We offer a 30-day money-back guarantee on all paid courses, no questions asked. Contact our <a data-i18n="auto_faq_support_team_1ddd6672" href="contact.html">support team</a> with your order details and we'll process the refund within 5 business days. See our full <a data-i18n="auto_faq_refund_policy_b3966088" href="terms.html#refund">Refund Policy</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_password">How do I reset my password?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_password">Go to the login page and click "Forgot password." Enter your email address and we'll send a reset link within a few minutes. If it doesn't arrive, check your spam folder or contact <a data-i18n="auto_faq_support_434990c8" href="contact.html">support</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_language">Are courses available in my language?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_language">Odyssey hosts courses in over 60 languages, including Arabic, Hindi, Swahili, Mandarin, Persian (Farsi), Portuguese, Spanish, French, German, Japanese, and many more. Use the Language filter in the <a data-i18n="auto_faq_catalogue_a6f272c8" href="learnworld_catalog.html">catalogue</a> to find courses in your language.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_devices">What devices can I use Odyssey on?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_devices">Odyssey works on any modern browser (Chrome, Firefox, Safari, Edge) on desktop, tablet, or mobile. Our native app for iOS and Android offers the full experience including offline downloads, push notifications, and live class support.</div></div>
+</div>
+<div class="faq-section" id="section-instructor">
+<div class="faq-section-title" data-i18n="faq_instructors_title">🧑‍🏫 For Instructors</div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_become">How do I become an instructor on Odyssey?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_become">Click "Start teaching" on the homepage or <a data-i18n="auto_faq_apply_here_fa225ccc" href="contact.html">apply here</a>. Complete your instructor profile, verify your identity, and submit your first course for review. Our team typically reviews submissions within 5 business days and provides feedback if changes are needed.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_earn">How much do instructors earn on Odyssey?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_earn">Instructors keep 70% of the net revenue from every course sale. You set your own price, and earnings are paid monthly in your local currency via bank transfer, PayPal, or Stripe. See our full <a data-i18n="auto_faq_earnings_payouts_c504c7cc" href="earnings.html">Earnings &amp; Payouts</a> page for details.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_quality">What quality standards do courses need to meet?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_quality">Courses must have clear learning objectives, well-structured content, and at minimum 360p video quality. We do not require professional studio production — authenticity and subject expertise matter far more. Our team provides a full quality checklist when you apply.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_teach_lang">Can I teach in my own language?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_teach_lang">Yes, absolutely. You can create courses in any language. Odyssey actively encourages courses in local and regional languages — a Yoruba-language JAMB prep course, for example, reaches students that English-only content can never serve.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_provide_cert">Do I need to provide certificates to students?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_provide_cert">Odyssey automatically generates verified certificates for students who complete your course. You can also apply to have your courses recognised by our academic accreditation partners. See the <a data-i18n="auto_faq_accreditations_7d9aa7ab" href="accreditations.html">Accreditations</a> page for details.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_live">Can I offer live classes?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_live">Yes. Instructors can schedule live class sessions directly through the Odyssey platform, with integrated video conferencing, screen sharing, interactive whiteboards, and recorded replays for students who can't attend live.</div></div>
+</div>
+<div class="faq-section" id="section-institutions">
+<div class="faq-section-title" data-i18n="faq_institutions_title">🏫 For Institutions</div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_institutions_use">Can schools and universities use Odyssey?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_institutions_use">Yes. We offer institutional white-label plans for schools, universities, tutoring centres, and government agencies. Your institution can host its own branded catalogue within the Odyssey platform, with custom domains, bulk enrolment, and analytics dashboards. <a data-i18n="auto_faq_contact_us_02d4482d" href="contact.html">Contact us</a> to discuss.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_data_laws">Does Odyssey comply with GDPR and student data laws?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_data_laws">Yes. Odyssey is fully GDPR-compliant for European users, COPPA-compliant for learners under 13, and adheres to local data protection laws in all 190+ countries we operate in. We never sell student data or share it with advertisers. See our <a data-i18n="auto_faq_privacy_policy_fa2ead69" href="privacy.html">Privacy Policy</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_university_recognition">Are certificates from Odyssey recognised by universities?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_university_recognition">Many Odyssey courses are taught by affiliated university faculty and carry institutional recognition. For formal accreditation, see our <a data-i18n="auto_faq_accreditations_page_b60053e7" href="accreditations.html">Accreditations page</a> which lists partner institutions, exam boards, and professional bodies that recognise Odyssey completion certificates.</div></div>
+</div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_refund">What is the refund policy?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n="faq_a_refund">You may request a full refund within 14 days of enrollment, provided you have completed less than 20% of the course content. After 14 days (but within 30 days), if you have completed less than 50% of the course, you will receive a 60% refund of the amount paid. After 30 days or beyond 50% completion, no refund is issued.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_cert_fail">What happens if I fail the certificate exam?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n="faq_a_cert_fail">If you score below the instructor's passing threshold, you will not qualify for the certificate. You cannot retake the exam in isolation — you must re-enroll in the full course by paying 30% of the original course price.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_q_and_a">Can I ask the instructor questions directly?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n="faq_a_q_and_a">Some instructors offer a direct Q&amp;A service, either for free or at an additional fee set entirely by them. Odyssey takes no commission on Q&amp;A fees.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_cert_price">Is the certificate included in the course price?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n="faq_a_cert_price">Yes — always. If a course offers a certificate, the cost must be included in the enrollment fee. Instructors are never permitted to charge extra for the certificate.</div></div>
+<div class="still-help">
+<h3 data-i18n="faq_help_title">Still have a question? 👋</h3>
+<p data-i18n="faq_help_body">Our team usually responds within 24 hours — and we're genuinely friendly.</p>
+<a data-i18n="faq_help_cta" href="contact.html">Contact support →</a>
+</div>
+</div>
+<footer>
+<a class="footer-logo-wrap" href="learnworld_landing.html"><div class="footer-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="footer-logo-text">Odyssey</span></a>
+<div class="footer-links">
+<a href="faq.html"><span data-i18n="footer_faq">FAQs</span></a><a href="terms.html"><span data-i18n="footer_terms">Terms</span></a><a href="privacy.html"><span data-i18n="footer_privacy">Privacy</span></a>
+<a href="earnings.html"><span data-i18n="footer_earnings">Earnings</span></a><a href="subscription.html"><span data-i18n="footer_subscriptions">Subscriptions</span></a><a href="accreditations.html"><span data-i18n="footer_accred">Accreditations</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a>
+</div>
+<p><span data-i18n="footer_rights">© 2026 Odyssey · Demo preview</span></p>
+</footer>
+<script>
+function toggleFaq(el){const item=el.parentElement;const was=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!was)item.classList.add('open')}
+function filterFaqs(q){const t=q.toLowerCase();document.querySelectorAll('.faq-item').forEach(item=>{const text=item.textContent.toLowerCase();item.style.display=(!q||text.includes(t))?'':'none'})}
+</script>
+<script src="assets/odyssey-global-motion.js" defer></script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+</body></html>

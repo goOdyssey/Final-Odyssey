@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Odyssey — Course Discovery</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d1b2a;--navy2:#162032;--navy3:#1f2d3d;
+  --gold:#c8973a;--gold2:#e8b55a;--gold-pale:#fdf3e3;
+  --cream:#f5f0e8;--cream2:#ede6d6;
+  --text:#0d1b2a;--muted:#4a5568;--muted2:#718096;
+  --border:#d8cfc0;--border2:#e8e2d8;--white:#ffffff;
+  --radius:8px;--radius-lg:12px;--radius-pill:999px;
+  --ff-display:"Newsreader", Georgia, serif;
+  --ff-body:Manrope, system-ui, sans-serif;--ff-mono:'DM Mono',monospace;
+  --shadow:0 2px 12px rgba(13,27,42,0.08);--shadow-md:0 4px 24px rgba(13,27,42,0.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-body);background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:60px;background:rgba(13,27,42,0.98);border-bottom:1px solid rgba(200,151,58,0.2);backdrop-filter:blur(12px)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-mark{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ff4d8d);display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-weight:700;color:white;font-size:12px}
+.nav-logo-text{font-family:var(--ff-display);font-size:17px;font-weight:600;color:white}
+.nav-logo-text span{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nav-right a{font-size:13px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;transition:color 0.2s;white-space:nowrap}
+.nav-right a:hover,.nav-right a.active{color:var(--gold)}
+.nav-cta{padding:7px 14px;background:var(--gold);color:var(--navy)!important;border-radius:var(--radius);font-weight:600!important;white-space:nowrap}
+.nav-cta:hover{background:var(--gold2)!important}
+
+/* SEARCH HERO */
+.search-hero{background:var(--navy);padding:48px 40px 0;position:relative;overflow:hidden}
+.sh-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(200,151,58,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,151,58,0.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.sh-glow{position:absolute;top:-120px;right:-80px;width:500px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(200,151,58,0.1) 0%,transparent 70%);pointer-events:none}
+.sh-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.sh-label{font-family:var(--ff-mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:block}
+.sh-inner h1{font-family:var(--ff-display);font-size:clamp(26px,4vw,44px);font-weight:700;color:white;line-height:1.1;letter-spacing:-0.5px;margin-bottom:6px}
+.sh-inner h1 em{font-style:italic;color:var(--gold)}
+.sh-sub{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:28px;font-weight:300}
+
+/* ── CASCADING SMART SEARCH ── */
+.search-wrap{background:white;border-radius:var(--radius-lg) var(--radius-lg) 0 0;border:1px solid var(--border);border-bottom:none;box-shadow:var(--shadow-md);overflow:visible}
+
+/* Top text search row */
+.search-row{display:flex;align-items:stretch;border-bottom:1px solid var(--border2)}
+.search-input-wrap{flex:1;display:flex;align-items:center;padding:0 18px;gap:10px}
+.search-input{width:100%;border:none;outline:none;font-family:var(--ff-body);font-size:14px;color:var(--text);background:transparent;padding:15px 0}
+.search-input::placeholder{color:var(--muted2)}
+.search-btn{height:54px;min-width:118px;padding:0 22px;margin:0;background:var(--gold);color:var(--navy);font-size:13px;font-weight:800;border:none;cursor:pointer;font-family:var(--ff-body);letter-spacing:0.2px;transition:background 0.2s;white-space:nowrap;border-radius:0 var(--radius-lg) var(--radius-lg) 0;display:inline-flex;align-items:center;justify-content:center;align-self:stretch;box-sizing:border-box}
+.search-btn:hover{background:var(--gold2)}
+
+/* 5-step cascade row */
+.cascade-row{overflow:visible;display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--border2)}
+.cs{display:flex;flex-direction:column;border-right:1px solid var(--border2);min-width:0;position:relative;transition:background 0.15s}
+.cs:last-child{border-right:none}
+.cs.locked{opacity:0.38;pointer-events:none}
+.cs.active-step{background:rgba(200,151,58,0.03)}
+.cs-head{display:flex;align-items:center;gap:6px;padding:8px 12px 3px}
+.cs-num{width:17px;height:17px;border-radius:50%;background:var(--border2);color:var(--muted2);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;font-family:var(--ff-mono)}
+.cs.done .cs-num{background:var(--gold);color:var(--navy)}
+.cs.active-step .cs-num{background:var(--navy);color:white}
+.cs-lbl{font-family:var(--ff-mono);font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted2);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs.active-step .cs-lbl,.cs.done .cs-lbl{color:var(--navy);font-weight:700}
+.cs-sel{border:none;outline:none;font-family:var(--ff-body);font-size:12px;color:var(--text);background:transparent;padding:5px 26px 10px 12px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a5568' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;width:100%;font-weight:500}
+.cs-sel:disabled{cursor:not-allowed;color:var(--muted2)}
+.cs-sel option{font-size:13px}
+.cs-val{font-size:11px;color:var(--gold);font-weight:600;padding:0 12px 6px;display:none;font-family:var(--ff-mono);letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs.done .cs-val{display:block}
+
+/* Country search within step */
+.country-wrap{padding:4px 12px 8px;position:relative;overflow:visible;z-index:100000}
+.country-inp{width:100%;border:1px solid var(--border2);border-radius:4px;padding:5px 9px;font-family:var(--ff-body);font-size:12px;color:var(--text);outline:none;background:var(--cream);transition:border-color 0.15s}
+.country-inp:focus{border-color:var(--gold)}
+.country-drop{position:fixed;top:auto;left:auto;right:auto;z-index:999999;background:white;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg);box-shadow:var(--shadow-md);max-height:220px;overflow-y:auto;display:none}
+.country-drop.open{display:block}
+.country-opt{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text);transition:background 0.1s;white-space:nowrap}
+.country-opt:hover{background:var(--gold-pale)}
+.country-opt.selected{background:rgba(200,151,58,0.12);font-weight:600}
+.c-flag{font-size:15px;flex-shrink:0}
+.c-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+
+/* Active filter chips */
+.chip-row{display:flex;align-items:center;gap:6px;padding:8px 16px;flex-wrap:wrap;border-top:1px solid var(--border2);min-height:36px}
+.chip-row.hidden{display:none}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:var(--gold-pale);border:1px solid rgba(200,151,58,0.35);border-radius:20px;font-size:11px;color:var(--navy);font-weight:500}
+.chip-x{cursor:pointer;color:var(--gold);font-size:10px;transition:color 0.15s}
+.chip-x:hover{color:var(--navy)}
+.chip-clear{margin-left:auto;font-size:11px;color:var(--muted2);cursor:pointer;border:none;background:none;font-family:var(--ff-body);padding:0 4px;transition:color 0.2s}
+.chip-clear:hover{color:var(--gold)}
+
+/* CAT TYPE BAR */
+.cat-type-bar{background:white;border-bottom:1px solid var(--border);position:sticky;top:60px;z-index:100}
+.cat-type-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 40px}
+.cat-type-inner::-webkit-scrollbar{display:none}
+.cat-btn{display:flex;align-items:center;gap:7px;padding:14px 18px;border:none;background:transparent;cursor:pointer;font-family:var(--ff-body);font-size:13px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color 0.2s,border-color 0.2s;flex-shrink:0}
+.cat-btn .cc{font-family:var(--ff-mono);font-size:10px;background:var(--cream2);color:var(--muted2);padding:2px 6px;border-radius:10px;transition:all 0.2s}
+.cat-btn.active,.cat-btn:hover{color:var(--navy)}
+.cat-btn.active{border-bottom-color:var(--gold)}
+.cat-btn.active .cc{background:var(--gold);color:var(--navy)}
+.cat-divider{width:1px;height:22px;background:var(--border);flex-shrink:0;margin:0 2px}
+
+/* MAIN LAYOUT */
+.main{max-width:1100px;margin:0 auto;padding:28px 40px 80px;display:grid;grid-template-columns:220px 1fr;gap:28px}
+
+/* SIDEBAR */
+.sidebar-section{margin-bottom:24px}
+.sidebar-title{font-family:var(--ff-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);margin-bottom:12px;display:block}
+.sidebar-opt{display:flex;align-items:center;justify-content:space-between;padding:7px 0;cursor:pointer;border-bottom:1px solid var(--border2)}
+.sidebar-opt:last-child{border-bottom:none}
+.sidebar-opt label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--text);font-weight:400}
+.sidebar-opt input[type=checkbox]{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+.sidebar-cnt{font-family:var(--ff-mono);font-size:10px;color:var(--muted2)}
+.sidebar-opt:hover label{color:var(--navy);font-weight:500}
+.rating-row{display:flex;align-items:center;gap:7px;padding:5px 0;cursor:pointer;font-size:12px;color:var(--text);border-bottom:1px solid var(--border2)}
+.rating-row:last-child{border-bottom:none}
+.rating-row:hover{color:var(--navy);font-weight:500}
+.sidebar-card{background:var(--navy);border-radius:var(--radius-lg);padding:18px;margin-top:6px}
+.sidebar-card p{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:12px}
+.sidebar-card h4{font-family:var(--ff-display);font-size:14px;color:white;margin-bottom:6px}
+.sidebar-card a{display:block;text-align:center;padding:8px;background:var(--gold);color:var(--navy);border-radius:var(--radius);font-size:12px;font-weight:600;text-decoration:none;transition:background 0.2s}
+.sidebar-card a:hover{background:var(--gold2)}
+
+/* CATALOG */
+.catalog-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.catalog-count{font-size:13px;color:var(--muted)}
+.catalog-count strong{color:var(--navy);font-weight:600}
+.sort-select{border:1px solid var(--border);border-radius:var(--radius);padding:6px 26px 6px 10px;font-family:var(--ff-body);font-size:12px;color:var(--text);background:white;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a5568' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.view-toggle{display:flex;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.view-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:white;border:none;cursor:pointer;color:var(--muted2);transition:all 0.2s;font-size:13px}
+.view-btn.active{background:var(--navy);color:white}
+
+/* COURSE GRID */
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.course-grid.list-view{grid-template-columns:1fr}
+.course-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;cursor:pointer;display:flex;flex-direction:column}
+.course-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:rgba(200,151,58,0.4)}
+.course-card.list-view{flex-direction:row}
+.course-thumb{height:140px;position:relative;overflow:hidden;flex-shrink:0}
+.course-card.list-view .course-thumb{width:180px;height:auto;min-height:120px}
+.thumb-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.thumb-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,27,42,0.6) 0%,rgba(13,27,42,0.2) 100%)}
+.course-badge{position:absolute;top:8px;left:8px;font-family:var(--ff-mono);font-size:9px;letter-spacing:0.8px;text-transform:uppercase;padding:3px 7px;border-radius:3px;color:var(--navy);font-weight:500}
+.badge-voc{background:#a8d5b5}.badge-uni{background:#b5c8f0}.badge-k12{background:#f5d5a0}.badge-ent{background:#f0b5b5}.badge-lng{background:#d5b5f0}
+.course-fav{position:absolute;top:8px;right:8px;width:26px;height:26px;background:rgba(255,255,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:transform 0.2s}
+.course-fav:hover{transform:scale(1.15)}
+.course-body{padding:14px 16px;display:flex;flex-direction:column;flex:1}
+.course-meta-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.course-field{font-family:var(--ff-mono);font-size:9px;letter-spacing:0.8px;text-transform:uppercase;color:var(--gold);font-weight:500}
+.course-country{font-size:11px;color:var(--muted2)}
+.course-title{font-family:var(--ff-display);font-size:14px;font-weight:600;color:var(--navy);line-height:1.35;margin-bottom:5px}
+.course-instructor{font-size:11px;color:var(--muted2);margin-bottom:9px}
+.course-instructor span{color:var(--muted);font-weight:500}
+.course-stats{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted2);flex-wrap:wrap}
+.course-rating{display:flex;align-items:center;gap:3px;color:var(--gold);font-weight:600;font-size:11px}
+.course-dot{width:2px;height:2px;border-radius:50%;background:var(--border)}
+.course-footer{margin-top:auto;padding-top:10px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+.course-price{font-family:var(--ff-display);font-size:15px;font-weight:700;color:var(--navy)}
+.price-free{color:#3a8a5a}
+.course-prices{display:grid;gap:5px;min-width:158px}
+.price-line{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
+.price-line strong{font-family:var(--ff-display);font-size:15px;color:var(--navy)}
+.price-line.price-free strong{color:#3a8a5a}
+.price-line.interactive strong{color:#0f766e}
+.btn-enroll{padding:6px 14px;background:var(--navy);color:white;border:none;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ff-body);transition:background 0.2s}
+.btn-enroll:hover{background:var(--gold);color:var(--navy)}
+
+/* NO RESULTS */
+.no-results{text-align:center;padding:64px 20px;display:none}
+.no-results.show{display:block}
+.no-results-icon{font-size:44px;margin-bottom:14px}
+.no-results h3{font-family:var(--ff-display);font-size:20px;color:var(--navy);margin-bottom:8px}
+.no-results p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:40px}
+.page-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:var(--radius);background:white;font-size:13px;color:var(--muted);cursor:pointer;transition:all 0.2s;font-family:var(--ff-body)}
+.page-btn:hover,.page-btn.active{background:var(--navy);color:white;border-color:var(--navy)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.course-card{animation:fadeUp 0.35s ease both}
+
+@media(max-width:768px){nav{padding:0 16px}.cat-type-inner{padding:0 16px}.main{grid-template-columns:1fr;padding:16px 16px 48px}.sidebar{display:none}.search-hero{padding:32px 16px 0}.cascade-row{overflow:visible;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr}.cs:nth-child(5){grid-column:1/-1}}
+
+<style id="catalog-final-filter-polish">
+.search-box{display:flex;align-items:center;gap:10px;overflow:hidden}
+.search-box input{min-width:0;flex:1}
+.search-box button,.search-btn{align-self:stretch;display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:0 22px;line-height:1;border-radius:16px;margin:0}
+.sidebar-title,[data-i18n="sb_price"],[data-i18n="sb_rating"]{font-weight:900;letter-spacing:.02em}
+.cs-lbl, .sidebar-title{text-transform:none!important}
+@media(max-width:680px){.search-box{flex-direction:column;align-items:stretch}.search-box button,.search-btn{min-height:46px;width:100%}}
+
+<style id="final-lang-integrity-style">
+header .i18n-dropdown,.nav .i18n-dropdown,.navbar .i18n-dropdown{top:calc(100% + 8px)!important;bottom:auto!important;z-index:2147483647!important;max-height:min(420px,70vh)!important;overflow:auto!important;}
+footer .i18n-dropdown,.site-footer .i18n-dropdown{top:auto!important;bottom:calc(100% + 8px)!important;z-index:2147483647!important;max-height:min(420px,70vh)!important;overflow:auto!important;}
+.i18n-switcher,.i18n-dropdown{z-index:2147483647!important;}
+
+<style id="catalog-final-no-prefix-style">
+.filter-card,.filters,.sidebar{overflow:visible!important}.select-menu,.country-menu,.dropdown-menu{z-index:2147483647!important}.search-box{display:flex;align-items:center;gap:10px}.search-box input{min-width:0;flex:1}.search-box button,.search-btn{height:48px;min-width:108px;margin:0;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;border-radius:14px;padding:0 18px}
+@media(max-width:720px){.search-box{flex-direction:column;align-items:stretch}.search-box button,.search-btn{width:100%}}
+</style>
+</style>
+</style>
+</style>
+<script defer="" src="js/i18n.js"></script>
+<script defer src="assets/odyssey-portal-translations.js"></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+
+<style id="odyssey-switcher-viewport-safety-net">
+#i18n-floating{overflow:visible!important;}
+#i18n-floating .i18n-dropdown{top:auto!important;bottom:calc(100% + 10px)!important;max-height:min(420px,calc(100vh - 96px))!important;overflow-y:auto!important;z-index:2147483647!important;}
+</style>
+
+<style id="catalog-release-candidate-layout-fixes">
+.search-wrap,.cascade-row,.cs,.country-wrap{overflow:visible!important;}
+.search-row{display:flex!important;align-items:stretch!important;gap:0!important;max-width:100%!important;}
+.search-input-wrap{flex:1 1 auto!important;min-width:0!important;min-height:54px!important;border-radius:var(--radius-lg) 0 0 var(--radius-lg)!important;}
+.search-input{min-width:0!important;width:100%!important;}
+.search-btn{height:54px!important;min-width:116px!important;max-width:160px!important;padding:0 20px!important;margin:0!important;border-radius:0 var(--radius-lg) var(--radius-lg) 0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;align-self:stretch!important;white-space:nowrap!important;line-height:1!important;box-sizing:border-box!important;}
+.cascade-row{display:grid!important;grid-template-columns:repeat(5,minmax(145px,1fr))!important;gap:10px!important;}
+.cs{min-width:0!important;}
+.cs-sel,.country-inp{width:100%!important;min-width:0!important;text-overflow:ellipsis!important;}
+.country-drop{position:fixed!important;z-index:2147483647!important;max-height:min(320px,calc(100vh - 120px))!important;overflow-y:auto!important;background:var(--white)!important;border:1px solid var(--border)!important;border-radius:var(--radius-lg)!important;box-shadow:0 22px 70px rgba(13,27,42,.22)!important;}
+.catalog-url-banner{background:linear-gradient(90deg,rgba(200,151,58,0.08),rgba(200,151,58,0.03));border:1px solid rgba(200,151,58,0.25);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--navy);display:flex;align-items:center;gap:10px;font-weight:600;flex-wrap:wrap;}
+.catalog-url-banner strong{color:var(--gold);font-weight:700}.catalog-url-banner button{margin-left:auto;border:0;background:transparent;cursor:pointer;color:var(--muted2);font-weight:700;font-family:inherit}
+html[dir="rtl"] .catalog-url-banner button{margin-left:0;margin-right:auto;}
+@media(max-width:980px){.cascade-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;}.search-btn{max-width:none!important;}}
+@media(max-width:640px){.search-row{flex-direction:column!important}.search-input-wrap{border-radius:var(--radius-lg) var(--radius-lg) 0 0!important}.search-btn{width:100%!important;max-width:none!important;border-radius:0 0 var(--radius-lg) var(--radius-lg)!important}.cascade-row{grid-template-columns:1fr!important}.country-drop{left:12px!important;right:12px!important;width:auto!important;}}
+</style>
+
+<style id="catalog-final-smooth-layout-override">
+.search-wrap,.cascade-row,.cs,.country-wrap,.main,.content{overflow:visible!important;}
+.search-row{display:flex!important;align-items:stretch!important;gap:0!important;width:100%!important;max-width:980px!important;margin:0 auto!important;}
+.search-input-wrap{flex:1 1 auto!important;min-width:0!important;min-height:54px!important;border-radius:var(--radius-lg) 0 0 var(--radius-lg)!important;}
+.search-input{width:100%!important;min-width:0!important;}
+.search-btn{height:54px!important;min-width:112px!important;width:auto!important;padding:0 18px!important;margin:0!important;border-radius:0 var(--radius-lg) var(--radius-lg) 0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;align-self:stretch!important;line-height:1!important;white-space:nowrap!important;box-sizing:border-box!important;}
+.cascade-row{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(155px,1fr))!important;gap:10px!important;align-items:stretch!important;}
+.cs{min-width:0!important;max-width:100%!important;}
+.cs-sel,.country-inp{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;text-overflow:ellipsis!important;}
+.country-drop.open{display:block!important;}
+.course-grid{min-width:0!important;}
+.course-card{min-width:0!important;max-width:100%!important;overflow:hidden!important;}
+@media(max-width:720px){.search-row{flex-direction:column!important}.search-input-wrap{border-radius:var(--radius-lg) var(--radius-lg) 0 0!important}.search-btn{width:100%!important;border-radius:0 0 var(--radius-lg) var(--radius-lg)!important}.cascade-row{grid-template-columns:1fr!important}}
+</style>
+<style>
+
+/* Final switcher visibility rules */
+.top-nav .i18n-dropdown,
+.nav-right .i18n-dropdown,
+header .i18n-dropdown,
+nav .i18n-dropdown,
+.navbar .i18n-dropdown{
+  top:calc(100% + 8px)!important;
+  bottom:auto!important;
+  right:0!important;
+  left:auto!important;
+  max-height:min(430px,70vh)!important;
+}
+.i18n-floating .i18n-dropdown,
+footer .i18n-dropdown,
+.site-footer .i18n-dropdown{
+  top:auto!important;
+  bottom:calc(100% + 8px)!important;
+  max-height:min(430px,70vh)!important;
+}
+html[dir="rtl"] .top-nav .i18n-dropdown,
+html[dir="rtl"] .nav-right .i18n-dropdown,
+html[dir="rtl"] header .i18n-dropdown,
+html[dir="rtl"] nav .i18n-dropdown{
+  right:auto!important;
+  left:0!important;
+}
+
+</style>
+<style id="odyssey-2026-catalog-refresh">
+:root{
+  --navy:#17202c;--navy2:#223044;--navy3:#334155;--gold:#d6a246;--gold2:#e1b866;--gold-pale:#f6ead1;
+  --cream:#eef1f4;--cream2:#e5e9ef;--text:#17202c;--muted:#5f6b7a;--muted2:#7b8796;
+  --border:#d7dde6;--border2:#e5e9ef;--white:#ffffff;--shadow:0 12px 38px rgba(15,23,42,.08);--shadow-md:0 24px 70px rgba(15,23,42,.14);
+}
+body{background:linear-gradient(135deg,rgba(15,118,110,.08),transparent 30%),var(--cream);letter-spacing:0}
+nav{background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.10);box-shadow:0 18px 48px rgba(15,23,42,.16)}
+.nav-logo-mark{border-radius:11px;background:linear-gradient(135deg,#17202c,#0f766e)}
+.nav-cta{background:#d6a246;border-radius:10px}.nav-cta:hover{background:#e1b866!important}
+.search-hero{background:linear-gradient(135deg,rgba(23,32,44,.95),rgba(15,63,61,.92)),url("assets/odyssey-global-learning-fast.jpg") center/cover;padding:58px 40px 0}
+.sh-grid{background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px)}
+.sh-glow{background:radial-gradient(circle,rgba(214,162,70,.18),transparent 70%)}
+.sh-label{color:#e1b866}.sh-inner h1{font-family:var(--ff-display);letter-spacing:0;color:#fff}.sh-sub{color:rgba(255,255,255,.70)}
+.search-wrap{background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-color:rgba(255,255,255,.42);box-shadow:0 28px 80px rgba(15,23,42,.24)}
+.search-input-wrap,.cs.active-step{background:rgba(255,255,255,.72)}.search-btn{background:#17202c;color:white}.search-btn:hover{background:#0f766e;color:white}
+.cs.done .cs-num{background:#0f766e;color:#fff}.cs.active-step .cs-num{background:#17202c}.cs-val{color:#0f766e}
+.cat-type-bar{background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(15,23,42,.10)}
+.cat-btn.active{border-bottom-color:#0f766e}.cat-btn.active .cc{background:#0f766e;color:#fff}
+.main{max-width:1180px}.sidebar-card{background:linear-gradient(135deg,#17202c,#0f3f3d);box-shadow:0 18px 48px rgba(15,23,42,.16)}
+.course-card{border:1px solid rgba(15,23,42,.10);box-shadow:0 14px 34px rgba(15,23,42,.07);border-radius:14px}.course-card:hover{border-color:rgba(15,118,110,.34);box-shadow:0 26px 60px rgba(15,23,42,.14)}
+.thumb-bg{font-size:42px;background-blend-mode:overlay}.thumb-overlay{background:linear-gradient(135deg,rgba(23,32,44,.58),rgba(15,118,110,.18))}
+.course-title{font-size:15px;color:#17202c}.course-field{color:#0f766e}.course-rating{color:#b7791f}.btn-enroll{background:#17202c;border-radius:10px}.btn-enroll:hover{background:#0f766e;color:white}
+.course-price{color:#17202c}.price-free{color:#0f766e}.page-btn:hover,.page-btn.active{background:#17202c;border-color:#17202c}
+@media(max-width:768px){.search-hero{padding:38px 16px 0}.main{padding:18px 16px 56px}}
+</style>
+<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
+<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
+<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+</head>
+<body>
+<nav>
+<a class="nav-logo" href="learnworld_landing.html">
+<div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div>
+<span class="nav-logo-text"><span>Odyssey</span></span>
+</a>
+<div class="nav-right">
+<span class="i18n-dark-wrap" data-i18n-switcher=""></span>
+<a href="learnworld_landing.html"><span data-i18n="nav_home">Home</span></a>
+<a class="active" href="#">Courses</a>
+<a href="tests_marketplace.html">Tests</a>
+<a href="about.html"><span data-i18n="nav_about">About</span></a>
+<a href="contact.html"><span data-i18n="nav_contact">Contact</span></a>
+<a href="auth.html?mode=login"><span data-i18n="nav_login">Log in</span></a>
+<a class="nav-cta" href="auth.html?mode=signup"><span data-i18n="nav_signup">Sign up ✨</span></a>
+</div>
+</nav>
+<!-- SEARCH HERO -->
+<div class="search-hero">
+<div class="sh-grid"></div>
+<div class="sh-glow"></div>
+<div class="sh-inner">
+<span class="sh-label" data-i18n="catalog_tag">Course discovery</span>
+<h1 data-i18n="catalog_title">Find your perfect course</h1>
+<p class="sh-sub" data-i18n="catalog_sub">840,000+ courses · Use the smart filters below to narrow by field, discipline, subject, country and level</p>
+<div class="search-wrap">
+<!-- Text search -->
+<div class="search-row">
+<div class="search-input-wrap">
+<span style="color:var(--muted2);font-size:15px">🔍</span>
+<input class="search-input" data-i18n-placeholder="ph_catalog_search" id="searchInput" oninput="applyFilters()" placeholder="Search by course title, instructor, keyword…" type="text"/>
+</div>
+<button class="search-btn" data-i18n="catalog_search_btn" onclick="applyFilters()">Search</button>
+</div>
+<!-- 5-Step Cascade -->
+<div class="cascade-row">
+<!-- STEP 1: FIELD -->
+<div class="cs active-step" id="cs1">
+<div class="cs-head"><span class="cs-num">1</span><span class="cs-lbl" data-i18n="flt_field">Field</span></div>
+<select class="cs-sel" id="selField" onchange="onFieldChange()">
+<option data-i18n="flt_all_fields" value="">All fields</option>
+<option data-i18n="fld_k12" value="K-12">🏫 K–12 Curriculum</option>
+<option data-i18n="fld_university" value="University">🎓 University</option>
+<option data-i18n="fld_vocational" value="Vocational">🛠️ Vocational</option>
+<option data-i18n="fld_entrance" value="Entrance Exam">📝 Entrance Exams</option>
+<option data-i18n="fld_language" value="Language Exam">🗣️ Language Exams</option>
+<option data-i18n="fld_olympiad" value="Olympiad">🏅 Olympiads &amp; Competitions</option>
+<option data-i18n="fld_professional" value="Professional">💼 Professional Certification</option>
+</select>
+<div class="cs-val" id="val1"></div>
+</div>
+<!-- STEP 2: DISCIPLINE -->
+<div class="cs locked" id="cs2">
+<div class="cs-head"><span class="cs-num">2</span><span class="cs-lbl" data-i18n="flt_discipline">Discipline</span></div>
+<select class="cs-sel" disabled="" id="selDiscipline" onchange="onDisciplineChange()">
+<option data-i18n="flt_choose_field_first" value="">— choose field first —</option>
+</select>
+<div class="cs-val" id="val2"></div>
+</div>
+<!-- STEP 3: SUBJECT -->
+<div class="cs locked" id="cs3">
+<div class="cs-head"><span class="cs-num">3</span><span class="cs-lbl" data-i18n="flt_subject">Subject</span></div>
+<select class="cs-sel" disabled="" id="selSubject" onchange="onSubjectChange()">
+<option data-i18n="flt_choose_disc_first" value="">— choose discipline first —</option>
+</select>
+<div class="cs-val" id="val3"></div>
+</div>
+<!-- STEP 4: COUNTRY -->
+<div class="cs locked" id="cs4">
+<div class="cs-head"><span class="cs-num">4</span><span class="cs-lbl" data-i18n="flt_country">Country</span></div>
+<div class="country-wrap">
+<input autocomplete="off" class="country-inp" data-i18n-placeholder="flt_search_country" disabled="" id="countryInput" onfocus="openCountryDrop()" oninput="filterCountries(this.value)" placeholder="Search country…" type="text"/>
+<div class="country-drop" id="countryDrop"></div>
+</div>
+<div class="cs-val" id="val4"></div>
+</div>
+<!-- STEP 5: LEVEL -->
+<div class="cs locked" id="cs5">
+<div class="cs-head"><span class="cs-num">5</span><span class="cs-lbl" data-i18n="flt_level">Level</span></div>
+<select class="cs-sel" disabled="" id="selLevel" onchange="onLevelChange()">
+<option data-i18n="flt_all_levels" value="">All levels</option>
+<option data-i18n="lvl_beginner" value="Beginner">🌱 Beginner</option>
+<option data-i18n="lvl_elementary" value="Elementary">📗 Elementary</option>
+<option data-i18n="lvl_intermediate" value="Intermediate">📘 Intermediate</option>
+<option data-i18n="lvl_upper" value="Upper-Intermediate">📙 Upper-Intermediate</option>
+<option data-i18n="lvl_advanced" value="Advanced">📕 Advanced</option>
+<option data-i18n="lvl_expert" value="Expert">🏆 Expert / Professional</option>
+</select>
+<div class="cs-val" id="val5"></div>
+</div>
+</div>
+<!-- Active filter chips -->
+<div class="chip-row hidden" id="chipRow"></div>
+</div>
+</div>
+</div>
+<!-- CATEGORY QUICK TABS -->
+<div class="cat-type-bar">
+<div class="cat-type-inner">
+<button class="cat-btn active" data-cat="all" onclick="quickCat('all',this)"><span data-i18n="qtab_all">🌐 All</span> <span class="cc">840K</span></button>
+<div class="cat-divider"></div>
+<button class="cat-btn" data-cat="K-12" onclick="quickCat('K-12',this)"><span data-i18n="qtab_k12">🏫 K–12</span> <span class="cc" id="cnt-k12"></span></button>
+<button class="cat-btn" data-cat="University" onclick="quickCat('University',this)"><span data-i18n="qtab_university">🎓 University</span> <span class="cc" id="cnt-uni"></span></button>
+<button class="cat-btn" data-cat="Vocational" onclick="quickCat('Vocational',this)"><span data-i18n="qtab_vocational">🛠️ Vocational</span> <span class="cc" id="cnt-voc"></span></button>
+<button class="cat-btn" data-cat="Entrance Exam" onclick="quickCat('Entrance Exam',this)"><span data-i18n="qtab_entrance">📝 Entrance</span> <span class="cc" id="cnt-ent"></span></button>
+<button class="cat-btn" data-cat="Language Exam" onclick="quickCat('Language Exam',this)"><span data-i18n="qtab_language">🗣️ Language</span> <span class="cc" id="cnt-lng"></span></button>
+</div>
+</div>
+<!-- MAIN -->
+<div class="main">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="sidebar-section">
+<span class="sidebar-title" data-i18n="sb_price">Price</span>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_free_only">Free only</span></label><span class="sidebar-cnt">12,400</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_under20">Under $20</span></label><span class="sidebar-cnt">94,200</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_20_50">$20–$50</span></label><span class="sidebar-cnt">138,700</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_50plus">$50+</span></label><span class="sidebar-cnt">41,000</span></div>
+</div>
+<div class="sidebar-section">
+<span class="sidebar-title" data-i18n="sb_rating">Rating</span>
+<div class="rating-row">⭐⭐⭐⭐⭐ <span data-i18n="sb_rating5" style="font-size:11px;color:var(--muted2)">5.0 only</span></div>
+<div class="rating-row">⭐⭐⭐⭐½ <span data-i18n="sb_rating45" style="font-size:11px;color:var(--muted2)">4.5 &amp; above</span></div>
+<div class="rating-row">⭐⭐⭐⭐ <span data-i18n="sb_rating40" style="font-size:11px;color:var(--muted2)">4.0 &amp; above</span></div>
+<div class="rating-row">⭐⭐⭐ <span data-i18n="sb_rating30" style="font-size:11px;color:var(--muted2)">3.0 &amp; above</span></div>
+</div>
+<div class="sidebar-section">
+<span class="sidebar-title" data-i18n="sb_duration">Duration</span>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_under5h">Under 5 hrs</span></label><span class="sidebar-cnt">28K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_5_20h">5–20 hrs</span></label><span class="sidebar-cnt">112K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_20_50h">20–50 hrs</span></label><span class="sidebar-cnt">76K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_50plush">50+ hrs</span></label><span class="sidebar-cnt">41K</span></div>
+</div>
+<div class="sidebar-section">
+<span class="sidebar-title" data-i18n="sb_language">Language</span>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_english">English</span></label><span class="sidebar-cnt">420K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_hindi">Hindi</span></label><span class="sidebar-cnt">98K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_arabic">Arabic</span></label><span class="sidebar-cnt">64K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_persian">Persian (Farsi)</span></label><span class="sidebar-cnt">38K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_french">French</span></label><span class="sidebar-cnt">48K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_mandarin">Mandarin</span></label><span class="sidebar-cnt">82K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_portuguese">Portuguese</span></label><span class="sidebar-cnt">36K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_spanish">Spanish</span></label><span class="sidebar-cnt">54K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_swahili">Swahili</span></label><span class="sidebar-cnt">12K</span></div>
+</div>
+<div class="sidebar-section">
+<span class="sidebar-title" data-i18n="sb_features">Features</span>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_live_classes">Live classes</span></label><span class="sidebar-cnt">34K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_certificate">Certificate</span></label><span class="sidebar-cnt">210K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_offline">Offline download</span></label><span class="sidebar-cnt">118K</span></div>
+<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_practice_tests">Practice tests</span></label><span class="sidebar-cnt">62K</span></div>
+</div>
+<div class="sidebar-card">
+<h4 data-i18n="sb_teach_title">Teach on Odyssey</h4>
+<p data-i18n="sb_teach_body">Share your expertise with 12M students. Earn 70% of every sale.</p>
+<a data-i18n="sb_teach_cta" href="auth.html?mode=signup">Become an instructor →</a>
+</div>
+</aside>
+<!-- CATALOG -->
+<main>
+<div class="catalog-header">
+<div class="catalog-count" id="catalogCount"><strong>840,000</strong> courses found</div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<select class="sort-select" onchange="applyFilters()">
+<option data-i18n="sort_popular">Most popular</option><option data-i18n="sort_rated">Highest rated</option>
+<option data-i18n="sort_newest">Newest first</option><option data-i18n="sort_price_low">Price: low to high</option><option data-i18n="sort_price_high">Price: high to low</option>
+</select>
+<div class="view-toggle">
+<button class="view-btn active" data-i18n-title="view_grid_title" id="gridBtn" onclick="setView('grid')" title="Grid">⊞</button>
+<button class="view-btn" data-i18n-title="view_list_title" id="listBtn" onclick="setView('list')" title="List">☰</button>
+</div>
+</div>
+</div>
+<div class="course-grid" id="courseGrid"></div>
+<div class="no-results" id="noResults">
+<div class="no-results-icon">🔍</div>
+<h3 data-i18n="crs_no_results_title">No courses found</h3>
+<p data-i18n="crs_no_results_body">Try adjusting your filters or broadening your search.</p>
+</div>
+<div class="pagination" id="pagination"></div>
+</main>
+</div>
+<script>
+// ════════════════════════════════════════════════
+// DATA: Cascading taxonomy
+// ════════════════════════════════════════════════
+const TAXONOMY = {
+  'K-12': {
+    'Mathematics': ['Algebra','Calculus','Trigonometry','Geometry','Statistics & Probability','Pre-Calculus','Number Theory','Discrete Mathematics'],
+    'Physics': ['Mechanics','Thermodynamics','Electromagnetism','Optics','Waves & Sound','Modern Physics','Quantum Basics','Astrophysics Intro'],
+    'Chemistry': ['Organic Chemistry','Inorganic Chemistry','Physical Chemistry','Stoichiometry','Electrochemistry','Biochemistry Intro','Lab Techniques'],
+    'Biology': ['Cell Biology','Genetics','Ecology','Human Anatomy','Evolution','Microbiology','Botany','Marine Biology'],
+    'History': ['World History','Ancient Civilisations','Modern History','World War I & II','Cold War','Asian History','African History','US History'],
+    'Geography & Earth Sciences': ['Physical Geography','Human Geography','Climatology','Geology','Environmental Science','Cartography','Oceanography'],
+    'Economics': ['Microeconomics','Macroeconomics','Supply & Demand','Market Structures','International Trade','Economic History','Personal Finance'],
+    'Literature & Language': ['Essay Writing','Poetry','Prose Analysis','Grammar','Rhetoric','Comparative Literature','Creative Writing','Public Speaking'],
+    'Social Studies & Civics': ['Political Systems','Citizenship','Sociology Intro','Ethics','Anthropology Intro','Media Literacy','Human Rights'],
+    'Computer Science (HS)': ['Intro to Programming','Algorithms','Data Structures','Web Basics','Digital Literacy','Python Fundamentals','Scratch & Block Coding'],
+    'Foreign Languages (HS)': ['English as Second Language','French','Spanish','Arabic','Mandarin','German','Japanese','Persian / Farsi'],
+    'Arts & Music (HS)': ['Visual Art','Music Theory','Drama','Film Studies','Photography Intro','Dance Intro'],
+    'Physical Education & Health': ['Sports Science','Nutrition Basics','Mental Health Awareness','First Aid'],
+  },
+  'University': {
+    'Medicine (MBBS/MD)': ['Anatomy','Physiology','Histology','Biochemistry','Pathology','Pharmacology','Microbiology','Embryology','Immunology','Neuroscience','Cardiology','Oncology','Surgery Fundamentals'],
+    'Dentistry (BDS)': ['Oral Anatomy','Endodontics','Orthodontics','Periodontics','Oral Surgery','Prosthodontics','Dental Pharmacology','Oral Pathology'],
+    'Pharmacy (BPharm)': ['Pharmaceutical Chemistry','Pharmacognosy','Pharmacokinetics','Drug Formulation','Clinical Pharmacy','Toxicology','Biotechnology Pharma'],
+    'Nursing & Allied Health': ['Nursing Fundamentals','Patient Care','Clinical Assessment','Community Health','Midwifery','Physiotherapy','Occupational Therapy'],
+    'Veterinary Science': ['Animal Anatomy','Veterinary Pharmacology','Animal Surgery','Pathology','Zoonotic Diseases','Livestock Management','Exotic Animal Care'],
+    'Biomedical Science': ['Molecular Biology','Genetic Engineering','Immunology','Cell Signalling','Bioinformatics','Clinical Biochemistry','Stem Cell Research'],
+    'Engineering — Civil': ['Structural Analysis','Concrete Design','Geotechnics','Fluid Mechanics','Transportation Engineering','Construction Management','Earthquake Engineering'],
+    'Engineering — Electrical': ['Circuit Theory','Signal Processing','Power Systems','Electronics','Control Engineering','Electromagnetics','Renewable Energy Systems'],
+    'Engineering — Mechanical': ['Thermodynamics','Machine Design','Manufacturing','Robotics','CAD/CAM','Materials Science','Vibration Analysis','HVAC'],
+    'Engineering — Computer (IT)': ['Data Structures & Algorithms','Operating Systems','Computer Networks','Database Systems','Software Engineering','Cybersecurity','Cloud Computing','AI Fundamentals'],
+    'Engineering — Chemical': ['Process Design','Reaction Engineering','Mass Transfer','Heat Transfer','Process Control','Petroleum Engineering','Environmental Engineering'],
+    'Engineering — Aerospace': ['Aerodynamics','Flight Mechanics','Aircraft Structures','Propulsion','Orbital Mechanics','Avionics','Spacecraft Design'],
+    'Engineering — Materials': ['Crystallography','Polymer Science','Metallurgy','Composite Materials','Nanotechnology','Corrosion Science','Semiconductor Materials'],
+    'Engineering — Petroleum': ['Reservoir Engineering','Drilling Technology','Production Engineering','Geophysics','Petroleum Economics','Pipeline Engineering'],
+    'Engineering — Biomedical': ['Biomechanics','Medical Imaging','Prosthetics','Neural Engineering','Biosensors','Tissue Engineering'],
+    'Law & Governance': ['Constitutional Law','Criminal Law','Contract Law','International Law','Human Rights Law','Commercial Law','Jurisprudence','Legal Research & Writing'],
+    'Business & Finance': ['Accounting','Corporate Finance','Marketing','Strategic Management','Entrepreneurship','Supply Chain','Operations Management','Investment Banking'],
+    'Economics': ['Econometrics','Development Economics','Financial Economics','Behavioural Economics','International Trade','Public Economics','Labour Economics'],
+    'Architecture & Urban Design': ['Architectural Design','Urban Planning','Landscape Architecture','Structural Design','Interior Architecture','History of Architecture','Sustainable Design'],
+    'Philosophy': ['Ethics','Metaphysics','Logic','Epistemology','Political Philosophy','Philosophy of Mind','Philosophy of Science','Existentialism'],
+    'Linguistics': ['Phonetics','Syntax','Semantics','Sociolinguistics','Historical Linguistics','Translation Studies','Psycholinguistics','Discourse Analysis'],
+    'Psychology & Neuroscience': ['Cognitive Psychology','Clinical Psychology','Social Psychology','Developmental Psychology','Neuropsychology','Abnormal Psychology','Research Methods'],
+    'International Relations': ['Diplomacy','Geopolitics','Foreign Policy','International Law','Global Governance','Conflict Studies','Development Studies'],
+    'Mathematics (University)': ['Real Analysis','Linear Algebra','Abstract Algebra','Topology','Numerical Methods','Differential Equations','Complex Analysis','Probability Theory'],
+    'Physics (University)': ['Classical Mechanics','Quantum Mechanics','Statistical Mechanics','Electrodynamics','General Relativity','Particle Physics','Condensed Matter'],
+    'Chemistry (University)': ['Advanced Organic','Computational Chemistry','Spectroscopy','Green Chemistry','Supramolecular Chemistry','Polymer Chemistry'],
+    'Sociology & Anthropology': ['Social Theory','Cultural Anthropology','Research Methods','Gender Studies','Urban Sociology','Media & Society','Globalisation'],
+    'Education & Pedagogy': ['Learning Theory','Curriculum Design','Educational Technology','Special Education','TESOL','Early Childhood Education'],
+  },
+  'Vocational': {
+    'Culinary Arts & Baking': ['Classical Cooking Techniques','Pastry & Confectionery','Bread Making','West African Cuisine','Middle Eastern Cuisine','Asian Cuisine','Restaurant Management','Food Safety & Hygiene','Nutrition Science','Barista & Coffee','Wine & Sommelier'],
+    'Fashion & Tailoring': ['Pattern Making','Garment Construction','Bespoke Tailoring','Fashion Illustration','Textile Science','Fashion Merchandising','Traditional Dress','Knitwear Design','Shoe Making','Leather Craft'],
+    'Fine Arts & Drawing': ['Sketching Fundamentals','Oil Painting','Watercolour','Acrylic Painting','Portrait Drawing','Still Life','Sculpture & 3D','Street Art','Abstract Painting','Digital Painting'],
+    'Calligraphy & Typography': ['Arabic Calligraphy','Persian Calligraphy','Chinese Calligraphy','Latin Calligraphy','Brush Lettering','Font Design','Logo Typography','Illuminated Manuscripts'],
+    'Music & Instruments': ['Music Theory','Guitar','Piano','Violin','Voice & Singing','Drums & Percussion','Music Production','Music Composition','Oud','Traditional Instruments'],
+    'Dance & Performing Arts': ['Ballet','Contemporary Dance','Hip-Hop','Salsa & Latin','Choreography','Theatre & Acting','Voice Acting','Improvisation'],
+    'Photography & Videography': ['Composition','Lighting','Portrait Photography','Landscape','Drone Photography','Video Editing','Cinematic Storytelling','Documentary Filmmaking'],
+    'Coding & Programming': ['Python','JavaScript','Java','C++','Swift','Kotlin','PHP','Ruby','Go','Rust','Data Structures','Algorithms'],
+    'App & Web Design': ['UI/UX Design','Figma','Adobe XD','React','Flutter','React Native','WordPress','Webflow','Mobile-first Design','Accessibility'],
+    'AI & Data Science': ['Machine Learning','Deep Learning','Data Analysis','Python for Data Science','TensorFlow','NLP','Computer Vision','Prompt Engineering','Business Analytics'],
+    'Digital Marketing & Content': ['Social Media Marketing','SEO','Google Ads','Content Writing','Copywriting','Email Marketing','Influencer Strategy','Video Content Creation'],
+    'Graphic Design': ['Logo Design','Brand Identity','Adobe Illustrator','Photoshop','InDesign','Poster Design','Packaging Design','Motion Graphics'],
+    'Agriculture & Farming': ['Soil Science','Irrigation Techniques','Organic Farming','Horticulture','Animal Husbandry','Agribusiness','Drone Farming','Sustainable Agriculture'],
+    'DIY, Crafts & Construction': ['Carpentry','Plumbing','Electrical Basics','Welding','Pottery & Ceramics','Jewellery Making','Leatherwork','Candle Making'],
+    'Beauty, Wellness & Fitness': ['Hair Styling','Skincare & Cosmetology','Nail Art','Yoga','Personal Training','Nutrition & Dietetics','Mindfulness & Meditation'],
+    'Automotive & Mechanics': ['Engine Mechanics','Auto Electricals','Car Maintenance','Motorcycle Repair','EV Technology','Welding & Fabrication'],
+  },
+  'Entrance Exam': {
+    'South Asian Exams': ['JEE Advanced (India)','JEE Mains (India)','NEET-UG (India)','NEET PG (India)','UPSC Civil Services (India)','MDCAT (Pakistan)','ECAT (Pakistan)','HSC Admission (Bangladesh)'],
+    'East Asian Exams': ['Gaokao (China)','CSAT / Suneung (South Korea)','Kyōtsū Test (Japan)','JLPT (Japan)','University Entrance (Taiwan)'],
+    'Middle East & Iran': ['Konkur / کنکور (Iran)','Qiyas / Tahsili (Saudi Arabia)','Thanawiyya Amma (Egypt)','Tawjihi (Jordan / Palestine)','EmSAT (UAE)','QQA (Qatar)'],
+    'African Exams': ['JAMB UTME (Nigeria)','WAEC WASSCE (West Africa)','NSC Matric (South Africa)','KCSE (Kenya)','CSEE (Tanzania)','BECE (Ghana)','UACE (Uganda)'],
+    'European Exams': ['A-Levels / GCSE (UK)','Baccalauréat (France)','Abitur (Germany)','Selectividad / EBAU (Spain)','Maturità / TOLC (Italy)','Matura (Poland)','EGE / ЕГЭ (Russia)','YKS / TYT-AYT (Turkey)','GCSE / A-Level (Ireland)'],
+    'American Exams': ['SAT (USA)','ACT (USA)','MCAT (USA/Canada)','LSAT (USA/Canada)','ENEM / Vestibular (Brazil)','EXANI / CENEVAL (Mexico)','ICFES Saber 11 (Colombia)','PAES (Chile)','Ingreso UBA (Argentina)'],
+    'Medical & Professional': ['USMLE Steps 1-3','PLAB (UK)','AMC (Australia)','MCI Screening (India)','NCLEX (USA/Canada)','Bar Exam Prep','CPA / ACCA Prep','CFA Level 1-3'],
+  },
+  'Language Exam': {
+    'English Proficiency': ['IELTS Academic — Writing','IELTS Academic — Reading','IELTS Academic — Listening','IELTS Academic — Speaking','IELTS General Training','TOEFL iBT — Reading','TOEFL iBT — Writing','TOEFL iBT — Speaking','TOEFL iBT — Listening','Duolingo English Test','Cambridge C1 Advanced (CAE)','Cambridge C2 Proficiency (CPE)','PTE Academic','CELPIP (Canada)','OET (Medical English)'],
+    'French': ['DELF A1–A2','DELF B1–B2','DALF C1–C2','TCF (Canada / France)','TEF (Immigraton)'],
+    'German': ['Goethe-Zertifikat A1–B1','TestDaF (University)','DSH (University)','ÖSD (Austria)','Goethe C1–C2'],
+    'Spanish': ['DELE A1–C2','SIELE','CCSE (Citizenship)'],
+    'Mandarin Chinese': ['HSK 1–3 (Beginner)','HSK 4–5 (Intermediate)','HSK 6 (Advanced)','HSKK (Speaking)','YCT (Youth)'],
+    'Japanese': ['JLPT N5–N4 (Beginner)','JLPT N3 (Intermediate)','JLPT N2–N1 (Advanced)','JCAT','BJT Business Japanese'],
+    'Korean': ['TOPIK I (Beginner)','TOPIK II (Intermediate–Advanced)','KLPT','SNULT'],
+    'Arabic': ['ALPT','OPI Arabic','Emirati Arabic','Modern Standard Arabic (MSA)','Quranic Arabic'],
+    'Russian': ['TORFL / ТРКИ A1–C2','RFL for Citizenship'],
+    'Portuguese': ['CELPE-Bras','CAPLE','DEPLE'],
+    'Italian': ['CILS','PLIDA','CELI'],
+  },
+  'Olympiad': {
+    'Mathematics Olympiads': ['IMO (International Maths Olympiad)','AMC 8','AMC 10','AMC 12','AIME','Kangaroo Math','SASMO','UKMT Junior','UKMT Senior','Putnam','Asian Pacific Maths Olympiad'],
+    'Science Olympiads': ['IPhO (Physics)','IChO (Chemistry)','IBO (Biology)','IOAA (Astronomy)','IEO (Earth Science)','BrainBEE (Neuroscience)','Science Olympiad (USA)'],
+    'Computing & Informatics': ['IOI (International Olympiad in Informatics)','ICPC','Google Code Jam Prep','Codeforces / LeetCode','Competitive Programming'],
+    'Other Competitions': ['IMC (Undergraduate Maths)','Vanda Science','International Junior Math Olympiad','Model UN (MUN)','National Debate Championships'],
+  },
+  'Professional': {
+    'Finance & Accounting': ['CFA Level 1','CFA Level 2','CFA Level 3','CPA / ACCA','CIMA','FRM (Financial Risk Manager)','CFP (Financial Planner)','Bloomberg Terminal'],
+    'Technology & IT': ['AWS Certification','Google Cloud Certification','Microsoft Azure','CompTIA A+','CompTIA Security+','Cisco CCNA','PMP (Project Management)','Scrum Master'],
+    'Healthcare Professional': ['CPD for Doctors','Nursing Certification','Pharmacy Board Prep','ACLS / BLS','Medical Coding'],
+    'Legal & Compliance': ['Bar Exam Prep','Legal English','Compliance & Risk','GDPR Certification','Contract Law Fundamentals'],
+    'Teaching & Education': ['TEFL / TESOL','PGCE Preparation','Montessori Training','Curriculum Design','Special Education Needs'],
+    'Business & Management': ['MBA Preparation','PMP Project Management','Six Sigma','Lean Management','Digital Transformation','Design Thinking'],
+  },
+};
+
+
+// Phase 3D final expansion: broaden catalog disciplines across every field.
+Object.assign(TAXONOMY['K-12'], {
+  'Primary School Foundations': ['Early Numeracy','Early Literacy','Science Basics','Reading Comprehension','Handwriting','Foundational English','Foundational Math'],
+  'Middle School Core': ['Middle School Math','General Science','World Geography','Reading & Writing','Digital Skills','Study Skills'],
+  'High School Exam Prep': ['AP Calculus','AP Biology','AP Chemistry','AP Physics','IB Mathematics','IB Biology','IGCSE Mathematics','IGCSE Science'],
+  'Life Skills for Students': ['Financial Literacy','Time Management','Critical Thinking','Career Exploration','Communication Skills']
+});
+Object.assign(TAXONOMY['University'], {
+  'Computer Science & AI': ['Artificial Intelligence','Machine Learning','Data Mining','Distributed Systems','Human-Computer Interaction','Compiler Design','Information Security'],
+  'Data, Statistics & Research': ['Applied Statistics','Research Methods','Survey Design','R Programming','SPSS','Stata','Academic Writing'],
+  'Environmental & Earth Sciences': ['Climate Science','Sustainability','Hydrology','GIS','Remote Sensing','Environmental Policy'],
+  'Arts, Humanities & Media': ['Art History','Media Studies','Cultural Studies','Creative Writing','Film Theory','Digital Humanities'],
+  'Public Health & Policy': ['Epidemiology','Health Policy','Biostatistics','Global Health','Public Administration']
+});
+Object.assign(TAXONOMY['Vocational'], {
+  'Skilled Trades': ['Electrical Installation','Plumbing','HVAC','Welding','Masonry','Solar Panel Installation','Home Repair'],
+  'Hospitality & Tourism': ['Hotel Operations','Tour Guiding','Event Planning','Customer Service','Travel Agency Operations','Housekeeping Management'],
+  'Entrepreneurship & Small Business': ['Business Planning','Bookkeeping','Sales Skills','Local Marketing','E-commerce Store Setup','Freelancing'],
+  'Healthcare Support Skills': ['Caregiving','Medical Reception','First Aid','Community Health Work','Elder Care','Phlebotomy Basics'],
+  'Logistics & Transport': ['Supply Chain Basics','Warehouse Operations','Fleet Management','Import/Export Basics','Last-mile Delivery']
+});
+Object.assign(TAXONOMY['Entrance Exam'], {
+  'University Admissions Global': ['Common App Essays','UCAS Personal Statement','University Interview Prep','Scholarship Applications','Study Abroad Applications'],
+  'Graduate Admissions': ['GRE Quant','GRE Verbal','GMAT Focus','LSAT','MAT','Personal Statement Writing'],
+  'Civil Service & Government': ['UPSC','CSS Pakistan','Civil Service Exam Prep','Public Administration Tests','Interview Preparation']
+});
+Object.assign(TAXONOMY['Language Exam'], {
+  'Academic Writing & Study Abroad': ['Statement of Purpose','Academic Vocabulary','Research Presentation English','Seminar Speaking','University Listening Skills'],
+  'Business Language Exams': ['Business English','Legal English','Medical English','Aviation English','Hospitality English']
+});
+Object.assign(TAXONOMY['Olympiad'], {
+  'Debate, Writing & Humanities Competitions': ['World Schools Debate','Essay Competitions','History Olympiad','Geography Bee','Spelling Bee'],
+  'Robotics & Innovation Challenges': ['FIRST Robotics','VEX Robotics','Science Fair Projects','Innovation Challenge','Entrepreneurship Competitions']
+});
+Object.assign(TAXONOMY['Professional'], {
+  'Cybersecurity & Privacy': ['CISSP','CEH','ISO 27001','Security Awareness','Privacy Engineering'],
+  'Product, Design & Growth': ['Product Management','UX Research','Growth Marketing','A/B Testing','Customer Discovery'],
+  'Human Resources & Leadership': ['HR Certification','Recruiting','Performance Management','Leadership Communication','Conflict Resolution'],
+  'Sustainability & ESG': ['ESG Reporting','Carbon Accounting','Sustainable Finance','Circular Economy','Climate Risk']
+});
+
+// Full ISO country list with generated emoji flags and localized names.
+const COUNTRY_CODES = 'AF AX AL DZ AS AD AO AI AQ AG AR AM AW AU AT AZ BS BH BD BB BY BE BZ BJ BM BT BO BQ BA BW BV BR IO BN BG BF BI KH CM CA CV KY CF TD CL CN CX CC CO KM CG CD CK CR CI HR CU CW CY CZ DK DJ DM DO EC EG SV GQ ER EE SZ ET FK FO FJ FI FR GF PF TF GA GM GE DE GH GI GR GL GD GP GU GT GG GN GW GY HT HM VA HN HK HU IS IN ID IR IQ IE IM IL IT JM JP JE JO KZ KE KI KP KR KW KG LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MQ MR MU YT MX FM MD MC MN ME MS MA MZ MM NA NR NP NL NC NZ NI NE NG NU NF MK MP NO OM PK PW PS PA PG PY PE PH PN PL PT PR QA RE RO RU RW BL SH KN LC MF PM VC WS SM ST SA SN RS SC SL SG SX SK SI SB SO ZA GS SS ES LK SD SR SJ SE CH SY TW TJ TZ TH TL TG TK TO TT TN TR TM TC TV UG UA AE GB US UM UY UZ VU VE VN VG VI WF EH YE ZM ZW'.split(' ');
+function flagFromCode(code){
+  return String(code || '').toUpperCase().replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt()));
+}
+function englishRegionName(code){
+  try{return new Intl.DisplayNames(['en'],{type:'region'}).of(code) || code;}catch(e){return code;}
+}
+const COUNTRIES = COUNTRY_CODES.map(code => ({code, f:flagFromCode(code), n:englishRegionName(code)})).sort((a,b)=>a.n.localeCompare(b.n));
+
+// ── Filter state
+let state = { field:'', discipline:'', subject:'', country:'', level:'', q:'' };
+let selectedCountryObj = null;
+let currentCat = 'all';
+let currentView = 'grid';
+let currentPage = 1;
+const PER_PAGE = 12;
+
+// ── SAMPLE COURSES
+const COURSES = [
+  {id:1,title:"Complete JEE Advanced Mathematics",field:"Entrance Exam",discipline:"South Asian Exams",subject:"JEE Advanced (India)",country:"India",instructor:"Rajesh Venkataraman",flag:"🇮🇳",emoji:"📐",rating:4.9,reviews:12400,students:38700,hours:120,price:29,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
+  {id:2,title:"NEET Biology Master Class",field:"Entrance Exam",discipline:"South Asian Exams",subject:"NEET-UG (India)",country:"India",instructor:"Dr Priya Sharma",flag:"🇮🇳",emoji:"🧬",rating:4.8,reviews:9800,students:24300,hours:95,price:24,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
+  {id:3,title:"Gaokao Physics — Full Syllabus",field:"Entrance Exam",discipline:"East Asian Exams",subject:"Gaokao (China)",country:"China",instructor:"Wei Liang",flag:"🇨🇳",emoji:"⚛️",rating:4.9,reviews:18200,students:52100,hours:140,price:32,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
+  {id:4,title:"Baccalauréat Littérature Française",field:"K-12",discipline:"Literature & Language",subject:"Essay Writing",country:"France",instructor:"Sophie Beaumont",flag:"🇫🇷",emoji:"📖",rating:4.7,reviews:4200,students:9800,hours:60,price:18,level:"Intermediate",badge:"badge-k12",badgeLabel:"K–12",cert:true,practice:false},
+  {id:5,title:"JAMB UTME Complete Prep 2025",field:"Entrance Exam",discipline:"African Exams",subject:"JAMB UTME (Nigeria)",country:"Nigeria",instructor:"Chukwuemeka Eze",flag:"🇳🇬",emoji:"📝",rating:4.8,reviews:7600,students:21000,hours:80,price:12,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
+  {id:6,title:"Culinary Arts: West African Cuisine",field:"Vocational",discipline:"Culinary Arts & Baking",subject:"West African Cuisine",country:"Nigeria",instructor:"Chef Amara Diallo",flag:"🇳🇬",emoji:"🍲",rating:4.6,reviews:3100,students:8400,hours:40,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
+  {id:7,title:"Professional Tailoring & Garment Design",field:"Vocational",discipline:"Fashion & Tailoring",subject:"Pattern Making",country:"India",instructor:"Priya Datta",flag:"🇮🇳",emoji:"🧵",rating:4.8,reviews:5200,students:14100,hours:55,price:22,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
+  {id:8,title:"IELTS Academic Band 8+ Strategy",field:"Language Exam",discipline:"English Proficiency",subject:"IELTS Academic — Writing",country:"United Kingdom",instructor:"Dr James Hartley",flag:"🇬🇧",emoji:"🗣️",rating:4.9,reviews:22000,students:64000,hours:35,price:19,level:"Advanced",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
+  {id:9,title:"MBBS Year 1 — Anatomy & Physiology",field:"University",discipline:"Medicine (MBBS/MD)",subject:"Anatomy",country:"United Kingdom",instructor:"Prof Elena Marchetti",flag:"🇬🇧",emoji:"⚕️",rating:4.8,reviews:8100,students:18600,hours:110,price:45,level:"Advanced",badge:"badge-uni",badgeLabel:"University",cert:true,practice:true},
+  {id:10,title:"Abitur Mathematik Intensivkurs",field:"K-12",discipline:"Mathematics",subject:"Calculus",country:"Germany",instructor:"Hans-Peter Müller",flag:"🇩🇪",emoji:"🔢",rating:4.7,reviews:3400,students:8700,hours:72,price:16,level:"Advanced",badge:"badge-k12",badgeLabel:"K–12",cert:false,practice:true},
+  {id:11,title:"TOEFL iBT Complete Preparation",field:"Language Exam",discipline:"English Proficiency",subject:"TOEFL iBT — Speaking",country:"United States",instructor:"Sarah Kim",flag:"🇺🇸",emoji:"🎙️",rating:4.8,reviews:14200,students:38000,hours:42,price:21,level:"Intermediate",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
+  {id:12,title:"Sustainable Farming & Agroecology",field:"Vocational",discipline:"Agriculture & Farming",subject:"Organic Farming",country:"Kenya",instructor:"Dr Njeri Waweru",flag:"🇰🇪",emoji:"🌱",rating:4.7,reviews:2100,students:6200,hours:38,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
+  {id:13,title:"A-Level Chemistry — Full Syllabus",field:"K-12",discipline:"Chemistry",subject:"Organic Chemistry",country:"United Kingdom",instructor:"Dr Rachel Okonkwo",flag:"🇬🇧",emoji:"⚗️",rating:4.9,reviews:11200,students:29400,hours:88,price:28,level:"Advanced",badge:"badge-k12",badgeLabel:"K–12",cert:true,practice:true},
+  {id:14,title:"SAT Math — Score 800 Blueprint",field:"Entrance Exam",discipline:"American Exams",subject:"SAT (USA)",country:"United States",instructor:"Kevin Chen",flag:"🇺🇸",emoji:"📊",rating:4.9,reviews:19800,students:54000,hours:50,price:35,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
+  {id:15,title:"DELF B2 — Préparation Complète",field:"Language Exam",discipline:"French",subject:"DELF B1–B2",country:"France",instructor:"Marie-Claire Fontaine",flag:"🇫🇷",emoji:"🇫🇷",rating:4.6,reviews:4800,students:11200,hours:30,price:17,level:"Upper-Intermediate",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
+  {id:16,title:"Civil Engineering: Structural Design",field:"University",discipline:"Engineering — Civil",subject:"Structural Analysis",country:"Germany",instructor:"Prof Klaus Bergmann",flag:"🇩🇪",emoji:"🏗️",rating:4.8,reviews:5600,students:13800,hours:130,price:42,level:"Advanced",badge:"badge-uni",badgeLabel:"University",cert:true,practice:false},
+  {id:17,title:"WAEC WASSCE Mathematics & Sciences",field:"Entrance Exam",discipline:"African Exams",subject:"WAEC WASSCE (West Africa)",country:"Nigeria",instructor:"Emmanuel Asante",flag:"🇬🇭",emoji:"📐",rating:4.7,reviews:6300,students:17800,hours:65,price:8,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
+  {id:18,title:"Japanese N1 JLPT Master Course",field:"Language Exam",discipline:"Japanese",subject:"JLPT N2–N1 (Advanced)",country:"Japan",instructor:"Yuki Tanaka",flag:"🇯🇵",emoji:"🗾",rating:4.8,reviews:7100,students:16400,hours:90,price:26,level:"Expert",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
+  {id:19,title:"ENEM — Redação e Ciências Humanas",field:"Entrance Exam",discipline:"American Exams",subject:"ENEM / Vestibular (Brazil)",country:"Brazil",instructor:"Prof Fernanda Costa",flag:"🇧🇷",emoji:"📜",rating:4.7,reviews:8900,students:24100,hours:75,price:14,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
+  {id:20,title:"Organic Chemistry for MCAT",field:"Entrance Exam",discipline:"Medical & Professional",subject:"MCAT (USA/Canada)",country:"United States",instructor:"Dr Aisha Kamara",flag:"🇺🇸",emoji:"🧪",rating:4.9,reviews:13400,students:34200,hours:85,price:38,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
+  {id:21,title:"Introduction to Baking & Pastry Arts",field:"Vocational",discipline:"Culinary Arts & Baking",subject:"Pastry & Confectionery",country:"France",instructor:"Chef Mateus Oliveira",flag:"🇫🇷",emoji:"🥐",rating:4.8,reviews:4600,students:12300,hours:45,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
+  {id:22,title:"Konkur / کنکور — Full Prep (Riyazi)",field:"Entrance Exam",discipline:"Middle East & Iran",subject:"Konkur / کنکور (Iran)",country:"Iran",instructor:"Dr Maryam Hosseini",flag:"🇮🇷",emoji:"📗",rating:4.9,reviews:11200,students:29400,hours:120,price:20,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
+  {id:23,title:"Qiyas & Tahsili — Arabic Full Prep",field:"Entrance Exam",discipline:"Middle East & Iran",subject:"Qiyas / Tahsili (Saudi Arabia)",country:"Saudi Arabia",instructor:"Fatima Al-Harbi",flag:"🇸🇦",emoji:"📗",rating:4.9,reviews:9200,students:21300,hours:70,price:20,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
+  {id:24,title:"Machine Learning A–Z: Python & R",field:"Vocational",discipline:"AI & Data Science",subject:"Machine Learning",country:"United States",instructor:"Prof Chen Wei",flag:"🇺🇸",emoji:"🤖",rating:4.9,reviews:28000,students:86000,hours:110,price:35,level:"Intermediate",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
+];
+
+// ════════════════════════════════════════════════
+// STEP 1: FIELD
+// ════════════════════════════════════════════════
+function onFieldChange() {
+  const field = document.getElementById('selField').value;
+  state.field = field;
+  state.discipline = '';
+  state.subject = '';
+  state.country = '';
+  state.level = '';
+  selectedCountryObj = null;
+
+  setStepDone(1, field);
+
+  // Reset downstream
+  resetStep(2); resetStep(3); resetStep(4); resetStep(5);
+
+  if (!field) {
+    lockStep(2); lockStep(3); lockStep(4); lockStep(5);
+    applyFilters(); updateChips(); return;
+  }
+
+  // Populate discipline
+  const disciplines = Object.keys(TAXONOMY[field] || {});
+  const sel = document.getElementById('selDiscipline');
+  sel.innerHTML = optionHTML('', T('catalog_all_disciplines')) +
+    disciplines.map(d => optionHTML(d, taxLabel(d))).join('');
+  unlockStep(2);
+  lockStep(3); lockStep(4); lockStep(5);
+  applyFilters(); updateChips();
+}
+
+// ════════════════════════════════════════════════
+// STEP 2: DISCIPLINE
+// ════════════════════════════════════════════════
+function onDisciplineChange() {
+  const disc = document.getElementById('selDiscipline').value;
+  state.discipline = disc;
+  state.subject = '';
+  resetStep(3);
+
+  setStepDone(2, disc);
+
+  if (!disc) {
+    lockStep(3); lockStep(4); lockStep(5);
+    applyFilters(); updateChips(); return;
+  }
+
+  // Populate subjects
+  const subjects = (TAXONOMY[state.field] || {})[disc] || [];
+  const sel = document.getElementById('selSubject');
+  sel.innerHTML = optionHTML('', T('catalog_all_subjects')) +
+    subjects.map(s => optionHTML(s, taxLabel(s))).join('');
+  unlockStep(3);
+  unlockStep(4); // Country always available after discipline
+  unlockStep(5);
+  populateCountryDrop('');
+  applyFilters(); updateChips();
+}
+
+// ════════════════════════════════════════════════
+// STEP 3: SUBJECT
+// ════════════════════════════════════════════════
+function onSubjectChange() {
+  const sub = document.getElementById('selSubject').value;
+  state.subject = sub;
+  setStepDone(3, sub);
+  applyFilters(); updateChips();
+}
+
+// ════════════════════════════════════════════════
+// STEP 4: COUNTRY — searchable with flags
+// ════════════════════════════════════════════════
+function populateCountryDrop(query) {
+  const drop = document.getElementById('countryDrop');
+  const normalized = String(query || '').replace(/[^\p{L}\p{N}\s'-]/gu,'').trim().toLowerCase();
+  const filtered = query
+    ? COUNTRIES.filter(c => {
+      const local = countryLabel(c.n,c.code).toLowerCase();
+      return c.n.toLowerCase().includes(normalized) || local.includes(normalized) || c.code.toLowerCase().includes(normalized);
+    })
+    : COUNTRIES;
+  drop.innerHTML = (query ? '' : `<div class="country-opt" onclick="selectCountry(null)"><span class="c-flag">🌍</span><span class="c-name">${T('catalog_all_countries')}</span></div>`) +
+    filtered.map(c =>
+      `<div class="country-opt${selectedCountryObj && selectedCountryObj.n===c.n?' selected':''}" onclick="selectCountry(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+        <span class="c-flag">${c.f}</span><span class="c-name">${countryLabel(c.n,c.code)}</span>
+      </div>`
+    ).join('');
+}
+
+function filterCountries(q) {
+  populateCountryDrop(q);
+  openCountryDrop();
+}
+
+function openCountryDrop() {
+  const inp = document.getElementById('countryInput');
+  if (inp.disabled) return;
+  populateCountryDrop(inp.value);
+  const drop = document.getElementById('countryDrop');
+  if (drop.parentElement !== document.body) {
+    document.body.appendChild(drop);
+  }
+  const rect = inp.getBoundingClientRect();
+  const maxWidth = Math.min(420, window.innerWidth - 24);
+  const left = Math.min(Math.max(12, rect.left), window.innerWidth - maxWidth - 12);
+  drop.style.left = left + 'px';
+  drop.style.top = (rect.bottom + 4) + 'px';
+  drop.style.width = Math.max(rect.width, Math.min(maxWidth, 320)) + 'px';
+  drop.classList.add('open');
+}
+
+function selectCountry(obj) {
+  selectedCountryObj = obj;
+  state.country = obj ? obj.n : '';
+  document.getElementById('countryInput').value = obj ? obj.f + ' ' + countryLabel(obj.n,obj.code) : '';
+  document.getElementById('countryDrop').classList.remove('open');
+  setStepDone(4, obj ? obj.f + ' ' + countryLabel(obj.n,obj.code) : '');
+  applyFilters(); updateChips();
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.country-wrap') && !e.target.closest('.country-drop')) {
+    document.getElementById('countryDrop').classList.remove('open');
+  }
+});
+
+// ════════════════════════════════════════════════
+// STEP 5: LEVEL
+// ════════════════════════════════════════════════
+function onLevelChange() {
+  const lv = document.getElementById('selLevel').value;
+  state.level = lv;
+  setStepDone(5, lv);
+  applyFilters(); updateChips();
+}
+
+// ════════════════════════════════════════════════
+// STEP HELPERS
+// ════════════════════════════════════════════════
+function lockStep(n) {
+  const cs = document.getElementById('cs'+n);
+  cs.classList.remove('active-step','done');
+  cs.classList.add('locked');
+  const sel = cs.querySelector('.cs-sel');
+  const inp = cs.querySelector('.country-inp');
+  if (sel) { sel.disabled = true; sel.value = ''; }
+  if (inp) { inp.disabled = true; inp.value = ''; }
+  const val = document.getElementById('val'+n);
+  if (val) { val.style.display='none'; val.textContent=''; }
+}
+function unlockStep(n) {
+  const cs = document.getElementById('cs'+n);
+  cs.classList.remove('locked');
+  cs.classList.add('active-step');
+  const sel = cs.querySelector('.cs-sel');
+  const inp = cs.querySelector('.country-inp');
+  if (sel) sel.disabled = false;
+  if (inp) inp.disabled = false;
+}
+function resetStep(n) {
+  const cs = document.getElementById('cs'+n);
+  cs.classList.remove('done');
+  const val = document.getElementById('val'+n);
+  if (val) { val.style.display='none'; val.textContent=''; }
+  const sel = cs.querySelector('.cs-sel');
+  if (sel) sel.value = '';
+  const inp = cs.querySelector('.country-inp');
+  if (inp) inp.value = '';
+}
+function setStepDone(n, label) {
+  const cs = document.getElementById('cs'+n);
+  const val = document.getElementById('val'+n);
+  if (!label) { cs.classList.remove('done'); if(val){val.style.display='none';val.textContent='';} return; }
+  cs.classList.add('done');
+  cs.classList.remove('locked');
+  if (val) { val.textContent = label; val.style.display='block'; }
+}
+
+// ════════════════════════════════════════════════
+// CHIP ROW
+// ════════════════════════════════════════════════
+function updateChips() {
+  const row = document.getElementById('chipRow');
+  const chips = [];
+  if (state.field) chips.push({l:fieldLabel(state.field), clear:()=>{document.getElementById('selField').value='';onFieldChange();}});
+  if (state.discipline) chips.push({l:taxLabel(state.discipline), clear:()=>{document.getElementById('selDiscipline').value='';onDisciplineChange();}});
+  if (state.subject) chips.push({l:taxLabel(state.subject), clear:()=>{document.getElementById('selSubject').value='';onSubjectChange();}});
+  if (state.country) chips.push({l:(selectedCountryObj?selectedCountryObj.f+' ':'')+countryLabel(state.country), clear:()=>{selectCountry(null);}});
+  if (state.level) chips.push({l:levelLabel(state.level), clear:()=>{document.getElementById('selLevel').value='';onLevelChange();}});
+  if (state.q) chips.push({l:`"${state.q}"`, clear:()=>{document.getElementById('searchInput').value='';state.q='';applyFilters();updateChips();}});
+  if (!chips.length) { row.classList.add('hidden'); return; }
+  row.classList.remove('hidden');
+  row.innerHTML = chips.map((c,i)=>`<span class="chip">${c.l}<span class="chip-x" data-i="${i}">✕</span></span>`).join('') +
+    `<button class="chip-clear" onclick="clearAllFilters()">${T('crs_clear_all')}</button>`;
+  row.querySelectorAll('.chip-x').forEach(x => x.addEventListener('click', () => chips[+x.dataset.i].clear()));
+}
+
+// ════════════════════════════════════════════════
+// QUICK CAT TABS
+// ════════════════════════════════════════════════
+function quickCat(cat, btn) {
+  currentCat = cat;
+  currentPage = 1;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // Sync field filter if not "all"
+  if (cat !== 'all') {
+    document.getElementById('selField').value = cat;
+    onFieldChange();
+  } else {
+    clearAllFilters();
+  }
+  applyFilters();
+}
+
+// ════════════════════════════════════════════════
+// FILTERING
+// ════════════════════════════════════════════════
+function getFiltered() {
+  const q = state.q.toLowerCase();
+  return COURSES.filter(c => {
+    if (state.field && c.field !== state.field) return false;
+    if (state.discipline && c.discipline !== state.discipline) return false;
+    if (state.subject && c.subject !== state.subject) return false;
+    if (state.country && c.country !== state.country) return false;
+    if (state.level && c.level !== state.level) return false;
+    if (q && ![c.title,c.instructor,c.subject,c.country,c.field,c.discipline].some(x=>x.toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+
+function applyFilters() {
+  state.q = document.getElementById('searchInput').value;
+  const filtered = getFiltered();
+  currentPage = 1;
+  renderCourses(filtered);
+  updateCounts();
+}
+
+function updateCounts() {
+  const map = {'K-12':'cnt-k12','University':'cnt-uni','Vocational':'cnt-voc','Entrance Exam':'cnt-ent','Language Exam':'cnt-lng'};
+  Object.entries(map).forEach(([f,id])=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = COURSES.filter(c=>c.field===f).length;
+  });
+}
+
+function clearAllFilters() {
+  state = {field:'',discipline:'',subject:'',country:'',level:'',q:''};
+  selectedCountryObj = null;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('selField').value = '';
+  lockStep(2); lockStep(3); lockStep(4); lockStep(5);
+  resetStep(1); resetStep(2); resetStep(3); resetStep(4); resetStep(5);
+  ['cs1','cs2','cs3','cs4','cs5'].forEach(id=>{
+    const cs = document.getElementById(id);
+    cs.classList.remove('done','locked');
+    if(id==='cs1') cs.classList.add('active-step');
+    else cs.classList.add('locked');
+  });
+  currentCat = 'all';
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  const allBtn = document.querySelector('[data-cat="all"]');
+  if(allBtn) allBtn.classList.add('active');
+  applyFilters(); updateChips();
+}
+
+// ════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════
+function setView(v) {
+  currentView = v;
+  document.getElementById('courseGrid').classList.toggle('list-view', v==='list');
+  document.getElementById('gridBtn').classList.toggle('active', v==='grid');
+  document.getElementById('listBtn').classList.toggle('active', v==='list');
+}
+
+// ════════════════════════════════════════════════
+// i18n HELPER — translate dynamic JS-rendered strings
+// ════════════════════════════════════════════════
+function T(key) {
+  try {
+    if (window.OdysseyI18n && typeof window.OdysseyI18n.t === 'function') return window.OdysseyI18n.t(key);
+    const lang = localStorage.getItem('odyssey_lang') || 'en';
+    const dict = (window.OdysseyI18n && window.OdysseyI18n.DICT && window.OdysseyI18n.DICT[lang]) || {};
+    const en = (window.OdysseyI18n && window.OdysseyI18n.DICT && window.OdysseyI18n.DICT.en) || {};
+    const v = dict[key] !== undefined ? dict[key] : en[key];
+    if (v !== undefined && !/^(flt|fld|tax|auto_[a-z]+)_/i.test(String(v))) return v;
+    return humanLabelFromKey(key);
+  } catch(e) { return humanLabelFromKey(key); }
+}
+function humanLabelFromKey(key){
+  return String(key||'').replace(/^(flt|fld|tax|country|auto_[a-z]+)_/i,'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+}
+const BADGE_KEY = {'Entrance Exam':'badge_entrance','K–12':'badge_k12','Vocational':'badge_vocational','University':'badge_university','Language Exam':'badge_language'};
+const LEVEL_KEY = {'Beginner':'lvl_beginner','Elementary':'lvl_elementary','Intermediate':'lvl_intermediate','Upper-Intermediate':'lvl_upper','Advanced':'lvl_advanced','Expert':'lvl_expert'};
+const CATALOG_LOCAL_TERMS = {
+  fa:{
+    'K-12':'برنامه درسی مدرسه','University':'دانشگاه','Vocational':'مهارت‌های فنی و حرفه‌ای','Entrance Exam':'آزمون‌های ورودی','Language Exam':'آزمون‌های زبان','Olympiad':'المپیادها و مسابقات','Professional':'گواهینامه‌های حرفه‌ای',
+    'Mathematics':'ریاضیات','Physics':'فیزیک','Chemistry':'شیمی','Biology':'زیست‌شناسی','Literature & Language':'ادبیات و زبان','History & Social Studies':'تاریخ و مطالعات اجتماعی','Computer Science':'علوم رایانه','Foreign Languages':'زبان‌های خارجی',
+    'Medicine (MBBS/MD)':'پزشکی','Dentistry':'دندان‌پزشکی','Veterinary Science':'دام‌پزشکی','Pharmacy & Nursing':'داروسازی و پرستاری','Engineering — Electrical':'مهندسی برق','Engineering — Civil':'مهندسی عمران','Engineering — Mechanical':'مهندسی مکانیک','Engineering — Chemical':'مهندسی شیمی','Law & Governance':'حقوق و حکمرانی','Philosophy & Ethics':'فلسفه و اخلاق','Linguistics & Translation':'زبان‌شناسی و ترجمه','Economics & Finance':'اقتصاد و مالی','Psychology & Neuroscience':'روان‌شناسی و علوم اعصاب','Architecture & Urban Design':'معماری و طراحی شهری','Business & Management':'کسب‌وکار و مدیریت','International Relations':'روابط بین‌الملل',
+    'Fashion & Tailoring':'مد و خیاطی','Fine Arts & Drawing':'هنرهای تجسمی و طراحی','Calligraphy & Typography':'خوشنویسی و تایپوگرافی','Photography & Videography':'عکاسی و فیلم‌برداری','Music & Instruments':'موسیقی و سازها','Dance & Movement':'رقص و حرکت','Theatre & Acting':'تئاتر و بازیگری','Culinary Arts & Baking':'آشپزی و شیرینی‌پزی','Agriculture & Farming':'کشاورزی و مزرعه‌داری','DIY, Crafts & Woodwork':'صنایع دستی و نجاری','Beauty, Wellness & Fitness':'زیبایی، تندرستی و تناسب اندام','Coding & Programming':'کدنویسی و برنامه‌نویسی','App & Web Design':'طراحی اپ و وب','AI & Data Science':'هوش مصنوعی و علم داده','Digital Content & Marketing':'محتوای دیجیتال و بازاریابی','Automotive & Mechanics':'خودرو و مکانیک',
+    'South Asian Exams':'آزمون‌های جنوب آسیا','East Asian Exams':'آزمون‌های شرق آسیا','Middle East & Iran':'خاورمیانه و ایران','African Exams':'آزمون‌های آفریقا','European Exams':'آزمون‌های اروپا','American Exams':'آزمون‌های آمریکا','Medical & Professional':'پزشکی و حرفه‌ای',
+    'English Proficiency':'مهارت زبان انگلیسی','French':'فرانسوی','German':'آلمانی','Spanish':'اسپانیایی','Mandarin Chinese':'چینی ماندارین','Japanese':'ژاپنی','Korean':'کره‌ای','Arabic':'عربی','Russian':'روسی','Portuguese':'پرتغالی','Italian':'ایتالیایی',
+    'Mathematics Olympiads':'المپیادهای ریاضی','Science Olympiads':'المپیادهای علوم','Computing & Informatics':'رایانه و انفورماتیک','Other Competitions':'مسابقات دیگر',
+    'Finance & Accounting':'مالی و حسابداری','Technology & IT':'فناوری و آی‌تی','Healthcare Professional':'حرفه‌های سلامت','Legal & Compliance':'حقوق و انطباق','Teaching & Education':'تدریس و آموزش','Business & Management':'کسب‌وکار و مدیریت',
+    'Primary School Foundations':'پایه‌های دبستان','Middle School Core':'دوره متوسطه اول','High School Exam Prep':'آمادگی آزمون دبیرستان','Life Skills for Students':'مهارت‌های زندگی دانش‌آموزی','Computer Science & AI':'علوم رایانه و هوش مصنوعی','Data, Statistics & Research':'داده، آمار و پژوهش','Environmental & Earth Sciences':'علوم محیط‌زیست و زمین','Arts, Humanities & Media':'هنر، علوم انسانی و رسانه','Public Health & Policy':'سلامت عمومی و سیاست‌گذاری','Skilled Trades':'حرفه‌های فنی','Hospitality & Tourism':'مهمان‌داری و گردشگری','Entrepreneurship & Small Business':'کارآفرینی و کسب‌وکار کوچک','Healthcare Support Skills':'مهارت‌های پشتیبانی سلامت','Logistics & Transport':'لجستیک و حمل‌ونقل','University Admissions Global':'پذیرش دانشگاهی جهانی','Graduate Admissions':'پذیرش تحصیلات تکمیلی','Civil Service & Government':'خدمات کشوری و دولت','Academic Writing & Study Abroad':'نگارش دانشگاهی و تحصیل خارج','Business Language Exams':'آزمون‌های زبان کسب‌وکار','Debate, Writing & Humanities Competitions':'مناظره، نویسندگی و علوم انسانی','Robotics & Innovation Challenges':'رباتیک و نوآوری','Cybersecurity & Privacy':'امنیت سایبری و حریم خصوصی','Product, Design & Growth':'محصول، طراحی و رشد','Human Resources & Leadership':'منابع انسانی و رهبری','Sustainability & ESG':'پایداری و ESG'
+  },
+  ar:{
+    'K-12':'منهج المدرسة','University':'الجامعة','Vocational':'مهارات مهنية','Entrance Exam':'اختبارات القبول','Language Exam':'اختبارات اللغة','Olympiad':'الأولمبيادات والمسابقات','Professional':'شهادات مهنية',
+    'Mathematics':'الرياضيات','Physics':'الفيزياء','Chemistry':'الكيمياء','Biology':'الأحياء','Literature & Language':'الأدب واللغة','History & Social Studies':'التاريخ والدراسات الاجتماعية','Computer Science':'علوم الحاسوب','Foreign Languages':'اللغات الأجنبية',
+    'Medicine (MBBS/MD)':'الطب','Dentistry':'طب الأسنان','Veterinary Science':'الطب البيطري','Pharmacy & Nursing':'الصيدلة والتمريض','Engineering — Electrical':'الهندسة الكهربائية','Engineering — Civil':'الهندسة المدنية','Engineering — Mechanical':'الهندسة الميكانيكية','Engineering — Chemical':'الهندسة الكيميائية','Law & Governance':'القانون والحوكمة','Philosophy & Ethics':'الفلسفة والأخلاق','Linguistics & Translation':'اللسانيات والترجمة','Economics & Finance':'الاقتصاد والتمويل','Psychology & Neuroscience':'علم النفس والأعصاب','Architecture & Urban Design':'العمارة والتصميم الحضري','Business & Management':'الأعمال والإدارة','International Relations':'العلاقات الدولية',
+    'Fashion & Tailoring':'الأزياء والخياطة','Fine Arts & Drawing':'الفنون الجميلة والرسم','Calligraphy & Typography':'الخط والطباعة','Photography & Videography':'التصوير الفوتوغرافي والمرئي','Music & Instruments':'الموسيقى والآلات','Dance & Movement':'الرقص والحركة','Theatre & Acting':'المسرح والتمثيل','Culinary Arts & Baking':'فنون الطهي والخبز','Agriculture & Farming':'الزراعة','DIY, Crafts & Woodwork':'الحرف والنجارة','Beauty, Wellness & Fitness':'الجمال والعافية واللياقة','Coding & Programming':'البرمجة','App & Web Design':'تصميم التطبيقات والويب','AI & Data Science':'الذكاء الاصطناعي وعلوم البيانات','Digital Content & Marketing':'المحتوى الرقمي والتسويق','Automotive & Mechanics':'السيارات والميكانيكا',
+    'South Asian Exams':'اختبارات جنوب آسيا','East Asian Exams':'اختبارات شرق آسيا','Middle East & Iran':'الشرق الأوسط وإيران','African Exams':'اختبارات أفريقيا','European Exams':'اختبارات أوروبا','American Exams':'اختبارات الأمريكتين','Medical & Professional':'طبية ومهنية',
+    'English Proficiency':'إتقان الإنجليزية','French':'الفرنسية','German':'الألمانية','Spanish':'الإسبانية','Mandarin Chinese':'الصينية المندرينية','Japanese':'اليابانية','Korean':'الكورية','Arabic':'العربية','Russian':'الروسية','Portuguese':'البرتغالية','Italian':'الإيطالية'
+  },
+  es:{'K-12':'Currículo escolar','University':'Universidad','Vocational':'Formación profesional','Entrance Exam':'Exámenes de ingreso','Language Exam':'Exámenes de idiomas','Olympiad':'Olimpiadas y competencias','Professional':'Certificación profesional','Mathematics':'Matemáticas','Physics':'Física','Chemistry':'Química','Biology':'Biología','Computer Science':'Informática','English Proficiency':'Dominio del inglés','AI & Data Science':'IA y ciencia de datos','Business & Management':'Negocios y gestión'},
+  fr:{'K-12':'Programme scolaire','University':'Université','Vocational':'Compétences professionnelles','Entrance Exam':'Examens d’entrée','Language Exam':'Examens de langue','Olympiad':'Olympiades et concours','Professional':'Certification professionnelle','Mathematics':'Mathématiques','Physics':'Physique','Chemistry':'Chimie','Biology':'Biologie','Computer Science':'Informatique','English Proficiency':'Maîtrise de l’anglais','AI & Data Science':'IA et science des données','Business & Management':'Commerce et gestion'},
+  de:{'K-12':'Schullehrplan','University':'Universität','Vocational':'Berufliche Fähigkeiten','Entrance Exam':'Aufnahmeprüfungen','Language Exam':'Sprachprüfungen','Olympiad':'Olympiaden und Wettbewerbe','Professional':'Berufszertifizierung','Mathematics':'Mathematik','Physics':'Physik','Chemistry':'Chemie','Biology':'Biologie','Computer Science':'Informatik','English Proficiency':'Englischkenntnisse','AI & Data Science':'KI und Datenwissenschaft','Business & Management':'Wirtschaft und Management'},
+  ru:{'K-12':'Школьная программа','University':'Университет','Vocational':'Профессиональные навыки','Entrance Exam':'Вступительные экзамены','Language Exam':'Языковые экзамены','Olympiad':'Олимпиады и конкурсы','Professional':'Профессиональная сертификация','Mathematics':'Математика','Physics':'Физика','Chemistry':'Химия','Biology':'Биология','Computer Science':'Информатика','English Proficiency':'Английский язык','AI & Data Science':'ИИ и наука о данных','Business & Management':'Бизнес и менеджмент'},
+  zh:{'K-12':'中小学课程','University':'大学','Vocational':'职业技能','Entrance Exam':'入学考试','Language Exam':'语言考试','Olympiad':'奥林匹克与竞赛','Professional':'职业认证','Mathematics':'数学','Physics':'物理','Chemistry':'化学','Biology':'生物','Computer Science':'计算机科学','English Proficiency':'英语能力','AI & Data Science':'人工智能与数据科学','Business & Management':'商业与管理'},
+  ja:{'K-12':'学校カリキュラム','University':'大学','Vocational':'職業スキル','Entrance Exam':'入学試験','Language Exam':'語学試験','Olympiad':'オリンピック・競技会','Professional':'専門資格','Mathematics':'数学','Physics':'物理','Chemistry':'化学','Biology':'生物','Computer Science':'コンピューター科学','English Proficiency':'英語能力','AI & Data Science':'AIとデータサイエンス','Business & Management':'ビジネスと経営'},
+  tr:{'K-12':'Okul müfredatı','University':'Üniversite','Vocational':'Mesleki beceriler','Entrance Exam':'Giriş sınavları','Language Exam':'Dil sınavları','Olympiad':'Olimpiyatlar ve yarışmalar','Professional':'Profesyonel sertifika','Mathematics':'Matematik','Physics':'Fizik','Chemistry':'Kimya','Biology':'Biyoloji','Computer Science':'Bilgisayar bilimi','English Proficiency':'İngilizce yeterliliği','AI & Data Science':'Yapay zeka ve veri bilimi','Business & Management':'İşletme ve yönetim'}
+};
+Object.assign(CATALOG_LOCAL_TERMS,{
+  pt:{'K-12':'Currículo escolar','University':'Universidade','Vocational':'Competências profissionais','Entrance Exam':'Exames de admissão','Language Exam':'Exames de idiomas','Olympiad':'Olimpíadas e competições','Professional':'Certificação profissional','Mathematics':'Matemática','Physics':'Física','Chemistry':'Química','Biology':'Biologia','Computer Science':'Ciência da computação','English Proficiency':'Proficiência em inglês','AI & Data Science':'IA e ciência de dados','Business & Management':'Negócios e gestão'},
+  it:{'K-12':'Curriculum scolastico','University':'Università','Vocational':'Competenze professionali','Entrance Exam':'Esami di ammissione','Language Exam':'Esami di lingua','Olympiad':'Olimpiadi e competizioni','Professional':'Certificazione professionale','Mathematics':'Matematica','Physics':'Fisica','Chemistry':'Chimica','Biology':'Biologia','Computer Science':'Informatica','English Proficiency':'Competenza in inglese','AI & Data Science':'IA e scienza dei dati','Business & Management':'Business e management'},
+  nl:{'K-12':'Schoolcurriculum','University':'Universiteit','Vocational':'Beroepsvaardigheden','Entrance Exam':'Toelatingsexamens','Language Exam':'Taalexamens','Olympiad':'Olympiades en wedstrijden','Professional':'Professionele certificering','Mathematics':'Wiskunde','Physics':'Natuurkunde','Chemistry':'Scheikunde','Biology':'Biologie','Computer Science':'Informatica','English Proficiency':'Engelse taalvaardigheid','AI & Data Science':'AI en datawetenschap','Business & Management':'Bedrijf en management'},
+  pl:{'K-12':'Program szkolny','University':'Uniwersytet','Vocational':'Umiejętności zawodowe','Entrance Exam':'Egzaminy wstępne','Language Exam':'Egzaminy językowe','Olympiad':'Olimpiady i konkursy','Professional':'Certyfikacja zawodowa','Mathematics':'Matematyka','Physics':'Fizyka','Chemistry':'Chemia','Biology':'Biologia','Computer Science':'Informatyka','English Proficiency':'Biegłość w angielskim','AI & Data Science':'AI i nauka o danych','Business & Management':'Biznes i zarządzanie'},
+  id:{'K-12':'Kurikulum sekolah','University':'Universitas','Vocational':'Keterampilan vokasi','Entrance Exam':'Ujian masuk','Language Exam':'Ujian bahasa','Olympiad':'Olimpiade dan kompetisi','Professional':'Sertifikasi profesional','Mathematics':'Matematika','Physics':'Fisika','Chemistry':'Kimia','Biology':'Biologi','Computer Science':'Ilmu komputer','English Proficiency':'Kemahiran bahasa Inggris','AI & Data Science':'AI dan ilmu data','Business & Management':'Bisnis dan manajemen'},
+  ko:{'K-12':'학교 교육과정','University':'대학교','Vocational':'직업 기술','Entrance Exam':'입학시험','Language Exam':'어학시험','Olympiad':'올림피아드 및 대회','Professional':'전문 자격증','Mathematics':'수학','Physics':'물리','Chemistry':'화학','Biology':'생물','Computer Science':'컴퓨터 과학','English Proficiency':'영어 능력','AI & Data Science':'AI 및 데이터 과학','Business & Management':'비즈니스와 경영'},
+  uk:{'K-12':'Шкільна програма','University':'Університет','Vocational':'Професійні навички','Entrance Exam':'Вступні іспити','Language Exam':'Мовні іспити','Olympiad':'Олімпіади та конкурси','Professional':'Професійна сертифікація','Mathematics':'Математика','Physics':'Фізика','Chemistry':'Хімія','Biology':'Біологія','Computer Science':'Інформатика','English Proficiency':'Англійська мова','AI & Data Science':'ШІ та наука про дані','Business & Management':'Бізнес і менеджмент'},
+  ro:{'K-12':'Curriculum școlar','University':'Universitate','Vocational':'Competențe profesionale','Entrance Exam':'Examene de admitere','Language Exam':'Examene de limbă','Olympiad':'Olimpiade și competiții','Professional':'Certificare profesională','Mathematics':'Matematică','Physics':'Fizică','Chemistry':'Chimie','Biology':'Biologie','Computer Science':'Informatică','English Proficiency':'Competență în engleză','AI & Data Science':'IA și știința datelor','Business & Management':'Afaceri și management'},
+  ms:{'K-12':'Kurikulum sekolah','University':'Universiti','Vocational':'Kemahiran vokasional','Entrance Exam':'Peperiksaan kemasukan','Language Exam':'Peperiksaan bahasa','Olympiad':'Olimpiad dan pertandingan','Professional':'Pensijilan profesional','Mathematics':'Matematik','Physics':'Fizik','Chemistry':'Kimia','Biology':'Biologi','Computer Science':'Sains komputer','English Proficiency':'Kemahiran bahasa Inggeris','AI & Data Science':'AI dan sains data','Business & Management':'Perniagaan dan pengurusan'},
+  az:{'K-12':'Məktəb proqramı','University':'Universitet','Vocational':'Peşə bacarıqları','Entrance Exam':'Qəbul imtahanları','Language Exam':'Dil imtahanları','Olympiad':'Olimpiadalar və yarışlar','Professional':'Peşəkar sertifikat','Mathematics':'Riyaziyyat','Physics':'Fizika','Chemistry':'Kimya','Biology':'Biologiya','Computer Science':'Kompüter elmləri','English Proficiency':'İngilis dili səviyyəsi','AI & Data Science':'Süni intellekt və data elmi','Business & Management':'Biznes və idarəetmə'},
+  ur:{'K-12':'اسکول نصاب','University':'جامعہ','Vocational':'پیشہ ورانہ مہارتیں','Entrance Exam':'داخلہ امتحانات','Language Exam':'زبان کے امتحانات','Olympiad':'اولمپیاڈ اور مقابلے','Professional':'پیشہ ورانہ سرٹیفکیشن','Mathematics':'ریاضی','Physics':'طبیعیات','Chemistry':'کیمیا','Biology':'حیاتیات','Computer Science':'کمپیوٹر سائنس','English Proficiency':'انگریزی مہارت','AI & Data Science':'اے آئی اور ڈیٹا سائنس','Business & Management':'کاروبار اور انتظام'}
+});
+
+function slugKey(prefix, value){
+  return prefix + '_' + String(value || '').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'').slice(0,70);
+}
+function localCatalogTerm(value){
+  const lang = currentLang();
+  return (CATALOG_LOCAL_TERMS[lang] && CATALOG_LOCAL_TERMS[lang][value]) || null;
+}
+function taxLabel(value){ const local=localCatalogTerm(value); if(local) return local; const key=slugKey('tax', value); const label=T(key); return (!label || label===key || /^(tax|fld|flt)[_\s-]/i.test(label)) ? value : label; }
+function countryLabel(value, code){
+  const lang=currentLang();
+  if(code && window.Intl && Intl.DisplayNames){
+    try{return new Intl.DisplayNames([lang,'en'],{type:'region'}).of(code) || value;}catch(e){}
+  }
+  const key=slugKey('country', value); const label=T(key); return (!label || label===key || /^country[_\s-]/i.test(label)) ? value : label;
+}
+function fieldLabel(value){ const local=localCatalogTerm(value); if(local) return local; const key={'K-12':'fld_k12','University':'fld_university','Vocational':'fld_vocational','Entrance Exam':'fld_entrance','Language Exam':'fld_language','Olympiad':'fld_olympiad','Professional':'fld_professional'}[value] || slugKey('tax', value); const label=T(key); return (!label || /^(fld|flt|tax)[_\s-]/i.test(label)) ? value : label; }
+function optionHTML(value, label){ return `<option value="${String(value).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">${label || taxLabel(value)}</option>`; }
+function currentLang(){ return localStorage.getItem('odyssey_lang') || 'en'; }
+function rebuildCatalogSelectLabels(){
+  const fieldSel = document.getElementById('selField');
+  if(fieldSel){ Array.from(fieldSel.options).forEach(opt=>{ if(!opt.value){ opt.textContent=T('flt_all_fields'); } else { opt.textContent=fieldLabel(opt.value); } }); }
+  const discSel = document.getElementById('selDiscipline');
+  if(discSel){ const current=discSel.value; const disciplines = state.field ? Object.keys(TAXONOMY[state.field] || {}) : []; discSel.innerHTML = optionHTML('', state.field ? T('flt_all_disciplines') : T('flt_choose_field_first')) + disciplines.map(d => optionHTML(d, taxLabel(d))).join(''); discSel.value=current; }
+  const subSel = document.getElementById('selSubject');
+  if(subSel){ const current=subSel.value; const subjects = (state.field && state.discipline) ? ((TAXONOMY[state.field] || {})[state.discipline] || []) : []; subSel.innerHTML = optionHTML('', state.discipline ? T('flt_all_subjects') : T('flt_choose_disc_first')) + subjects.map(s => optionHTML(s, taxLabel(s))).join(''); subSel.value=current; }
+  const lvlSel = document.getElementById('selLevel');
+  if(lvlSel){ Array.from(lvlSel.options).forEach(opt=>{ if(!opt.value) opt.textContent=T('flt_all_levels'); else opt.textContent=levelLabel(opt.value); }); }
+  if(selectedCountryObj){ document.getElementById('countryInput').value = selectedCountryObj.f + ' ' + countryLabel(selectedCountryObj.n,selectedCountryObj.code); }
+  populateCountryDrop(document.getElementById('countryInput')?.value || '');
+}
+function rerenderDynamicCatalogText(){
+  rebuildCatalogSelectLabels();
+  if(state.field) setStepDone(1, fieldLabel(state.field));
+  if(state.discipline) setStepDone(2, taxLabel(state.discipline));
+  if(state.subject) setStepDone(3, taxLabel(state.subject));
+  if(state.country && selectedCountryObj) setStepDone(4, selectedCountryObj.f + ' ' + countryLabel(selectedCountryObj.n));
+  if(state.level) setStepDone(5, levelLabel(state.level));
+  updateChips();
+  renderCourses(getFiltered());
+}
+window.addEventListener('odyssey:languageChanged', rerenderDynamicCatalogText);
+
+function levelLabel(level){
+  const key = LEVEL_KEY[level];
+  if(!key) return level;
+  // Strip the leading emoji from the translated level label to match course-card style
+  return T(key).replace(/^\S+\s*/, '');
+}
+
+function thumbColor(field) {
+  return {'Vocational':'linear-gradient(135deg,#1a3a2a,#2a5a3a)','University':'linear-gradient(135deg,#1a2a3a,#2a3a5a)','K-12':'linear-gradient(135deg,#3a2a1a,#5a3a1a)','Entrance Exam':'linear-gradient(135deg,#3a1a1a,#5a2a2a)','Language Exam':'linear-gradient(135deg,#2a1a3a,#3a2a5a)'}[field]||'linear-gradient(135deg,#1a2a3a,#2a3a4a)';
+}
+
+function coursePriceOptions(course) {
+  const base = Number(course.price || 0);
+  const interaction = course.interactionPrice ?? course.coachedPrice ?? (base === 0 ? 12 : Math.round(base * 1.42 + 6));
+  return {base, interaction};
+}
+
+function enrollLabel(){
+  const label = T('crs_enroll');
+  return (!label || /^crs[_\s-]*enroll$/i.test(label) || /^crs\b/i.test(label)) ? 'Enrol now' : label;
+}
+
+function renderCourses(data) {
+  const grid = document.getElementById('courseGrid');
+  const noRes = document.getElementById('noResults');
+  const total = data.length;
+  const foundLabel = total === 1 ? T('crs_found_singular') : T('crs_found');
+  document.getElementById('catalogCount').innerHTML = `<strong>${total.toLocaleString()}</strong> ${foundLabel}`;
+  const page = data.slice((currentPage-1)*PER_PAGE, currentPage*PER_PAGE);
+  if (!page.length) { grid.innerHTML=''; noRes.classList.add('show'); document.getElementById('pagination').innerHTML=''; return; }
+  noRes.classList.remove('show');
+  grid.innerHTML = page.map((c,i) => {
+    const prices = coursePriceOptions(c);
+    return `
+    <div class="course-card${currentView==='list'?' list-view':''}" style="animation-delay:${i*0.04}s">
+      <div class="course-thumb" style="${currentView==='list'?'width:180px;height:auto;min-height:120px':'height:140px'}">
+        <div class="thumb-bg" style="background:${thumbColor(c.field)}">${c.emoji}<div class="thumb-overlay"></div></div>
+        <span class="course-badge ${c.badge}">${T(BADGE_KEY[c.badgeLabel] || c.badgeLabel)}</span>
+        <div class="course-fav" data-i18n-title="course_save_title" title="Save">♡</div>
+      </div>
+      <div class="course-body">
+        <div class="course-meta-top">
+          <span class="course-field">${taxLabel(c.discipline)}</span>
+          <span class="course-country">${c.flag} ${countryLabel(c.country)}</span>
+        </div>
+        <div class="course-title">${c.title}</div>
+        <div class="course-instructor">${T('catalog_by_instructor').replace('{name}', '<span>'+c.instructor+'</span>')}</div>
+        <div class="course-stats">
+          <span class="course-rating">★ ${c.rating}<small> (${c.reviews.toLocaleString()})</small></span>
+          <span class="course-dot"></span><span>${c.students.toLocaleString()} ${T('crs_students')}</span>
+          <span class="course-dot"></span><span>${c.hours}h</span>
+          <span class="course-dot"></span><span>${levelLabel(c.level)}</span>
+          ${c.cert?'<span class="course-dot"></span><span>'+T('crs_cert')+'</span>':''}
+          ${c.practice?'<span class="course-dot"></span><span>'+T('crs_tests')+'</span>':''}
+        </div>
+        <div class="course-footer">
+          <div class="course-prices" aria-label="Course price options">
+            <div class="price-line ${prices.base===0?'price-free':''}"><span>Self-paced</span><strong>${prices.base===0?T('crs_free'):'$'+prices.base}</strong></div>
+            <div class="price-line interactive"><span>With instructor help</span><strong>$${prices.interaction}</strong></div>
+          </div>
+          <button class="btn-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${enrollLabel()}</button>
+        </div>
+      </div>
+    </div>`}).join('');
+  document.querySelectorAll('.course-fav').forEach(f=>f.addEventListener('click',e=>{e.stopPropagation();f.textContent=f.textContent==='♡'?'♥':'♡';f.style.color=f.textContent==='♥'?'#e05555':''}));
+  renderPagination(total);
+}
+
+
+function enrollCourse(courseId) {
+  const course = COURSES.find(c => c.id === courseId);
+  if (!course) return;
+  const enrolled = JSON.parse(localStorage.getItem('odyssey_enrolled_courses') || '[]');
+  if (!enrolled.some(c => c.id === course.id)) {
+    enrolled.unshift({
+      id: course.id,
+      title: course.title,
+      instructor: course.instructor,
+      description: [course.field, course.discipline, course.subject].filter(Boolean).join(' · '),
+      emoji: course.emoji || '🎓',
+      field: course.field,
+      level: course.level,
+      hours: course.hours,
+      price: course.price,
+      interactionPrice: coursePriceOptions(course).interaction,
+      cert: course.cert,
+      practice: course.practice,
+      progress: Math.floor(12 + Math.random() * 18)
+    });
+    localStorage.setItem('odyssey_enrolled_courses', JSON.stringify(enrolled));
+  }
+  localStorage.setItem('odyssey_demo_logged_in', 'student');
+  window.location.href = 'student_portal.html';
+}
+
+function renderPagination(total) {
+  const pages = Math.ceil(total/PER_PAGE);
+  if(pages<=1){document.getElementById('pagination').innerHTML='';return;}
+  let h='';
+  if(currentPage>1) h+=`<button class="page-btn" onclick="goPage(${currentPage-1})">‹</button>`;
+  for(let p=1;p<=pages;p++){
+    if(p===1||p===pages||Math.abs(p-currentPage)<=1) h+=`<button class="page-btn${p===currentPage?' active':''}" onclick="goPage(${p})">${p}</button>`;
+    else if(Math.abs(p-currentPage)===2) h+=`<span style="padding:0 4px;color:var(--muted2);font-size:13px">…</span>`;
+  }
+  if(currentPage<pages) h+=`<button class="page-btn" onclick="goPage(${currentPage+1})">›</button>`;
+  document.getElementById('pagination').innerHTML = h;
+}
+
+function goPage(p){currentPage=p;renderCourses(getFiltered());window.scrollTo({top:0,behavior:'smooth'})}
+
+// ════════════════════════════════════════════════
+// URL PARAMS (from homepage links)
+// ════════════════════════════════════════════════
+(function applyURLParams(){
+  const p = new URLSearchParams(window.location.search);
+  const field = p.get('field'), subject = p.get('subject'), exam = p.get('exam'), country = p.get('country'), instructor = p.get('instructor');
+  let hasParam = false;
+
+  function findTaxonomyPath(value){
+    if(!value) return null;
+    const aliases = {
+      'jee advanced':'JEE Advanced (India)',
+      'neet-ug':'NEET-UG (India)',
+      'neet ug':'NEET-UG (India)',
+      'gaokao':'Gaokao (China)',
+      'jamb utme':'JAMB UTME (Nigeria)',
+      'waec wassce':'WAEC WASSCE (West Africa)',
+      'sat & act':'SAT (USA)',
+      'sat and act':'SAT (USA)',
+      'mcat':'MCAT (USA/Canada)',
+      'enem / vestibular':'ENEM / Vestibular (Brazil)',
+      'konkur (کنکور)':'Konkur / کنکور (Iran)',
+      'konkur':'Konkur / کنکور (Iran)',
+      'qiyas / tahsili':'Qiyas / Tahsili (Saudi Arabia)',
+      'ielts academic':'IELTS Academic — Writing',
+      'toefl ibt':'TOEFL iBT — Speaking',
+      'delf / dalf':'DELF B1–B2',
+      'jlpt':'JLPT N2–N1 (Advanced)',
+      'kyōtsū / jlpt':'JLPT N2–N1 (Advanced)'
+    };
+    const raw = String(value).trim();
+    const alias = aliases[raw.toLowerCase()];
+    const target = String(alias || raw).trim().toLowerCase();
+    for(const [f, disciplines] of Object.entries(TAXONOMY)){
+      if(String(f).toLowerCase() === target) return {field:f};
+      for(const [d, subjects] of Object.entries(disciplines || {})){
+        if(String(d).toLowerCase() === target) return {field:f, discipline:d};
+        const s = (subjects || []).find(x => String(x).toLowerCase() === target);
+        if(s) return {field:f, discipline:d, subject:s};
+      }
+    }
+    // Soft match for landing cards that send a broad group such as Mathematics or Computer Science
+    for(const [f, disciplines] of Object.entries(TAXONOMY)){
+      for(const [d, subjects] of Object.entries(disciplines || {})){
+        const hay = [d].concat(subjects || []).join(' ').toLowerCase();
+        if(hay.includes(target) || target.includes(String(d).toLowerCase())) return {field:f, discipline:d};
+      }
+    }
+    return null;
+  }
+
+  function selectTaxonomyPath(path){
+    if(!path) return false;
+    if(path.field){ document.getElementById('selField').value = path.field; onFieldChange(); }
+    if(path.discipline){ document.getElementById('selDiscipline').value = path.discipline; onDisciplineChange(); }
+    if(path.subject){ document.getElementById('selSubject').value = path.subject; onSubjectChange(); }
+    return true;
+  }
+
+  if(field){
+    selectTaxonomyPath({field});
+    hasParam = true;
+  }
+  if(subject){
+    const path = findTaxonomyPath(subject);
+    if(path){
+      selectTaxonomyPath(path);
+    } else {
+      document.getElementById('searchInput').value = subject;
+      state.q = subject;
+    }
+    hasParam = true;
+  }
+  if(exam){
+    const path = findTaxonomyPath(exam);
+    if(path){
+      selectTaxonomyPath(path);
+    } else {
+      document.getElementById('searchInput').value = exam;
+      state.q = exam;
+    }
+    hasParam = true;
+  }
+  if(country){
+    const obj = COUNTRIES.find(c=>c.n===country);
+    if(obj) { unlockStep(4); selectCountry(obj); }
+    hasParam = true;
+  }
+  if(instructor){
+    document.getElementById('searchInput').value = instructor;
+    state.q = instructor;
+    hasParam = true;
+  }
+  if(hasParam){
+    const rawLabel = instructor ? instructor : exam ? exam : subject ? subject : field ? field : '';
+    const labelType = instructor ? T('catalog_filter_instructor') : (exam || subject) ? T('catalog_filter_subject') : T('catalog_filter_field');
+    const banner = document.createElement('div');
+    banner.className = 'catalog-url-banner';
+    banner.innerHTML = `<span>🔗 ${T('catalog_url_filtered_prefix')}</span><strong>${labelType}: ${rawLabel}</strong><button type="button" onclick="clearAllFilters();this.closest('.catalog-url-banner').remove()">✕ ${T('catalog_filter_clear')}</button>`;
+    const ch = document.querySelector('.catalog-header');
+    if(ch) ch.parentElement.insertBefore(banner,ch);
+  }
+  updateCounts();
+  applyFilters();
+  updateChips();
+})();
+</script>
+<script id="i18n-dark-init">
+setTimeout(()=>{document.querySelectorAll('.i18n-dark-wrap .i18n-switcher').forEach(s=>s.classList.add('dark'))},100);
+</script>
+
+<script id="catalog-country-dropdown-viewport-fix">
+(function(){
+  function placeCountryDrop(){
+    const inp=document.getElementById('countryInput');
+    const drop=document.getElementById('countryDrop');
+    if(!inp||!drop||!drop.classList.contains('open')) return;
+    if(drop.parentElement!==document.body) document.body.appendChild(drop);
+    const r=inp.getBoundingClientRect();
+    const gap=8;
+    const maxH=Math.min(320, window.innerHeight - r.bottom - 24);
+    drop.style.position='fixed';
+    drop.style.left=Math.max(12,r.left)+'px';
+    drop.style.top=(r.bottom+gap)+'px';
+    drop.style.width=Math.max(220,r.width)+'px';
+    drop.style.maxHeight=Math.max(180,maxH)+'px';
+    drop.style.zIndex='2147483647';
+  }
+  window.addEventListener('resize',placeCountryDrop,{passive:true});
+  window.addEventListener('scroll',placeCountryDrop,{passive:true});
+  document.addEventListener('input',e=>{ if(e.target&&e.target.id==='countryInput') setTimeout(placeCountryDrop,0); });
+  document.addEventListener('focusin',e=>{ if(e.target&&e.target.id==='countryInput') setTimeout(placeCountryDrop,0); });
+  document.addEventListener('click',e=>{ if(e.target&&e.target.id==='countryInput') setTimeout(placeCountryDrop,0); });
+  window.odysseyPlaceCountryDrop=placeCountryDrop;
+})();
+</script>
+<script src="assets/odyssey-global-motion.js" defer></script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+</body>
+</html>
