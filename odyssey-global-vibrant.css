@@ -1,0 +1,112 @@
+/* Odyssey global visual refresh: vibrant, slightly darker, scroll-reactive depth. */
+:root{
+  --ody-bg:#dfe7f1;
+  --ody-ink:#111827;
+  --ody-muted:#5d6878;
+  --ody-panel:rgba(250,252,255,.84);
+  --ody-line:rgba(17,24,39,.12);
+  --ody-navy:#111827;
+  --ody-blue:#2563eb;
+  --ody-teal:#0f9f8f;
+  --ody-coral:#ef5d73;
+  --ody-violet:#7c3aed;
+  --ody-amber:#f59e0b;
+  --ody-green:#16a34a;
+}
+html{background:var(--ody-bg)}
+body{
+  background:
+    radial-gradient(circle at 10% -10%,rgba(37,99,235,.24),transparent 30%),
+    radial-gradient(circle at 96% 4%,rgba(239,93,115,.20),transparent 26%),
+    radial-gradient(circle at 30% 110%,rgba(245,158,11,.15),transparent 30%),
+    linear-gradient(180deg,#dfe7f1 0%,#f2f5fa 42%,#dce5f0 100%)!important;
+  color:var(--ody-ink);
+}
+nav,.sidebar,.card,.panel,.course-card,.cat-card,.step-card,.instr-card,.testi-card,.exam-card,.search-wrap,.modal-box{
+  border-color:var(--ody-line)!important;
+}
+nav{
+  background:rgba(231,237,247,.86)!important;
+  box-shadow:0 18px 58px rgba(17,24,39,.13)!important;
+}
+.nav-logo-mark,.brand-mark,.footer-logo-mark,.left-logo-mark{
+  background:linear-gradient(135deg,var(--ody-navy),var(--ody-blue) 46%,var(--ody-teal))!important;
+}
+.nav-cta,.btn,.btn-hero-primary,.search-btn,.btn-enroll,.cta-submit{
+  background:linear-gradient(135deg,var(--ody-navy),var(--ody-blue) 52%,var(--ody-teal))!important;
+  color:#fff!important;
+}
+.btn.secondary,.btn-hero-secondary,.nav-login{
+  background:rgba(37,99,235,.10)!important;
+  color:var(--ody-blue)!important;
+  border-color:rgba(37,99,235,.22)!important;
+}
+.section-tag,.page-tag,.chip,.cat-count,.exam-tag,.fbadge{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 12px 30px rgba(17,24,39,.07);
+}
+.page-hero,.hero,.search-hero,.welcome,.auth-left{
+  filter:saturate(1.08);
+}
+.card,.course-card,.cat-card,.step-card,.instr-card,.testi-card,.exam-card,.item,.theme-card,.modal-box{
+  background-color:var(--ody-panel)!important;
+  box-shadow:0 20px 55px rgba(17,24,39,.09)!important;
+}
+.grad,.h1-line2{
+  background:linear-gradient(90deg,var(--ody-blue),var(--ody-teal),var(--ody-coral),var(--ody-amber))!important;
+  -webkit-background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  background-clip:text!important;
+}
+.odyssey-global-depth{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  overflow:hidden;
+  perspective:1100px;
+}
+.odyssey-depth-picture{
+  position:absolute;
+  width:min(36vw,520px);
+  aspect-ratio:1.45;
+  border-radius:34px;
+  opacity:calc(.18 + var(--odyScroll,0) * .14);
+  background-size:cover;
+  background-position:center;
+  box-shadow:0 38px 90px rgba(17,24,39,.18);
+  border:1px solid rgba(255,255,255,.46);
+  transform-style:preserve-3d;
+  will-change:transform,opacity;
+}
+.odyssey-depth-picture.one{
+  left:-9vw;
+  top:20vh;
+  background-image:linear-gradient(135deg,rgba(17,24,39,.28),rgba(15,159,143,.22)),url("odyssey-road-hero-fast.jpg");
+  transform:translate3d(calc(var(--odyScroll,0) * 44px),calc(var(--odyScroll,0) * -130px),0) rotateX(58deg) rotateZ(-17deg);
+}
+.odyssey-depth-picture.two{
+  right:-10vw;
+  top:56vh;
+  background-image:linear-gradient(135deg,rgba(37,99,235,.24),rgba(239,93,115,.18)),url("odyssey-global-learning-fast.jpg");
+  transform:translate3d(calc(var(--odyScroll,0) * -62px),calc(var(--odyScroll,0) * -160px),0) rotateX(60deg) rotateZ(15deg);
+}
+.odyssey-depth-picture.three{
+  left:38vw;
+  top:118vh;
+  width:min(30vw,420px);
+  background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(245,158,11,.16),rgba(15,159,143,.18));
+  transform:translate3d(calc(var(--odyScroll,0) * 24px),calc(var(--odyScroll,0) * -210px),0) rotateX(66deg) rotateZ(36deg);
+}
+.odyssey-scroll-lift{
+  transform:perspective(1200px) translateY(calc((1 - var(--odyDepth,.6)) * 10px)) rotateX(calc((1 - var(--odyDepth,.6)) * 2.2deg));
+  transition:transform .18s linear;
+  will-change:transform;
+  backface-visibility:hidden;
+}
+@media(prefers-reduced-motion:reduce){
+  .odyssey-global-depth,.scroll-depth-scene{display:none!important}
+  .odyssey-scroll-lift{transform:none!important;transition:none!important}
+}
+@media(max-width:760px){
+  .odyssey-depth-picture{opacity:.14;width:70vw}
+}
