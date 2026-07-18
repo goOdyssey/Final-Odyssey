@@ -46,13 +46,71 @@
     return 'student_portal.html';
   }
 
+  function normalizeRole(role){
+    return ['student','instructor','institution'].includes(role) ? role : 'student';
+  }
+
+  function authMetadata(user){
+    return user?.user_metadata || user?.raw_user_meta_data || {};
+  }
+
+  async function ensureProfile(user, fallbackRole){
+    const sb = await client();
+    if (!sb || !user?.id) return null;
+    const meta = authMetadata(user);
+    const role = normalizeRole(meta.role || fallbackRole || 'student');
+    const baseProfile = {
+      id: user.id,
+      role,
+      status: 'active',
+      full_name: meta.full_name || meta.name || user.email || '',
+      email: user.email || meta.email || '',
+      country: meta.country || null,
+      city: meta.city || null,
+      preferred_language: meta.preferred_language || 'en'
+    };
+
+    let { data, error } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    if (!error && data) return data;
+
+    const upsert = await sb.from('profiles').upsert(baseProfile, { onConflict: 'id' }).select('*').single();
+    if (upsert.error) throw upsert.error;
+
+    if (role === 'student') {
+      await sb.from('student_profiles').upsert({
+        user_id: user.id,
+        learning_goal: meta.learning_goal || null,
+        grade_level: meta.grade_level || null
+      }, { onConflict: 'user_id' });
+    } else if (role === 'instructor') {
+      await sb.from('instructor_profiles').upsert({
+        user_id: user.id,
+        title: meta.title || null,
+        bio: meta.bio || null,
+        teaching_languages: meta.teaching_languages ? String(meta.teaching_languages).split(',').map(v=>v.trim()).filter(Boolean) : ['English']
+      }, { onConflict: 'user_id' });
+    } else if (role === 'institution') {
+      await sb.from('institution_profiles').upsert({
+        user_id: user.id,
+        institution_name: meta.institution_name || meta.full_name || 'Institution',
+        institution_type: meta.institution_type || null,
+        business_email: meta.business_email || user.email || '',
+        subject_area: meta.subject_area || null,
+        instructor_count: Number(meta.instructor_count || 0)
+      }, { onConflict: 'user_id' });
+    }
+
+    return upsert.data;
+  }
+
   async function profile(){
     const sb = await client();
     if (!sb) return null;
     const { data: authData, error: userError } = await sb.auth.getUser();
     if (userError || !authData.user) return null;
-    const { data, error } = await sb.from('profiles').select('*').eq('id', authData.user.id).single();
+    const { data, error } = await sb.from('profiles').select('*').eq('id', authData.user.id).maybeSingle();
     if (error) throw error;
+    if (!data) return ensureProfile(authData.user);
     return data;
   }
 
@@ -65,6 +123,7 @@
       options: { data: { ...(metadata || {}), role } }
     });
     if (error) throw error;
+    if (data.user && data.session) await ensureProfile(data.user, role);
     return data;
   }
 
@@ -73,7 +132,8 @@
     if (!sb) return null;
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    const p = await profile();
+    let p = await profile();
+    if (!p && data.user) p = await ensureProfile(data.user);
     return { user: data.user, profile: p, redirectTo: routeForRole(p?.role || 'student') };
   }
 
@@ -102,11 +162,13 @@
       sb.from('admin_exam_results_detail').select('*').order('started_at',{ascending:false}).limit(500),
       sb.from('admin_subscription_detail').select('*').order('created_at',{ascending:false}).limit(500),
       sb.from('admin_student_course_detail').select('*').order('enrolled_at',{ascending:false}).limit(500),
-      sb.from('admin_audit_logs').select('*').order('created_at',{ascending:false}).limit(250)
+      sb.from('admin_audit_logs').select('*').order('created_at',{ascending:false}).limit(250),
+      sb.from('certificates').select('*, student:student_id(full_name,email), course:course_id(title)').order('issued_at',{ascending:false}).limit(500),
+      sb.from('messages').select('*, sender:sender_id(full_name,email), recipient:recipient_id(full_name,email), course:course_id(title)').order('created_at',{ascending:false}).limit(500)
     ]);
     const firstError = queries.find(q=>q.error)?.error;
     if (firstError) throw firstError;
-    const [students,instructors,courses,payments,examResults,subscriptions,enrollments,audit] = queries.map(q=>q.data || []);
+    const [students,instructors,courses,payments,examResults,subscriptions,enrollments,audit,certificates,messages] = queries.map(q=>q.data || []);
     return {
       users: [
         ...students.map(s=>({id:s.student_id,fullName:s.full_name,email:s.email,role:'student',status:s.status,enrollmentsCount:s.enrolled_courses,certificatesCount:s.certificates_issued,pendingPayoutCents:0,createdAt:s.created_at})),
@@ -121,13 +183,29 @@
       examResults,
       subscriptions,
       enrollments,
-      certificates: [],
-      messages: [],
+      certificates: certificates.map(c=>({id:c.id,studentName:c.student?.full_name,courseTitle:c.course?.title,verificationCode:c.verification_code,status:c.status,createdAt:c.issued_at})),
+      messages: messages.map(m=>({id:m.id,subject:m.subject,body:m.body,status:m.status,createdAt:m.created_at,senderName:m.sender?.full_name,recipientName:m.recipient?.full_name,courseTitle:m.course?.title})),
       deliveryAttempts: [],
       videos: [],
       privacyRequests: [],
       audit
     };
+  }
+
+  async function adminStudentDetail(studentId){
+    const sb = await client();
+    if (!sb) return null;
+    const { data, error } = await sb.rpc('admin_student_full_detail', { target_student_id: studentId });
+    if (error) throw error;
+    return data;
+  }
+
+  async function adminInstructorDetail(instructorId){
+    const sb = await client();
+    if (!sb) return null;
+    const { data, error } = await sb.rpc('admin_instructor_full_detail', { target_instructor_id: instructorId });
+    if (error) throw error;
+    return data;
   }
 
   async function setUserStatus(id,status){
@@ -146,6 +224,7 @@
 
   window.OdysseySupabase = {
     isConfigured, client, profile, signUp, signIn, signOut,
-    adminSummary, adminCollections, setUserStatus, setCourseStatus
+    adminSummary, adminCollections, adminStudentDetail, adminInstructorDetail,
+    setUserStatus, setCourseStatus
   };
 }());
