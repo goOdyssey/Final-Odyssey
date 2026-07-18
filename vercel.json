@@ -23,6 +23,10 @@
       "destination": "/auth.html"
     },
     {
+      "source": "/smoke-test",
+      "destination": "/supabase_smoke_test.html"
+    },
+    {
       "source": "/catalog",
       "destination": "/learnworld_catalog.html"
     },
