@@ -120,6 +120,13 @@
     return data;
   }
 
+  async function session(){
+    const sb = await client();
+    const { data, error } = await sb.auth.getSession();
+    if (error) throw error;
+    return data.session;
+  }
+
   async function signUp({email,password,role,metadata}){
     const sb = await client();
     const { data, error } = await sb.auth.signUp({
@@ -229,6 +236,7 @@
 
   window.OdysseySupabase = {
     isConfigured, client, profile, signUp, signIn, signOut,
+    session,
     adminSummary, adminCollections, adminStudentDetail, adminInstructorDetail,
     setUserStatus, setCourseStatus
   };

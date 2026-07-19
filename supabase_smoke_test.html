@@ -39,8 +39,9 @@ pre{white-space:pre-wrap;word-break:break-word;background:#0b1220;border:1px sol
 <script>
 const out=document.getElementById('out');
 function log(value){out.textContent=typeof value==='string'?value:JSON.stringify(value,null,2)}
+function cleanProjectUrl(value){return String(value||'').trim().replace(/\/rest\/v1\/?$/i,'').replace(/\/+$/g,'')}
 function client(){
-  const url=document.getElementById('url').value.trim();
+  const url=cleanProjectUrl(document.getElementById('url').value);
   const key=document.getElementById('key').value.trim();
   if(!url||!key) throw new Error('Paste Supabase URL and anon public key first.');
   return supabase.createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true}});
