@@ -138,10 +138,21 @@
       }
     });
     if (error) throw error;
-    if (data.user && data.session) await ensureProfile(data.user, role);
     if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
       throw new Error('This email is already registered. Please log in instead.');
     }
+    let odysseyProfile = null;
+    let odysseyProfileError = null;
+    if (data.user && data.session) {
+      try {
+        odysseyProfile = await ensureProfile(data.user, role);
+      } catch (profileError) {
+        odysseyProfileError = profileError;
+        console.warn('Odyssey profile sync failed after signup. Auth user was still created.', profileError);
+      }
+    }
+    data.odysseyProfile = odysseyProfile;
+    data.odysseyProfileError = odysseyProfileError;
     return data;
   }
 
@@ -150,9 +161,16 @@
     if (!sb) return null;
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    let p = await profile();
-    if (!p && data.user) p = await ensureProfile(data.user);
-    return { user: data.user, profile: p, redirectTo: routeForRole(p?.role || 'student') };
+    let p = null;
+    try {
+      p = await profile();
+      if (!p && data.user) p = await ensureProfile(data.user);
+    } catch (profileError) {
+      console.warn('Odyssey profile sync failed after login. Falling back to auth metadata.', profileError);
+    }
+    const meta = authMetadata(data.user);
+    const role = p?.role || meta.role || 'student';
+    return { user: data.user, profile: p || { role, full_name: meta.full_name || data.user?.email || '', email: data.user?.email || email, country: meta.country || '', city: meta.city || '' }, redirectTo: routeForRole(role) };
   }
 
   async function signOut(){
