@@ -140,6 +140,82 @@ async function updateIncident(id,status){try{await api('/api/admin/incidents/'+e
 nav.addEventListener('click',event=>{const btn=event.target.closest('button[data-target]');if(!btn)return;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b===btn));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===btn.dataset.target))});
 refreshAll();
 </script>
+<script>
+(function(){
+  const readJSON=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}};
+  const writeJSON=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
+  const statusKey='odyssey_admin_course_statuses';
+  const userStatusKey='odyssey_admin_user_statuses';
+  const certKey='odyssey_admin_certificates';
+  const auditKey='odyssey_admin_local_audit';
+
+  function localProfile(role){
+    return role==='instructor'?readJSON('odyssey_instructor_profile',{}):readJSON('odyssey_student_profile',{});
+  }
+  function localUserId(role,email){return `${role}-${String(email||role+'@odyssey.demo').toLowerCase().replace(/[^a-z0-9]+/g,'-')}`}
+  function purchasedTests(){const all=[];Object.keys(localStorage).forEach(key=>{if(key==='odyssey_purchased_tests'||key.startsWith('odyssey_purchased_tests_'))all.push(...readJSON(key,[]))});const map=new Map();all.forEach(t=>t&&t.id!==undefined&&map.set(String(t.id),t));return [...map.values()]}
+  function localEnrollments(){return readJSON('odyssey_enrolled_courses',[])}
+  function localInstructorCourses(){return readJSON('odyssey_instructor_courses',[])}
+  function localCerts(){return readJSON(certKey,[])}
+  function addAudit(action,entityType,entityId){const logs=readJSON(auditKey,[]);logs.unshift({id:'local-'+Date.now(),action,entityType,entityId,actorUserId:'local-admin',createdAt:new Date().toISOString()});writeJSON(auditKey,logs.slice(0,100));state.collections.audit=[...logs.slice(0,100),...(state.collections.audit||[])];}
+  function uniqueBy(list,keyFn){const map=new Map();(list||[]).forEach(item=>{const key=keyFn(item);if(key&&!map.has(key))map.set(key,item)});return [...map.values()]}
+
+  function enhanceLocalAdminData(){
+    const sp=localProfile('student');
+    const ip=localProfile('instructor');
+    const enrollments=localEnrollments();
+    const tests=purchasedTests();
+    const instructorCourses=localInstructorCourses();
+    const userStatuses=readJSON(userStatusKey,{});
+    const courseStatuses=readJSON(statusKey,{});
+    const certs=localCerts();
+    const studentEmail=sp.email||'student@odyssey.demo';
+    const instructorEmail=ip.email||'instructor@odyssey.demo';
+    const student={id:localUserId('student',studentEmail),fullName:sp.name||sp.full_name||'Odyssey Student',email:studentEmail,role:'student',status:userStatuses[localUserId('student',studentEmail)]||'active',enrollmentsCount:enrollments.length,certificatesCount:certs.length,purchasesCount:tests.length,pendingPayoutCents:0,createdAt:new Date().toISOString()};
+    const instructor={id:localUserId('instructor',instructorEmail),fullName:ip.name||ip.full_name||'Odyssey Instructor',email:instructorEmail,role:'instructor',status:userStatuses[localUserId('instructor',instructorEmail)]||'active',coursesCount:instructorCourses.length,pendingPayoutCents:0,viewsCount:instructorCourses.reduce((s,c)=>s+Number(c.views||c.view_count||0),0),likesCount:instructorCourses.reduce((s,c)=>s+Number(c.likes||c.like_count||0),0),createdAt:new Date().toISOString()};
+    const localCourses=[...instructorCourses.map(c=>({id:c.id,title:c.title,instructorName:instructor.fullName,field:c.field,discipline:c.discipline,subject:c.subject,priceCents:Number(c.priceBase||c.price||0)*100,interactionPriceCents:Number(c.priceQA||c.interactionPrice||0)*100,status:courseStatuses[c.id]||c.status||'review',sessionCount:c.sessions||c.sessionCount||0,rating:c.rating||0,enrolledCount:c.students||0,likeCount:c.likes||0,viewCount:c.views||0})),...enrollments.map(c=>({id:'student-'+c.id,title:c.title,instructorName:c.instructor,field:c.field,discipline:c.discipline||'',subject:c.subject||'',priceCents:Number(c.price||0)*100,interactionPriceCents:Number(c.interactionPrice||0)*100,status:courseStatuses['student-'+c.id]||'active for student',sessionCount:c.sessions||5,rating:c.rating||0,enrolledCount:1}))];
+    const payments=tests.map(t=>({id:'test-'+t.id,provider:'Odyssey checkout',amountCents:Number(t.price||0)*100,status:Number(t.price)>0?'paid':'free',createdAt:t.purchasedAt||new Date().toISOString(),studentName:student.fullName,courseTitle:t.title}));
+    state.collections.users=[student,instructor,...(state.collections.users||[]).filter(u=>![student.id,instructor.id].includes(u.id))];
+    state.collections.students=[{...student,full_name:student.fullName,total_paid_cents:payments.reduce((s,p)=>s+p.amountCents,0),enrolled_courses:enrollments.length,purchased_exams:tests.length},...(state.collections.students||[])];
+    state.collections.instructors=[instructor,...(state.collections.instructors||[]).filter(i=>i.id!==instructor.id)];
+    state.collections.courses=[...localCourses,...(state.collections.courses||[]).filter(c=>!localCourses.some(l=>String(l.id)===String(c.id)))];
+    state.collections.payments=uniqueBy([...payments,...(state.collections.payments||[])],p=>p.id);
+    state.collections.certificates=uniqueBy([...certs,...(state.collections.certificates||[])],c=>c.id||c.verificationCode);
+    state.collections.audit=uniqueBy([...readJSON(auditKey,[]),...(state.collections.audit||[])],a=>a.id||`${a.action}-${a.entityId}-${a.createdAt}`);
+    state.overview.recentUsers=state.collections.users.slice(0,6);
+    state.overview.recentCourses=state.collections.courses.slice(0,6);
+  }
+
+  const oldRenderAll=window.renderAll||renderAll;
+  window.renderAll=function(){enhanceLocalAdminData();oldRenderAll();}
+  renderAll=window.renderAll;
+
+  window.renderUsers=function(){const q=(userSearch?.value||'').toLowerCase(),role=roleFilter?.value||'',status=statusFilter?.value||'';const users=(state.collections.users||[]).filter(u=>(!role||u.role===role)&&(!status||u.status===status)&&(!q||[u.fullName,u.email,u.role,u.status].join(' ').toLowerCase().includes(q)));usersTable.innerHTML=rows(users,'No users found',u=>`<tr><td><b>${esc(u.fullName)}</b><br><small>${esc(u.email)}</small></td><td>${esc(u.role)}</td><td>${statusChip(u.status)}</td><td>${u.enrollmentsCount||0} enrollments<br>${u.certificatesCount||0} certificates<br>${u.purchasesCount||0} purchases</td><td>${money(u.pendingPayoutCents)}</td><td>${u.role==='student'?`<button class="mini" onclick="openStudentDetail('${u.id}')">Student data</button> `:''}${u.role==='instructor'?`<button class="mini" onclick="openInstructorDetail('${u.id}')">Instructor data</button> `:''}<button class="mini" onclick="setUserStatus('${u.id}','active')">Activate</button> <button class="mini" onclick="setUserStatus('${u.id}','suspended')">Deactivate</button></td></tr>`)}
+
+  window.renderInstructors=function(){const instructors=state.collections.instructors||[];instructorCards.innerHTML=rows(instructors,'No instructors found',i=>`<div class="card"><h2>${esc(i.fullName)}</h2><p>${esc(i.email)}</p><div class="meter"><span style="width:${Math.min(100,(i.coursesCount||0)*18)}%"></span></div><p><b>${i.coursesCount||0}</b> courses · ${i.likesCount||0} likes · ${i.viewsCount||0} views · pending payout ${money(i.pendingPayoutCents)}</p>${statusChip(i.status)}<br><br><button class="mini" onclick="openInstructorDetail('${i.id}')">Open full instructor record</button></div>`)}
+
+  window.renderCourses=function(){const q=(courseSearch?.value||'').toLowerCase(),status=courseStatus?.value||'';const courses=(state.collections.courses||[]).filter(c=>(!status||String(c.status).toLowerCase().includes(status))&&(!q||[c.title,c.instructorName,c.field,c.discipline,c.subject].join(' ').toLowerCase().includes(q)));coursesTable.innerHTML=rows(courses,'No courses found',c=>`<tr><td><b>${esc(c.title)}</b><br><small>${c.sessionCount||0} sessions · rating ${c.rating||0} · ${c.viewCount||0} views · ${c.likeCount||0} likes</small></td><td>${esc(c.instructorName)}</td><td>${esc(c.field)}<br><small>${esc(c.discipline)} · ${esc(c.subject)}</small></td><td>${money(c.priceCents)}<br><small>Interactive ${money(c.interactionPriceCents)}</small></td><td>${statusChip(c.status)}</td><td><button class="mini" onclick="setCourseStatus('${c.id}','active')">Activate</button> <button class="mini" onclick="setCourseStatus('${c.id}','deactivated')">Deactivate</button> <button class="mini" onclick="setCourseStatus('${c.id}','review')">Review</button> <button class="mini" onclick="setCourseStatus('${c.id}','archived')">Archive</button></td></tr>`)}
+
+  window.renderCertificates=function(){certificateTable.innerHTML=rows(state.collections.certificates,'No certificates found',c=>`<tr><td>${esc(c.studentName)}</td><td>${esc(c.courseTitle)}</td><td><b>${esc(c.verificationCode||'Pending')}</b></td><td>${statusChip(c.status||'pending')}</td><td>${c.createdAt?new Date(c.createdAt).toLocaleDateString():'Not issued'}<br><button class="mini" onclick="issueCertificate('${c.id||''}')">Issue / e-sign</button> <button class="mini" onclick="revokeCertificate('${c.id||''}')">Revoke</button></td></tr>`)}
+
+  window.setUserStatus=async function(id,status){try{if(window.OdysseySupabase?.isConfigured?.()&&!String(id).includes('-')){await OdysseySupabase.setUserStatus(id,status);await refreshAll();return}}catch(error){console.warn('Supabase user status failed; applying local admin status.',error)}const statuses=readJSON(userStatusKey,{});statuses[id]=status;writeJSON(userStatusKey,statuses);(state.collections.users||[]).forEach(u=>{if(String(u.id)===String(id))u.status=status});addAudit('admin.user.status.updated','user',id);renderAll()}
+  window.setCourseStatus=async function(id,status){try{if(window.OdysseySupabase?.isConfigured?.()&&!String(id).startsWith('student-')){await OdysseySupabase.setCourseStatus(id,status);await refreshAll();return}}catch(error){console.warn('Supabase course status failed; applying local admin status.',error)}const statuses=readJSON(statusKey,{});statuses[id]=status;writeJSON(statusKey,statuses);(state.collections.courses||[]).forEach(c=>{if(String(c.id)===String(id))c.status=status});addAudit('admin.course.status.updated','course',id);renderAll()}
+
+  window.issueCertificate=function(id){const signer=prompt('E-sign certificate as:', 'Nima Khoei, Odyssey Admin');if(!signer)return;const certs=localCerts();let cert=certs.find(c=>String(c.id)===String(id));if(!cert){const sp=localProfile('student');const course=localEnrollments()[0]||{};cert={id:'cert-'+Date.now(),studentName:sp.name||'Odyssey Student',courseTitle:course.title||'Odyssey Course',verificationCode:'OD-'+Date.now().toString().slice(-10),createdAt:new Date().toISOString()};certs.unshift(cert)}Object.assign(cert,{status:'issued',signedBy:signer,eSignature:`${signer} · ${new Date().toLocaleString()}`,createdAt:cert.createdAt||new Date().toISOString()});writeJSON(certKey,certs);addAudit('admin.certificate.e_signed','certificate',cert.id);renderAll()}
+  window.revokeCertificate=function(id){const certs=localCerts().map(c=>String(c.id)===String(id)?{...c,status:'revoked'}:c);writeJSON(certKey,certs);addAudit('admin.certificate.revoked','certificate',id);renderAll()}
+
+  function localStudentDetail(id){const sp=localProfile('student');const enrollments=localEnrollments();const tests=purchasedTests();const certs=localCerts();return detailSection('Profile',profileSummary({full_name:sp.name||'Odyssey Student',email:sp.email||'',country:sp.country||'',city:sp.city||'',status:'active',student_id:id,enrolled_courses:enrollments.length,certificates_issued:certs.length,total_paid_cents:tests.reduce((s,t)=>s+Number(t.price||0)*100,0)}))+detailSection('Enrolled courses',detailList(enrollments,'No enrollments yet',e=>`<div class="detail-item"><b>${esc(e.title)}</b><small>${esc(e.instructor)} · ${esc(e.field)} · ${e.progress||0}% progress · paid ${money(Number(e.price||0)*100)}</small></div>`))+detailSection('Purchase history',detailList(tests,'No exam purchases yet',t=>`<div class="detail-item"><b>${esc(t.title)}</b><small>${esc(t.subject)} · ${esc(t.instructor)} · ${Number(t.price)>0?money(Number(t.price)*100):'Free'} · ${new Date(t.purchasedAt||Date.now()).toLocaleString()}</small></div>`))+detailSection('Certificates',detailList(certs,'No certificates yet',c=>`<div class="detail-item"><b>${esc(c.courseTitle)}</b><small>${esc(c.verificationCode)} · ${esc(c.status)} · signed by ${esc(c.signedBy||'not signed')}</small></div>`))}
+  function localInstructorDetail(id){const ip=localProfile('instructor');const courses=localInstructorCourses();return detailSection('Profile',profileSummary({full_name:ip.name||'Odyssey Instructor',email:ip.email||'',country:ip.country||'',city:ip.city||'',status:'active',instructor_id:id}))+detailSection('Course catalog',detailList(courses,'No courses posted yet',c=>`<div class="detail-item"><b>${esc(c.title)}</b><small>${esc(c.status||'review')} · ${esc(c.field)} / ${esc(c.subject)} · ${c.students||0} students · ${c.likes||0} likes · ${c.views||0} views · price ${money(Number(c.priceBase||c.price||0)*100)}</small></div>`))+detailSection('Subscription and payout',`<div class="detail-list"><div class="detail-item"><b>${esc(localStorage.getItem('odyssey_subscription_plan')||'free')} plan</b><small>${courses.length} active courses · payroll pending ${money(0)}</small></div></div>`)}
+
+  const oldOpenStudent=window.openStudentDetail||openStudentDetail;
+  const oldOpenInstructor=window.openInstructorDetail||openInstructorDetail;
+  window.openStudentDetail=async function(id){detailTitle.textContent='Student details';detailSubtitle.textContent='Profile, enrollments, purchase history, certificates, and messages.';detailBody.innerHTML=localStudentDetail(id);detailOverlay.classList.add('open');try{if(window.OdysseySupabase?.isConfigured?.()&&!String(id).startsWith('student-'))await oldOpenStudent(id)}catch(error){}}
+  window.openInstructorDetail=async function(id){detailTitle.textContent='Instructor details';detailSubtitle.textContent='Courses, subscription, likes, views, students, and payout summary.';detailBody.innerHTML=localInstructorDetail(id);detailOverlay.classList.add('open');try{if(window.OdysseySupabase?.isConfigured?.()&&!String(id).startsWith('instructor-'))await oldOpenInstructor(id)}catch(error){}}
+
+  enhanceLocalAdminData();
+  renderAll();
+}());
+</script>
 <script src="assets/odyssey-investor-final-polish.js" defer></script>
 <script src="assets/odyssey-language-switcher-fix.js" defer></script>
 </body>

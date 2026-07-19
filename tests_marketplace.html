@@ -115,6 +115,7 @@ h1,h2,h3{font-family:var(--head);margin:0}h1{font-size:clamp(38px,6vw,72px);line
 </div>
 
 <script src="js/i18n.js" defer></script>
+<script src="js/session-ui.js" defer></script>
 <script src="assets/odyssey-portal-translations.js" defer></script>
 <script defer src="assets/odyssey-translation-completion.js"></script>
 <script>
@@ -131,6 +132,9 @@ const BASE_TESTS = [
 const quickSubjects = ['All','IELTS Writing','JEE Advanced Mathematics','NEET Biology','SAT Math','Machine Learning','Anatomy'];
 function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch(e){return fallback}}
 function writeJSON(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function currentStudentProfile(){return readJSON('odyssey_student_profile',{})}
+function purchasedExamKey(){const p=currentStudentProfile();return 'odyssey_purchased_tests_'+(p.email||p.name||'guest').toLowerCase().replace(/[^a-z0-9]+/g,'_')}
+function recordPurchasedTest(test){if(!test)return;const key=purchasedExamKey();const existing=readJSON(key,[]).filter(t=>String(t.id)!==String(test.id));writeJSON(key,[{...test,purchasedAt:new Date().toISOString()},...existing]);const legacy=readJSON('odyssey_purchased_tests',[]).filter(t=>String(t.id)!==String(test.id));writeJSON('odyssey_purchased_tests',[{...test,purchasedAt:new Date().toISOString()},...legacy])}
 function PT(text, vars){return window.OdysseyPortalT ? window.OdysseyPortalT(text, vars) : text}
 function allTests(){return [...readJSON('odyssey_market_tests',[]), ...BASE_TESTS]}
 function money(price){return Number(price)===0?'Free':'$'+Number(price)}
@@ -197,8 +201,11 @@ function artColor(field){
 }
 function startTest(id){
   const test = allTests().find(t=>String(t.id)===String(id));
+  localStorage.setItem('odyssey_pending_test_id', String(id));
+  if (!window.OdysseySessionUI?.requireStudentLogin?.('tests_marketplace.html')) return;
+  recordPurchasedTest(test);
   localStorage.setItem('odyssey_selected_market_test', JSON.stringify(test));
-  location.href = 'exam_portal.html';
+  location.href = 'exam_portal.html?marketTest=' + encodeURIComponent(test.id);
 }
 function previewTest(id){
   const t = allTests().find(x=>String(x.id)===String(id));

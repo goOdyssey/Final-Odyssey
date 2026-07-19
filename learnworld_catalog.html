@@ -210,6 +210,7 @@ footer .i18n-dropdown,.site-footer .i18n-dropdown{top:auto!important;bottom:calc
 </style>
 </style>
 <script defer="" src="js/i18n.js"></script>
+<script defer src="js/session-ui.js"></script>
 <script defer src="assets/odyssey-portal-translations.js"></script>
 <script defer src="assets/odyssey-translation-completion.js"></script>
 
@@ -1136,6 +1137,8 @@ function renderCourses(data) {
 
 
 function enrollCourse(courseId) {
+  localStorage.setItem('odyssey_pending_course_id', String(courseId));
+  if (!window.OdysseySessionUI?.requireStudentLogin?.('learnworld_catalog.html')) return;
   const course = COURSES.find(c => c.id === courseId);
   if (!course) return;
   const enrolled = JSON.parse(localStorage.getItem('odyssey_enrolled_courses') || '[]');
@@ -1157,7 +1160,6 @@ function enrollCourse(courseId) {
     });
     localStorage.setItem('odyssey_enrolled_courses', JSON.stringify(enrolled));
   }
-  localStorage.setItem('odyssey_demo_logged_in', 'student');
   window.location.href = 'student_portal.html';
 }
 

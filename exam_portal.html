@@ -148,7 +148,10 @@ const FALLBACK_QUESTIONS = [
 const params = new URLSearchParams(location.search);
 const exams = readJSON('odyssey_instructor_exams', []);
 const requestedExam = params.get('exam');
-const marketplaceTest = readJSON('odyssey_selected_market_test', null);
+const requestedMarketTest = params.get('marketTest');
+const storedMarketplaceTest = readJSON('odyssey_selected_market_test', null);
+const marketplaceTests = [...readJSON('odyssey_purchased_tests', []), ...readJSON('odyssey_market_tests', [])];
+const marketplaceTest = requestedMarketTest ? (marketplaceTests.find(t => String(t.id) === String(requestedMarketTest)) || storedMarketplaceTest) : storedMarketplaceTest;
 const exam = exams.find(e => String(e.id) === String(requestedExam)) || (marketplaceTest ? {id:`market-${marketplaceTest.id}`,title:marketplaceTest.title,course:marketplaceTest.subject,duration:marketplaceTest.time,randomize:true,pass:70} : null) || exams[0] || {id:'demo',title:'Odyssey readiness assessment',course:'Platform foundations',duration:45,randomize:true,pass:70};
 const student = readJSON('odyssey_student_profile', {});
 const seedLabel = student.email || student.name || localStorage.getItem('odyssey_exam_student_seed') || cryptoRandomSeed();

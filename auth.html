@@ -1771,7 +1771,9 @@ async function renderAuthDiagnostics() {
   function savePortalProfile(role, profile){
     localStorage.setItem('odyssey_demo_logged_in', role);
     if (role === 'student') {
+      const existing = readJSON('odyssey_student_profile', {});
       localStorage.setItem('odyssey_student_profile', JSON.stringify({
+        ...existing,
         name: profile.name || profile.full_name || 'Odyssey Student',
         email: profile.email || '',
         country: profile.country || '',
@@ -1780,7 +1782,9 @@ async function renderAuthDiagnostics() {
         goal: profile.goal || ''
       }));
     } else {
+      const existing = readJSON('odyssey_instructor_profile', {});
       localStorage.setItem('odyssey_instructor_profile', JSON.stringify({
+        ...existing,
         name: profile.name || profile.full_name || (role === 'institution' ? 'Odyssey Institution' : 'Odyssey Instructor'),
         title: profile.title || (role === 'institution' ? 'Institution workspace' : 'Odyssey Instructor'),
         email: profile.email || '',
