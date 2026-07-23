@@ -178,11 +178,11 @@ label.fl .opt{color:var(--muted);font-weight:500;text-transform:none;letter-spac
 
 /* Login form */
 .login-form{width:100%;max-width:400px}
-.login-role-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}.login-role-card{border:2px solid var(--border);border-radius:14px;background:var(--bg);padding:13px 12px;text-align:left;cursor:pointer;font-family:var(--ff-body);transition:all .2s}.login-role-card b{display:block;font-size:13px;color:var(--text);margin-bottom:3px}.login-role-card span{display:block;font-size:11px;color:var(--muted);line-height:1.35}.login-role-card.active{border-color:var(--purple);background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(255,77,141,.06));box-shadow:0 8px 22px rgba(124,58,237,.14)}.country-flag-select option{font-family:var(--ff-body),system-ui,sans-serif}.login-role-title{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.login-role-selector{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}.login-role-card{border:2px solid var(--border);border-radius:14px;background:var(--bg);padding:13px 12px;text-align:left;cursor:pointer;font-family:var(--ff-body);transition:all .2s}.login-role-card b{display:block;font-size:13px;color:var(--text);margin-bottom:3px}.login-role-card span{display:block;font-size:11px;color:var(--muted);line-height:1.35}.login-role-card.active{border-color:var(--purple);background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(255,77,141,.06));box-shadow:0 8px 22px rgba(124,58,237,.14)}.country-flag-select option{font-family:var(--ff-body),system-ui,sans-serif}.login-role-title{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
 
 /* Responsive */
 @media(max-width:900px){.auth-layout{grid-template-columns:1fr}.auth-left{display:none}.auth-right{padding:36px 20px}}
-@media(max-width:480px){.fg-row{grid-template-columns:1fr}.role-selector{grid-template-columns:1fr}}
+@media(max-width:560px){.login-role-selector{grid-template-columns:1fr}}@media(max-width:480px){.fg-row{grid-template-columns:1fr}.role-selector{grid-template-columns:1fr}}
 
 /* Minor Phase 3D auth fixes */
 .left-content h2[data-i18n="auth_side_headline"]{max-width:560px;word-spacing:0.04em;line-height:1.14;}
@@ -260,6 +260,7 @@ html[dir="rtl"] nav .i18n-dropdown{
 <link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
 <link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
 <link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+<link rel="stylesheet" href="assets/odyssey-auth-contrast-fix.css" />
 <script src="js/supabase-config.js"></script>
 <script src="js/supabase-client.js"></script>
 </head>
@@ -809,7 +810,7 @@ html[dir="rtl"] nav .i18n-dropdown{
 <div class="form-title" data-i18n="auto_auth_welcome_back_f40a9a0e">Welcome back! 👋</div>
 <div class="form-sub" data-i18n="auto_auth_log_in_to_your_odyssey_account_fe2ee38a" style="margin-bottom:22px">Log in to your Odyssey account.</div>
 <div class="login-form">
-<div class="login-role-title">Log in as</div><div class="login-role-selector" role="radiogroup" aria-label="Choose login role"><button type="button" class="login-role-card active" id="loginRoleStudent" onclick="selectLoginRole('student')"><b>🎒 Student</b><span>Learning dashboard and enrolled courses</span></button><button type="button" class="login-role-card" id="loginRoleInstructor" onclick="selectLoginRole('instructor')"><b>🧑‍🏫 Instructor</b><span>Teaching studio, courses, and payouts</span></button></div>
+<div class="login-role-title">Log in as</div><div class="login-role-selector" role="radiogroup" aria-label="Choose login role"><button type="button" class="login-role-card active" id="loginRoleStudent" onclick="selectLoginRole('student')"><b>🎒 Student</b><span>Learning dashboard and enrolled courses</span></button><button type="button" class="login-role-card" id="loginRoleInstructor" onclick="selectLoginRole('instructor')"><b>🧑‍🏫 Instructor</b><span>Teaching studio, courses, and payouts</span></button><button type="button" class="login-role-card" id="loginRoleAdmin" onclick="selectLoginRole('admin')"><b>🛡 Admin</b><span>Operations, users, courses, and payments</span></button></div>
 <div class="fg"><label class="fl"><span data-i18n="auto_auth_email_address_b357b524">Email address</span><span class="req">*</span></label><input class="fi" data-i18n-placeholder="ph_email" id="l_email" placeholder="you@example.com" type="email"/></div>
 <div class="fg"><label class="fl"><span data-i18n="auto_auth_password_dc647eb6">Password</span><span class="req">*</span></label>
 <div class="pw-wrap"><input class="fi" data-i18n-placeholder="ph_login_password" id="l_pw" placeholder="Your password" type="password"/><button class="pw-toggle" onclick="togglePw('l_pw',this)" type="button">👁</button></div>
@@ -1045,11 +1046,12 @@ function populateCountrySelects(){
   });
 }
 function selectLoginRole(role){
-  loginRole=role==='instructor'?'instructor':'student';
+  loginRole=['student','instructor','admin'].includes(role)?role:'student';
   document.getElementById('loginRoleStudent')?.classList.toggle('active',loginRole==='student');
   document.getElementById('loginRoleInstructor')?.classList.toggle('active',loginRole==='instructor');
+  document.getElementById('loginRoleAdmin')?.classList.toggle('active',loginRole==='admin');
   const input=document.getElementById('l_email');
-  if(input) input.placeholder=loginRole==='instructor'?'instructor@example.com':'student@example.com';
+  if(input) input.placeholder=loginRole==='admin'?'admin@odyssey.com':(loginRole==='instructor'?'instructor@example.com':'student@example.com');
 }
 document.addEventListener('DOMContentLoaded',()=>{populateCountrySelects();selectLoginRole(loginRole);});
 
@@ -1358,6 +1360,7 @@ function authErrorMessage(error) {
   if (/Email not confirmed/i.test(text)) return 'Please confirm your email first, then log in.';
   if (/User already registered|already registered/i.test(text)) return 'This email is already registered. Please log in instead.';
   if (/Password should be at least/i.test(text)) return 'Password is too short. Use at least 8 characters.';
+  if (/Database error saving new user|violates row-level security|permission denied/i.test(text)) return 'Supabase created a database/profile error. Run migration 006_complete_auth_profile_creation.sql, then try signup again.';
   return text;
 }
 
@@ -1696,6 +1699,9 @@ async function renderAuthDiagnostics() {
     selectRole('student');
     buildIndicator('S', 1, 4);
     goToStep('stepS1');
+  } else if (params.get('role') === 'admin') {
+    setMode('login');
+    selectLoginRole('admin');
   } else {
     // Make sure step0 is active on signup
     goToStep('step0');
@@ -1763,6 +1769,7 @@ async function renderAuthDiagnostics() {
   }
 
   function roleRoute(role){
+    if (role === 'admin' || role === 'support') return 'admin_dashboard.html';
     if (role === 'institution') return 'instructor_portal.html#subscriptions';
     if (role === 'instructor') return 'instructor_portal.html';
     return 'student_portal.html';
@@ -1770,6 +1777,17 @@ async function renderAuthDiagnostics() {
 
   function savePortalProfile(role, profile){
     localStorage.setItem('odyssey_demo_logged_in', role);
+    if (role === 'admin' || role === 'support') {
+      const existing = readJSON('odyssey_admin_profile', {});
+      localStorage.setItem('odyssey_admin_profile', JSON.stringify({
+        ...existing,
+        name: profile.name || profile.full_name || 'Odyssey Admin',
+        email: profile.email || '',
+        role,
+        title: role === 'support' ? 'Odyssey Support' : 'Odyssey Admin'
+      }));
+      return;
+    }
     if (role === 'student') {
       const existing = readJSON('odyssey_student_profile', {});
       localStorage.setItem('odyssey_student_profile', JSON.stringify({
@@ -1894,22 +1912,30 @@ async function renderAuthDiagnostics() {
     if (!validEmail(profile.email)) { authNotice('Enter a valid email address.', 'bad'); return; }
     const problem = passwordProblem(password, confirm, profile.email);
     if (problem) { authNotice(problem, 'bad'); return; }
-    if (users().some(u => u.email === profile.email)) { authNotice('This email is already registered. Please log in instead.', 'bad'); return; }
+    if (!supabaseCanRun()) {
+      showSupabaseSetup();
+      authNotice('Connect Supabase first so Odyssey can save the account to the database.', 'bad');
+      return;
+    }
     setBusy(button, true, 'Creating account...');
     try {
-      let supabaseWorked = false;
-      try {
-        const remote = await supabaseSignup(role, profile, password);
-        supabaseWorked = !!remote.used;
-      } catch (remoteError) {
-        const message = authErrorMessage(remoteError);
-        if (/already registered|already exists|User already registered/i.test(message)) throw new Error('This email is already registered. Please log in instead.');
-        console.warn('Supabase signup did not complete; continuing with local demo account.', remoteError);
+      const remote = await supabaseSignup(role, profile, password);
+      if (!remote?.used || !remote?.result?.user) {
+        throw new Error('Supabase did not return a created user. Please check your project settings.');
       }
-      await registerLocalUser(role, profile, password);
       savePortalProfile(role, profile);
-      authNotice(supabaseWorked ? 'Account created. Opening your portal...' : 'Demo account created. Opening your portal...', 'good');
-      setTimeout(()=>goPortal(role), 350);
+      if (remote.result.session) {
+        authNotice('Account created and saved. Opening your portal...', 'good');
+        setTimeout(()=>goPortal(role), 350);
+      } else {
+        authNotice('Account created in Supabase. Please confirm your email if Supabase asks, then log in.', 'good');
+        setTimeout(()=>{
+          setMode('login');
+          selectLoginRole(role === 'institution' ? 'instructor' : role);
+          const input = byId('l_email');
+          if (input) input.value = profile.email;
+        }, 800);
+      }
     } catch (error) {
       authNotice(authErrorMessage(error), 'bad');
     } finally {
@@ -1939,31 +1965,28 @@ async function renderAuthDiagnostics() {
     const password = byId('l_pw')?.value || '';
     const button = document.querySelector('#loginFlow .btn-sub');
     if (!validEmail(email) || !password) { authNotice('Enter your email and password.', 'bad'); return; }
+    if (!supabaseCanRun()) {
+      showSupabaseSetup();
+      authNotice('Connect Supabase first so Odyssey can verify your account from the database.', 'bad');
+      return;
+    }
     setBusy(button, true, 'Logging in...');
     try {
-      if (supabaseCanRun()) {
-        try {
-          const result = await OdysseySupabase.signIn(email, password);
-          const role = result.profile?.role || loginRole || 'student';
-          savePortalProfile(role, {
-            name: result.profile?.full_name || result.user?.user_metadata?.full_name || email,
-            email,
-            country: result.profile?.country || '',
-            city: result.profile?.city || '',
-            title: role === 'institution' ? 'Institution workspace' : (role === 'instructor' ? 'Odyssey Instructor' : '')
-          });
-          authNotice('Login successful. Opening your portal...', 'good');
-          setTimeout(()=>goPortal(role), 300);
-          return;
-        } catch (remoteError) {
-          console.warn('Supabase login failed; checking local demo account.', remoteError);
-        }
+      const result = await OdysseySupabase.signIn(email, password);
+      const verifiedRole = result.profile?.role || result.user?.user_metadata?.role || '';
+      if (loginRole === 'admin' && !['admin','support'].includes(verifiedRole)) {
+        throw new Error('This account is not registered as an Odyssey admin.');
       }
-      const local = await findLocalLogin(email, password);
-      if (!local) throw new Error('The email or password is incorrect.');
-      savePortalProfile(local.role, local.profile);
+      const role = verifiedRole || loginRole || 'student';
+      savePortalProfile(role, {
+        name: result.profile?.full_name || result.user?.user_metadata?.full_name || email,
+        email,
+        country: result.profile?.country || '',
+        city: result.profile?.city || '',
+        title: role === 'institution' ? 'Institution workspace' : (role === 'instructor' ? 'Odyssey Instructor' : '')
+      });
       authNotice('Login successful. Opening your portal...', 'good');
-      setTimeout(()=>goPortal(local.role), 300);
+      setTimeout(()=>goPortal(role), 300);
     } catch (error) {
       authNotice(authErrorMessage(error), 'bad');
     } finally {

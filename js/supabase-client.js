@@ -53,7 +53,7 @@
   }
 
   function normalizeRole(role){
-    return ['student','instructor','institution'].includes(role) ? role : 'student';
+    return ['student','instructor','institution','admin','support'].includes(role) ? role : 'student';
   }
 
   function authMetadata(user){
@@ -150,6 +150,9 @@
         odysseyProfileError = profileError;
         console.warn('Odyssey profile sync failed after signup. Auth user was still created.', profileError);
       }
+    } else if (data.user) {
+      odysseyProfileError = null;
+      console.info('Supabase created the Auth user. Profile creation will be handled by the database trigger or after email confirmation.');
     }
     data.odysseyProfile = odysseyProfile;
     data.odysseyProfileError = odysseyProfileError;
