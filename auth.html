@@ -1236,24 +1236,6 @@ function uGoStep(from,to){
   buildIndicator('U',to,4);goToStep('stepU'+to);
 }
 function buildInstitutionSummary(){const d={'Institution':val('u_name'),'Country':val('u_country'),'Type':val('u_type'),'Primary field':val('u_field'),'Subjects':val('u_subjects'),'Instructors':val('u_instructors'),'Business email':val('u_email'),'Contact':val('u_contact')};document.getElementById('u_summary').innerHTML=Object.entries(d).map(([k,v])=>'<strong>'+k+':</strong> '+v).join('<br>')}
-function institutionProfileFromForm(){return {name:val('u_name')||'Odyssey Institution',country:val('u_country'),city:val('u_city'),type:val('u_type'),field:val('u_field'),subjects:val('u_subjects'),instructors:Number(val('u_instructors')||0),expectedCourses:Number(val('u_courses')||0),languages:val('u_languages'),email:val('u_email'),contact:val('u_contact'),title:val('u_title'),phone:val('u_phone'),subscription:'institutional'}}
-async function submitInstitution(){
-  if(!document.getElementById('u_agree1').checked){alert('Please confirm institutional authorization and terms.');return}
-  const profile=institutionProfileFromForm();
-  if(!isBusinessEmail(profile.email)){alert('Please use a business or institutional email address.');return}
-  if(!validateSignupPassword('u_pw','u_pw2',profile.email)) return;
-  if(!requireSupabaseAuth()) return;
-  try{
-    const result=await OdysseySupabase.signUp({
-      email:profile.email,
-      password:document.getElementById('u_pw')?.value||'',
-      role:'institution',
-      metadata:{full_name:profile.name,institution_name:profile.name,institution_type:profile.type,business_email:profile.email,subject_area:profile.field,instructor_count:profile.instructors,expected_active_courses:profile.expectedCourses,country:profile.country,city:profile.city}
-    });
-    finishSupabaseSignup('institution',profile,result);
-  }catch(error){alert(authErrorMessage(error))}
-}
-
 function buildStudentSummary() {
   const d = {
     Name: val('s_fname') + ' ' + val('s_lname'),
@@ -1389,224 +1371,6 @@ function requireSupabaseAuth() {
   return false;
 }
 
-function passwordQualityError(password, email) {
-  const pw = String(password || '');
-  const lowered = pw.toLowerCase();
-  const local = String(email || '').split('@')[0]?.toLowerCase() || '';
-  if (pw.length < 8) return 'Password is too short. Use at least 8 characters.';
-  if (local && local.length >= 4 && lowered.includes(local)) return 'Do not include your email name inside your password.';
-  if (!/[A-Za-z]/.test(pw) || !/[0-9]/.test(pw)) return 'Use a stronger password with letters and numbers.';
-  const common = ['password','password123','12345678','qwerty123','odyssey123'];
-  if (common.includes(lowered)) return 'This password is too common. Please choose a stronger password.';
-  return '';
-}
-
-function validateSignupPassword(passwordId, confirmId, email) {
-  const password = document.getElementById(passwordId)?.value || '';
-  const confirm = document.getElementById(confirmId)?.value || '';
-  const quality = passwordQualityError(password, email);
-  if (quality) { alert(quality); return false; }
-  if (password !== confirm) { alert('Passwords must match.'); return false; }
-  return true;
-}
-
-function redirectToPortal(role) {
-  const afterLogin = localStorage.getItem('odyssey_after_login');
-  if (afterLogin) localStorage.removeItem('odyssey_after_login');
-  if (afterLogin) {
-    window.location.href = afterLogin;
-    return;
-  }
-  if (role === 'instructor') window.location.href = 'instructor_portal.html';
-  else if (role === 'institution') window.location.href = 'instructor_portal.html#subscriptions';
-  else window.location.href = 'student_portal.html';
-}
-
-function finishSupabaseSignup(role, profile, result) {
-  if (role === 'student') localStorage.setItem('odyssey_student_profile', JSON.stringify(profile));
-  if (role === 'instructor') localStorage.setItem('odyssey_instructor_profile', JSON.stringify(profile));
-  if (role === 'institution') {
-    localStorage.setItem('odyssey_institution_profile', JSON.stringify(profile));
-    localStorage.setItem('odyssey_instructor_profile', JSON.stringify({
-      name: profile.name,
-      title: 'Institution workspace',
-      email: profile.email,
-      city: profile.city,
-      bio: `${profile.name || 'Institution'} teaching workspace on Odyssey.`,
-      language: profile.languages || 'English',
-      timezone: 'Asia / Tehran'
-    }));
-    localStorage.setItem('odyssey_subscription_plan', 'institutional');
-  }
-  if (result?.session) {
-    localStorage.setItem('odyssey_demo_logged_in', role);
-    redirectToPortal(role);
-    return;
-  }
-  if (result?.user) {
-    localStorage.setItem('odyssey_demo_logged_in', role);
-    redirectToPortal(role);
-    return;
-  }
-  showSuccess(role);
-  document.getElementById('sTitle').textContent = 'Check your email';
-  document.getElementById('sMsg').textContent = 'Your Odyssey account was created in Supabase. Please confirm your email, then return here and log in.';
-  document.getElementById('sCta').textContent = 'Go to login';
-  document.getElementById('sCta').href = 'auth.html?mode=login';
-}
-
-function studentProfileFromForm() {
-  const name = [document.getElementById('s_fname')?.value, document.getElementById('s_lname')?.value].filter(Boolean).join(' ') || 'Odyssey Student';
-  return {
-    name,
-    email: document.getElementById('s_email')?.value || '',
-    city: document.getElementById('s_city')?.value || '',
-    country: document.getElementById('s_country')?.value || ''
-  };
-}
-
-function saveStudentProfileAndRedirect() {
-  const profile = studentProfileFromForm();
-  localStorage.setItem('odyssey_student_profile', JSON.stringify(profile));
-  localStorage.setItem('odyssey_demo_logged_in', 'student');
-  const afterLogin = localStorage.getItem('odyssey_after_login');
-  if (afterLogin) localStorage.removeItem('odyssey_after_login');
-  window.location.href = afterLogin || 'student_portal.html';
-}
-
-async function submitStudent() {
-  if (!document.getElementById('s_agree1').checked) {
-    alert(authT('auth_student_terms_alert'));
-    return;
-  }
-  const profile = studentProfileFromForm();
-  if (!validateSignupPassword('s_pw', 's_pw2', profile.email)) return;
-  if (!requireSupabaseAuth()) return;
-  try {
-    const result = await OdysseySupabase.signUp({
-      email: profile.email,
-      password: document.getElementById('s_pw')?.value || '',
-      role: 'student',
-      metadata: {
-        full_name: profile.name,
-        country: profile.country,
-        city: profile.city,
-        learning_goal: document.getElementById('s_goal')?.value || '',
-        grade_level: document.getElementById('s_level')?.value || '',
-        school_name: document.getElementById('s_school')?.value || '',
-        preferred_language: document.getElementById('s_lang')?.value || 'en'
-      }
-    });
-    finishSupabaseSignup('student', profile, result);
-    return;
-  } catch (error) {
-    alert(authErrorMessage(error));
-    return;
-  }
-}
-
-function instructorProfileFromForm() {
-  const name = [
-    document.getElementById('i_fname')?.value,
-    document.getElementById('i_lname')?.value
-  ].filter(Boolean).join(' ') || document.getElementById('i_display')?.value || 'Odyssey Instructor';
-  return {
-    name: document.getElementById('i_display')?.value || name,
-    title: document.getElementById('i_title')?.value || 'Odyssey Instructor',
-    email: document.getElementById('i_email')?.value || '',
-    phone: document.getElementById('i_phone')?.value || '',
-    city: document.getElementById('i_city')?.value || '',
-    bio: document.getElementById('i_bio')?.value || 'Odyssey instructor creating practical courses for learners worldwide.',
-    language: 'English',
-    timezone: 'Asia / Tehran',
-    office: 'Mon-Wed 17:00-19:00'
-  };
-}
-
-async function submitInstructor() {
-  if (!document.getElementById('i_agree1').checked) {
-    alert('Please read and agree to the Terms of Service and Earnings Policy to continue.');
-    return;
-  }
-  if (!document.getElementById('i_agree2').checked) {
-    alert('Please confirm your course content is original.');
-    return;
-  }
-  const profile = instructorProfileFromForm();
-  if (!validateSignupPassword('i_pw', 'i_pw2', profile.email)) return;
-  if (!requireSupabaseAuth()) return;
-  try {
-    const result = await OdysseySupabase.signUp({
-      email: profile.email,
-      password: document.getElementById('i_pw')?.value || '',
-      role: 'instructor',
-      metadata: {
-        full_name: profile.name,
-        title: profile.title,
-        bio: profile.bio,
-        country: document.getElementById('i_country')?.value || '',
-        city: profile.city,
-        teaching_languages: profile.language || 'English'
-      }
-    });
-    finishSupabaseSignup('instructor', profile, result);
-    return;
-  } catch (error) {
-    alert(authErrorMessage(error));
-    return;
-  }
-}
-
-function showSuccess(role) {
-  document.querySelectorAll('.sp').forEach(p => p.classList.remove('active'));
-  const s = document.getElementById('successScreen');
-  s.classList.add('show');
-  if (role === 'institution') {
-    document.getElementById('sEmoji').textContent = '🏛️';
-    document.getElementById('sTitle').textContent = 'Institution workspace created!';
-    document.getElementById('sMsg').textContent = 'Your institutional Odyssey workspace is ready with the Institutional subscription plan selected for this demo.';
-    document.getElementById('sCta').textContent = 'Open institution workspace';
-    document.getElementById('sCta').href = 'instructor_portal.html#subscriptions';
-  } else if (role === 'instructor') {
-    document.getElementById('sEmoji').textContent = '🧑‍🏫';
-    document.getElementById('sTitle').textContent = 'Welcome aboard, Instructor!';
-    document.getElementById('sMsg').textContent = 'Your instructor studio is ready. Set up your profile, publish courses, schedule exams, and answer students from one workspace.';
-    document.getElementById('sCta').textContent = 'Open instructor portal';
-    document.getElementById('sCta').href = 'instructor_portal.html';
-  } else {
-    document.getElementById('sEmoji').textContent = '🎉';
-    document.getElementById('sTitle').textContent = 'Welcome to Odyssey!';
-    document.getElementById('sMsg').textContent = 'Your student account is ready. Start learning now — search 840,000+ courses from instructors across 190 countries.';
-    document.getElementById('sCta').textContent = '🎒 Start learning now';
-    document.getElementById('sCta').href = 'student_portal.html';
-  }
-}
-
-async function submitLogin() {
-  const email = document.getElementById('l_email').value;
-  const pw = document.getElementById('l_pw').value;
-  if (!email.includes('@') || pw.length < 1) { alert(authT('auth_login_missing_alert')); return; }
-  if (!requireSupabaseAuth()) return;
-  try {
-    const result = await OdysseySupabase.signIn(email, pw);
-    const role = result.profile?.role || loginRole || 'student';
-    localStorage.setItem('odyssey_demo_logged_in', role);
-    const profileKey = role === 'instructor' || role === 'institution' ? 'odyssey_instructor_profile' : 'odyssey_student_profile';
-    localStorage.setItem(profileKey, JSON.stringify({
-      email,
-      name: result.profile?.full_name || email,
-      country: result.profile?.country || '',
-      city: result.profile?.city || '',
-      title: role === 'institution' ? 'Institution workspace' : (role === 'instructor' ? 'Odyssey Instructor' : '')
-    }));
-    const afterLogin = localStorage.getItem('odyssey_after_login');
-    if (afterLogin) localStorage.removeItem('odyssey_after_login');
-    window.location.href = afterLogin || result.redirectTo || 'student_portal.html';
-  } catch (error) {
-    alert(authErrorMessage(error));
-  }
-}
-
 // ════════════════════════════
 // PILLS
 // ════════════════════════════
@@ -1714,14 +1478,10 @@ async function renderAuthDiagnostics() {
 // Clean Odyssey auth controller. This overrides the legacy handlers above with
 // one predictable Supabase-first flow and a local demo fallback.
 (function(){
-  const localUsersKey = 'odyssey_auth_users_v2';
-
   function byId(id){ return document.getElementById(id); }
   function textValue(id){ return String(byId(id)?.value || '').trim(); }
   function emailValue(id){ return textValue(id).toLowerCase(); }
   function validEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
-  function users(){ try { return JSON.parse(localStorage.getItem(localUsersKey) || '[]'); } catch { return []; } }
-  function saveUsers(next){ localStorage.setItem(localUsersKey, JSON.stringify(next)); }
 
   function authNotice(message, type='info'){
     let box = byId('odysseyAuthNotice');
@@ -1759,13 +1519,6 @@ async function renderAuthDiagnostics() {
       button.style.opacity = '';
       button.style.pointerEvents = '';
     }
-  }
-
-  async function hashPassword(password){
-    if (!window.crypto?.subtle) return 'plain-demo:' + btoa(unescape(encodeURIComponent(password)));
-    const bytes = new TextEncoder().encode('odyssey-demo-auth:' + password);
-    const digest = await crypto.subtle.digest('SHA-256', bytes);
-    return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }
 
   function roleRoute(role){
@@ -1839,21 +1592,6 @@ async function renderAuthDiagnostics() {
 
   function supabaseCanRun(){
     return !!window.OdysseySupabase?.isConfigured?.();
-  }
-
-  async function registerLocalUser(role, profile, password){
-    const email = String(profile.email || '').toLowerCase();
-    const next = users();
-    if (next.some(u => u.email === email)) throw new Error('This email is already registered. Please log in instead.');
-    const passHash = await hashPassword(password);
-    if (next.some(u => u.passwordHash === passHash)) throw new Error('For this demo, this password has already been used. Please choose a different password.');
-    next.push({ email, role, passwordHash: passHash, profile, createdAt: new Date().toISOString() });
-    saveUsers(next);
-  }
-
-  async function findLocalLogin(email, password){
-    const passHash = await hashPassword(password);
-    return users().find(u => u.email === email.toLowerCase() && u.passwordHash === passHash) || null;
   }
 
   function studentProfile(){

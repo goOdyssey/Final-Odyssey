@@ -7,6 +7,8 @@
 <link href="https://fonts.googleapis.com" rel="preconnect" />
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
 <style>
 :root{--bg:#e9edf2;--panel:rgba(255,255,255,.88);--ink:#17202c;--muted:#657184;--line:rgba(23,32,44,.12);--blue:#1d4ed8;--teal:#0f766e;--gold:#d6a246;--green:#15803d;--red:#b91c1c;--shadow:0 22px 70px rgba(15,23,42,.13);--head:"Newsreader",Georgia,serif;--body:Manrope,system-ui,sans-serif}
 *{box-sizing:border-box}
@@ -127,75 +129,114 @@ h1{font-size:clamp(30px,4.5vw,52px);line-height:1.02;margin-top:6px}
 <script src="assets/odyssey-portal-translations.js" defer></script>
 <script defer src="assets/odyssey-translation-completion.js"></script>
 <script>
-if(localStorage.getItem('odyssey_demo_logged_in') !== 'student'){
-  localStorage.setItem('odyssey_after_login', location.pathname.split('/').pop() + location.search);
-  location.href = 'auth.html?mode=login&role=student&redirect=exam_portal.html';
-}
-const FALLBACK_QUESTIONS = [
-  {id:'q1',prompt:'Which study strategy best improves long-term retention for most learners?',options:['Rereading the same page repeatedly','Spaced retrieval practice','Highlighting every paragraph','Studying only the night before']},
-  {id:'q2',prompt:'A course with instructor interaction should usually include which added support?',options:['Priority student questions and feedback','Only a different thumbnail','No access to practice materials','Fewer lessons']},
-  {id:'q3',prompt:'What does a reliable online assessment need most?',options:['Clear timing, saved answers, and submission records','Hidden instructions','Random page reloads','No student progress indicators']},
-  {id:'q4',prompt:'Which item belongs in a professional course catalog card?',options:['Field, discipline, subject, language, and price options','Only the course color','Instructor private phone number','Unlabeled buttons']},
-  {id:'q5',prompt:'Why should uploaded videos use a structured player?',options:['To support captions, progress, quality choices, and stable playback','To hide all controls','To remove transcripts','To make lessons harder to resume']},
-  {id:'q6',prompt:'What is the safest way to truly restrict a device during an exam?',options:['A dedicated secure browser or managed kiosk mode','A normal webpage alone','A larger timer font','A different background image']},
-  {id:'q7',prompt:'Which signal should turn a question map circle green?',options:['The student has selected an answer','The student hovered the question','The timer is running','The page is in fullscreen']},
-  {id:'q8',prompt:'What should a clear-answer button do?',options:['Remove the selected answer for the current question','Submit the whole exam','Delete all questions','Turn off the timer']},
-  {id:'q9',prompt:'Why shuffle questions per student?',options:['To reduce answer sharing while preserving fairness','To make grading impossible','To hide the total number of questions','To change the exam duration randomly']},
-  {id:'q10',prompt:'Which notification timing is useful for scheduled exams?',options:['A reminder one week before the exam','Only after the exam is over','Every minute forever','Never notifying enrolled learners']},
-  {id:'q11',prompt:'What should happen when a student leaves the exam tab?',options:['Record an integrity event and warn the student','Erase all answers instantly','Ignore it in all cases','Open a search page']},
-  {id:'q12',prompt:'Which feature helps students review uncertain answers before submission?',options:['Flag for review','Changing the course price','Deleting the sidebar','Disabling the question map']}
-];
 const params = new URLSearchParams(location.search);
-const exams = readJSON('odyssey_instructor_exams', []);
-const requestedExam = params.get('exam');
-const requestedMarketTest = params.get('marketTest');
-const storedMarketplaceTest = readJSON('odyssey_selected_market_test', null);
-const marketplaceTests = [...readJSON('odyssey_purchased_tests', []), ...readJSON('odyssey_market_tests', [])];
-const marketplaceTest = requestedMarketTest ? (marketplaceTests.find(t => String(t.id) === String(requestedMarketTest)) || storedMarketplaceTest) : storedMarketplaceTest;
-const exam = exams.find(e => String(e.id) === String(requestedExam)) || (marketplaceTest ? {id:`market-${marketplaceTest.id}`,title:marketplaceTest.title,course:marketplaceTest.subject,duration:marketplaceTest.time,randomize:true,pass:70} : null) || exams[0] || {id:'demo',title:'Odyssey readiness assessment',course:'Platform foundations',duration:45,randomize:true,pass:70};
-const student = readJSON('odyssey_student_profile', {});
-const seedLabel = student.email || student.name || localStorage.getItem('odyssey_exam_student_seed') || cryptoRandomSeed();
-localStorage.setItem('odyssey_exam_student_seed', seedLabel);
-const questions = exam.randomize === false ? FALLBACK_QUESTIONS : shuffleForStudent(FALLBACK_QUESTIONS, `${exam.id}:${seedLabel}`);
-const stateKey = `odyssey_exam_state_${exam.id}_${hashString(seedLabel)}`;
-let state = readJSON(stateKey, {answers:{},flagged:{},events:[],startedAt:Date.now(),submittedAt:null});
-let activeIndex = Number(localStorage.getItem(`${stateKey}_active`) || 0);
-let submitted = Boolean(state.submittedAt);
+const examId = params.get('exam') || '';
+let CURRENT_PROFILE=null, ATTEMPT=null, EXAM_META=null, questions=[], activeIndex=0;
+let answers={}, flagged={}, events=[], submitted=false, tabChanges=0;
 
-function readJSON(key, fallback){try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback))}catch(e){return fallback}}
-function writeJSON(key, value){localStorage.setItem(key, JSON.stringify(value))}
 function PT(text, vars){return window.OdysseyPortalT ? window.OdysseyPortalT(text, vars) : text}
-function cryptoRandomSeed(){return `${Date.now()}-${Math.random().toString(16).slice(2)}`}
-function hashString(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)}
-function mulberry32(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
-function shuffleForStudent(items, seed){const arr=items.map(x=>({...x}));const random=mulberry32(parseInt(hashString(seed),36));for(let i=arr.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr.map(q=>({...q,options:[...q.options].sort(()=>random()-.5)}))}
-function saveState(){writeJSON(stateKey,state)}
-function logEvent(label){state.events.unshift({label,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})});state.events=state.events.slice(0,20);saveState();warningBanner.classList.add('show');renderEvents()}
-function recordTabChange(label){
-  if(submitted) return;
-  state.tabChanges = Number(state.tabChanges || 0) + 1;
-  logEvent(`${label} (${state.tabChanges}/3)`);
-  if(state.tabChanges >= 3){
-    logEvent('Exam ended automatically after three tab or window changes.');
-    submitExam(true);
+function fmt(ms){const total=Math.max(0,Math.ceil(ms/1000));const m=Math.floor(total/60);const s=total%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+
+// ---- Real exam flow. Previously this page had no login check that could survive devtools
+// (a single localStorage flag), a hardcoded question bank with answers visible in page source,
+// and grading that happened entirely in the browser. All three are fixed by routing through
+// the secure start_exam_attempt / get_exam_questions_for_attempt / submit_exam_attempt
+// functions, which verify a real session, real payment, and grade server-side. ----
+async function boot(){
+  if(!window.OdysseySupabase?.isConfigured?.()){
+    questionCard.innerHTML='<p class="desc">Supabase is not configured for this deployment.</p>';
+    return;
   }
+  const session = await OdysseySupabase.session();
+  if(!session){
+    localStorage.setItem('odyssey_after_login', location.pathname.split('/').pop() + location.search);
+    location.href = 'auth.html?mode=login&role=student&redirect=exam_portal.html';
+    return;
+  }
+  CURRENT_PROFILE = await OdysseySupabase.profile();
+  if(!CURRENT_PROFILE){
+    location.href = 'auth.html?mode=login&role=student&redirect=exam_portal.html';
+    return;
+  }
+  if(CURRENT_PROFILE.role === 'instructor' || CURRENT_PROFILE.role === 'institution'){
+    location.href = 'instructor_portal.html';
+    return;
+  }
+  studentBadge.textContent = CURRENT_PROFILE.full_name || 'Student mode';
+
+  if(!examId){
+    examTitle.textContent = 'No exam selected';
+    questionCard.innerHTML = '<p class="desc">No exam was selected. Go back to your portal and choose an exam to take.</p>';
+    return;
+  }
+
+  const sb = await OdysseySupabase.client();
+
+  try{
+    // Resume an in-progress attempt if one already exists, otherwise start a new one.
+    // start_exam_attempt() is the only thing that can create this row, and it checks
+    // a real 'paid' payment (or a free price) before allowing it.
+    const { data: existing } = await sb.from('exam_attempts')
+      .select('id, status, ends_at, started_at')
+      .eq('exam_id', examId)
+      .or(`student_id.eq.${CURRENT_PROFILE.id},student_user_id.eq.${CURRENT_PROFILE.id}`)
+      .eq('status', 'in_progress')
+      .maybeSingle();
+
+    if(existing){
+      ATTEMPT = existing;
+    } else {
+      const attemptId = await OdysseySupabase.startExamAttempt(examId);
+      const { data: fresh, error } = await sb.from('exam_attempts').select('id, status, ends_at, started_at').eq('id', attemptId).single();
+      if(error) throw error;
+      ATTEMPT = fresh;
+    }
+  }catch(error){
+    examTitle.textContent = 'Exam unavailable';
+    questionCard.innerHTML = `<p class="desc">Could not start this exam: ${(error?.message || error)}. If this is a paid exam, make sure you have purchased it first from the Tests marketplace.</p>`;
+    return;
+  }
+
+  const { data: examRow } = await sb.from('exams').select('title, subject, time_limit_minutes').eq('id', examId).maybeSingle();
+  EXAM_META = examRow || {};
+  examTitle.textContent = EXAM_META.title || 'Odyssey course assessment';
+  examCourse.textContent = `${EXAM_META.subject || 'Course'} · ${Number(EXAM_META.time_limit_minutes || 45)} min`;
+
+  try{
+    questions = await OdysseySupabase.getExamQuestions(ATTEMPT.id);
+  }catch(error){
+    questionCard.innerHTML = `<p class="desc">Could not load questions: ${(error?.message || error)}</p>`;
+    return;
+  }
+  if(!questions.length){
+    questionCard.innerHTML = '<p class="desc">This exam does not have any published questions yet.</p>';
+    return;
+  }
+
+  renderQuestion();
+  renderEvents();
+  tick();
+  setInterval(tick, 1000);
 }
-function timeLeftMs(){return Math.max(0, state.startedAt + Number(exam.duration || 45) * 60000 - Date.now())}
-function fmt(ms){const total=Math.ceil(ms/1000);const m=Math.floor(total/60);const s=total%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+
+function timeLeftMs(){
+  if(!ATTEMPT?.ends_at) return 0;
+  return Math.max(0, new Date(ATTEMPT.ends_at).getTime() - Date.now());
+}
+
 function renderQuestion(){
   const q = questions[activeIndex];
-  localStorage.setItem(`${stateKey}_active`, activeIndex);
   questionCard.innerHTML = `
     <div class="q-top">
       <div class="q-index">${PT('Question {current} of {total}', {current: activeIndex + 1, total: questions.length})}</div>
       <div class="tools">
-        <button class="btn warning" type="button" onclick="toggleFlag()">${state.flagged[q.id] ? PT('Remove flag') : PT('Flag for review')}</button>
+        <button class="btn warning" type="button" onclick="toggleFlag()">${flagged[q.id] ? PT('Remove flag') : PT('Flag for review')}</button>
         <button class="btn danger" type="button" onclick="clearAnswer()">${PT('Clear answer')}</button>
       </div>
     </div>
     <h2 class="prompt">${q.prompt}</h2>
     <div class="options">
-      ${q.options.map((opt,i)=>`<button class="option ${state.answers[q.id]===opt?'selected':''}" type="button" onclick="answerCurrent(${JSON.stringify(opt).replace(/"/g,'&quot;')})"><span class="letter">${String.fromCharCode(65+i)}</span><span>${opt}</span></button>`).join('')}
+      ${(q.options||[]).map((opt,i)=>`<button class="option ${answers[q.id]===opt?'selected':''}" type="button" onclick="answerCurrent(${JSON.stringify(opt).replace(/"/g,'&quot;')})"><span class="letter">${String.fromCharCode(65+i)}</span><span>${opt}</span></button>`).join('')}
     </div>
     <div class="navrow">
       <button class="btn secondary" type="button" onclick="moveQuestion(-1)" ${activeIndex===0?'disabled':''}>${PT('Previous')}</button>
@@ -208,34 +249,63 @@ function renderQuestion(){
 }
 function renderMap(){
   mapCount.textContent = `${questions.length} total`;
-  questionMap.innerHTML = questions.map((q,i)=>`<button class="dot ${state.answers[q.id]?'answered':''} ${state.flagged[q.id]?'flagged':''} ${i===activeIndex?'current':''}" type="button" onclick="activeIndex=${i};renderQuestion()">${i+1}</button>`).join('');
+  questionMap.innerHTML = questions.map((q,i)=>`<button class="dot ${answers[q.id]?'answered':''} ${flagged[q.id]?'flagged':''} ${i===activeIndex?'current':''}" type="button" onclick="activeIndex=${i};renderQuestion()">${i+1}</button>`).join('');
 }
 function renderEvents(){
-  eventList.innerHTML = state.events.length ? state.events.map(e=>`<div class="event"><b>${e.time}</b> ${e.label}</div>`).join('') : `<div class="event">${PT('No warnings recorded.')}</div>`;
+  eventList.innerHTML = events.length ? events.map(e=>`<div class="event"><b>${e.time}</b> ${e.label}</div>`).join('') : `<div class="event">${PT('No warnings recorded.')}</div>`;
 }
-function answerCurrent(option){state.answers[questions[activeIndex].id]=option;saveState();renderQuestion()}
-function clearAnswer(){delete state.answers[questions[activeIndex].id];saveState();renderQuestion()}
-function toggleFlag(){const id=questions[activeIndex].id;state.flagged[id]=!state.flagged[id];if(!state.flagged[id])delete state.flagged[id];saveState();renderQuestion()}
+function answerCurrent(option){answers[questions[activeIndex].id]=option;renderQuestion()}
+function clearAnswer(){delete answers[questions[activeIndex].id];renderQuestion()}
+function toggleFlag(){const id=questions[activeIndex].id;flagged[id]=!flagged[id];if(!flagged[id])delete flagged[id];renderQuestion()}
 function moveQuestion(delta){activeIndex=Math.min(questions.length-1,Math.max(0,activeIndex+delta));renderQuestion()}
+
+// Integrity events now write to the real exam_integrity_events table (best-effort - a
+// failed audit-log write never blocks the student's exam), in addition to the on-screen list.
+async function logEvent(label, severity){
+  events.unshift({label,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})});
+  events = events.slice(0,20);
+  warningBanner.classList.add('show');
+  renderEvents();
+  if(ATTEMPT && CURRENT_PROFILE && !submitted){
+    try{
+      const sb = await OdysseySupabase.client();
+      await sb.from('exam_integrity_events').insert({attempt_id: ATTEMPT.id, student_user_id: CURRENT_PROFILE.id, event_type: label, severity: severity || 'info'});
+    }catch(error){ /* audit trail only, never block the exam */ }
+  }
+}
+function recordTabChange(label){
+  if(submitted) return;
+  tabChanges += 1;
+  logEvent(`${label} (${tabChanges}/3)`);
+  if(tabChanges >= 3){
+    logEvent('Exam ended automatically after three tab or window changes.', 'high');
+    submitExam(true);
+  }
+}
+
 function tick(){
   const now = new Date();
   clock.textContent = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   const left = timeLeftMs();
   timer.textContent = fmt(left);
   timer.classList.toggle('low', left < 5 * 60000);
-  if(left <= 0 && !submitted) submitExam(true);
+  if(left <= 0 && !submitted && ATTEMPT) submitExam(true);
 }
-function submitExam(auto){
-  if(submitted) return;
+
+async function submitExam(auto){
+  if(submitted || !ATTEMPT) return;
   submitted = true;
-  state.submittedAt = new Date().toISOString();
-  state.autoSubmitted = Boolean(auto);
-  saveState();
-  const answered = Object.keys(state.answers).length;
-  const flagged = Object.keys(state.flagged).length;
-  summaryText.textContent = `${answered} of ${questions.length} questions answered. ${flagged} question${flagged===1?'':'s'} flagged for review. ${state.events.length} integrity event${state.events.length===1?'':'s'} recorded.`;
+  try{
+    const result = await OdysseySupabase.submitExamAttempt(ATTEMPT.id, answers);
+    const flaggedCount = Object.keys(flagged).length;
+    summaryText.textContent = `Score: ${result.score_percent}%. ${result.correct_count} of ${result.total} correct. ${flaggedCount} question${flaggedCount===1?'':'s'} flagged for review. ${events.length} integrity event${events.length===1?'':'s'} recorded.`;
+  }catch(error){
+    submitted = false;
+    summaryText.textContent = `Could not submit your exam: ${(error?.message || error)}. Please try again, or contact support if this keeps happening.`;
+  }
   submitSummary.style.display = 'grid';
 }
+
 fullscreenBtn.addEventListener('click', async () => {
   try{await document.documentElement.requestFullscreen();fullscreenBtn.textContent='Fullscreen active'}catch(e){logEvent('Fullscreen request was blocked by the browser.')}
 });
@@ -244,14 +314,9 @@ document.addEventListener('visibilitychange', () => {if(document.hidden) recordT
 window.addEventListener('blur', () => recordTabChange('Exam window lost focus.'));
 ['copy','cut','paste','contextmenu'].forEach(type => document.addEventListener(type, e => {e.preventDefault();logEvent(`${type} action blocked.`)}));
 window.addEventListener('beforeunload', e => {if(!submitted){e.preventDefault();e.returnValue=''}});
-examTitle.textContent = exam.title || 'Odyssey course assessment';
-examCourse.textContent = `${exam.course || 'Course'} · ${Number(exam.duration || 45)} min · pass ${exam.pass || 70}%`;
-studentBadge.textContent = student.name ? student.name : 'Student mode';
-renderQuestion();
-renderEvents();
-tick();
-setInterval(tick, 1000);
-document.addEventListener('odyssey:languageChanged', () => {renderQuestion();renderEvents();});
+
+boot();
+document.addEventListener('odyssey:languageChanged', () => {if(questions.length){renderQuestion();renderEvents();}});
 </script>
 <script src="assets/odyssey-global-motion.js" defer></script>
 <script src="assets/odyssey-investor-final-polish.js" defer></script>
