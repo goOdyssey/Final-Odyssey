@@ -1,0 +1,61 @@
+/* Final auth contrast pass: readable language switcher and left-panel copy. */
+body:has(.auth-layout) #authLangSwitch .i18n-current,
+#authLangSwitch .i18n-current {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%) !important;
+  color: #102033 !important;
+  border: 1px solid rgba(15, 32, 51, 0.18) !important;
+  box-shadow: 0 14px 34px rgba(12, 23, 38, 0.22), 0 2px 10px rgba(255,255,255,0.3) inset !important;
+  text-shadow: none !important;
+}
+
+body:has(.auth-layout) #authLangSwitch .i18n-current span,
+#authLangSwitch .i18n-current span {
+  color: #102033 !important;
+  -webkit-text-fill-color: #102033 !important;
+}
+
+body:has(.auth-layout) #authLangSwitch .i18n-dropdown,
+#authLangSwitch .i18n-dropdown {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 32, 51, 0.14) !important;
+}
+
+body:has(.auth-layout) #authLangSwitch .i18n-option,
+#authLangSwitch .i18n-option {
+  color: #142033 !important;
+}
+
+.auth-left::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(7, 12, 28, 0.36), rgba(7, 12, 28, 0.08) 58%, rgba(7, 12, 28, 0.18)),
+    radial-gradient(circle at 24% 52%, rgba(255,255,255,0.13), transparent 34%);
+  z-index: 0;
+}
+
+.left-logo,
+.left-content {
+  position: relative;
+  z-index: 2;
+}
+
+.left-content h2,
+.left-logo-text,
+.feat-text strong,
+.lstat-num {
+  color: #ffffff !important;
+  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.42) !important;
+}
+
+.left-content p {
+  color: rgba(255, 255, 255, 0.86) !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35) !important;
+}
+
+.feat-text span,
+.lstat-label {
+  color: rgba(255, 255, 255, 0.74) !important;
+}

@@ -1,0 +1,536 @@
+/* Odyssey portal polish: compact, elegant product UI for global learning workspaces. */
+:root{
+  --od-panel-blur:blur(18px);
+  --od-compact-radius:12px;
+  --od-compact-shadow:0 14px 42px rgba(15,23,42,.09);
+}
+
+body{
+  letter-spacing:0;
+}
+
+.portal{
+  grid-template-columns:252px minmax(0,1fr) !important;
+}
+
+.sidebar{
+  padding:16px 12px !important;
+  background:rgba(255,255,255,.76) !important;
+  backdrop-filter:var(--od-panel-blur) !important;
+}
+
+[data-theme="dark"] .sidebar{
+  background:rgba(13,19,32,.82) !important;
+}
+
+.brand{
+  margin-bottom:14px !important;
+}
+
+.brand-mark{
+  width:38px !important;
+  height:38px !important;
+  border-radius:12px !important;
+}
+
+.brand strong{
+  font-size:18px !important;
+}
+
+.profile-mini{
+  grid-template-columns:46px 1fr !important;
+  border-radius:14px !important;
+  padding:8px !important;
+  margin-bottom:12px !important;
+}
+
+.avatar{
+  width:46px !important;
+  height:46px !important;
+  border-radius:13px !important;
+}
+
+.tools-label{
+  margin:14px 9px 7px !important;
+  font-size:10px !important;
+  letter-spacing:.11em !important;
+}
+
+.navbtn{
+  min-height:34px !important;
+  padding:8px 10px !important;
+  border-radius:10px !important;
+  gap:9px !important;
+  margin-bottom:3px !important;
+  font-size:12.5px !important;
+  font-weight:720 !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+}
+
+.navbtn > span{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.subscription-nav{
+  background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(214,162,70,.13)) !important;
+  border:1px solid rgba(214,162,70,.26) !important;
+}
+
+.sidebar [data-i18n-switcher]{
+  display:block;
+  width:100%;
+  max-width:100%;
+  margin:0 0 12px;
+  position:relative;
+  z-index:30;
+}
+
+.sidebar .i18n-switcher{
+  width:100% !important;
+  max-width:100% !important;
+  display:block !important;
+}
+
+.sidebar .i18n-current{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  justify-content:flex-start !important;
+  padding:8px 10px !important;
+  font-size:12px !important;
+  border-radius:12px !important;
+}
+
+.sidebar .i18n-current span{
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+
+.sidebar .i18n-dropdown{
+  left:0 !important;
+  right:auto !important;
+  top:calc(100% + 8px) !important;
+  bottom:auto !important;
+  min-width:min(230px,calc(100vw - 28px)) !important;
+  max-width:calc(100vw - 28px) !important;
+  max-height:min(420px,65vh) !important;
+}
+
+html[dir="rtl"] .sidebar .i18n-dropdown{
+  right:0 !important;
+  left:auto !important;
+}
+
+.navbtn:hover,
+.navbtn.active{
+  transform:none !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);
+}
+
+.main,
+.shell{
+  padding:20px !important;
+}
+
+.hero,
+.welcome{
+  border-radius:20px !important;
+  padding:22px !important;
+  min-height:auto !important;
+  box-shadow:var(--od-compact-shadow) !important;
+}
+
+.hero h1,
+.welcome h1{
+  font-size:clamp(25px,3.1vw,42px) !important;
+  line-height:1.08 !important;
+  max-width:760px;
+}
+
+.hero p,
+.welcome p,
+.desc{
+  font-size:13.5px !important;
+  line-height:1.58 !important;
+}
+
+.hero-actions{
+  margin-top:16px !important;
+}
+
+.quick-stats{
+  gap:10px !important;
+  margin-bottom:16px !important;
+}
+
+.stat-card{
+  border-radius:13px !important;
+  padding:12px !important;
+  box-shadow:0 8px 22px rgba(15,23,42,.055) !important;
+}
+
+.stat-card strong{
+  font-size:21px !important;
+}
+
+.grid,
+.triple,
+.split,
+.content-grid,
+.layout{
+  gap:14px !important;
+}
+
+.card,
+.panel,
+.player-card,
+.timer-card,
+.map-card,
+.integrity,
+.progress-box{
+  border-radius:14px !important;
+  box-shadow:var(--od-compact-shadow) !important;
+}
+
+.card{
+  padding:15px !important;
+}
+
+.card h2,
+.panel h2,
+.publish h2{
+  font-size:18px !important;
+  margin-bottom:10px !important;
+}
+
+.card h3,
+.course h3,
+.test-title{
+  font-size:15.5px !important;
+}
+
+.course{
+  grid-template-columns:58px 1fr auto !important;
+  gap:11px !important;
+  padding:11px !important;
+  border-radius:14px !important;
+  margin-bottom:9px !important;
+}
+
+.thumb,
+.emoji{
+  width:58px !important;
+  height:58px !important;
+  border-radius:14px !important;
+  font-size:23px !important;
+}
+
+.metric-strip{
+  gap:6px !important;
+}
+
+.mini-metric,
+.item,
+.resource,
+.message,
+.detail,
+.stat{
+  border-radius:11px !important;
+  padding:9px 10px !important;
+  font-size:12.5px !important;
+}
+
+.pill,
+.session-pill,
+.tag,
+.chip{
+  padding:5px 8px !important;
+  font-size:11px !important;
+}
+
+.btn,
+.nav-cta,
+button.btn,
+a.btn{
+  min-height:34px !important;
+  border-radius:10px !important;
+  padding:8px 11px !important;
+  font-size:12.5px !important;
+  font-weight:760 !important;
+}
+
+input,
+textarea,
+select{
+  border-radius:10px !important;
+  padding:9px 10px !important;
+  font-size:13px !important;
+}
+
+textarea{
+  min-height:88px !important;
+}
+
+.field{
+  margin-bottom:9px !important;
+  gap:5px !important;
+}
+
+.field label,
+.filter-title,
+.player-card label{
+  font-size:10.5px !important;
+}
+
+.theme-grid{
+  gap:10px !important;
+}
+
+.theme-card{
+  border-radius:13px !important;
+  padding:10px !important;
+}
+
+.theme-preview{
+  height:42px !important;
+  border-radius:10px !important;
+}
+
+.modal-box{
+  border-radius:18px !important;
+  padding:18px !important;
+}
+
+.subscription-plans{
+  align-items:stretch !important;
+}
+
+.sub-plan{
+  display:flex !important;
+  flex-direction:column !important;
+  min-height:100% !important;
+}
+
+.sub-plan .btn{
+  width:100% !important;
+  margin-top:auto !important;
+}
+
+.sub-plan:nth-child(1){
+  border-color:rgba(100,116,139,.24) !important;
+}
+
+.sub-plan:nth-child(2){
+  border-color:rgba(124,58,237,.30) !important;
+}
+
+.sub-plan:nth-child(3){
+  border-color:rgba(214,162,70,.36) !important;
+}
+
+.modal-head h2{
+  font-size:22px !important;
+}
+
+.stage3d{
+  opacity:.78;
+  transform:scale(.86);
+  transform-origin:top right;
+}
+
+.float-card{
+  border-radius:14px !important;
+  padding:10px !important;
+}
+
+.test-card{
+  border-radius:14px !important;
+}
+
+.test-art{
+  height:96px !important;
+  padding:13px !important;
+}
+
+.test-body{
+  padding:13px !important;
+}
+
+.details{
+  gap:6px !important;
+}
+
+.exam-head,
+.question-card{
+  padding:18px !important;
+}
+
+.prompt{
+  font-size:clamp(20px,2.4vw,28px) !important;
+}
+
+.option{
+  border-radius:13px !important;
+  padding:12px !important;
+}
+
+.timer{
+  font-size:38px !important;
+}
+
+.clock{
+  font-size:28px !important;
+}
+
+.qmap{
+  gap:7px !important;
+}
+
+@media(max-width:1000px){
+  .portal{
+    grid-template-columns:1fr !important;
+  }
+  .sidebar{
+    position:relative !important;
+    height:auto !important;
+  }
+  .course{
+    grid-template-columns:52px 1fr !important;
+  }
+  .thumb,
+  .emoji{
+    width:52px !important;
+    height:52px !important;
+  }
+}
+
+/* Final readability pass for demo portals. */
+.portal{
+  color:var(--text,#172033) !important;
+}
+
+.portal .sidebar{
+  color:#172033 !important;
+}
+
+[data-theme="dark"] .portal,
+[data-theme="dark"] .portal .sidebar{
+  color:#f8fafc !important;
+}
+
+.portal .navbtn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  color:#162132 !important;
+  line-height:1.18 !important;
+}
+
+.portal .navbtn:not(:has(span)){
+  white-space:nowrap !important;
+}
+
+.portal .navbtn.active,
+.portal .navbtn:hover{
+  color:#0f3f3d !important;
+  background:linear-gradient(135deg,rgba(15,118,110,.16),rgba(37,99,235,.10),rgba(214,162,70,.12)) !important;
+}
+
+[data-theme="dark"] .portal .navbtn{
+  color:#eef7ff !important;
+}
+
+[data-theme="dark"] .portal .navbtn.active,
+[data-theme="dark"] .portal .navbtn:hover{
+  color:#b8fff2 !important;
+  background:linear-gradient(135deg,rgba(45,212,191,.18),rgba(96,165,250,.13),rgba(251,191,36,.12)) !important;
+}
+
+.portal .card,
+.portal .panel,
+.portal .item,
+.portal .message,
+.portal .resource,
+.portal .detail,
+.portal .stat,
+.portal .mini-metric,
+.portal .theme-card,
+.portal .sub-plan,
+.portal .course{
+  color:#172033 !important;
+}
+
+[data-theme="dark"] .portal .card,
+[data-theme="dark"] .portal .panel,
+[data-theme="dark"] .portal .item,
+[data-theme="dark"] .portal .message,
+[data-theme="dark"] .portal .resource,
+[data-theme="dark"] .portal .detail,
+[data-theme="dark"] .portal .stat,
+[data-theme="dark"] .portal .mini-metric,
+[data-theme="dark"] .portal .theme-card,
+[data-theme="dark"] .portal .sub-plan,
+[data-theme="dark"] .portal .course{
+  color:#f8fafc !important;
+  background-color:rgba(15,23,42,.82) !important;
+}
+
+.portal .desc,
+.portal .meta,
+.portal .footer-note,
+.portal .field label,
+.portal .sub-plan p,
+.portal .modal-head p,
+.portal .profile-mini span{
+  color:#405168 !important;
+}
+
+[data-theme="dark"] .portal .desc,
+[data-theme="dark"] .portal .meta,
+[data-theme="dark"] .portal .footer-note,
+[data-theme="dark"] .portal .field label,
+[data-theme="dark"] .portal .sub-plan p,
+[data-theme="dark"] .portal .modal-head p,
+[data-theme="dark"] .portal .profile-mini span{
+  color:#d7e3f1 !important;
+}
+
+.portal .navbtn > span{
+  flex:1 1 auto !important;
+}
+
+body.instructor-portal .portal .navbtn::before{
+  flex:0 0 18px;
+  width:18px;
+  text-align:center;
+  font-size:15px;
+  line-height:1;
+  filter:saturate(1.05);
+}
+
+body.instructor-portal .portal .navbtn[data-target="dashboard"]::before{content:"🏠"}
+body.instructor-portal .portal .navbtn[data-target="catalog"]::before{content:"🧭"}
+body.instructor-portal .portal .navbtn[href*="learnworld_catalog"]::before{content:"🔎"}
+body.instructor-portal .portal .navbtn[data-target="profile"]::before{content:"👤"}
+body.instructor-portal .portal .navbtn[data-target="courses"]::before{content:"🎓"}
+body.instructor-portal .portal .navbtn[data-target="videoStudio"]::before{content:"🎬"}
+body.instructor-portal .portal .navbtn[data-target="create"]::before{content:"✍️"}
+body.instructor-portal .portal .navbtn[data-target="students"]::before{content:"📈"}
+body.instructor-portal .portal .navbtn[data-target="inbox"]::before,
+body.instructor-portal .portal .navbtn[data-target="messages"]::before{content:"💬"}
+body.instructor-portal .portal .navbtn[data-target="exams"]::before{content:"📝"}
+body.instructor-portal .portal .navbtn[data-target="marketExams"]::before{content:"🧪"}
+body.instructor-portal .portal .navbtn[data-target="certificates"]::before{content:"🏅"}
+body.instructor-portal .portal .navbtn[data-target="payouts"]::before{content:"💰"}
+body.instructor-portal .portal .navbtn.subscription-nav::before{content:"💎"}
+body.instructor-portal .portal .navbtn[data-target="notifications"]::before{content:"🔔"}
+body.instructor-portal .portal .navbtn[data-target="homework"]::before{content:"📚"}
+body.instructor-portal .portal .navbtn[data-target="settings"]::before{content:"⚙️"}
+body.instructor-portal .portal .navbtn[data-target="appearance"]::before{content:"🎛️"}
+body.instructor-portal .portal .navbtn.logout::before{content:"🚪"}

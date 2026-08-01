@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Odyssey - Admin Portal</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#eef1f5;--panel:#ffffff;--panel-soft:rgba(255,255,255,.7);--text:#141c2b;--muted:#66748a;--line:rgba(20,28,43,.11);
+  --primary:#16305c;--accent:#0f766e;--warn:#c2761f;--danger:#c23434;--success:#16855a;
+  --shadow:0 20px 60px rgba(15,23,42,.10);--radius:16px;--font:Manrope,system-ui,sans-serif;--head:"Newsreader",Georgia,serif;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font)}
+button,input,select{font:inherit}
+a{color:inherit}
+.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.sidebar{background:var(--primary);color:#fff;padding:22px 16px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.brand{font-family:var(--head);font-size:22px;font-weight:700;margin:0 6px 22px}
+.brand span{opacity:.65;font-family:var(--font);font-size:12px;display:block;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.navlink{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;color:rgba(255,255,255,.82);text-decoration:none;font-weight:700;cursor:pointer;border:0;background:none;text-align:left;width:100%;font-size:14.5px}
+.navlink:hover{background:rgba(255,255,255,.08)}
+.navlink.active{background:rgba(255,255,255,.16);color:#fff}
+.sidebar-foot{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.15)}
+.main{padding:26px 30px;overflow-x:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:14px;flex-wrap:wrap}
+.topbar h1{font-family:var(--head);font-size:28px;margin:0}
+.topbar .sub{color:var(--muted);font-weight:600;font-size:14px;margin-top:2px}
+.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer;background:var(--primary);color:#fff;font-size:13.5px;display:inline-flex;align-items:center;gap:6px}
+.btn.secondary{background:var(--soft,#eef1f5);color:var(--primary);border:1px solid var(--line)}
+.btn.success{background:var(--success)}
+.btn.danger{background:var(--danger)}
+.btn.warn{background:var(--warn)}
+.btn.tiny{padding:6px 10px;font-size:12px;border-radius:8px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.panel{display:none}
+.panel.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.kpi span{color:var(--muted);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+.kpi strong{display:block;font-family:var(--head);font-size:26px;margin-top:6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:20px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.card-head h2{font-family:var(--head);font-size:19px;margin:0}
+.export-row{display:flex;gap:8px;flex-wrap:wrap}
+.chart-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+@media(max-width:980px){.chart-grid{grid-template-columns:1fr}.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto;flex-direction:row;overflow-x:auto}.brand{display:none}}
+canvas{max-width:100%}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.toolbar input[type=text]{flex:1;min-width:180px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:10px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--muted);font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;background:var(--panel)}
+tbody tr:hover{background:#f7f9fc}
+.table-scroll{overflow-x:auto;max-height:520px;overflow-y:auto;border:1px solid var(--line);border-radius:12px}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800;text-transform:capitalize}
+.badge.active,.badge.published,.badge.paid,.badge.issued,.badge.verified{background:rgba(22,133,90,.12);color:var(--success)}
+.badge.pending,.badge.draft,.badge.review,.badge.processing{background:rgba(194,118,31,.14);color:var(--warn)}
+.badge.suspended,.badge.archived,.badge.failed,.badge.revoked,.badge.deleted{background:rgba(194,52,52,.13);color:var(--danger)}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.empty{padding:30px;text-align:center;color:var(--muted);font-weight:600}
+.modal-overlay{position:fixed;inset:0;background:rgba(10,15,25,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--panel);border-radius:18px;max-width:640px;width:100%;max-height:85vh;overflow:auto;padding:22px;box-shadow:0 30px 90px rgba(0,0,0,.35)}
+.modal h2{font-family:var(--head);margin-top:0}
+.modal .close{float:right;border:0;background:none;font-size:22px;cursor:pointer;color:var(--muted)}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.detail-grid div{background:#f7f9fc;border-radius:10px;padding:10px 12px}
+.detail-grid b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.04em;margin-bottom:3px}
+.gate{display:flex;min-height:100vh;align-items:center;justify-content:center;color:var(--muted);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">Checking your admin session...</div>
+
+<div class="shell" id="shell" style="display:none">
+  <aside class="sidebar">
+    <div class="brand">Odyssey<span>Admin Portal</span></div>
+    <button class="navlink active" data-target="panelOverview">Overview</button>
+    <button class="navlink" data-target="panelStudents">Students</button>
+    <button class="navlink" data-target="panelInstructors">Instructors</button>
+    <button class="navlink" data-target="panelCourses">Courses</button>
+    <button class="navlink" data-target="panelAccounting">Accounting</button>
+    <button class="navlink" data-target="panelCertificates">Certificates</button>
+    <button class="navlink" data-target="panelAudit">Audit log</button>
+    <div class="sidebar-foot">
+      <div style="font-weight:800;font-size:13.5px" id="adminName">Admin</div>
+      <div style="opacity:.7;font-size:12px;margin-bottom:10px" id="adminEmail"></div>
+      <button class="navlink" onclick="refreshAll()">↻ Refresh data</button>
+      <button class="navlink" onclick="logoutAdmin()">Sign out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div><h1 id="pageTitle">Overview</h1><div class="sub">Real-time data from your Odyssey database</div></div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="panel active" id="panelOverview">
+      <div class="kpi-grid" id="kpiGrid"></div>
+      <div class="chart-grid">
+        <div class="card">
+          <div class="card-head"><h2>Revenue - last 12 months</h2><div class="export-row"><button class="btn secondary tiny" onclick="exportElementPNG('revenueChartWrap','odyssey-revenue-chart')">PNG</button></div></div>
+          <div id="revenueChartWrap"><canvas id="revenueChart" height="110"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>User mix</h2><div class="export-row"><button class="btn secondary tiny" onclick="exportElementPNG('roleChartWrap','odyssey-user-mix')">PNG</button></div></div>
+          <div id="roleChartWrap"><canvas id="roleChart" height="110"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Course pipeline</h2><div class="export-row"><button class="btn secondary tiny" onclick="exportElementPNG('courseChartWrap','odyssey-course-pipeline')">PNG</button></div></div>
+        <div id="courseChartWrap"><canvas id="courseChart" height="80"></canvas></div>
+      </div>
+    </section>
+
+    <!-- STUDENTS -->
+    <section class="panel" id="panelStudents">
+      <div class="card">
+        <div class="card-head">
+          <h2>Students (<span id="studentCount">0</span>)</h2>
+          <div class="export-row">
+            <button class="btn secondary tiny" onclick="exportTableExcel('studentsTable','odyssey-students')">Export Excel</button>
+            <button class="btn secondary tiny" onclick="exportTablePDF('studentsTable','odyssey-students','Odyssey - Students')">Export PDF</button>
+            <button class="btn secondary tiny" onclick="exportElementPNG('studentsTableWrap','odyssey-students')">Export PNG</button>
+          </div>
+        </div>
+        <div class="toolbar"><input type="text" id="studentSearch" placeholder="Search students by name, email, or country..." oninput="renderStudents()"></div>
+        <div class="table-scroll" id="studentsTableWrap">
+          <table id="studentsTable"><thead><tr><th>Name</th><th>Email</th><th>Country</th><th>Status</th><th>Enrolled</th><th>Completed</th><th>Avg progress</th><th>Certificates</th><th>Total paid</th><th>Joined</th></tr></thead><tbody id="studentsBody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSTRUCTORS -->
+    <section class="panel" id="panelInstructors">
+      <div class="card">
+        <div class="card-head">
+          <h2>Instructors (<span id="instructorCount">0</span>)</h2>
+          <div class="export-row">
+            <button class="btn secondary tiny" onclick="exportTableExcel('instructorsTable','odyssey-instructors')">Export Excel</button>
+            <button class="btn secondary tiny" onclick="exportTablePDF('instructorsTable','odyssey-instructors','Odyssey - Instructors')">Export PDF</button>
+            <button class="btn secondary tiny" onclick="exportElementPNG('instructorsTableWrap','odyssey-instructors')">Export PNG</button>
+          </div>
+        </div>
+        <div class="toolbar"><input type="text" id="instructorSearch" placeholder="Search instructors..." oninput="renderInstructors()"></div>
+        <div class="table-scroll" id="instructorsTableWrap">
+          <table id="instructorsTable"><thead><tr><th>Name</th><th>Email</th><th>Country</th><th>Status</th><th>Verification</th><th>Courses</th><th>Students</th><th>Gross sales</th><th>Pending payout</th><th>Actions</th></tr></thead><tbody id="instructorsBody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- COURSES -->
+    <section class="panel" id="panelCourses">
+      <div class="card">
+        <div class="card-head">
+          <h2>Courses (<span id="courseCount">0</span>)</h2>
+          <div class="export-row">
+            <button class="btn secondary tiny" onclick="exportTableExcel('coursesTable','odyssey-courses')">Export Excel</button>
+            <button class="btn secondary tiny" onclick="exportTablePDF('coursesTable','odyssey-courses','Odyssey - Courses')">Export PDF</button>
+            <button class="btn secondary tiny" onclick="exportElementPNG('coursesTableWrap','odyssey-courses')">Export PNG</button>
+          </div>
+        </div>
+        <div class="toolbar"><input type="text" id="courseSearch" placeholder="Search courses..." oninput="renderCourses()"></div>
+        <div class="table-scroll" id="coursesTableWrap">
+          <table id="coursesTable"><thead><tr><th>Title</th><th>Instructor</th><th>Field</th><th>Status</th><th>Price</th><th>Enrollments</th><th>Revenue</th><th>Rating</th><th>Actions</th></tr></thead><tbody id="coursesBody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCOUNTING -->
+    <section class="panel" id="panelAccounting">
+      <div class="kpi-grid" id="accountingKpis"></div>
+      <div class="card">
+        <div class="card-head"><h2>Monthly revenue vs. instructor payouts</h2><div class="export-row"><button class="btn secondary tiny" onclick="exportElementPNG('accountingChartWrap','odyssey-accounting-chart')">PNG</button></div></div>
+        <div id="accountingChartWrap"><canvas id="accountingChart" height="90"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Payments (<span id="paymentCount">0</span>)</h2>
+          <div class="export-row">
+            <button class="btn secondary tiny" onclick="exportTableExcel('paymentsTable','odyssey-payments')">Export Excel</button>
+            <button class="btn secondary tiny" onclick="exportTablePDF('paymentsTable','odyssey-payments','Odyssey - Payments')">Export PDF</button>
+            <button class="btn secondary tiny" onclick="exportElementPNG('paymentsTableWrap','odyssey-payments')">Export PNG</button>
+          </div>
+        </div>
+        <div class="table-scroll" id="paymentsTableWrap">
+          <table id="paymentsTable"><thead><tr><th>Date</th><th>Student</th><th>Course</th><th>Instructor</th><th>Provider</th><th>Amount</th><th>Status</th></tr></thead><tbody id="paymentsBody"></tbody></table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Instructor payouts (<span id="payoutCount">0</span>)</h2>
+          <div class="export-row">
+            <button class="btn secondary tiny" onclick="exportTableExcel('payoutsTable','odyssey-payouts')">Export Excel</button>
+            <button class="btn secondary tiny" onclick="exportTablePDF('payoutsTable','odyssey-payouts','Odyssey - Instructor Payouts')">Export PDF</button>
+            <button class="btn secondary tiny" onclick="exportElementPNG('payoutsTableWrap','odyssey-payouts')">Export PNG</button>
+          </div>
+        </div>
+        <div class="table-scroll" id="payoutsTableWrap">
+          <table id="payoutsTable"><thead><tr><th>Instructor</th><th>Period</th><th>Amount</th><th>Provider</th><th>Status</th><th>Paid at</th></tr></thead><tbody id="payoutsBody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CERTIFICATES -->
+    <section class="panel" id="panelCertificates">
+      <div class="card">
+        <div class="card-head">
+          <h2>Certificates (<span id="certCount">0</span>)</h2>
+          <div class="export-row">
+            <button class="btn secondary tiny" onclick="exportTableExcel('certsTable','odyssey-certificates')">Export Excel</button>
+            <button class="btn secondary tiny" onclick="exportTablePDF('certsTable','odyssey-certificates','Odyssey - Certificates')">Export PDF</button>
+            <button class="btn secondary tiny" onclick="exportElementPNG('certsTableWrap','odyssey-certificates')">Export PNG</button>
+          </div>
+        </div>
+        <div class="table-scroll" id="certsTableWrap">
+          <table id="certsTable"><thead><tr><th>Student</th><th>Course</th><th>Instructor</th><th>Verification code</th><th>Status</th><th>Completed</th></tr></thead><tbody id="certsBody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUDIT -->
+    <section class="panel" id="panelAudit">
+      <div class="card">
+        <div class="card-head">
+          <h2>Audit log (<span id="auditCount">0</span>)</h2>
+          <div class="export-row">
+            <button class="btn secondary tiny" onclick="exportTableExcel('auditTable','odyssey-audit-log')">Export Excel</button>
+            <button class="btn secondary tiny" onclick="exportTablePDF('auditTable','odyssey-audit-log','Odyssey - Audit Log')">Export PDF</button>
+          </div>
+        </div>
+        <div class="table-scroll" id="auditTableWrap">
+          <table id="auditTable"><thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Entity</th></tr></thead><tbody id="auditBody"></tbody></table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal-overlay" id="detailModal"><div class="modal"><button class="close" onclick="closeModal()">×</button><div id="detailBody"></div></div></div>
+
+<script>
+// ============================================================================
+// Data state
+// ============================================================================
+let SUMMARY=null, COLLECTIONS=null, PAYOUTS=[], CERTS=[];
+let charts={};
+
+function money(cents){return '$'+((Number(cents||0))/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmtDate(d){return d?new Date(d).toLocaleDateString():'—'}
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function badge(status){return `<span class="badge ${esc(status)}">${esc(status||'—')}</span>`}
+
+// ============================================================================
+// Auth guard - only real admins/support get past this screen.
+// ============================================================================
+async function requireAdminSession(){
+  const gate=document.getElementById('gate');
+  try{
+    if(!window.OdysseySupabase?.isConfigured?.()){
+      gate.textContent='Supabase is not configured. Add your project keys in js/supabase-config.js.';
+      return null;
+    }
+    const session=await OdysseySupabase.session();
+    if(!session){location.href='auth.html?mode=login&redirect=admin_dashboard.html';return null}
+    const profile=await OdysseySupabase.profile();
+    if(!profile||!['admin','support'].includes(profile.role)){
+      gate.textContent="This area is for Odyssey admins only. Redirecting...";
+      setTimeout(()=>location.href='student_portal.html',1200);
+      return null;
+    }
+    return profile;
+  }catch(error){
+    gate.textContent='Could not verify your session: '+(error?.message||error);
+    return null;
+  }
+}
+async function logoutAdmin(){try{await OdysseySupabase.signOut()}catch(e){}location.href='auth.html?mode=login'}
+
+// ============================================================================
+// Navigation
+// ============================================================================
+document.querySelectorAll('.navlink[data-target]').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.navlink[data-target]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(btn.dataset.target).classList.add('active');
+  pageTitle.textContent=btn.textContent.trim();
+}));
+
+// ============================================================================
+// Data loading
+// ============================================================================
+async function loadAll(){
+  const sb=await OdysseySupabase.client();
+  const [summary,collections,payoutsRes,certsRes]=await Promise.all([
+    OdysseySupabase.adminSummary(),
+    OdysseySupabase.adminCollections(),
+    sb.from('payouts').select('id, amount_cents, currency, status, provider, period_start, period_end, paid_at, created_at, instructor:instructor_id(full_name)').order('created_at',{ascending:false}).limit(500),
+    sb.from('certificates').select('id, student_name, course_title, instructor_name, verification_code, status, completed_at').order('completed_at',{ascending:false}).limit(500)
+  ]);
+  SUMMARY=summary;
+  COLLECTIONS=collections;
+  PAYOUTS=payoutsRes.data||[];
+  CERTS=certsRes.data||[];
+}
+async function refreshAll(){
+  document.querySelectorAll('.btn').forEach(b=>b.disabled=true);
+  try{
+    await loadAll();
+    renderOverview();renderStudents();renderInstructors();renderCourses();
+    renderAccounting();renderCertificates();renderAudit();
+  }catch(error){
+    alert('Could not refresh admin data: '+(error?.message||error));
+  }finally{
+    document.querySelectorAll('.btn').forEach(b=>b.disabled=false);
+  }
+}
+
+// ============================================================================
+// Overview
+// ============================================================================
+function renderOverview(){
+  const m=SUMMARY.metrics;
+  kpiGrid.innerHTML=[
+    ['Total users',m.totalUsers],['Students',m.students],['Instructors',m.instructors],
+    ['Active users',m.activeUsers],['Published courses',m.publishedCourses],['Enrollments',m.enrollments],
+    ['Certificates issued',m.certificatesIssued],['Total revenue',money(m.revenueCents)]
+  ].map(([label,val])=>`<div class="kpi"><span>${label}</span><strong>${typeof val==='number'&&label!=='Total revenue'?val.toLocaleString('en-US'):val}</strong></div>`).join('');
+
+  const monthly=monthlyRevenue(COLLECTIONS.payments);
+  drawChart('revenueChart','bar',{
+    labels:monthly.labels,
+    datasets:[{label:'Revenue',data:monthly.values,backgroundColor:'#16305c',borderRadius:6}]
+  },{plugins:{legend:{display:false}}});
+
+  drawChart('roleChart','doughnut',{
+    labels:['Students','Instructors','Admins'],
+    datasets:[{data:[m.students,m.instructors,m.admins],backgroundColor:['#16305c','#0f766e','#c2761f']}]
+  },{});
+
+  const statusCounts={};
+  (COLLECTIONS.courses||[]).forEach(c=>{statusCounts[c.status]=(statusCounts[c.status]||0)+1});
+  drawChart('courseChart','bar',{
+    labels:Object.keys(statusCounts),
+    datasets:[{label:'Courses',data:Object.values(statusCounts),backgroundColor:'#0f766e',borderRadius:6}]
+  },{indexAxis:'y',plugins:{legend:{display:false}}});
+}
+function monthlyRevenue(payments){
+  const map={};
+  (payments||[]).filter(p=>p.status==='paid').forEach(p=>{
+    const d=new Date(p.createdAt||p.created_at);
+    const key=d.toLocaleString('en-US',{month:'short',year:'2-digit'});
+    map[key]=(map[key]||0)+(p.amountCents||p.amount_cents||0);
+  });
+  const labels=Object.keys(map);
+  return {labels,values:labels.map(l=>map[l]/100)};
+}
+function drawChart(canvasId,type,data,options){
+  const ctx=document.getElementById(canvasId);
+  if(!ctx)return;
+  if(charts[canvasId])charts[canvasId].destroy();
+  charts[canvasId]=new Chart(ctx,{type,data,options:{responsive:true,...options}});
+}
+
+// ============================================================================
+// Students
+// ============================================================================
+function renderStudents(){
+  const q=(studentSearch?.value||'').toLowerCase();
+  const rows=(COLLECTIONS.students||[]).filter(s=>!q||[s.full_name,s.email,s.country].some(v=>String(v||'').toLowerCase().includes(q)));
+  studentCount.textContent=rows.length;
+  studentsBody.innerHTML=rows.length?rows.map(s=>`<tr onclick="openStudentDetail('${s.student_id}')" style="cursor:pointer">
+    <td>${esc(s.full_name)}</td><td>${esc(s.email)}</td><td>${esc(s.country||'—')}</td><td>${badge(s.status)}</td>
+    <td>${s.enrolled_courses ?? 0}</td><td>${s.completed_courses ?? 0}</td><td>${Math.round(s.average_progress_percent||0)}%</td>
+    <td>${s.certificates_issued ?? 0}</td><td>${money(s.total_paid_cents)}</td><td>${fmtDate(s.created_at)}</td>
+  </tr>`).join(''):'<tr><td colspan="10" class="empty">No students found.</td></tr>';
+}
+async function openStudentDetail(id){
+  try{
+    const detail=await OdysseySupabase.adminStudentDetail(id);
+    detailBody.innerHTML=`<h2>${esc(detail.full_name||'Student')}</h2>
+      <div class="detail-grid">
+        <div><b>Email</b>${esc(detail.email||'—')}</div><div><b>Country</b>${esc(detail.country||'—')}</div>
+        <div><b>Status</b>${esc(detail.status||'—')}</div><div><b>Joined</b>${fmtDate(detail.created_at)}</div>
+      </div>
+      <pre style="white-space:pre-wrap;background:#f7f9fc;border-radius:10px;padding:12px;font-size:12.5px;max-height:300px;overflow:auto">${esc(JSON.stringify(detail,null,2))}</pre>`;
+    detailModal.classList.add('open');
+  }catch(error){alert('Could not load student detail: '+(error?.message||error))}
+}
+
+// ============================================================================
+// Instructors
+// ============================================================================
+function renderInstructors(){
+  const q=(instructorSearch?.value||'').toLowerCase();
+  const rows=(COLLECTIONS.instructors||[]).filter(i=>!q||[i.fullName,i.email,i.country].some(v=>String(v||'').toLowerCase().includes(q)));
+  instructorCount.textContent=rows.length;
+  instructorsBody.innerHTML=rows.length?rows.map(i=>`<tr>
+    <td onclick="openInstructorDetail('${i.id}')" style="cursor:pointer">${esc(i.fullName)}</td><td>${esc(i.email)}</td><td>${esc(i.country||'—')}</td>
+    <td>${badge(i.status)}</td><td>${badge(i.verification_status||'unverified')}</td>
+    <td>${i.coursesCount ?? 0}</td><td>${i.total_students ?? 0}</td>
+    <td>${money(i.gross_sales_cents)}</td><td>${money(i.pendingPayoutCents)}</td>
+    <td class="row-actions">
+      <button class="btn tiny success" onclick="changeUserStatus('${i.id}','active')">Activate</button>
+      <button class="btn tiny danger" onclick="changeUserStatus('${i.id}','suspended')">Suspend</button>
+    </td>
+  </tr>`).join(''):'<tr><td colspan="10" class="empty">No instructors found.</td></tr>';
+}
+async function openInstructorDetail(id){
+  try{
+    const detail=await OdysseySupabase.adminInstructorDetail(id);
+    detailBody.innerHTML=`<h2>${esc(detail.full_name||'Instructor')}</h2>
+      <pre style="white-space:pre-wrap;background:#f7f9fc;border-radius:10px;padding:12px;font-size:12.5px;max-height:400px;overflow:auto">${esc(JSON.stringify(detail,null,2))}</pre>`;
+    detailModal.classList.add('open');
+  }catch(error){alert('Could not load instructor detail: '+(error?.message||error))}
+}
+async function changeUserStatus(id,status){
+  if(!confirm(`Set this account to "${status}"?`))return;
+  try{await OdysseySupabase.setUserStatus(id,status);await refreshAll();}
+  catch(error){alert('Could not update status: '+(error?.message||error))}
+}
+
+// ============================================================================
+// Courses
+// ============================================================================
+function renderCourses(){
+  const q=(courseSearch?.value||'').toLowerCase();
+  const rows=(COLLECTIONS.courses||[]).filter(c=>!q||[c.title,c.instructorName,c.field].some(v=>String(v||'').toLowerCase().includes(q)));
+  courseCount.textContent=rows.length;
+  coursesBody.innerHTML=rows.length?rows.map(c=>`<tr>
+    <td>${esc(c.title)}</td><td>${esc(c.instructorName||'—')}</td><td>${esc(c.field||'—')}</td><td>${badge(c.status)}</td>
+    <td>${money(c.priceCents)}</td><td>${c.enrolledCount ?? 0}</td><td>${money((c.priceCents||0)*(c.enrolledCount||0))}</td>
+    <td>${(c.rating||0).toFixed?c.rating.toFixed(1):c.rating||'—'}</td>
+    <td class="row-actions">
+      <button class="btn tiny success" onclick="changeCourseStatus('${c.id}','published')">Publish</button>
+      <button class="btn tiny warn" onclick="changeCourseStatus('${c.id}','suspended')">Suspend</button>
+      <button class="btn tiny secondary" onclick="changeCourseStatus('${c.id}','archived')">Archive</button>
+    </td>
+  </tr>`).join(''):'<tr><td colspan="9" class="empty">No courses found.</td></tr>';
+}
+async function changeCourseStatus(id,status){
+  if(!confirm(`Set this course to "${status}"?`))return;
+  try{await OdysseySupabase.setCourseStatus(id,status);await refreshAll();}
+  catch(error){alert('Could not update course: '+(error?.message||error))}
+}
+
+// ============================================================================
+// Accounting
+// ============================================================================
+function renderAccounting(){
+  const paid=(COLLECTIONS.payments||[]).filter(p=>p.status==='paid');
+  const totalRevenue=paid.reduce((s,p)=>s+(p.amountCents||0),0);
+  const paidPayouts=PAYOUTS.filter(p=>p.status==='paid').reduce((s,p)=>s+(p.amount_cents||0),0);
+  const pendingPayouts=PAYOUTS.filter(p=>['pending','processing'].includes(p.status)).reduce((s,p)=>s+(p.amount_cents||0),0);
+  const platformFee=totalRevenue-paidPayouts-pendingPayouts;
+
+  accountingKpis.innerHTML=[
+    ['Total revenue',money(totalRevenue)],['Paid out to instructors',money(paidPayouts)],
+    ['Pending payouts',money(pendingPayouts)],['Estimated platform fee',money(Math.max(0,platformFee))]
+  ].map(([label,val])=>`<div class="kpi"><span>${label}</span><strong>${val}</strong></div>`).join('');
+
+  const revByMonth=monthlyRevenue(COLLECTIONS.payments);
+  const payoutMap={};
+  PAYOUTS.filter(p=>p.status==='paid').forEach(p=>{
+    const key=new Date(p.paid_at||p.created_at).toLocaleString('en-US',{month:'short',year:'2-digit'});
+    payoutMap[key]=(payoutMap[key]||0)+(p.amount_cents||0)/100;
+  });
+  drawChart('accountingChart','bar',{
+    labels:revByMonth.labels,
+    datasets:[
+      {label:'Revenue',data:revByMonth.values,backgroundColor:'#16305c',borderRadius:6},
+      {label:'Instructor payouts',data:revByMonth.labels.map(l=>payoutMap[l]||0),backgroundColor:'#0f766e',borderRadius:6}
+    ]
+  },{});
+
+  paymentCount.textContent=(COLLECTIONS.payments||[]).length;
+  paymentsBody.innerHTML=(COLLECTIONS.payments||[]).length?COLLECTIONS.payments.map(p=>`<tr>
+    <td>${fmtDate(p.createdAt)}</td><td>${esc(p.studentName||'—')}</td><td>${esc(p.courseTitle||'—')}</td>
+    <td>${esc(p.instructorName||'—')}</td><td>${esc(p.provider||'—')}</td><td>${money(p.amountCents)}</td><td>${badge(p.status)}</td>
+  </tr>`).join(''):'<tr><td colspan="7" class="empty">No payments yet.</td></tr>';
+
+  payoutCount.textContent=PAYOUTS.length;
+  payoutsBody.innerHTML=PAYOUTS.length?PAYOUTS.map(p=>`<tr>
+    <td>${esc(p.instructor?.full_name||'—')}</td><td>${fmtDate(p.period_start)} – ${fmtDate(p.period_end)}</td>
+    <td>${money(p.amount_cents)}</td><td>${esc(p.provider||'—')}</td><td>${badge(p.status)}</td><td>${fmtDate(p.paid_at)}</td>
+  </tr>`).join(''):'<tr><td colspan="6" class="empty">No payouts recorded yet.</td></tr>';
+}
+
+// ============================================================================
+// Certificates
+// ============================================================================
+function renderCertificates(){
+  certCount.textContent=CERTS.length;
+  certsBody.innerHTML=CERTS.length?CERTS.map(c=>`<tr>
+    <td>${esc(c.student_name)}</td><td>${esc(c.course_title)}</td><td>${esc(c.instructor_name)}</td>
+    <td>${esc(c.verification_code)}</td><td>${badge(c.status)}</td><td>${fmtDate(c.completed_at)}</td>
+  </tr>`).join(''):'<tr><td colspan="6" class="empty">No certificates issued yet.</td></tr>';
+}
+
+// ============================================================================
+// Audit log
+// ============================================================================
+function renderAudit(){
+  const rows=COLLECTIONS.audit||[];
+  auditCount.textContent=rows.length;
+  auditBody.innerHTML=rows.length?rows.map(a=>`<tr>
+    <td>${fmtDate(a.created_at)}</td><td>${esc(a.actor_id||'system')}</td><td>${esc(a.action)}</td><td>${esc(a.entity_type)} ${esc(a.entity_id||'')}</td>
+  </tr>`).join(''):'<tr><td colspan="4" class="empty">No audit events recorded yet.</td></tr>';
+}
+
+function closeModal(){detailModal.classList.remove('open')}
+detailModal.addEventListener('click',e=>{if(e.target===detailModal)closeModal()});
+
+// ============================================================================
+// Export: Excel (SheetJS), PDF (jsPDF + autotable), PNG (html2canvas)
+// ============================================================================
+function tableToAoa(tableId){
+  const table=document.getElementById(tableId);
+  const rows=[...table.querySelectorAll('tr')].filter(tr=>tr.offsetParent!==null||true);
+  return rows.map(tr=>[...tr.children].map(cell=>cell.innerText.trim()));
+}
+function exportTableExcel(tableId,filename){
+  const aoa=tableToAoa(tableId);
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Data');
+  XLSX.writeFile(wb,`${filename}.xlsx`);
+}
+function exportTablePDF(tableId,filename,title){
+  const aoa=tableToAoa(tableId);
+  const doc=new jspdf.jsPDF({orientation:'landscape'});
+  doc.setFontSize(14);
+  doc.text(title||'Odyssey export',14,16);
+  doc.setFontSize(9);
+  doc.text(new Date().toLocaleString(),14,22);
+  doc.autoTable({head:[aoa[0]],body:aoa.slice(1),startY:28,styles:{fontSize:8},headStyles:{fillColor:[22,48,92]}});
+  doc.save(`${filename}.pdf`);
+}
+async function exportElementPNG(elementId,filename){
+  const el=document.getElementById(elementId);
+  const canvas=await html2canvas(el,{backgroundColor:'#ffffff',scale:2});
+  const link=document.createElement('a');
+  link.download=`${filename}.png`;
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ============================================================================
+// Boot
+// ============================================================================
+document.addEventListener('DOMContentLoaded',async()=>{
+  const admin=await requireAdminSession();
+  if(!admin)return;
+  adminName.textContent=admin.full_name||'Admin';
+  adminEmail.textContent=admin.email||'';
+  gate.style.display='none';
+  shell.style.display='grid';
+  try{
+    await loadAll();
+    renderOverview();renderStudents();renderInstructors();renderCourses();
+    renderAccounting();renderCertificates();renderAudit();
+  }catch(error){
+    alert('Could not load admin data: '+(error?.message||error));
+  }
+});
+</script>
+</body>
+</html>

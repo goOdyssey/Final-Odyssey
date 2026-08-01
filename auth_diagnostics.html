@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odyssey Auth Diagnostics</title>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0f172a;color:#e5e7eb;font-family:Inter,system-ui,sans-serif}
+main{width:min(760px,calc(100vw - 28px));background:#111827;border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.35)}
+h1{margin:0 0 10px;font-family:Georgia,serif;font-size:36px;color:#fff}
+p{color:#aab4c5;line-height:1.55}
+.grid{display:grid;gap:10px;margin-top:18px}
+.row{display:grid;grid-template-columns:180px 1fr;gap:12px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.04)}
+.row b{color:#fff}.ok{color:#34d399}.bad{color:#fb7185}.warn{color:#fbbf24}
+button,a{display:inline-flex;margin-top:18px;margin-right:8px;border:0;border-radius:12px;background:#2563eb;color:#fff;text-decoration:none;font-weight:800;padding:11px 14px;cursor:pointer}
+button.secondary{background:#334155}
+code{word-break:break-all}
+</style>
+</head>
+<body>
+<main>
+  <h1>Auth Diagnostics</h1>
+  <p>This page checks whether Odyssey can see your Supabase configuration. It hides the anon key except for its length.</p>
+  <div class="grid" id="results"></div>
+  <button onclick="localStorage.removeItem('ODYSSEY_SUPABASE_URL');localStorage.removeItem('ODYSSEY_SUPABASE_ANON_KEY');location.reload()" class="secondary">Clear browser-stored config</button>
+  <a href="auth.html?mode=signup">Back to sign up</a>
+</main>
+<script>
+(async function(){
+  const cfg=window.ODYSSEY_SUPABASE||{};
+  const rows=[
+    ['Enabled', cfg.enabled ? '<span class="ok">Yes</span>' : '<span class="bad">No</span>'],
+    ['Source', cfg.source || 'unknown'],
+    ['Project URL', cfg.url && !cfg.url.includes('YOUR_PROJECT_REF') ? `<code>${cfg.url}</code>` : '<span class="bad">Missing or placeholder</span>'],
+    ['Anon key length', cfg.anonKey ? String(cfg.anonKey.length) : '<span class="bad">Missing</span>']
+  ];
+  try{
+    if(window.OdysseySupabase?.isConfigured?.()){
+      const sb=await OdysseySupabase.client();
+      const {data,error}=await sb.auth.getSession();
+      rows.push(['SDK load', error?`<span class="bad">${error.message}</span>`:'<span class="ok">Loaded</span>']);
+      rows.push(['Current session', data.session?'<span class="ok">Signed in</span>':'<span class="warn">Not signed in</span>']);
+    }else{
+      rows.push(['SDK load','<span class="warn">Skipped because config is not enabled</span>']);
+    }
+  }catch(error){rows.push(['SDK load',`<span class="bad">${String(error.message||error)}</span>`])}
+  results.innerHTML=rows.map(([k,v])=>`<div class="row"><b>${k}</b><span>${v}</span></div>`).join('');
+}());
+</script>
+</body>
+</html>
