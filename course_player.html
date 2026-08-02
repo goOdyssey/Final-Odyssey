@@ -6,12 +6,14 @@
 <title data-i18n="portal_course_player_title">Odyssey - Course Player</title>
 <link href="https://fonts.googleapis.com" rel="preconnect" />
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
 <style>
 :root{
-  --bg:#eef1f4;--panel:rgba(255,255,255,.86);--text:#17202c;--muted:#667085;--line:rgba(23,32,44,.12);
-  --purple:#1d4ed8;--pink:#0f766e;--gold:#d6a246;--green:#0f766e;--blue:#2563eb;
-  --danger:#dc2626;--shadow:0 24px 70px rgba(15,23,42,.12);--radius:20px;
+  --bg:#F6F4EF;--panel:rgba(255,255,255,.86);--text:#141C2B;--muted:#64708A;--line:rgba(20,28,43,.12);
+  --purple:#142C4F;--pink:#0F7A6C;--gold:#C08A3E;--green:#0F7A6C;--blue:#142C4F;
+  --danger:#B23A48;--shadow:0 24px 70px rgba(15,23,42,.12);--radius:20px;
   --font:Manrope, system-ui, sans-serif;--head:"Newsreader", Georgia, serif;
 }
 *{box-sizing:border-box}
@@ -87,10 +89,7 @@ textarea{min-height:120px;resize:vertical}
 .watch-status{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;color:var(--muted);font-size:12px;font-weight:900}
 @media(max-width:940px){.layout,.content-grid,.stage{grid-template-columns:1fr}.stage{min-height:320px}.shell{padding:16px}.video-shell video,.video-shell{min-height:260px}}
 </style>
-<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
-<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
-<link rel="stylesheet" href="assets/odyssey-dashboard-minimal.css" />
-<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+<link rel="stylesheet" href="assets/odyssey-design-system.css" />
 </head>
 <body>
 <div class="shell">
@@ -197,319 +196,303 @@ textarea{min-height:120px;resize:vertical}
 <script defer src="assets/odyssey-translation-completion.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
 <script>
-const COURSE_LIBRARY = [
-  {id:1,title:'Complete JEE Advanced Mathematics',instructor:'Rajesh Venkataraman',description:'Entrance Exam · South Asian Exams · JEE Advanced (India)',emoji:'📐',field:'Entrance Exam',level:'Advanced',hours:120,progress:16},
-  {id:2,title:'NEET Biology Master Class',instructor:'Dr Priya Sharma',description:'Entrance Exam · South Asian Exams · NEET-UG (India)',emoji:'🧬',field:'Entrance Exam',level:'Advanced',hours:95,progress:22},
-  {id:8,title:'IELTS Academic Band 8+ Strategy',instructor:'Dr James Hartley',description:'Language Exam · English Proficiency · IELTS Academic Writing',emoji:'🗣️',field:'Language Exam',level:'Advanced',hours:35,progress:64},
-  {id:24,title:'Machine Learning A-Z: Python & R',instructor:'Prof Chen Wei',description:'Vocational · AI & Data Science · Machine Learning',emoji:'🤖',field:'Vocational',level:'Intermediate',hours:110,progress:38}
-];
-const LESSONS = [
-  {title:'Orientation and learning plan',duration:'8 min',summary:'Set your goals, download the starter resources, and choose a weekly study rhythm.'},
-  {title:'Core concepts',duration:'24 min',summary:'Work through the concepts that anchor the course with guided examples.'},
-  {title:'Practice lab',duration:'35 min',summary:'Apply the lesson in a structured practice session with immediate reflection.'},
-  {title:'Instructor review',duration:'18 min',summary:'Review common mistakes and compare your approach with the instructor walkthrough.'},
-  {title:'Checkpoint quiz',duration:'12 min',summary:'Test your understanding and decide whether to continue or revisit prior lessons.'}
-];
+const params = new URLSearchParams(location.search);
+const courseId = params.get('course') || '';
+const COMPLETION_THRESHOLD = 0.95;
 const RESOURCES = [
   {title:'Lesson workbook',body:'PDF notes, examples, and guided practice prompts.'},
   {title:'Practice quiz',body:'Self-check questions connected to this lesson.'},
   {title:'Download pack',body:'Offline video placeholder, transcript, and reference links.'}
 ];
-const params = new URLSearchParams(location.search);
-const courseId = Number(params.get('course')) || 8;
-const productionAssetId = params.get('asset') || '';
-let activeLesson = Number(localStorage.getItem(`odyssey_active_lesson_${courseId}`) || 0);
-let productionHls = null;
-let lastProgressSentAt = 0;
-let watchSegments = [];
-let lastTrackedTime = 0;
-let isSeeking = false;
-const COMPLETION_THRESHOLD = 0.95;
 
-function T(k){return window.OdysseyI18n ? window.OdysseyI18n.t(k) : k}
-function readJSON(key, fallback){try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback))}catch(e){return fallback}}
-function writeJSON(key, value){localStorage.setItem(key, JSON.stringify(value))}
-function getEnrolled(){return readJSON('odyssey_enrolled_courses', [])}
-function saveEnrolled(courses){writeJSON('odyssey_enrolled_courses', courses)}
-function getCourse(){
-  const enrolled = getEnrolled();
-  return enrolled.find(c => Number(c.id) === courseId) || COURSE_LIBRARY.find(c => c.id === courseId) || COURSE_LIBRARY[0];
-}
-function getDone(){return readJSON(`odyssey_done_lessons_${courseId}`, [])}
-function saveDone(done){writeJSON(`odyssey_done_lessons_${courseId}`, done)}
+let CURRENT_PROFILE=null;
+let ENROLLMENT=null;
+let COURSE=null;
+let LESSONS=[];
+let activeLesson=0;
+let watchSegments=[];
+let lastTrackedTime=0;
+let isSeeking=false;
+
+function T(k){return window.OdysseyI18n?window.OdysseyI18n.t(k):k}
+function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch(e){return fallback}}
+function writeJSON(key,value){localStorage.setItem(key,JSON.stringify(value))}
 function noteKey(){return `odyssey_course_notes_${courseId}_${activeLesson}`}
 function watchKey(){return `odyssey_watch_segments_${courseId}_${activeLesson}`}
 function showToast(text){
-  toast.textContent = text;
-  toast.classList.add('show');
+  toast.textContent=text;toast.classList.add('show');
   clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove('show'), 2200);
+  showToast.timer=setTimeout(()=>toast.classList.remove('show'),2200);
 }
-function progressPercent(){
-  return Math.round((getDone().length / LESSONS.length) * 100);
+
+// ---- Real enrollment check. This used to be entirely missing - anyone could open this
+// page for any course id and see full lesson content. Now it verifies a real, active
+// enrollment (which itself only exists if the course was free or genuinely paid for)
+// before showing anything, and redirects back if there isn't one. ----
+async function requireEnrollment(){
+  if(!courseId){location.href='student_portal.html';return false}
+  if(!window.OdysseySupabase?.isConfigured?.()){
+    console.warn('Supabase is not configured.');
+    location.href='auth.html?mode=login&role=student&redirect=student_portal.html';
+    return false;
+  }
+  const session=await OdysseySupabase.session();
+  if(!session){location.href='auth.html?mode=login&role=student&redirect=student_portal.html';return false}
+  CURRENT_PROFILE=await OdysseySupabase.profile();
+  if(!CURRENT_PROFILE){location.href='auth.html?mode=login&role=student&redirect=student_portal.html';return false}
+
+  const sb=await OdysseySupabase.client();
+  const {data:enrollment,error:enrollError}=await sb.from('enrollments')
+    .select('id, progress_percent, sessions_watched, status, course:course_id(id, title, description, field, level, instructor_id, instructor:instructor_id(full_name))')
+    .eq('course_id',courseId).eq('status','active').maybeSingle();
+  if(enrollError||!enrollment){
+    showToast("You're not enrolled in this course yet.");
+    setTimeout(()=>location.href='student_portal.html',1400);
+    return false;
+  }
+  ENROLLMENT=enrollment;
+  COURSE=enrollment.course;
+
+  const {data:lessons,error:lessonsError}=await sb.from('course_lessons')
+    .select('id, position, title, lesson_type, duration_seconds')
+    .eq('course_id',courseId).order('position',{ascending:true});
+  if(lessonsError)console.error('Could not load lessons.',lessonsError);
+  LESSONS=(lessons||[]).map(l=>({id:l.id,title:l.title,duration:l.duration_seconds?Math.round(l.duration_seconds/60)+' min':'—',summary:'',type:l.lesson_type,done:false}));
+
+  if(LESSONS.length){
+    const {data:progressRows}=await sb.from('lesson_progress').select('lesson_id, completed').eq('enrollment_id',enrollment.id);
+    const doneIds=new Set((progressRows||[]).filter(p=>p.completed).map(p=>p.lesson_id));
+    LESSONS.forEach(l=>l.done=doneIds.has(l.id));
+  }
+
+  const savedIndex=Number(localStorage.getItem(`odyssey_active_lesson_${courseId}`)||0);
+  activeLesson=LESSONS.length?Math.min(Math.max(0,savedIndex),LESSONS.length-1):0;
+  return true;
 }
-function videoDuration(){
-  return Number.isFinite(lessonVideo.duration) && lessonVideo.duration > 0 ? lessonVideo.duration : 0;
-}
+
+function videoDuration(){return Number.isFinite(lessonVideo.duration)&&lessonVideo.duration>0?lessonVideo.duration:0}
 function mergeSegments(segments){
   return segments
-    .filter(s => Array.isArray(s) && Number.isFinite(s[0]) && Number.isFinite(s[1]) && s[1] > s[0])
-    .sort((a,b) => a[0] - b[0])
-    .reduce((merged, seg) => {
-      const last = merged[merged.length - 1];
-      if(last && seg[0] <= last[1] + 0.35) last[1] = Math.max(last[1], seg[1]);
-      else merged.push([Math.max(0, seg[0]), seg[1]]);
+    .filter(s=>Array.isArray(s)&&Number.isFinite(s[0])&&Number.isFinite(s[1])&&s[1]>s[0])
+    .sort((a,b)=>a[0]-b[0])
+    .reduce((merged,seg)=>{
+      const last=merged[merged.length-1];
+      if(last&&seg[0]<=last[1]+0.35)last[1]=Math.max(last[1],seg[1]);
+      else merged.push([Math.max(0,seg[0]),seg[1]]);
       return merged;
-    }, []);
+    },[]);
 }
-function watchedSeconds(){
-  return watchSegments.reduce((sum, seg) => sum + Math.max(0, seg[1] - seg[0]), 0);
-}
-function watchedRatio(){
-  const duration = videoDuration();
-  return duration ? Math.min(1, watchedSeconds() / duration) : 0;
-}
-function saveWatchSegments(){
-  writeJSON(watchKey(), watchSegments.slice(-80));
-}
+function watchedSeconds(){return watchSegments.reduce((sum,seg)=>sum+Math.max(0,seg[1]-seg[0]),0)}
+function watchedRatio(){const duration=videoDuration();return duration?Math.min(1,watchedSeconds()/duration):0}
+function saveWatchSegments(){writeJSON(watchKey(),watchSegments.slice(-80))}
 function resetWatchTracker(){
-  watchSegments = mergeSegments(readJSON(watchKey(), []));
-  lastTrackedTime = Math.max(0, lessonVideo.currentTime || 0);
-  isSeeking = false;
+  watchSegments=mergeSegments(readJSON(watchKey(),[]));
+  lastTrackedTime=Math.max(0,lessonVideo.currentTime||0);
+  isSeeking=false;
   updateWatchUi();
 }
-function addWatchSegment(start, end){
-  const duration = videoDuration();
-  if(!duration) return;
-  const safeStart = Math.max(0, Math.min(start, duration));
-  const safeEnd = Math.max(0, Math.min(end, duration));
-  if(safeEnd - safeStart < 0.15) return;
-  watchSegments = mergeSegments([...watchSegments, [safeStart, safeEnd]]);
+function addWatchSegment(start,end){
+  const duration=videoDuration();if(!duration)return;
+  const safeStart=Math.max(0,Math.min(start,duration));
+  const safeEnd=Math.max(0,Math.min(end,duration));
+  if(safeEnd-safeStart<0.15)return;
+  watchSegments=mergeSegments([...watchSegments,[safeStart,safeEnd]]);
   saveWatchSegments();
 }
 function recordWatchTick(force=false){
-  const duration = videoDuration();
-  if(!duration){
-    updateWatchUi();
-    return;
+  const duration=videoDuration();
+  if(!duration){updateWatchUi();return}
+  const current=Math.max(0,Math.min(lessonVideo.currentTime||0,duration));
+  const previous=Math.max(0,Math.min(lastTrackedTime||0,duration));
+  const maxStep=Math.max(3.2,Number(lessonVideo.playbackRate||1)*3.2);
+  const delta=current-previous;
+  if(!isSeeking&&delta>0&&(delta<=maxStep||(force&&duration-previous<=maxStep))){
+    addWatchSegment(previous,current);
   }
-  const current = Math.max(0, Math.min(lessonVideo.currentTime || 0, duration));
-  const previous = Math.max(0, Math.min(lastTrackedTime || 0, duration));
-  const maxStep = Math.max(3.2, Number(lessonVideo.playbackRate || 1) * 3.2);
-  const delta = current - previous;
-  if(!isSeeking && delta > 0 && (delta <= maxStep || (force && duration - previous <= maxStep))){
-    addWatchSegment(previous, current);
-  }
-  lastTrackedTime = current;
+  lastTrackedTime=current;
   updateWatchUi();
 }
 function completionEligible(){
-  const duration = videoDuration();
-  if(!duration) return false;
-  const nearEnd = lessonVideo.ended || lessonVideo.currentTime >= duration - 1.25;
-  return nearEnd && watchedRatio() >= COMPLETION_THRESHOLD;
+  const duration=videoDuration();
+  if(!duration)return true; // no video connected for this lesson yet - nothing to gate on
+  const nearEnd=lessonVideo.ended||lessonVideo.currentTime>=duration-1.25;
+  return nearEnd&&watchedRatio()>=COMPLETION_THRESHOLD;
 }
 function updateWatchUi(){
-  const done = getDone();
-  const alreadyDone = done.includes(activeLesson);
-  const duration = videoDuration();
-  const percent = Math.round(watchedRatio() * 100);
-  if(typeof watchStatus !== 'undefined'){
-    if(alreadyDone) watchStatus.textContent = 'Completed';
-    else if(!duration) watchStatus.textContent = 'Completion unlocks after full video playback';
-    else watchStatus.textContent = `${Math.min(100, percent)}% watched`;
+  const lesson=LESSONS[activeLesson];
+  const alreadyDone=!!lesson?.done;
+  const duration=videoDuration();
+  const percent=Math.round(watchedRatio()*100);
+  if(typeof watchStatus!=='undefined'){
+    if(alreadyDone)watchStatus.textContent='Completed';
+    else if(!duration)watchStatus.textContent='No video for this lesson yet - you can mark it complete manually';
+    else watchStatus.textContent=`${Math.min(100,percent)}% watched`;
   }
-  completeBtn.disabled = alreadyDone || !completionEligible();
-  completeBtn.title = alreadyDone ? 'Lesson completed' : 'Watch the full lesson video to unlock completion';
+  completeBtn.disabled=alreadyDone||!completionEligible();
+  completeBtn.title=alreadyDone?'Lesson completed':'Mark this lesson complete';
 }
-function syncPortalProgress(){
-  const percent = progressPercent();
-  const enrolled = getEnrolled();
-  const idx = enrolled.findIndex(c => Number(c.id) === courseId);
-  if(idx >= 0){
-    enrolled[idx].progress = percent;
-    enrolled[idx].lastLesson = activeLesson;
-    saveEnrolled(enrolled);
-  }
+
+function colorForCourse(field){
+  if(field==='Language Exam')return'#142C4F';
+  if(field==='Vocational')return'#0F7A6C';
+  if(field==='University')return'#2A4A78';
+  return'#C08A3E';
 }
+
 function renderShell(){
-  const course = getCourse();
-  courseTitle.textContent = `${course.emoji || '🎓'} ${course.title}`;
-  courseMeta.textContent = `${course.instructor} · ${course.level || 'Course'} · ${course.hours || 0}h`;
-  courseStage.style.background = `linear-gradient(135deg,#20162e,${colorForCourse(course.field)},#ff4d8d)`;
-  totalCount.textContent = LESSONS.length;
-  loadVideo(course);
+  courseTitle.textContent=`🎓 ${COURSE.title}`;
+  courseMeta.textContent=`${COURSE.instructor?.full_name||'Odyssey instructor'} · ${COURSE.level||'Course'}`;
+  courseStage.style.background=`linear-gradient(135deg,#0B1930,${colorForCourse(COURSE.field)},#C08A3E)`;
+  totalCount.textContent=LESSONS.length;
+  loadVideo();
   renderLessons();
   renderResources();
-  renderMessages();
+  fetchCourseMessages().then(renderMessages);
 }
-function colorForCourse(field){
-  if(field === 'Language Exam') return '#2563eb';
-  if(field === 'Vocational') return '#10b981';
-  if(field === 'University') return '#7c3aed';
-  return '#f97316';
-}
+
 function renderLessons(){
-  const done = getDone();
-  const current = LESSONS[activeLesson];
-  lessonSummary.textContent = current.summary;
-  lessonNotes.value = localStorage.getItem(noteKey()) || '';
-  lessonList.innerHTML = LESSONS.map((lesson, index) => `
-    <button class="lesson ${index === activeLesson ? 'active' : ''} ${done.includes(index) ? 'done' : ''}" type="button" onclick="selectLesson(${index})">
-      <span class="num">${done.includes(index) ? '✓' : index + 1}</span>
+  if(!LESSONS.length){
+    lessonList.innerHTML='<div class="muted">This course does not have any lessons published yet.</div>';
+    lessonSummary.textContent='No lessons published yet.';
+    doneCount.textContent=0;totalCount.textContent=0;
+    progressText.textContent='0%';progressBar.style.width='0%';
+    nextBtn.disabled=true;completeBtn.disabled=true;
+    return;
+  }
+  const current=LESSONS[activeLesson];
+  lessonSummary.textContent=current.summary||current.title;
+  lessonNotes.value=localStorage.getItem(noteKey())||'';
+  lessonList.innerHTML=LESSONS.map((lesson,index)=>`
+    <button class="lesson ${index===activeLesson?'active':''} ${lesson.done?'done':''}" type="button" onclick="selectLesson(${index})">
+      <span class="num">${lesson.done?'✓':index+1}</span>
       <span><span class="lesson-title">${lesson.title}</span><span class="lesson-meta">${lesson.duration}</span></span>
-      <span class="check">${done.includes(index) ? 'Done' : ''}</span>
+      <span class="check">${lesson.done?'Done':''}</span>
     </button>
   `).join('');
-  doneCount.textContent = done.length;
-  const percent = progressPercent();
-  progressText.textContent = `${percent}%`;
-  progressBar.style.width = `${percent}%`;
+  const doneCountNum=LESSONS.filter(l=>l.done).length;
+  doneCount.textContent=doneCountNum;
+  const percent=ENROLLMENT?.progress_percent??Math.round((doneCountNum/LESSONS.length)*100);
+  progressText.textContent=`${percent}%`;
+  progressBar.style.width=`${percent}%`;
   updateWatchUi();
-  nextBtn.disabled = activeLesson >= LESSONS.length - 1;
+  nextBtn.disabled=activeLesson>=LESSONS.length-1;
 }
+
 function renderResources(){
-  resourceList.innerHTML = RESOURCES.map(r => `<div class="resource"><b>${r.title}</b><span class="muted">${r.body}</span></div>`).join('');
+  resourceList.innerHTML=RESOURCES.map(r=>`<div class="resource"><b>${r.title}</b><span class="muted">${r.body}</span></div>`).join('');
 }
-async function loadVideo(course){
-  resetWatchTracker();
-  if(productionAssetId){
-    lessonVideo.pause();
-    videoEmpty.style.display='grid';
-    videoEmpty.innerHTML='<div><strong>Authorizing secure playback</strong><span>Odyssey is checking enrollment and preparing a short-lived private stream.</span></div>';
-    try{
-      const response=await fetch(`/api/student/videos/${encodeURIComponent(productionAssetId)}/playback`,{method:'POST',credentials:'same-origin'});
-      const payload=await response.json();
-      if(!response.ok)throw new Error(payload.error||'Playback could not be authorized.');
-      if(productionHls){productionHls.destroy();productionHls=null}
-      if(window.Hls&&Hls.isSupported()){
-        productionHls=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:90});
-        productionHls.loadSource(payload.playbackUrl);
-        productionHls.attachMedia(lessonVideo);
-      }else if(lessonVideo.canPlayType('application/vnd.apple.mpegurl')){
-        lessonVideo.src=payload.playbackUrl;
-      }else{
-        throw new Error('This browser cannot play secure HLS video.');
-      }
-      videoEmpty.style.display='none';
-      courseTitle.textContent=payload.asset.title;
-      courseMeta.textContent='Private Odyssey stream · '+payload.asset.provider;
-      serverStatus.textContent='Secure playback authorized';
-      updateWatchUi();
-      return;
-    }catch(error){
-      videoEmpty.style.display='grid';
-      videoEmpty.innerHTML=`<div><strong>Playback unavailable</strong><span>${error.message}</span></div>`;
-      updateWatchUi();
-      return;
-    }
-  }
-  const videos = readJSON('odyssey_course_videos', {});
-  const record = videos[courseId]?.[activeLesson] || course.videoUrl || '';
+
+// Real video delivery (signed playback URLs, HLS) is not built yet - the admin dashboard's
+// own readiness checklist confirms this. Rather than pretending with a fake local video URL,
+// this is now an honest placeholder. Lesson tracking, notes, questions, and completion all
+// still work normally in the meantime.
+function loadVideo(){
   lessonVideo.pause();
-  if(record){
-    lessonVideo.src = record;
-    videoEmpty.style.display = 'none';
-  }else{
-    lessonVideo.removeAttribute('src');
-    lessonVideo.load();
-    videoEmpty.style.display = 'grid';
-  }
-  lessonVideo.playbackRate = Number(speedSelect.value || 1);
-  serverStatus.textContent = course.liveServerUrl ? 'Live classroom available' : 'Live server pending';
-  joinClassBtn.disabled = !course.liveServerUrl;
-  updateWatchUi();
+  lessonVideo.removeAttribute('src');
+  lessonVideo.load();
+  videoEmpty.style.display='grid';
+  videoEmpty.innerHTML='<div><strong>Video streaming not connected yet</strong><span>Odyssey has not enabled secure video delivery for this course yet. Lesson tracking, notes, and completion still work normally.</span></div>';
+  serverStatus.textContent='Live server pending';
+  joinClassBtn.disabled=true;
+  resetWatchTracker();
 }
-async function sendProductionProgress(force=false){
-  if(!productionAssetId||!lessonVideo.duration)return;
-  const now=Date.now();
-  if(!force&&now-lastProgressSentAt<15000)return;
-  lastProgressSentAt=now;
-  const percent=Math.min(100,Math.round(lessonVideo.currentTime/lessonVideo.duration*100));
-  try{
-    await fetch(`/api/student/videos/${encodeURIComponent(productionAssetId)}/progress`,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({watchedSeconds:Math.round(lessonVideo.currentTime),percentComplete:percent})});
-  }catch(error){console.warn('Progress sync will retry.',error)}
+
+async function fetchCourseMessages(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('messages')
+    .select('id,subject,body,created_at')
+    .eq('course_id',courseId).eq('sender_id',CURRENT_PROFILE.id)
+    .order('created_at',{ascending:false}).limit(3);
+  if(error){console.error('Could not load messages.',error);return []}
+  return data||[]
 }
-function renderMessages(){
-  const messages = readJSON('odyssey_student_messages', []);
-  const own = messages.filter(m => Number(m.courseId) === courseId).slice(0, 3);
-  messageList.innerHTML = own.length ? own.map(m => `<div class="message"><b>${m.subject}</b><span class="muted">${m.body}</span></div>`).join('') : '<div class="muted">No course questions yet.</div>';
+function renderMessages(msgs){
+  messageList.innerHTML=msgs.length?msgs.map(m=>`<div class="message"><b>${m.subject}</b><span class="muted">${m.body}</span></div>`).join(''):'<div class="muted">No course questions yet.</div>';
 }
+
 function selectLesson(index){
-  localStorage.setItem(noteKey(), lessonNotes.value);
-  activeLesson = index;
-  localStorage.setItem(`odyssey_active_lesson_${courseId}`, activeLesson);
-  loadVideo(getCourse());
+  localStorage.setItem(noteKey(),lessonNotes.value);
+  activeLesson=index;
+  localStorage.setItem(`odyssey_active_lesson_${courseId}`,activeLesson);
+  loadVideo();
   renderLessons();
 }
-function markComplete(options={}){
+
+async function markComplete(options={}){
+  const lesson=LESSONS[activeLesson];
+  if(!lesson)return;
   if(!completionEligible()){
     showToast('Watch the full lesson video to unlock completion');
     updateWatchUi();
     return;
   }
-  const done = getDone();
-  if(!done.includes(activeLesson)){
-    done.push(activeLesson);
-    saveDone(done.sort((a,b) => a - b));
-    syncPortalProgress();
+  if(lesson.done)return;
+  try{
+    const sb=await OdysseySupabase.client();
+    const {data,error}=await sb.rpc('update_lesson_progress',{target_lesson_id:lesson.id,watched_seconds_in:Math.round(watchedSeconds()),mark_completed:true});
+    if(error)throw error;
+    lesson.done=true;
+    if(ENROLLMENT){ENROLLMENT.progress_percent=data.progress_percent;ENROLLMENT.sessions_watched=data.completed_lessons}
     renderLessons();
-    showToast(options.auto ? 'Lesson completed automatically' : 'Lesson marked complete');
+    showToast(options.auto?'Lesson completed automatically':'Lesson marked complete');
+  }catch(error){
+    showToast('Could not save progress: '+(error?.message||error));
   }
 }
-function nextLesson(){
-  if(activeLesson < LESSONS.length - 1) selectLesson(activeLesson + 1);
-}
-function saveNotes(){
-  localStorage.setItem(noteKey(), lessonNotes.value);
-  showToast('Notes saved');
-}
-function sendQuestion(){
-  const body = questionText.value.trim();
+
+function nextLesson(){if(activeLesson<LESSONS.length-1)selectLesson(activeLesson+1)}
+function saveNotes(){localStorage.setItem(noteKey(),lessonNotes.value);showToast('Notes saved')}
+
+async function sendQuestion(){
+  const body=questionText.value.trim();
   if(!body){showToast('Write a question first');return}
-  const course = getCourse();
-  const messages = readJSON('odyssey_student_messages', []);
-  messages.unshift({
-    courseId,
-    to: course.instructor,
-    subject: `${course.title}: ${LESSONS[activeLesson].title}`,
-    body
-  });
-  writeJSON('odyssey_student_messages', messages);
-  questionText.value = '';
-  renderMessages();
-  showToast(T('portal_message_sent'));
+  if(!COURSE?.instructor_id){showToast('Could not find an instructor for this course');return}
+  try{
+    const sb=await OdysseySupabase.client();
+    const {error}=await sb.from('messages').insert({
+      sender_id:CURRENT_PROFILE.id,recipient_id:COURSE.instructor_id,course_id:courseId,
+      subject:`${COURSE.title}: ${LESSONS[activeLesson]?.title||'Lesson question'}`,body
+    });
+    if(error)throw error;
+    questionText.value='';
+    renderMessages(await fetchCourseMessages());
+    showToast(T('portal_message_sent'));
+  }catch(error){showToast('Could not send: '+(error?.message||error))}
 }
-function requestRefund(){
-  const course = getCourse();
-  const requests = readJSON('odyssey_refund_requests', []);
-  requests.unshift({courseId, title: course.title, date: new Date().toISOString()});
-  writeJSON('odyssey_refund_requests', requests);
-  saveEnrolled(getEnrolled().filter(c => Number(c.id) !== courseId));
-  showToast(T('player_refund_requested'));
-  setTimeout(() => location.href = 'student_portal.html', 900);
+
+async function requestRefund(){
+  if(!confirm('Request a refund and cancellation for this course?'))return;
+  try{
+    const sb=await OdysseySupabase.client();
+    const {error}=await sb.from('refund_requests').insert({student_user_id:CURRENT_PROFILE.id,enrollment_id:ENROLLMENT.id,reason:'Student requested cancellation from course player'});
+    if(error)throw error;
+    showToast('Refund request submitted.');
+    setTimeout(()=>location.href='student_portal.html',900);
+  }catch(error){showToast('Could not submit refund request: '+(error?.message||error))}
 }
-completeBtn.addEventListener('click', markComplete);
-nextBtn.addEventListener('click', nextLesson);
-saveNotesBtn.addEventListener('click', saveNotes);
-sendQuestionBtn.addEventListener('click', sendQuestion);
-refundBtn.addEventListener('click', requestRefund);
-speedSelect.addEventListener('change', () => {lessonVideo.playbackRate = Number(speedSelect.value || 1); showToast(`Speed set to ${speedSelect.value}x`)});
-lessonVideo.addEventListener('play',()=>{lastTrackedTime = lessonVideo.currentTime || 0});
-lessonVideo.addEventListener('seeking',()=>{isSeeking = true; lastTrackedTime = lessonVideo.currentTime || 0});
-lessonVideo.addEventListener('seeked',()=>{isSeeking = false; lastTrackedTime = lessonVideo.currentTime || 0; updateWatchUi()});
-lessonVideo.addEventListener('loadedmetadata', resetWatchTracker);
-lessonVideo.addEventListener('timeupdate',()=>{recordWatchTick(false);sendProductionProgress(false)});
-lessonVideo.addEventListener('ended',()=>{recordWatchTick(true);sendProductionProgress(true);if(completionEligible()) markComplete({auto:true})});
-qualitySelect.addEventListener('change', () => showToast(`${qualitySelect.value} quality selected`));
-captionBtn.addEventListener('click', () => showToast('Captions will activate after media processing is connected'));
-joinClassBtn.addEventListener('click', () => {
-  const course = getCourse();
-  if(course.liveServerUrl) location.href = course.liveServerUrl;
-  else showToast('Live class server is not connected yet');
+
+completeBtn.addEventListener('click',()=>markComplete());
+nextBtn.addEventListener('click',nextLesson);
+saveNotesBtn.addEventListener('click',saveNotes);
+sendQuestionBtn.addEventListener('click',sendQuestion);
+refundBtn.addEventListener('click',requestRefund);
+speedSelect.addEventListener('change',()=>{lessonVideo.playbackRate=Number(speedSelect.value||1);showToast(`Speed set to ${speedSelect.value}x`)});
+lessonVideo.addEventListener('play',()=>{lastTrackedTime=lessonVideo.currentTime||0});
+lessonVideo.addEventListener('seeking',()=>{isSeeking=true;lastTrackedTime=lessonVideo.currentTime||0});
+lessonVideo.addEventListener('seeked',()=>{isSeeking=false;lastTrackedTime=lessonVideo.currentTime||0;updateWatchUi()});
+lessonVideo.addEventListener('loadedmetadata',resetWatchTracker);
+lessonVideo.addEventListener('timeupdate',()=>{recordWatchTick(false)});
+lessonVideo.addEventListener('ended',()=>{recordWatchTick(true);if(completionEligible())markComplete({auto:true})});
+qualitySelect.addEventListener('change',()=>showToast(`${qualitySelect.value} quality selected`));
+captionBtn.addEventListener('click',()=>showToast('Captions will activate after media processing is connected'));
+joinClassBtn.addEventListener('click',()=>showToast('Live class server is not connected yet'));
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  const ok=await requireEnrollment();
+  if(!ok)return;
+  renderShell();
 });
-document.addEventListener('DOMContentLoaded', renderShell);
-document.addEventListener('odyssey:languageChanged', renderShell);
+document.addEventListener('odyssey:languageChanged',()=>{if(COURSE)renderShell()});
 </script>
 <script src="assets/odyssey-global-motion.js" defer></script>
 <script src="assets/odyssey-investor-final-polish.js" defer></script>

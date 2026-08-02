@@ -6,39 +6,39 @@
 <title data-i18n="student_portal_title">Odyssey - Student Portal</title>
 <link href="https://fonts.googleapis.com" rel="preconnect" />
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
 <script src="js/supabase-config.js"></script>
 <script src="js/supabase-client.js"></script>
 <style>
 :root{
-  --bg:#eef1f4;--panel:rgba(255,255,255,.82);--panel-strong:#fff;--text:#17202c;--muted:#667085;
-  --line:rgba(23,32,44,.12);--primary:#1d4ed8;--accent:#0f766e;--warm:#d97706;--danger:#dc2626;
-  --soft:#e7eef8;--shadow:0 24px 70px rgba(15,23,42,.12);--radius:18px;--font:Manrope, system-ui, sans-serif;--head:"Newsreader", Georgia, serif;
+  --bg:#F6F4EF;--panel:rgba(255,255,255,.82);--panel-strong:#fff;--text:#141C2B;--muted:#64708A;
+  --line:rgba(20,28,43,.12);--primary:#142C4F;--accent:#0F7A6C;--warm:#C08A3E;--danger:#B23A48;
+  --soft:#EFEDE6;--shadow:0 24px 70px rgba(15,23,42,.12);--radius:18px;--font:Manrope, system-ui, sans-serif;--head:"Newsreader", Georgia, serif;
 }
-[data-theme="dark"]{--bg:#0d1320;--panel:rgba(22,31,46,.86);--panel-strong:#111827;--text:#f8fafc;--muted:#a9b4c5;--line:rgba(255,255,255,.12);--soft:#142033;--shadow:0 26px 80px rgba(0,0,0,.36)}
-[data-scheme="atlas"]{--primary:#1d4ed8;--accent:#0f766e;--warm:#d97706}
-[data-scheme="executive"]{--primary:#334155;--accent:#0f766e;--warm:#b45309}
-[data-scheme="aurora"]{--primary:#5b21b6;--accent:#0891b2;--warm:#db2777}
-[data-scheme="sage"]{--primary:#166534;--accent:#0f766e;--warm:#a16207}
-[data-theme="light"][data-scheme="atlas"]{--bg:#eef5ff;--panel:rgba(255,255,255,.86);--panel-strong:#fff;--text:#10213f;--muted:#5b6b84;--line:rgba(29,78,216,.16);--soft:#e8f1ff}
-[data-theme="light"][data-scheme="executive"]{--bg:#eef0f3;--panel:rgba(255,255,255,.88);--panel-strong:#fff;--text:#111827;--muted:#596477;--line:rgba(15,23,42,.15);--soft:#e7eaf0}
-[data-theme="light"][data-scheme="aurora"]{--bg:#fbf3ff;--panel:rgba(255,255,255,.84);--panel-strong:#fff;--text:#201638;--muted:#6e5c80;--line:rgba(124,58,237,.18);--soft:#f4e8ff}
-[data-theme="light"][data-scheme="sage"]{--bg:#eff8f1;--panel:rgba(255,255,255,.84);--panel-strong:#fff;--text:#10251c;--muted:#5f7068;--line:rgba(22,101,52,.16);--soft:#e5f3ea}
-[data-theme="dark"][data-scheme="atlas"]{--bg:#071326;--panel:rgba(13,25,45,.88);--panel-strong:#0d1b31;--text:#f8fbff;--muted:#a9b8cc;--line:rgba(125,170,255,.17);--soft:#102544}
-[data-theme="dark"][data-scheme="executive"]{--bg:#090d14;--panel:rgba(18,25,37,.9);--panel-strong:#101827;--text:#f8fafc;--muted:#a7b0be;--line:rgba(255,255,255,.13);--soft:#172131}
-[data-theme="dark"][data-scheme="aurora"]{--bg:#120b25;--panel:rgba(28,18,49,.9);--panel-strong:#1d1536;--text:#fbf7ff;--muted:#c4b6d7;--line:rgba(216,180,254,.18);--soft:#281b46}
-[data-theme="dark"][data-scheme="sage"]{--bg:#07170f;--panel:rgba(13,30,23,.9);--panel-strong:#10251c;--text:#f4fff8;--muted:#aec4b7;--line:rgba(74,222,128,.16);--soft:#153326}
+[data-theme="dark"]{--bg:#0B1930;--panel:rgba(19,37,64,.86);--panel-strong:#132540;--text:#F6F4EF;--muted:#A9B4C5;--line:rgba(255,255,255,.12);--soft:#1B2F4D;--shadow:0 26px 80px rgba(0,0,0,.36)}
+[data-scheme="atlas"]{--primary:#142C4F;--accent:#0F7A6C;--warm:#C08A3E}
+[data-scheme="executive"]{--primary:#2B3648;--accent:#0F7A6C;--warm:#A6672B}
+[data-scheme="aurora"]{--primary:#4C3A82;--accent:#1C7A93;--warm:#B23A6B}
+[data-scheme="sage"]{--primary:#1F5C42;--accent:#0F7A6C;--warm:#8A6A1F}
+[data-theme="light"][data-scheme="atlas"]{--bg:#F4F6FA;--panel:rgba(255,255,255,.86);--panel-strong:#fff;--text:#141C2B;--muted:#5B6B84;--line:rgba(20,44,79,.16);--soft:#E9EEF6}
+[data-theme="light"][data-scheme="executive"]{--bg:#EFF0F3;--panel:rgba(255,255,255,.88);--panel-strong:#fff;--text:#1C2330;--muted:#596477;--line:rgba(15,23,42,.15);--soft:#E7EAF0}
+[data-theme="light"][data-scheme="aurora"]{--bg:#F5F1FA;--panel:rgba(255,255,255,.84);--panel-strong:#fff;--text:#241C38;--muted:#6E5C80;--line:rgba(76,58,130,.18);--soft:#EEE7F7}
+[data-theme="light"][data-scheme="sage"]{--bg:#EFF6F1;--panel:rgba(255,255,255,.84);--panel-strong:#fff;--text:#14251C;--muted:#5F7068;--line:rgba(31,92,66,.16);--soft:#E5F0E8}
+[data-theme="dark"][data-scheme="atlas"]{--bg:#0B1930;--panel:rgba(19,37,64,.88);--panel-strong:#132540;--text:#F6F8FB;--muted:#A9B8CC;--line:rgba(192,138,62,.17);--soft:#1B2F4D}
+[data-theme="dark"][data-scheme="executive"]{--bg:#12161E;--panel:rgba(24,29,39,.9);--panel-strong:#1A2029;--text:#F4F5F7;--muted:#A7B0BE;--line:rgba(255,255,255,.13);--soft:#1F2531}
+[data-theme="dark"][data-scheme="aurora"]{--bg:#181229;--panel:rgba(38,28,58,.9);--panel-strong:#241C38;--text:#F6F2FB;--muted:#C4B6D7;--line:rgba(180,150,220,.18);--soft:#2C2140}
+[data-theme="dark"][data-scheme="sage"]{--bg:#0E1D16;--panel:rgba(20,38,29,.9);--panel-strong:#17281F;--text:#F2FAF5;--muted:#AEC4B7;--line:rgba(120,200,160,.16);--soft:#1D3327}
 *{box-sizing:border-box}
 body{
   margin:0;min-height:100vh;font-family:var(--font);color:var(--text);
   background:
-    linear-gradient(135deg,rgba(29,78,216,.10),transparent 34%),
-    radial-gradient(circle at 96% 0%,rgba(15,118,110,.12),transparent 28%),
+    linear-gradient(135deg,rgba(20,44,79,.09),transparent 34%),
+    radial-gradient(circle at 96% 0%,rgba(15,122,108,.10),transparent 28%),
     var(--bg);
 }
 [data-scheme="executive"] body{background:linear-gradient(135deg,rgba(15,23,42,.10),transparent 32%),var(--bg)}
-[data-scheme="aurora"] body{background:linear-gradient(135deg,rgba(91,33,182,.14),transparent 32%),radial-gradient(circle at 90% 10%,rgba(8,145,178,.14),transparent 34%),var(--bg)}
-[data-scheme="sage"] body{background:linear-gradient(135deg,rgba(22,101,52,.13),transparent 32%),radial-gradient(circle at 92% 8%,rgba(161,98,7,.12),transparent 32%),var(--bg)}
+[data-scheme="aurora"] body{background:linear-gradient(135deg,rgba(76,58,130,.12),transparent 32%),radial-gradient(circle at 90% 10%,rgba(28,122,147,.12),transparent 34%),var(--bg)}
+[data-scheme="sage"] body{background:linear-gradient(135deg,rgba(31,92,66,.13),transparent 32%),radial-gradient(circle at 92% 8%,rgba(138,106,31,.12),transparent 32%),var(--bg)}
 button,input,textarea,select{font:inherit}
 .portal{display:grid;grid-template-columns:286px minmax(0,1fr);min-height:100vh}
 .sidebar{position:sticky;top:0;height:100vh;padding:22px 16px;background:rgba(255,255,255,.86);border-right:1px solid var(--line);overflow:auto}
@@ -78,18 +78,14 @@ button,input,textarea,select{font:inherit}
 .list{display:grid;gap:10px}.item{padding:12px 13px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.42);font-size:14px;color:var(--muted)}[data-theme="dark"] .item{background:rgba(255,255,255,.04)}.item b{display:block;color:var(--text);margin-bottom:3px}
 .catalog-connect{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:stretch}.catalog-art{min-height:230px;border-radius:20px;background:linear-gradient(135deg,rgba(29,78,216,.92),rgba(15,118,110,.86)),url("assets/odyssey-global-learning-fast.jpg") center/cover;position:relative;overflow:hidden}.catalog-art::after{content:"Explore 840K+ courses";position:absolute;left:18px;bottom:18px;color:white;font-family:var(--head);font-size:28px;line-height:1.05;max-width:280px}
 .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:var(--panel-strong);color:var(--text)}textarea{min-height:104px;resize:vertical}.check-list{display:grid;gap:10px}.check-list label{display:flex;align-items:center;gap:9px;color:var(--muted);font-weight:700}.check-list input{width:auto}
-.theme-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.theme-card{border:1px solid var(--line);border-radius:18px;padding:13px;cursor:pointer;background:var(--panel-strong);transition:.18s}.theme-card:hover,.theme-card.active{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 18px 42px rgba(15,23,42,.10)}.theme-preview{height:58px;border-radius:14px;margin-bottom:9px}.theme-card[data-scheme="atlas"] .theme-preview{background:linear-gradient(135deg,#1d4ed8,#0f766e,#d97706)}.theme-card[data-scheme="executive"] .theme-preview{background:linear-gradient(135deg,#0f172a,#334155,#b45309)}.theme-card[data-scheme="aurora"] .theme-preview{background:linear-gradient(135deg,#5b21b6,#0891b2,#db2777)}.theme-card[data-scheme="sage"] .theme-preview{background:linear-gradient(135deg,#166534,#0f766e,#a16207)}
+.theme-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.theme-card{border:1px solid var(--line);border-radius:18px;padding:13px;cursor:pointer;background:var(--panel-strong);transition:.18s}.theme-card:hover,.theme-card.active{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 18px 42px rgba(15,23,42,.10)}.theme-preview{height:58px;border-radius:14px;margin-bottom:9px}.theme-card[data-scheme="atlas"] .theme-preview{background:linear-gradient(135deg,#142C4F,#0F7A6C,#C08A3E)}.theme-card[data-scheme="executive"] .theme-preview{background:linear-gradient(135deg,#12161E,#2B3648,#A6672B)}.theme-card[data-scheme="aurora"] .theme-preview{background:linear-gradient(135deg,#4C3A82,#1C7A93,#B23A6B)}.theme-card[data-scheme="sage"] .theme-preview{background:linear-gradient(135deg,#1F5C42,#0F7A6C,#8A6A1F)}
 .mode-toggle{border:1px solid var(--line);background:var(--panel-strong);color:var(--text)}.mode-toggle.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent;box-shadow:0 16px 36px rgba(15,23,42,.14)}
 .footer-note{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 8px}
 .student-photo-frame{width:82px;height:82px;border-radius:50%;margin:0 auto 14px;border:3px solid rgba(255,255,255,.72);background:linear-gradient(135deg,var(--primary),var(--accent),var(--warm));display:grid;place-items:center;overflow:hidden;color:white;font-family:var(--head);font-size:24px;font-weight:900;box-shadow:0 18px 42px rgba(15,23,42,.18)}.student-photo-frame img{width:100%;height:100%;object-fit:cover;display:block}.brand strong{font-size:20px;font-weight:650}.brand-id{display:block;margin-top:2px;font-size:11px;font-weight:760;color:var(--muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.navbtn{font-size:13.5px;font-weight:760}.tools-label,.stat-card span,.field label{font-size:10.5px}.welcome h1{font-size:clamp(28px,3.45vw,46px);font-weight:650;line-height:1.08}.welcome p{font-size:15px}.stat-card strong{font-size:24px;font-weight:650}.card h2{font-size:20px;font-weight:650}.course h3{font-size:16px;font-weight:650}.catalog-art::after{font-size:24px;font-weight:650}.btn{font-size:13.5px;font-weight:760}.item,.desc,.meta{font-size:13px}.theme-card b{font-weight:750}
 @media(max-width:1000px){.portal{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.main{padding:18px}.grid,.catalog-connect,.split{grid-template-columns:1fr}.quick-stats,.theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.course{grid-template-columns:58px 1fr}.emoji{width:58px;height:58px}.actions{grid-column:1/-1;justify-content:flex-start}}
 @media(max-width:620px){.quick-stats,.theme-grid{grid-template-columns:1fr}.welcome{padding:22px}.catalog-art::after{font-size:22px}.navbtn:hover,.navbtn.active{transform:none}}
 </style>
-<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
-<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
-<link rel="stylesheet" href="assets/odyssey-dashboard-minimal.css" />
-<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
-<link rel="stylesheet" href="assets/odyssey-final-request-polish.css" />
+<link rel="stylesheet" href="assets/odyssey-design-system.css" />
 </head>
 <body class="student-portal">
 <div class="portal">
@@ -196,39 +192,182 @@ button,input,textarea,select{font:inherit}
 <script src="js/privacy-client.js"></script>
 <script>
 const TOTAL_SESSIONS=5;
-const fallbackCourses=[{id:8,title:'IELTS Academic Band 8+ Strategy',instructor:'Dr James Hartley',description:'Academic writing, speaking practice, mock tests and feedback.',emoji:'🗣️',field:'Language Exam',level:'Advanced',hours:35,progress:64},{id:24,title:'Machine Learning A-Z: Python & R',instructor:'Prof Chen Wei',description:'Hands-on machine learning projects with practical labs.',emoji:'🤖',field:'Vocational',level:'Intermediate',hours:110,progress:38}];
 function T(k){return window.OdysseyI18n?window.OdysseyI18n.t(k):k}
 function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch(e){return fallback}}
 function latinDigits(value){return String(value ?? '').replace(/[\u06F0-\u06F9]/g,d=>d.charCodeAt(0)-0x06F0).replace(/[\u0660-\u0669]/g,d=>d.charCodeAt(0)-0x0660)}
 function fmt(n){return latinDigits(Number(n||0).toLocaleString('en-US'))}
 function getProfile(){return readJSON('odyssey_student_profile',{})}
-function getCourses(){const c=readJSON('odyssey_enrolled_courses',[]);return c.length?c:fallbackCourses}
-function saveCourses(c){localStorage.setItem('odyssey_enrolled_courses',JSON.stringify(c))}
-function hashDigits(text,len){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619)}let out='';let seed=h>>>0;while(out.length<len){seed=Math.imul(seed^seed>>>13,1597334677)>>>0;out+=String(seed).padStart(10,'0')}return out.slice(0,len)}
-function certFieldDigit(course){const f=String(course.field||'').toLowerCase();if(f.includes('university'))return'1';if(f.includes('k-12')||f.includes('high school'))return'2';if(f.includes('language'))return'3';if(f.includes('vocational'))return'4';if(f.includes('entrance'))return'5';if(f.includes('professional'))return'6';return'9'}
-function certDisciplineDigit(course){const d=[course.discipline,course.subject,course.title].join(' ').toLowerCase();if(/engineering|structural|civil|mechanical|electrical|chemical/.test(d))return'1';if(/human|history|law|philosophy|linguistic|literature|governance|social/.test(d))return'2';if(/medicine|medical|biology|anatomy|health|nursing|pharmacy|dental|veterinary/.test(d))return'3';if(/business|finance|accounting|marketing|management/.test(d))return'4';if(/math|physics|chemistry|science|calculus|statistics/.test(d))return'5';if(/language|ielts|toefl|french|japanese|english/.test(d))return'6';if(/art|music|design|fashion|culinary|creative/.test(d))return'7';if(/ai|data|computer|programming|web|app|technology/.test(d))return'8';return'9'}
-function certificateCode(course){const p=getProfile();const base=[p.email,p.name,course.id,course.title,course.instructor,course.field,course.subject].join('|');return certFieldDigit(course)+certDisciplineDigit(course)+hashDigits(base,10)}
-function certificateSettings(course){const all=readJSON('odyssey_certificate_settings',{});return all[course.id]||{institution:'Odyssey Global Learning',position:'Odyssey Instructor',completion:true,institutionCertified:false,officialRecognition:false,publicVerify:true,midtermPass:course.certificateMidtermPass||70,finalPass:course.certificateFinalPass||70,signature:course.instructor||'Professor',emblem:''}}
-function sessionStats(c){const done=readJSON(`odyssey_done_lessons_${c.id}`,[]);const watched=done.length || Math.round(((c.progress||0)/100)*TOTAL_SESSIONS);const safeWatched=Math.max(0,Math.min(TOTAL_SESSIONS,watched));return{watched:safeWatched,remaining:Math.max(0,TOTAL_SESSIONS-safeWatched),progress:Math.round((safeWatched/TOTAL_SESSIONS)*100)||c.progress||0}}
-function renderCourse(c,detail=false){const s=sessionStats(c);return `<div class="course" onclick="openCourse(${c.id})"><div class="emoji">${c.emoji||'🎓'}</div><div><h3>${c.title}</h3><div class="meta"><span data-i18n="portal_professor">${T('portal_professor')}</span>: ${c.instructor}${c.level?' · '+c.level:''}</div><div class="desc">${c.description||''}</div><div class="progress-wrap"><div class="progress-label"><span>${T('portal_progress_label')}</span><span>${fmt(s.progress)}% ${T('portal_completed')}</span></div><div class="bar"><span style="width:${s.progress}%"></span></div></div><div class="session-row"><span class="session-pill">${fmt(s.watched)} sessions watched</span><span class="session-pill">${fmt(s.remaining)} sessions remaining</span>${detail?`<span class="session-pill">${fmt(TOTAL_SESSIONS)} total sessions</span>`:''}</div></div><div class="actions"><button class="btn" onclick="event.stopPropagation();openCourse(${c.id})">${T('portal_open_course')}</button><button class="btn danger" onclick="event.stopPropagation();cancelEnrollment(${c.id})">${T('portal_cancel_enrollment')}</button></div></div>`}
-function renderStats(courses){const watched=courses.reduce((sum,c)=>sum+sessionStats(c).watched,0);const remaining=courses.reduce((sum,c)=>sum+sessionStats(c).remaining,0);summaryStats.innerHTML=`<div class="stat-card"><span>Enrolled</span><strong>${fmt(courses.length)}</strong></div><div class="stat-card"><span>Sessions watched</span><strong>${fmt(watched)}</strong></div><div class="stat-card"><span>Sessions remaining</span><strong>${fmt(remaining)}</strong></div><div class="stat-card"><span>Certificates</span><strong>${fmt(courses.filter(c=>c.cert!==false).length)}</strong></div>`}
-function renderAll(){const courses=getCourses();renderStats(courses);['courseList','courseList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=courses.length?courses.map(c=>renderCourse(c)).join(''):`<div class="item">${T('portal_empty_courses')}</div>`});const progress=document.getElementById('progressList');if(progress)progress.innerHTML=courses.length?courses.map(c=>renderCourse(c,true)).join(''):`<div class="item">${T('portal_empty_courses')}</div>`;const notifs=[T('portal_sample_notif_1'),T('portal_sample_notif_2'),T('portal_sample_notif_3')];['notifList','notifList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=notifs.map(x=>`<div class="item"><b>Notification</b>${x}</div>`).join('')});const hw=[T('portal_sample_homework_1'),T('portal_sample_homework_2'),T('portal_sample_homework_3')];['homeworkList','homeworkList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=hw.map((x,i)=>`<div class="item"><b>${T('portal_due')}: ${['Friday','Monday','Wednesday'][i]}</b>${x}</div>`).join('')});renderCertificates(courses);renderInbox();renderPurchasedExams()}
-function renderCertificates(courses){if(!window.certificateList)return;const eligible=courses.filter(c=>c.cert!==false&&c.certificate!==false);certificateList.innerHTML=eligible.length?eligible.map(c=>{const s=certificateSettings(c);const code=certificateCode(c);const shareText=encodeURIComponent(`I earned an Odyssey certificate for ${c.title}. Verification code: ${code}`);return `<div class="cert-card"><div class="cert-seal"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><div><h3>${c.title}</h3><div class="meta">${c.instructor} · ${s.institution||'Odyssey Global Learning'}</div><div class="desc">Verification code: <b>${code}</b> · Midterm ${s.midtermPass||70}% · Final ${s.finalPass||70}%</div><div class="share-row"><a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(location.href)}">LinkedIn</a><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/intent/tweet?text=${shareText}">X / Twitter</a><a href="mailto:?subject=Odyssey certificate&body=${shareText}">Email</a></div></div><div class="actions"><button class="btn" onclick="downloadCertificatePDF(${c.id})">Download PDF</button><a class="btn secondary" href="assets/odyssey_sample_certificate.pdf" target="_blank" rel="noopener noreferrer">Preview</a><button class="btn secondary" onclick="shareCertificate(${c.id})">Share</button></div></div>`}).join(''):'<div class="item"><b>No certificates yet</b>Certificates appear after you complete eligible courses and pass the required midterm and final thresholds.</div>'}
-function pdfEscape(text){return String(text||'').replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7E]/g,'')}
-function pdfLine(text,x,y,size=12,font='F1'){return `BT /${font} ${size} Tf ${x} ${y} Td (${pdfEscape(text)}) Tj ET\n`}
-function makeCertificatePDF(course){const p=getProfile();const s=certificateSettings(course);const name=p.name||'Odyssey Student';const code=certificateCode(course);const start=course.startedAt?new Date(course.startedAt):new Date(Date.now()-1000*60*60*24*42);const done=new Date();let stream='';stream+='0.94 0.96 0.98 rg 0 0 842 595 re f\n';stream+='0.09 0.13 0.19 RG 22 22 798 551 re S\n';stream+='0.84 0.64 0.27 RG 36 36 770 523 re S\n';stream+=pdfLine('ODYSSEY',366,528,28,'F2');stream+=pdfLine('Certificate of Completion',300,490,25,'F2');stream+=pdfLine('In God We Trust',366,464,12,'F2');stream+=pdfLine(`Verification Code: ${code}`,620,532,12);stream+=pdfLine('This certifies that',368,420,13);stream+=pdfLine(name,330,386,28,'F2');stream+=pdfLine('has successfully completed',345,354,13);stream+=pdfLine(course.title,240,322,22,'F2');stream+=pdfLine(`Instructor: ${course.instructor || s.signature || 'Odyssey Instructor'}`,104,274,13);stream+=pdfLine(`Instructor position: ${s.position || 'Odyssey Instructor'}`,104,252,13);stream+=pdfLine(`Course start date: ${start.toLocaleDateString()}    Completion date: ${done.toLocaleDateString()}`,104,230,13);stream+=pdfLine(`Institution: ${s.institution || 'Odyssey Global Learning'}`,104,198,13);stream+=pdfLine(s.officialRecognition?'Institution recognition: officially recognized certificate':'Institution recognition: Odyssey completion certificate',104,176,12);stream+=pdfLine(`Required exams: Midterm ${s.midtermPass||70}% threshold and Final ${s.finalPass||70}% threshold`,104,154,12);stream+=pdfLine(s.signature || course.instructor || 'Professor Signature',128,96,22,'F2');stream+=pdfLine('Professor E-signature',134,78,10);stream+=pdfLine(s.institutionCertified?'Recognized institute emblem: certified by listed institution':'Recognized institute emblem: pending / Odyssey emblem',548,96,11);stream+=pdfLine('OD',644,70,28,'F2');const objects=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Kids [3 0 R] /Count 1 >>','<< /Type /Page /Parent 2 0 R /MediaBox [0 0 842 595] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>','<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold >>',`<< /Length ${stream.length} >>\nstream\n${stream}endstream`];let pdf='%PDF-1.4\n';const offsets=[0];objects.forEach((obj,i)=>{offsets[i+1]=pdf.length;pdf+=`${i+1} 0 obj\n${obj}\nendobj\n`});const xref=pdf.length;pdf+=`xref\n0 ${objects.length+1}\n0000000000 65535 f \n`;for(let i=1;i<=objects.length;i++)pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \n';pdf+=`trailer << /Size ${objects.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;return pdf}
-function downloadCertificatePDF(courseId){const course=getCourses().find(c=>String(c.id)===String(courseId));if(!course)return;const a=document.createElement('a');a.href='assets/odyssey_sample_certificate.pdf';a.download=`Odyssey_Certificate_${certificateCode(course)}.pdf`;document.body.appendChild(a);a.click();a.remove()}
-function shareCertificate(courseId){const course=getCourses().find(c=>String(c.id)===String(courseId));if(!course)return;const text=`I earned an Odyssey certificate for ${course.title}. Verification code: ${certificateCode(course)}`;if(navigator.share){navigator.share({title:'Odyssey certificate',text}).catch(()=>{})}else{navigator.clipboard?.writeText(text);alert('Certificate share text copied.')}} 
-function renderInbox(){const msgs=readJSON('odyssey_student_messages',[]);const el=document.getElementById('inboxList');if(!el)return;el.innerHTML=(msgs.length?msgs:[{to:'Dr Priya Sharma',subject:'Welcome',body:T('portal_sample_notif_1')}]).map(m=>`<div class="item"><b>${m.subject}</b><span>${m.to}</span><br>${m.body}</div>`).join('')}
-function purchasedExamKey(){const p=getProfile();return 'odyssey_purchased_tests_'+(p.email||p.name||'guest').toLowerCase().replace(/[^a-z0-9]+/g,'_')}
-function allPurchasedExams(){const personal=readJSON(purchasedExamKey(),[]);const legacy=readJSON('odyssey_purchased_tests',[]);const map=new Map();[...personal,...legacy].forEach(test=>{if(test&&test.id!==undefined)map.set(String(test.id),test)});return [...map.values()]}
-function renderPurchasedExams(){const el=document.getElementById('purchasedExamList');if(!el)return;const exams=allPurchasedExams();el.innerHTML=exams.length?exams.map(test=>`<div class="course"><div class="emoji">${test.icon||'📝'}</div><div><h3>${test.title||'Purchased exam'}</h3><div class="meta">${test.subject||test.field||'Odyssey exam'} · ${test.level||'Practice'} · ${fmt(test.questions||0)} questions · ${fmt(test.time||45)} min</div><div class="desc">${test.description||'Purchased Odyssey test ready for a focused exam room.'}</div><div class="session-row"><span class="session-pill">${test.price&&Number(test.price)>0?'Purchased':'Free access'}</span><span class="session-pill">${test.instructor||'Odyssey instructor'}</span></div></div><div class="actions"><button class="btn" onclick="takePurchasedExam('${String(test.id).replace(/'/g,"\\'")}')">Take exam</button></div></div>`).join(''):'<div class="item"><b>No purchased exams yet</b>Browse the Tests marketplace, buy or start a free exam, and it will appear here.</div>'}
-function takePurchasedExam(id){const test=allPurchasedExams().find(t=>String(t.id)===String(id));if(!test){alert('This exam is no longer available in your purchased list.');return}localStorage.setItem('odyssey_selected_market_test',JSON.stringify(test));location.href='exam_portal.html?marketTest='+encodeURIComponent(test.id)}
-function studentIdFromProfile(p){const raw=[p.email,p.name,p.city,'odyssey'].join('|');const n=raw.split('').reduce((a,c)=>((a*33)+c.charCodeAt(0))%1000000000000,5381);return String(n).padStart(12,'0').slice(0,12)}
-function sendMessage(){const msgs=readJSON('odyssey_student_messages',[]);const p=getProfile();msgs.unshift({to:msgTo.value,subject:msgSubject.value||T('portal_subject'),body:msgBody.value||T('portal_message'),studentName:p.name||profileName.value||'Odyssey Student',studentCountry:p.country||profileCity.value||'Global / Online',studentCity:p.city||profileCity.value||'',studentLevel:p.level||'Active learner',studentGoal:p.goal||profileGoal.value||'Complete my course with confidence',studentTimezone:p.timezone||profileTimezone.value||'Asia / Tehran',studentEmail:p.email||profileEmail.value||'student@example.com',studentPhoto:p.photo||'',studentId:studentIdFromProfile(p),createdAt:new Date().toISOString()});localStorage.setItem('odyssey_student_messages',JSON.stringify(msgs));msgSubject.value='';msgBody.value='';renderInbox();alert(T('portal_message_sent'))}
+
+// ---- Real data, fetched from Supabase every time the portal loads. Enrollment, purchases,
+// and certificates are no longer trusted from localStorage - that was the security hole. ----
+let CURRENT_PROFILE=null;
+let ENROLLMENTS=[];
+let CERTIFICATES=[];
+let PURCHASED_EXAMS=[];
+
+async function requireStudentSession(){
+  try{
+    if(!window.OdysseySupabase?.isConfigured?.()){
+      console.warn('Supabase is not configured - the portal cannot verify who you are.');
+      location.href='auth.html?mode=login&role=student&redirect=student_portal.html';
+      return null;
+    }
+    const session=await OdysseySupabase.session();
+    if(!session){location.href='auth.html?mode=login&role=student&redirect=student_portal.html';return null}
+    const profile=await OdysseySupabase.profile();
+    if(!profile){location.href='auth.html?mode=login&role=student&redirect=student_portal.html';return null}
+    if(profile.role==='instructor'||profile.role==='institution'){location.href='instructor_portal.html';return null}
+    if(profile.role==='admin'||profile.role==='support'){location.href='admin_dashboard.html';return null}
+    return profile;
+  }catch(error){
+    console.error('Could not verify session.',error);
+    location.href='auth.html?mode=login&role=student&redirect=student_portal.html';
+    return null;
+  }
+}
+
+async function fetchEnrollments(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('enrollments')
+    .select('id, status, progress_percent, sessions_watched, enrolled_at, course:course_id(id, title, description, field, level, certificate_enabled, instructor_id, instructor:instructor_id(full_name))')
+    .order('enrolled_at',{ascending:false});
+  if(error){console.error('Could not load enrollments.',error);return []}
+  return (data||[]).filter(e=>e.course).map(e=>({
+    enrollmentId:e.id,id:e.course.id,title:e.course.title,description:e.course.description,
+    field:e.course.field,level:e.course.level,emoji:'🎓',
+    instructor:e.course.instructor?.full_name||'Odyssey instructor',instructorId:e.course.instructor_id,
+    progress:e.progress_percent||0,watched:e.sessions_watched||0,
+    certEnabled:!!e.course.certificate_enabled,status:e.status
+  }))
+}
+
+async function fetchCertificates(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('certificates')
+    .select('id, verification_code, course_title, instructor_name, completed_at, status')
+    .eq('status','issued').order('completed_at',{ascending:false});
+  if(error){console.error('Could not load certificates.',error);return []}
+  return data||[]
+}
+
+async function fetchPurchasedExams(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('exams')
+    .select('id, title, subject, difficulty, exam_type, time_limit_minutes, price_cents, instructor:instructor_id(full_name), payments(status)')
+    .eq('status','published');
+  if(error){console.error('Could not load exams.',error);return []}
+  return (data||[])
+    .filter(e=>e.price_cents===0||(e.payments||[]).some(p=>p.status==='paid'))
+    .map(e=>({id:e.id,title:e.title,subject:e.subject,difficulty:e.difficulty,examType:e.exam_type,time:e.time_limit_minutes,instructor:e.instructor?.full_name||'Odyssey instructor',price:e.price_cents}))
+}
+
+async function fetchMessages(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('messages')
+    .select('id, subject, body, created_at, sender:sender_id(full_name)')
+    .eq('recipient_id',CURRENT_PROFILE.id).order('created_at',{ascending:false}).limit(50);
+  if(error){console.error('Could not load messages.',error);return []}
+  return (data||[]).map(m=>({id:m.id,subject:m.subject,body:m.body,fromName:m.sender?.full_name}))
+}
+
+async function fetchNotifications(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('notifications')
+    .select('id,title,body,created_at').eq('user_id',CURRENT_PROFILE.id)
+    .order('created_at',{ascending:false}).limit(20);
+  if(error){console.error('Could not load notifications.',error);return []}
+  return data||[]
+}
+
+function renderCourse(c,detail=false){
+  const progress=Math.round(c.progress||0);
+  const watched=Math.min(TOTAL_SESSIONS,c.watched||Math.round((progress/100)*TOTAL_SESSIONS));
+  const remaining=Math.max(0,TOTAL_SESSIONS-watched);
+  return `<div class="course" onclick="openCourse('${c.id}')"><div class="emoji">${c.emoji}</div><div><h3>${c.title}</h3><div class="meta"><span data-i18n="portal_professor">${T('portal_professor')}</span>: ${c.instructor}${c.level?' · '+c.level:''}</div><div class="desc">${c.description||''}</div><div class="progress-wrap"><div class="progress-label"><span>${T('portal_progress_label')}</span><span>${fmt(progress)}% ${T('portal_completed')}</span></div><div class="bar"><span style="width:${progress}%"></span></div></div><div class="session-row"><span class="session-pill">${fmt(watched)} sessions watched</span><span class="session-pill">${fmt(remaining)} sessions remaining</span>${detail?`<span class="session-pill">${fmt(TOTAL_SESSIONS)} total sessions</span>`:''}</div></div><div class="actions"><button class="btn" onclick="event.stopPropagation();openCourse('${c.id}')">${T('portal_open_course')}</button><button class="btn danger" onclick="event.stopPropagation();cancelEnrollment('${c.enrollmentId}')">${T('portal_cancel_enrollment')}</button></div></div>`
+}
+
+function renderStats(courses){
+  const watched=courses.reduce((sum,c)=>sum+Math.min(TOTAL_SESSIONS,c.watched||Math.round(((c.progress||0)/100)*TOTAL_SESSIONS)),0);
+  const remaining=courses.reduce((sum,c)=>sum+Math.max(0,TOTAL_SESSIONS-Math.min(TOTAL_SESSIONS,c.watched||Math.round(((c.progress||0)/100)*TOTAL_SESSIONS))),0);
+  summaryStats.innerHTML=`<div class="stat-card"><span>Enrolled</span><strong>${fmt(courses.length)}</strong></div><div class="stat-card"><span>Sessions watched</span><strong>${fmt(watched)}</strong></div><div class="stat-card"><span>Sessions remaining</span><strong>${fmt(remaining)}</strong></div><div class="stat-card"><span>Certificates</span><strong>${fmt(CERTIFICATES.length)}</strong></div>`
+}
+
+function certificateShareText(cert){return `I earned an Odyssey certificate for ${cert.course_title}. Verification code: ${cert.verification_code}`}
+
+function renderCertificates(){
+  if(!window.certificateList)return;
+  certificateList.innerHTML=CERTIFICATES.length?CERTIFICATES.map(cert=>{
+    const shareText=encodeURIComponent(certificateShareText(cert));
+    return `<div class="cert-card"><div class="cert-seal"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><div><h3>${cert.course_title}</h3><div class="meta">${cert.instructor_name||'Odyssey instructor'}</div><div class="desc">Verification code: <b>${cert.verification_code}</b>${cert.completed_at?' · Issued '+new Date(cert.completed_at).toLocaleDateString():''}</div><div class="share-row"><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/intent/tweet?text=${shareText}">X / Twitter</a><a href="mailto:?subject=Odyssey certificate&body=${shareText}">Email</a></div></div><div class="actions"><span class="session-pill">PDF download coming soon</span><button class="btn secondary" onclick="shareCertificate('${cert.id}')">Share</button></div></div>`
+  }).join(''):'<div class="item"><b>No certificates yet</b>Certificates are issued automatically once you finish 100% of an eligible course, and are verified by Odyssey - not generated in your browser.</div>'
+}
+function shareCertificate(certId){
+  const cert=CERTIFICATES.find(c=>String(c.id)===String(certId));if(!cert)return;
+  const text=certificateShareText(cert);
+  if(navigator.share){navigator.share({title:'Odyssey certificate',text}).catch(()=>{})}
+  else{navigator.clipboard?.writeText(text);alert('Certificate details copied.')}
+}
+
+function renderPurchasedExams(){
+  const el=document.getElementById('purchasedExamList');if(!el)return;
+  el.innerHTML=PURCHASED_EXAMS.length?PURCHASED_EXAMS.map(test=>`<div class="course"><div class="emoji">📝</div><div><h3>${test.title}</h3><div class="meta">${test.subject||test.examType||'Odyssey exam'} · ${test.difficulty||'Practice'} · ${fmt(test.time||45)} min</div><div class="session-row"><span class="session-pill">${test.price>0?'Purchased':'Free access'}</span><span class="session-pill">${test.instructor}</span></div></div><div class="actions"><button class="btn" onclick="takePurchasedExam('${test.id}')">Take exam</button></div></div>`).join(''):'<div class="item"><b>No purchased exams yet</b>Browse the Tests marketplace, buy or start a free exam, and it will appear here.</div>'
+}
+function takePurchasedExam(id){location.href='exam_portal.html?exam='+encodeURIComponent(id)}
+
+function renderInbox(msgs){
+  const el=document.getElementById('inboxList');if(!el)return;
+  el.innerHTML=msgs.length?msgs.map(m=>`<div class="item"><b>${m.subject||'(no subject)'}</b><span>${m.fromName||'Odyssey instructor'}</span><br>${m.body||''}</div>`).join(''):'<div class="item"><b>No messages yet</b>Messages from your instructors will appear here.</div>'
+}
+async function sendMessage(){
+  if(!ENROLLMENTS.length){alert('Enroll in a course first so we know which instructor to message.');return}
+  const target=ENROLLMENTS[0];
+  if(!target.instructorId){alert('Could not find an instructor to message for your current courses.');return}
+  try{
+    const sb=await OdysseySupabase.client();
+    const {error}=await sb.from('messages').insert({sender_id:CURRENT_PROFILE.id,recipient_id:target.instructorId,course_id:target.id,subject:msgSubject.value||T('portal_subject'),body:msgBody.value||T('portal_message')});
+    if(error)throw error;
+    msgSubject.value='';msgBody.value='';
+    alert(T('portal_message_sent'))
+  }catch(error){alert('Could not send message: '+(error?.message||error))}
+}
+
+function renderNotifications(notifs){
+  const html=notifs.length?notifs.map(n=>`<div class="item"><b>${n.title||'Notification'}</b>${n.body||''}</div>`).join(''):'<div class="item"><b>All caught up</b>No new notifications right now.</div>';
+  ['notifList','notifList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html})
+}
+
+// Homework isn't backed by a real table yet, so it's clearly labeled as sample content
+// rather than pretending to be real assignment data.
+function renderHomeworkSample(){
+  const hw=[T('portal_sample_homework_1'),T('portal_sample_homework_2'),T('portal_sample_homework_3')];
+  ['homeworkList','homeworkList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=hw.map((x,i)=>`<div class="item"><b>${T('portal_due')}: ${['Friday','Monday','Wednesday'][i]}</b>${x} <i>(sample - homework tracking isn't built yet)</i></div>`).join('')})
+}
+
 function openCourse(id){location.href='course_player.html?course='+encodeURIComponent(id)}
-function cancelEnrollment(id){saveCourses(getCourses().filter(c=>c.id!==id));alert(T('player_refund_requested'));renderAll()}
-function saveProfile(){const p=getProfile();['Name','Email','City','Phone','Timezone','StudyLang','Goal'].forEach(k=>{const el=document.getElementById('profile'+k);if(el)p[k.charAt(0).toLowerCase()+k.slice(1)]=el.value});localStorage.setItem('odyssey_student_profile',JSON.stringify(p));alert(T('portal_profile_saved'))}
+
+async function cancelEnrollment(enrollmentId){
+  if(!confirm('Request a refund and cancellation for this course?'))return;
+  try{
+    const sb=await OdysseySupabase.client();
+    const {error}=await sb.from('refund_requests').insert({student_user_id:CURRENT_PROFILE.id,enrollment_id:enrollmentId,reason:'Student requested cancellation from student portal'});
+    if(error)throw error;
+    alert('Refund request submitted. Our team will review it and follow up.')
+  }catch(error){alert('Could not submit refund request: '+(error?.message||error))}
+}
+
+async function saveProfile(){
+  try{
+    const sb=await OdysseySupabase.client();
+    const updates={full_name:profileName.value,email:profileEmail.value,phone:profilePhone.value,city:profileCity.value,timezone:profileTimezone.value,preferred_language:profileStudyLang.value};
+    const {error}=await sb.from('profiles').update(updates).eq('id',CURRENT_PROFILE.id);
+    if(error)throw error;
+    await sb.from('student_profiles').upsert({user_id:CURRENT_PROFILE.id,learning_goal:profileGoal.value},{onConflict:'user_id'});
+    const p=getProfile();Object.assign(p,{name:profileName.value,email:profileEmail.value,city:profileCity.value,phone:profilePhone.value,timezone:profileTimezone.value,studyLang:profileStudyLang.value,goal:profileGoal.value});
+    localStorage.setItem('odyssey_student_profile',JSON.stringify(p));
+    alert(T('portal_profile_saved'))
+  }catch(error){alert('Could not save profile: '+(error?.message||error))}
+}
+
 function renderStudentPhoto(p){const frame=document.getElementById('studentPhotoFrame');if(!frame)return;const name=p?.name||p?.full_name||'Odyssey Student';if(p?.photo){frame.innerHTML=`<img src="${p.photo}" alt="${name} profile photo">`}else{frame.textContent=name.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'OS'}}
 profilePhoto.addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;const validTypes=['image/jpeg','image/png'];if(!validTypes.includes(file.type)||!/\.(jpe?g|png)$/i.test(file.name)){profilePhotoStatus.textContent='Please upload a JPG or PNG image only.';profilePhoto.value='';return}if(file.size>2*1024*1024){profilePhotoStatus.textContent='Profile photo must be 2 MB or smaller.';profilePhoto.value='';return}const p=getProfile();profilePhotoStatus.textContent='Uploading profile photo...';try{const object=await OdysseyStorage.uploadFile(file,{purpose:'profile_image',publicRead:!profilePrivate.checked});p.photoStorageObjectId=object.id;profilePhotoStatus.textContent='Profile photo stored securely.'}catch(error){profilePhotoStatus.textContent='Photo saved in this browser. Backend storage will sync when connected.'}const reader=new FileReader();reader.onload=()=>{p.photo=reader.result;localStorage.setItem('odyssey_student_profile',JSON.stringify(p));renderStudentPhoto(p)};reader.readAsDataURL(file)})
 function saveCookies(){localStorage.setItem('odyssey_cookie_preferences',JSON.stringify({analytics:ckAnalytics.checked,functional:ckFunctional.checked,emailDigest:emailDigest.checked,liveReminder:liveReminder.checked,profilePrivate:profilePrivate.checked}));alert(T('portal_profile_saved'))}
@@ -239,11 +378,45 @@ function refreshAppearanceControls(){
 function setPortalMode(mode){document.documentElement.dataset.theme=mode;document.body.dataset.theme=mode;localStorage.setItem('odyssey_portal_mode',mode);refreshAppearanceControls()}
 function connectCatalog(){const q=new URLSearchParams();if(catalogPath.value)q.set('field',catalogPath.value);if(catalogCountry.value)q.set('country',catalogCountry.value);location.href='learnworld_catalog.html'+(q.toString()?'?'+q.toString():'')}
 function applyStudentProfile(p){if(!p)return;profileName.value=p.name||p.full_name||'Odyssey Student';profileEmail.value=p.email||'student@example.com';profileCity.value=p.city||'';profilePhone.value=p.phone||'';profileTimezone.value=p.timezone||'Asia / Tehran';profileStudyLang.value=p.studyLang||p.preferred_language||'English';profileGoal.value=p.goal||p.learning_goal||'';if(window.studentSignedName)studentSignedName.textContent=p.name||p.full_name||p.email||'Signed in learner';renderStudentPhoto(p)}
-async function hydrateStudentProfileFromSupabase(){try{if(!window.OdysseySupabase?.isConfigured?.())return;const p=await OdysseySupabase.profile();if(!p)return;const existing=getProfile();const merged={...existing,name:p.full_name||existing.name,email:p.email||existing.email,country:p.country||existing.country,city:p.city||existing.city,studyLang:p.preferred_language||existing.studyLang};localStorage.setItem('odyssey_student_profile',JSON.stringify(merged));applyStudentProfile(merged)}catch(error){console.warn('Could not refresh student profile from Supabase.',error)}}
 async function logoutPortal(){try{if(window.OdysseySupabase?.isConfigured?.())await OdysseySupabase.signOut()}catch(error){}localStorage.removeItem('odyssey_demo_logged_in');location.href='auth.html?mode=login'}
 document.querySelectorAll('.navbtn[data-target]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(btn.dataset.target).classList.add('active')}))
 document.querySelectorAll('.theme-card').forEach(card=>card.addEventListener('click',()=>{document.documentElement.dataset.scheme=card.dataset.scheme;document.body.dataset.scheme=card.dataset.scheme;localStorage.setItem('odyssey_portal_scheme',card.dataset.scheme);refreshAppearanceControls()}))
-document.addEventListener('DOMContentLoaded',()=>{const mode=localStorage.getItem('odyssey_portal_mode')||'light';const scheme=localStorage.getItem('odyssey_portal_scheme')||'atlas';document.documentElement.dataset.theme=mode;document.body.dataset.theme=mode;document.documentElement.dataset.scheme=scheme;document.body.dataset.scheme=scheme;refreshAppearanceControls();applyStudentProfile(getProfile());renderAll();hydrateStudentProfileFromSupabase();OdysseyPrivacy.refresh('privacyDeletionStatus');document.addEventListener('odyssey:languageChanged',renderAll)})
+
+async function renderAll(){
+  ENROLLMENTS=await fetchEnrollments();
+  CERTIFICATES=await fetchCertificates();
+  PURCHASED_EXAMS=await fetchPurchasedExams();
+  const messages=await fetchMessages();
+  const notifs=await fetchNotifications();
+
+  renderStats(ENROLLMENTS);
+  ['courseList','courseList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=ENROLLMENTS.length?ENROLLMENTS.map(c=>renderCourse(c)).join(''):`<div class="item">${T('portal_empty_courses')}</div>`});
+  const progress=document.getElementById('progressList');
+  if(progress)progress.innerHTML=ENROLLMENTS.length?ENROLLMENTS.map(c=>renderCourse(c,true)).join(''):`<div class="item">${T('portal_empty_courses')}</div>`;
+  renderNotifications(notifs);
+  renderHomeworkSample();
+  renderCertificates();
+  renderInbox(messages);
+  renderPurchasedExams();
+  const msgToEl=document.getElementById('msgTo');
+  if(msgToEl&&ENROLLMENTS[0])msgToEl.value=ENROLLMENTS[0].instructor;
+}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  const mode=localStorage.getItem('odyssey_portal_mode')||'light';
+  const scheme=localStorage.getItem('odyssey_portal_scheme')||'atlas';
+  document.documentElement.dataset.theme=mode;document.body.dataset.theme=mode;
+  document.documentElement.dataset.scheme=scheme;document.body.dataset.scheme=scheme;
+  refreshAppearanceControls();
+
+  CURRENT_PROFILE=await requireStudentSession();
+  if(!CURRENT_PROFILE)return;
+
+  applyStudentProfile({...getProfile(),...CURRENT_PROFILE,name:CURRENT_PROFILE.full_name,studyLang:CURRENT_PROFILE.preferred_language});
+  await renderAll();
+  OdysseyPrivacy.refresh('privacyDeletionStatus');
+  document.addEventListener('odyssey:languageChanged',renderAll)
+})
 </script>
 <script src="assets/odyssey-global-motion.js" defer></script>
 <script src="assets/odyssey-dashboard-refinement.js" defer></script>

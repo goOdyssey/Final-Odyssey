@@ -6,7 +6,8 @@
 <title>Odyssey - Admin Portal</title>
 <link href="https://fonts.googleapis.com" rel="preconnect" />
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/odyssey-design-system.css" />
 <script src="js/supabase-config.js"></script>
 <script src="js/supabase-client.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -16,8 +17,8 @@
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 :root{
-  --bg:#eef1f5;--panel:#ffffff;--panel-soft:rgba(255,255,255,.7);--text:#141c2b;--muted:#66748a;--line:rgba(20,28,43,.11);
-  --primary:#16305c;--accent:#0f766e;--warn:#c2761f;--danger:#c23434;--success:#16855a;
+  --bg:#F6F4EF;--panel:#ffffff;--panel-soft:rgba(255,255,255,.7);--text:#141C2B;--muted:#64708A;--line:rgba(20,28,43,.11);
+  --primary:#142C4F;--accent:#0F7A6C;--warn:#C2761F;--danger:#B23A48;--success:#16855A;--gold:#C08A3E;
   --shadow:0 20px 60px rgba(15,23,42,.10);--radius:16px;--font:Manrope,system-ui,sans-serif;--head:"Newsreader",Georgia,serif;
 }
 *{box-sizing:border-box}
@@ -344,19 +345,19 @@ function renderOverview(){
   const monthly=monthlyRevenue(COLLECTIONS.payments);
   drawChart('revenueChart','bar',{
     labels:monthly.labels,
-    datasets:[{label:'Revenue',data:monthly.values,backgroundColor:'#16305c',borderRadius:6}]
+    datasets:[{label:'Revenue',data:monthly.values,backgroundColor:'#142C4F',borderRadius:6}]
   },{plugins:{legend:{display:false}}});
 
   drawChart('roleChart','doughnut',{
     labels:['Students','Instructors','Admins'],
-    datasets:[{data:[m.students,m.instructors,m.admins],backgroundColor:['#16305c','#0f766e','#c2761f']}]
+    datasets:[{data:[m.students,m.instructors,m.admins],backgroundColor:['#142C4F','#0F7A6C','#C08A3E']}]
   },{});
 
   const statusCounts={};
   (COLLECTIONS.courses||[]).forEach(c=>{statusCounts[c.status]=(statusCounts[c.status]||0)+1});
   drawChart('courseChart','bar',{
     labels:Object.keys(statusCounts),
-    datasets:[{label:'Courses',data:Object.values(statusCounts),backgroundColor:'#0f766e',borderRadius:6}]
+    datasets:[{label:'Courses',data:Object.values(statusCounts),backgroundColor:'#0F7A6C',borderRadius:6}]
   },{indexAxis:'y',plugins:{legend:{display:false}}});
 }
 function monthlyRevenue(payments){
@@ -482,8 +483,8 @@ function renderAccounting(){
   drawChart('accountingChart','bar',{
     labels:revByMonth.labels,
     datasets:[
-      {label:'Revenue',data:revByMonth.values,backgroundColor:'#16305c',borderRadius:6},
-      {label:'Instructor payouts',data:revByMonth.labels.map(l=>payoutMap[l]||0),backgroundColor:'#0f766e',borderRadius:6}
+      {label:'Revenue',data:revByMonth.values,backgroundColor:'#142C4F',borderRadius:6},
+      {label:'Instructor payouts',data:revByMonth.labels.map(l=>payoutMap[l]||0),backgroundColor:'#0F7A6C',borderRadius:6}
     ]
   },{});
 
