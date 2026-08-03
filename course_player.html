@@ -19,7 +19,7 @@
 *{box-sizing:border-box}
 body{
   margin:0;min-height:100vh;background:
-    linear-gradient(135deg,rgba(29,78,216,.10),transparent 32%),
+    linear-gradient(135deg,rgba(20,44,79,.10),transparent 32%),
     radial-gradient(circle at 100% 12%,rgba(15,118,110,.12),transparent 30%),
     var(--bg);
   color:var(--text);font-family:var(--font);
@@ -47,7 +47,7 @@ button,input,textarea{font:inherit}
 .player-card label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:rgba(255,255,255,.7);margin-bottom:6px}
 .player-card select,.player-card input{width:100%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.14);color:white;border-radius:12px;padding:10px}
 .player-card select option{color:#17202c}
-.server-state{display:flex;align-items:center;gap:8px;font-weight:900}.server-dot{width:10px;height:10px;border-radius:999px;background:#f59e0b;box-shadow:0 0 0 6px rgba(245,158,11,.15)}
+.server-state{display:flex;align-items:center;gap:8px;font-weight:900}.server-dot{width:10px;height:10px;border-radius:999px;background:#f59e0b;box-shadow:0 0 0 6px rgba(192,138,62,.15)}
 .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:900;color:rgba(255,255,255,.72)}
 h1,h2,h3{font-family:var(--head)}
 h1{font-size:clamp(30px,5vw,56px);line-height:1.02;margin:10px 0 8px}
@@ -57,14 +57,14 @@ h1{font-size:clamp(30px,5vw,56px);line-height:1.02;margin:10px 0 8px}
   border:0;border-radius:14px;padding:11px 14px;font-weight:900;cursor:pointer;background:var(--purple);
   color:white;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;
 }
-.btn.secondary{background:rgba(29,78,216,.10);color:var(--purple)}
+.btn.secondary{background:rgba(20,44,79,.10);color:var(--purple)}
 .btn.danger{background:rgba(220,38,38,.12);color:var(--danger)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .content-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
 .card{padding:18px}
 .card h2{margin:0 0 14px;font-size:22px}
 .lesson{width:100%;display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;text-align:left;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.38);padding:12px;margin-bottom:10px;cursor:pointer;color:var(--text)}
-.lesson.active{border-color:rgba(29,78,216,.45);background:rgba(29,78,216,.10)}
+.lesson.active{border-color:rgba(20,44,79,.45);background:rgba(20,44,79,.10)}
 .lesson.done .num{background:var(--green)}
 .num{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--pink));display:grid;place-items:center;color:white;font-weight:900}
 .lesson-title{font-weight:900}
@@ -75,7 +75,7 @@ h1{font-size:clamp(30px,5vw,56px);line-height:1.02;margin:10px 0 8px}
 .muted{color:var(--muted)}
 .progress-box{padding:18px;margin-bottom:18px}
 .progress-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-weight:900}
-.bar{height:12px;background:rgba(29,78,216,.13);border-radius:999px;overflow:hidden}
+.bar{height:12px;background:rgba(20,44,79,.13);border-radius:999px;overflow:hidden}
 .bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--pink),var(--gold));border-radius:999px;transition:width .25s}
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .stat{padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.32)}
@@ -90,8 +90,9 @@ textarea{min-height:120px;resize:vertical}
 @media(max-width:940px){.layout,.content-grid,.stage{grid-template-columns:1fr}.stage{min-height:320px}.shell{padding:16px}.video-shell video,.video-shell{min-height:260px}}
 </style>
 <link rel="stylesheet" href="assets/odyssey-design-system.css" />
+<script defer src="assets/odyssey-scroll-reveal.js"></script>
 </head>
-<body>
+<body><div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
 <div class="shell">
   <div class="topbar">
     <a class="back" href="student_portal.html"><span aria-hidden="true">←</span><span data-i18n="player_back">Back to student portal</span></a>
@@ -379,7 +380,8 @@ function renderLessons(){
 }
 
 function renderResources(){
-  resourceList.innerHTML=RESOURCES.map(r=>`<div class="resource"><b>${r.title}</b><span class="muted">${r.body}</span></div>`).join('');
+  resourceList.innerHTML=RESOURCES.map((r,i)=>`<div class="resource" data-reveal="fade" data-reveal-delay="${i*50}"><b>${r.title}</b><span class="muted">${r.body}</span></div>`).join('');
+  window.OdysseyReveal?.scan();
 }
 
 // Real video delivery (signed playback URLs, HLS) is not built yet - the admin dashboard's

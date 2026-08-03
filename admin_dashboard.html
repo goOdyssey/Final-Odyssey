@@ -8,6 +8,7 @@
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/odyssey-design-system.css" />
+<script defer src="assets/odyssey-scroll-reveal.js"></script>
 <script src="js/supabase-config.js"></script>
 <script src="js/supabase-client.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -67,7 +68,7 @@ tbody tr:hover{background:#f7f9fc}
 .badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800;text-transform:capitalize}
 .badge.active,.badge.published,.badge.paid,.badge.issued,.badge.verified{background:rgba(22,133,90,.12);color:var(--success)}
 .badge.pending,.badge.draft,.badge.review,.badge.processing{background:rgba(194,118,31,.14);color:var(--warn)}
-.badge.suspended,.badge.archived,.badge.failed,.badge.revoked,.badge.deleted{background:rgba(194,52,52,.13);color:var(--danger)}
+.badge.suspended,.badge.archived,.badge.failed,.badge.revoked,.badge.deleted{background:rgba(178,58,72,.13);color:var(--danger)}
 .row-actions{display:flex;gap:6px;flex-wrap:wrap}
 .empty{padding:30px;text-align:center;color:var(--muted);font-weight:600}
 .modal-overlay{position:fixed;inset:0;background:rgba(10,15,25,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
@@ -81,7 +82,7 @@ tbody tr:hover{background:#f7f9fc}
 .gate{display:flex;min-height:100vh;align-items:center;justify-content:center;color:var(--muted);font-weight:700}
 </style>
 </head>
-<body>
+<body><div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
 
 <div class="gate" id="gate">Checking your admin session...</div>
 
@@ -340,7 +341,8 @@ function renderOverview(){
     ['Total users',m.totalUsers],['Students',m.students],['Instructors',m.instructors],
     ['Active users',m.activeUsers],['Published courses',m.publishedCourses],['Enrollments',m.enrollments],
     ['Certificates issued',m.certificatesIssued],['Total revenue',money(m.revenueCents)]
-  ].map(([label,val])=>`<div class="kpi"><span>${label}</span><strong>${typeof val==='number'&&label!=='Total revenue'?val.toLocaleString('en-US'):val}</strong></div>`).join('');
+  ].map(([label,val],i)=>`<div class="kpi" data-reveal="rise" data-reveal-delay="${i*40}"><span>${label}</span><strong>${typeof val==='number'&&label!=='Total revenue'?val.toLocaleString('en-US'):val}</strong></div>`).join('');
+  window.OdysseyReveal?.scan();
 
   const monthly=monthlyRevenue(COLLECTIONS.payments);
   drawChart('revenueChart','bar',{
@@ -472,7 +474,8 @@ function renderAccounting(){
   accountingKpis.innerHTML=[
     ['Total revenue',money(totalRevenue)],['Paid out to instructors',money(paidPayouts)],
     ['Pending payouts',money(pendingPayouts)],['Estimated platform fee',money(Math.max(0,platformFee))]
-  ].map(([label,val])=>`<div class="kpi"><span>${label}</span><strong>${val}</strong></div>`).join('');
+  ].map(([label,val],i)=>`<div class="kpi" data-reveal="rise" data-reveal-delay="${i*40}"><span>${label}</span><strong>${val}</strong></div>`).join('');
+  window.OdysseyReveal?.scan();
 
   const revByMonth=monthlyRevenue(COLLECTIONS.payments);
   const payoutMap={};

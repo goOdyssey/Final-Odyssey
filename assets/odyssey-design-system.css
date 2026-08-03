@@ -87,6 +87,57 @@
   font-feature-settings:"tnum" 1;
 }
 
+/* ============================================================================
+   AMBIENT BACKGROUND - the "not plain" fix. Three soft, blurred, slowly
+   drifting color orbs sitting behind all page content. Pure CSS animation
+   (transform + opacity only, GPU-composited), so it runs with zero JS
+   dependency and costs nothing on the main thread. Add this markup once,
+   right after <body>, on any page that should have it:
+
+     <div class="od-ambient" aria-hidden="true">
+       <span class="od-orb od-orb-1"></span>
+       <span class="od-orb od-orb-2"></span>
+       <span class="od-orb od-orb-3"></span>
+     </div>
+
+   If a page sets --od-scroll (odyssey-scroll-reveal.js does this cheaply,
+   throttled via requestAnimationFrame), the orbs also drift slightly with
+   scroll position for a subtle sense of depth - entirely optional, the
+   orbs look complete without it.
+   ============================================================================ */
+.od-ambient{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
+.od-orb{
+  position:absolute;border-radius:50%;filter:blur(90px);opacity:.34;
+  will-change:transform;transform:translateZ(0);
+}
+.od-orb-1{width:52vw;height:52vw;max-width:640px;max-height:640px;top:-14vw;left:-10vw;
+  background:radial-gradient(circle,var(--od-navy,#142C4F),transparent 70%);
+  animation:od-drift-1 26s ease-in-out infinite;}
+.od-orb-2{width:40vw;height:40vw;max-width:520px;max-height:520px;top:38vh;right:-12vw;
+  background:radial-gradient(circle,var(--od-teal,#0F7A6C),transparent 70%);
+  animation:od-drift-2 32s ease-in-out infinite;}
+.od-orb-3{width:34vw;height:34vw;max-width:440px;max-height:440px;bottom:-10vw;left:22vw;
+  background:radial-gradient(circle,var(--od-gold,#C08A3E),transparent 70%);
+  animation:od-drift-3 22s ease-in-out infinite;}
+@keyframes od-drift-1{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(4vw,3vh) scale(1.08)}
+}
+@keyframes od-drift-2{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-3vw,-4vh) scale(1.1)}
+}
+@keyframes od-drift-3{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(3vw,-3vh) scale(1.06)}
+}
+.od-ambient[data-parallax] .od-orb-1{transform:translateY(calc(var(--od-scroll,0) * -0.06px))}
+.od-ambient[data-parallax] .od-orb-2{transform:translateY(calc(var(--od-scroll,0) * 0.05px))}
+.od-ambient[data-parallax] .od-orb-3{transform:translateY(calc(var(--od-scroll,0) * -0.04px))}
+@media (prefers-reduced-motion: reduce){
+  .od-orb{animation:none !important}
+}
+
 /* ---- Card polish: a slightly warmer, more considered shadow/radius than
    the flat defaults, applied through the existing .card/.panel classes
    already used across the portals - no markup changes required. ---- */
@@ -98,3 +149,39 @@
     box-shadow:0 26px 70px rgba(15,23,42,.14);
   }
 }
+
+/* ============================================================================
+   SCROLL REVEAL - lightweight, GPU-only, no layout thrash, fail-safe.
+   Add data-reveal to any element (optionally data-reveal="rise|fade|tilt"
+   and data-reveal-delay="80" in ms). Only opacity/transform are animated,
+   so the browser compositor handles it without touching layout.
+
+   IMPORTANT: elements are NOT hidden by default. They only become hidden
+   once odyssey-scroll-reveal.js has actually loaded and confirmed it's
+   running (it adds a "reveal-ready" class to <html>). If that script is
+   ever missing, blocked, or fails to load, content simply stays visible -
+   it can never be the reason text disappears. This is progressive
+   enhancement, not a dependency.
+   ============================================================================ */
+.reveal-ready [data-reveal],.reveal-ready .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1);will-change:opacity,transform}
+.reveal-ready [data-reveal="fade"]{transform:none}
+.reveal-ready [data-reveal="tilt"]{transform:perspective(800px) rotateX(6deg) translateY(22px)}
+[data-reveal].od-in,.reveal.od-in{opacity:1 !important;transform:none !important}
+@media (prefers-reduced-motion: reduce){
+  [data-reveal],.reveal{opacity:1 !important;transform:none !important;transition:none !important}
+}
+
+/* ---- Concept card: the small square tiles used for course-browser subject
+   cards. Organic icon on a soft gradient field, gentle lift on hover. ---- */
+.od-concept-card{
+  display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:14px;
+  background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(255,255,255,.6));
+  border:1px solid var(--od-line);box-shadow:0 14px 34px rgba(15,23,42,.08);
+  transition:transform .25s ease, box-shadow .25s ease;cursor:pointer;
+}
+@media (hover:hover){
+  .od-concept-card:hover{transform:translateY(-4px) scale(1.015);box-shadow:0 22px 50px rgba(15,23,42,.14)}
+}
+.od-concept-card svg{width:100%;height:auto;display:block}
+.od-concept-card h4{margin:2px 0 0;font-family:var(--od-font-display);font-size:15px}
+.od-concept-card p{margin:0;color:var(--od-muted);font-size:12.5px;line-height:1.4}
