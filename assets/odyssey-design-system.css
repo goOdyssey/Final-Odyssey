@@ -36,6 +36,13 @@
   --od-font-mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
 }
 
+/* Prevents the browser from propagating body's background to paint the page
+   canvas as a separate layer that sits behind negative-z-index elements
+   (like .od-ambient below) - a real bug that was making the ambient
+   background orbs invisible. Uses var(--bg) with a safe fallback so this
+   correctly tracks light/dark theme switching on pages that have it. */
+html{background:var(--bg, #F6F4EF)}
+
 /* ---- Signature: the "route" divider. Odyssey is a journey between two
    points - a dashed path with a waypoint dot is the one recurring motif
    used sparingly between major sections, never as blanket decoration. ---- */
@@ -107,7 +114,7 @@
    ============================================================================ */
 .od-ambient{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
 .od-orb{
-  position:absolute;border-radius:50%;filter:blur(90px);opacity:.34;
+  position:absolute;border-radius:50%;filter:blur(90px);opacity:.42;
   will-change:transform;transform:translateZ(0);
 }
 .od-orb-1{width:52vw;height:52vw;max-width:640px;max-height:640px;top:-14vw;left:-10vw;

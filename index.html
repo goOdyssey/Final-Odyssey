@@ -704,6 +704,61 @@ body::after{position:absolute!important;opacity:.26!important;transform:none!imp
   .odyssey-hero-visual{transform:none!important}
 }
 </style>
+<style id="odyssey-final-authoritative-fixes">
+/* This block intentionally loads last so it wins any remaining conflicts
+   with earlier layered !important rules elsewhere in this file - rather
+   than hunting down every scattered override, these are the definitive,
+   final answers for each element listed. */
+
+/* FIX 1: html has no background of its own, so the browser was propagating
+   body's background to paint the page canvas - a special layer that sits
+   BEHIND even negative-z-index elements. This is why .od-ambient's orbs
+   were invisible: they were rendering behind the page's own background.
+   Giving html its own background stops the propagation. */
+html{background:#F6F4EF}
+
+/* FIX 2: restore the 3D floating glass tiles in the hero. An earlier patch
+   (line ~456) forced transform:none on .odyssey-glass-tile to fix an
+   unrelated bug, and nothing after it ever restored the actual transform
+   (only transform-style got restored later, which alone does nothing) -
+   so the tiles have been sitting flattened/invisible this whole time. */
+.odyssey-3d-orbit{perspective:1200px;transform-style:preserve-3d}
+.odyssey-glass-tile{transform:translate3d(0,0,90px) rotateX(12deg) rotateY(-18deg) !important;transform-style:preserve-3d !important;opacity:1 !important}
+.odyssey-glass-tile:nth-child(1){transform:translate3d(18px,-14px,90px) rotateX(14deg) rotateY(-18deg) !important}
+.odyssey-glass-tile:nth-child(2){transform:translate3d(-22px,10px,120px) rotateX(16deg) rotateY(16deg) !important}
+.odyssey-glass-tile:nth-child(3){transform:translate3d(14px,18px,150px) rotateX(18deg) rotateY(-10deg) !important}
+@media(hover:hover){
+  .odyssey-3d-orbit:hover .odyssey-glass-tile{transition:transform .4s ease}
+}
+
+/* FIX 3: the moving strip (ticker) below the hero - was nearly-transparent
+   white background with white text, invisible against the page's light
+   background. Bold, legible gradient instead. */
+.ticker{background:linear-gradient(90deg,#142C4F,#0F7A6C,#2B3648,#A6672B) !important}
+.ticker-track span{color:#ffffff !important;opacity:1 !important;font-weight:700}
+
+/* FIX 4: "Entrance exams, language certifications..." paragraph sits inside
+   the dark .regions section (navy/teal/gold gradient background) but had
+   been left at a leftover low-opacity value from an earlier design pass. */
+.regions .section-body{color:rgba(255,255,255,.9) !important}
+
+/* DECORATIVE: dashed "route" dividers between major sections - ties to the
+   Odyssey journey theme, used sparingly. Also a soft dot-grid texture layer
+   behind the categories section so it reads as designed, not flat. */
+.categories{position:relative}
+.categories::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(rgba(20,44,79,.14) 1.4px, transparent 1.4px);
+  background-size:26px 26px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 20%, black, transparent);
+}
+.section-tag{position:relative}
+.section-tag::after{
+  content:"";display:block;width:64px;height:2px;margin:10px auto 0;
+  background-image:linear-gradient(90deg,var(--od-gold,#C08A3E) 50%,transparent 50%);
+  background-size:8px 2px;background-repeat:repeat-x;opacity:.7;
+}
+</style>
 </head>
 <body><div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
 <!-- NAV -->
