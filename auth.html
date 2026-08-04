@@ -808,7 +808,7 @@ html[dir="rtl"] nav .i18n-dropdown{
 <div class="form-title" data-i18n="auto_auth_welcome_back_f40a9a0e">Welcome back! 👋</div>
 <div class="form-sub" data-i18n="auto_auth_log_in_to_your_odyssey_account_fe2ee38a" style="margin-bottom:22px">Log in to your Odyssey account.</div>
 <div class="login-form">
-<div class="login-role-title">Log in as</div><div class="login-role-selector" role="radiogroup" aria-label="Choose login role"><button type="button" class="login-role-card active" id="loginRoleStudent" onclick="selectLoginRole('student')"><b>🎒 Student</b><span>Learning dashboard and enrolled courses</span></button><button type="button" class="login-role-card" id="loginRoleInstructor" onclick="selectLoginRole('instructor')"><b>🧑‍🏫 Instructor</b><span>Teaching studio, courses, and payouts</span></button><button type="button" class="login-role-card" id="loginRoleAdmin" onclick="selectLoginRole('admin')"><b>🛡 Admin</b><span>Operations, users, courses, and payments</span></button></div>
+<div class="login-role-title">Log in as</div><div class="login-role-selector" role="radiogroup" aria-label="Choose login role"><button type="button" class="login-role-card active" id="loginRoleStudent" onclick="selectLoginRole('student')"><b>🎒 Student</b><span>Learning dashboard and enrolled courses</span></button><button type="button" class="login-role-card" id="loginRoleInstructor" onclick="selectLoginRole('instructor')"><b>🧑‍🏫 Instructor</b><span>Teaching studio, courses, and payouts</span></button></div>
 <div class="fg"><label class="fl"><span data-i18n="auto_auth_email_address_b357b524">Email address</span><span class="req">*</span></label><input class="fi" data-i18n-placeholder="ph_email" id="l_email" placeholder="you@example.com" type="email"/></div>
 <div class="fg"><label class="fl"><span data-i18n="auto_auth_password_dc647eb6">Password</span><span class="req">*</span></label>
 <div class="pw-wrap"><input class="fi" data-i18n-placeholder="ph_login_password" id="l_pw" placeholder="Your password" type="password"/><button class="pw-toggle" onclick="togglePw('l_pw',this)" type="button">👁</button></div>
@@ -1044,12 +1044,11 @@ function populateCountrySelects(){
   });
 }
 function selectLoginRole(role){
-  loginRole=['student','instructor','admin'].includes(role)?role:'student';
+  loginRole=['student','instructor'].includes(role)?role:'student';
   document.getElementById('loginRoleStudent')?.classList.toggle('active',loginRole==='student');
   document.getElementById('loginRoleInstructor')?.classList.toggle('active',loginRole==='instructor');
-  document.getElementById('loginRoleAdmin')?.classList.toggle('active',loginRole==='admin');
   const input=document.getElementById('l_email');
-  if(input) input.placeholder=loginRole==='admin'?'admin@odyssey.com':(loginRole==='instructor'?'instructor@example.com':'student@example.com');
+  if(input) input.placeholder=loginRole==='instructor'?'instructor@example.com':'student@example.com';
 }
 document.addEventListener('DOMContentLoaded',()=>{populateCountrySelects();selectLoginRole(loginRole);});
 
@@ -1461,9 +1460,6 @@ async function renderAuthDiagnostics() {
     selectRole('student');
     buildIndicator('S', 1, 4);
     goToStep('stepS1');
-  } else if (params.get('role') === 'admin') {
-    setMode('login');
-    selectLoginRole('admin');
   } else {
     // Make sure step0 is active on signup
     goToStep('step0');
