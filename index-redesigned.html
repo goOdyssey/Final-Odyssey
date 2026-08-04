@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Odyssey — Learn Anything, From Anywhere 🌍</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#142C4F;--navy2:#2A4A78;--gold:#C08A3E;--gold2:#E7C88A;
+  --teal:#0F7A6C;--teal2:#5AC4B0;--moss:#2E7D5B;--moss2:#7FBFA0;
+  --clay:#A6672B;--amber:#E7C88A;
+  --ink:#141C2B;--muted:#64708A;--white:#ffffff;
+  --radius:16px;--radius-sm:10px;--radius-pill:999px;
+  --ff-head:"Newsreader",Georgia,serif;--ff-body:Manrope,system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-body);color:var(--ink);overflow-x:hidden;line-height:1.6;background:#F6F4EF}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+
+/* ── NAV ── */
+nav{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;width:calc(100% - 32px);max-width:1200px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border-radius:var(--radius-pill);border:1px solid rgba(20,44,79,.14);box-shadow:0 8px 32px rgba(20,44,79,.12)}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
+.nav-logo-mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;font-size:12px;box-shadow:0 4px 12px rgba(20,44,79,.4)}
+.nav-logo-text{font-family:var(--ff-head);font-size:17px;font-weight:900;color:var(--ink)}
+.nav-logo-text span{color:var(--navy)}
+.nav-links{display:flex;align-items:center;gap:1px;flex:1;min-width:0;justify-content:center;overflow:hidden}
+.nav-links a{padding:6px 9px;border-radius:var(--radius-pill);font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;transition:background .2s,color .2s;white-space:nowrap}
+.nav-links a:hover{background:#F6F4EF;color:var(--navy)}
+.nav-links a.active{background:rgba(20,44,79,.08);color:var(--navy)}
+.nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-login{padding:6px 12px;border-radius:var(--radius-pill);font-size:12px;font-weight:700;color:var(--navy);text-decoration:none;border:2px solid rgba(20,44,79,.2);transition:background .2s,border-color .2s;white-space:nowrap;flex-shrink:0}
+.nav-login:hover{background:rgba(20,44,79,.06);border-color:var(--navy)}
+.nav-cta{padding:6px 14px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-radius:var(--radius-pill);font-size:12px;font-weight:700;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 14px rgba(20,44,79,.35);white-space:nowrap;flex-shrink:0}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(20,44,79,.45)}
+
+/* ── SHARED SECTION SCAFFOLDING ── */
+section{padding:100px 24px;position:relative;overflow:hidden}
+.section-inner{max-width:1100px;margin:0 auto;position:relative;z-index:2}
+.section-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:var(--radius-pill);font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
+.section-title{font-family:var(--ff-head);font-size:clamp(28px,4vw,52px);font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:16px}
+.section-body{font-size:16px;color:var(--muted);max-width:520px;font-weight:500;line-height:1.8}
+
+/* Decorative ambient shapes — one lightweight, reusable system.
+   Each section gets 2-3 of these; pure CSS, no images, no JS. */
+.drift{position:absolute;pointer-events:none;z-index:1;border-radius:50%;filter:blur(60px);animation:drift 14s ease-in-out infinite}
+.drift.ring{border-radius:50%;filter:none;background:none;border:1.5px solid;opacity:.16;animation:driftRing 18s ease-in-out infinite}
+.drift.dot{filter:none;opacity:.5;animation:driftDot 9s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(24px,-22px) scale(1.06)}}
+@keyframes driftRing{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-18px,16px) rotate(20deg)}}
+@keyframes driftDot{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-14px)}}
+
+/* ── HERO — parchment & harbor-lantern theme ── */
+.hero{min-height:100vh;padding:140px 24px 80px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#F6F4EF}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35;pointer-events:none;animation:blobFloat 8s ease-in-out infinite;z-index:1}
+.blob1{width:500px;height:500px;background:var(--navy2);top:-100px;left:-100px}
+.blob2{width:400px;height:400px;background:var(--gold2);top:100px;right:-80px;animation-delay:-3s}
+.blob3{width:350px;height:350px;background:var(--teal2);bottom:-50px;left:20%;animation-delay:-5s}
+.blob4{width:300px;height:300px;background:var(--gold2);bottom:50px;right:10%;animation-delay:-2s}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,15px) scale(.97)}}
+.hero-inner{position:relative;z-index:2;max-width:860px}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;background:#fff;border-radius:var(--radius-pill);border:2px solid rgba(20,44,79,.2);margin-bottom:28px;font-size:13px;font-weight:700;color:var(--navy);box-shadow:0 4px 16px rgba(20,44,79,.12)}
+.hero-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--moss);box-shadow:0 0 0 3px rgba(46,125,91,.25);animation:ping 2s ease-in-out infinite}
+@keyframes ping{0%,100%{box-shadow:0 0 0 3px rgba(46,125,91,.25)}50%{box-shadow:0 0 0 6px rgba(46,125,91,.1)}}
+.hero h1{font-family:var(--ff-head);font-size:clamp(48px,7.4vw,96px);font-weight:900;line-height:.96;margin-bottom:24px;font-style:italic}
+.h1-line1,.h1-line3{display:block;color:var(--ink)}
+.h1-line2{display:block;background:linear-gradient(90deg,var(--navy),var(--gold),var(--clay),var(--amber));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:shimmer 5s linear infinite}
+@keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
+.hero-sub{font-size:18px;color:var(--muted);max-width:540px;margin:0 auto 40px;font-weight:500;line-height:1.7}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-hero-primary{padding:16px 36px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-radius:var(--radius-pill);font-size:16px;font-weight:800;text-decoration:none;border:none;cursor:pointer;font-family:var(--ff-body);box-shadow:0 8px 24px rgba(20,44,79,.4);transition:transform .2s,box-shadow .2s;display:flex;align-items:center;gap:8px}
+.btn-hero-primary:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(20,44,79,.5)}
+.btn-hero-secondary{padding:16px 36px;background:#fff;color:var(--navy);border-radius:var(--radius-pill);font-size:16px;font-weight:800;text-decoration:none;border:2px solid rgba(20,44,79,.25);cursor:pointer;font-family:var(--ff-body);transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;align-items:center;gap:8px}
+.btn-hero-secondary:hover{border-color:var(--navy);transform:translateY(-3px);box-shadow:0 8px 24px rgba(20,44,79,.15)}
+.hero-stats{display:flex;justify-content:center;margin-top:72px;background:#fff;border-radius:var(--radius);border:1px solid rgba(20,44,79,.1);overflow:hidden;box-shadow:0 8px 32px rgba(20,44,79,.1)}
+.hero-stat{flex:1;padding:24px 28px;text-align:center;border-right:1px solid rgba(20,44,79,.1)}
+.hero-stat:last-child{border-right:none}
+.stat-num{font-family:var(--ff-head);font-size:30px;font-weight:900;line-height:1}
+.stat-label{font-size:12px;font-weight:600;color:var(--muted);margin-top:4px}
+
+/* ── TICKER ── */
+.ticker{overflow:hidden;padding:15px 0;background:linear-gradient(90deg,var(--navy),var(--teal),var(--clay),var(--gold),var(--navy));background-size:400% auto;animation:gradMove 10s linear infinite}
+@keyframes gradMove{0%{background-position:0% center}100%{background-position:200% center}}
+.ticker-track{display:flex;animation:tick 25s linear infinite;white-space:nowrap}
+.ticker-track span{font-family:var(--ff-head);font-size:13px;font-weight:800;color:#fff;padding:0 24px;letter-spacing:.5px;flex-shrink:0}
+.ticker-track span::before{content:'✦';margin-right:12px;opacity:.7}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── CATEGORIES / DISCIPLINES — ivory field-guide theme ── */
+.categories{background:#FBF8F2}
+.categories::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:0;background-image:radial-gradient(rgba(20,44,79,.13) 1.4px,transparent 1.4px);background-size:26px 26px;mask-image:radial-gradient(ellipse 70% 60% at 50% 20%,#000,transparent)}
+.disc-tabs{display:flex;gap:10px;margin-top:40px;flex-wrap:wrap}
+.disc-tab{display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:16px;border:1px solid rgba(20,44,79,.14);background:#fff;cursor:pointer;font-family:var(--ff-body);text-align:left;transition:border-color .2s,transform .2s,box-shadow .2s}
+.disc-tab:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(20,44,79,.1)}
+.disc-tab.active{background:linear-gradient(135deg,var(--navy),var(--teal));border-color:transparent;box-shadow:0 10px 26px rgba(20,44,79,.28)}
+.disc-tab-icon{display:flex;flex-shrink:0}
+.disc-tab-label{display:block;font-size:14px;font-weight:800;color:var(--ink)}
+.disc-tab-sub{display:block;font-size:11px;color:var(--muted);font-weight:600}
+.disc-tab.active .disc-tab-label{color:#fff}
+.disc-tab.active .disc-tab-sub{color:rgba(255,255,255,.72)}
+.disc-panel{display:none;margin-top:44px}
+.disc-panel.active{display:block}
+.disc-group-label{display:flex;align-items:center;gap:12px;margin:36px 0 16px}
+.disc-group-label:first-child{margin-top:0}
+.grp-thumb{width:40px;height:40px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;background:linear-gradient(145deg,color-mix(in srgb,var(--gc) 30%,#fff),color-mix(in srgb,var(--gc) 55%,#fff));box-shadow:0 6px 16px color-mix(in srgb,var(--gc) 35%,transparent),inset 0 1px 0 rgba(255,255,255,.6);border:1px solid color-mix(in srgb,var(--gc) 40%,transparent)}
+.disc-group-label span{font-family:var(--ff-head);font-size:15px;font-weight:800;letter-spacing:.3px;padding:5px 14px;border-radius:var(--radius-pill);background:color-mix(in srgb,var(--gc) 12%,#fff);color:var(--ink);border:1px solid color-mix(in srgb,var(--gc) 26%,transparent)}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.cat-grid-sm{grid-template-columns:repeat(4,1fr)}
+.cat-card{background:#fff;border-radius:var(--radius);padding:26px 22px;border:1px solid rgba(20,44,79,.08);cursor:pointer;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s,border-color .25s}
+.cat-card:hover{transform:translateY(-5px);border-color:rgba(20,44,79,.2);box-shadow:0 16px 36px rgba(20,44,79,.12)}
+.cat-emoji{font-size:30px;margin-bottom:14px;display:block}
+.cat-name{font-family:var(--ff-head);font-size:16px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.cat-desc{font-size:12.5px;color:var(--muted);line-height:1.6;font-weight:500}
+.cat-count{display:inline-block;margin-top:14px;padding:4px 12px;border-radius:var(--radius-pill);font-size:11px;font-weight:800;letter-spacing:.3px}
+
+/* ── REGIONS / EXAMS — night-sky navy theme ── */
+.regions{background:linear-gradient(160deg,#0E1D36 0%,#142C4F 55%,#0B1930 100%)}
+.regions .drift.dot{background:#fff}
+.regions .section-tag{background:rgba(255,255,255,.1);color:#fff}
+.regions .section-title{color:#fff}
+.regions .section-body{color:rgba(255,255,255,.62)}
+.region-tabs{display:flex;gap:8px;margin-top:44px;flex-wrap:wrap}
+.rtab{padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:rgba(255,255,255,.55);cursor:pointer;transition:border-color .2s,color .2s,background .2s;font-family:var(--ff-body)}
+.rtab:hover{border-color:rgba(255,255,255,.32);color:#fff}
+.rtab.active{background:linear-gradient(135deg,var(--gold),var(--clay));border-color:transparent;color:#fff;box-shadow:0 4px 16px rgba(192,138,62,.35)}
+.region-panel{display:none;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:26px}
+.region-panel.active{display:grid}
+.exam-card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:20px 18px;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.exam-card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.22);transform:translateY(-3px)}
+.exam-flag{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:30px;padding:0 10px;margin-bottom:10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:900}
+.exam-name{font-family:var(--ff-head);font-size:15px;font-weight:800;color:#fff;margin-bottom:4px}
+.exam-country{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:12px;font-weight:500}
+.exam-tag{display:inline-block;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;margin:2px 4px 0 0}
+
+/* ── HOW IT WORKS — mint clarity theme ── */
+.how{background:#EFFAF6}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+.step-card{padding:34px 26px;border-radius:var(--radius);position:relative;background:#fff;border:1px solid rgba(15,122,108,.14);transition:transform .2s,box-shadow .2s}
+.step-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(15,122,108,.12)}
+.step-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-size:18px;font-weight:900;color:#fff;margin-bottom:18px;background:linear-gradient(135deg,var(--teal),var(--navy))}
+.step-icon{font-size:26px;margin-bottom:10px}
+.step-title{font-family:var(--ff-head);font-size:19px;font-weight:800;color:var(--ink);margin-bottom:10px}
+.step-desc{font-size:13.5px;color:var(--muted);line-height:1.8;font-weight:500}
+
+/* ── INSTRUCTORS / LEADERBOARD — sand & achievement theme ── */
+.instructors{background:#FBF3E7}
+.lb-wrap{background:#fff;border-radius:20px;padding:32px 28px;border:1px solid rgba(192,138,62,.18);box-shadow:0 20px 50px rgba(192,138,62,.1)}
+.lb-podium{display:flex;align-items:flex-end;justify-content:center;gap:24px;margin-bottom:8px;flex-wrap:wrap}
+.lb-podium-item{text-align:center;position:relative;width:150px}
+.lb-crown{font-size:24px;margin-bottom:4px}
+.lb-rank-badge{width:26px;height:26px;border-radius:50%;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.lb-avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;margin:0 auto 10px}
+.lb-pname{font-family:var(--ff-head);font-weight:800;font-size:14px;color:var(--ink)}
+.lb-prole{font-size:11.5px;color:var(--muted);margin:2px 0 8px}
+.lb-pstat{font-size:12px;font-weight:700;color:var(--clay);margin-bottom:8px}
+.lb-bar{border-radius:10px 10px 0 0}
+.lb-rows{margin-top:32px;padding-top:24px;border-top:1px dashed rgba(20,44,79,.14);display:flex;flex-direction:column;gap:4px}
+.lb-row{display:flex;align-items:center;gap:14px;padding:10px 8px;border-radius:12px;cursor:pointer;transition:background .2s}
+.lb-row:hover{background:#FBF3E7}
+.lb-row-rank{width:22px;font-family:var(--ff-head);font-weight:800;color:var(--muted);font-size:13px;text-align:center;flex-shrink:0}
+.lb-row-avatar{width:38px;height:38px;border-radius:50%;color:#fff;font-family:var(--ff-head);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lb-row-info{flex:1;min-width:0}
+.lb-row-name{font-size:13px;font-weight:800;color:var(--ink)}
+.lb-row-sub{font-size:11.5px;color:var(--muted)}
+.lb-row-stat{font-size:12px;font-weight:700;color:var(--clay);white-space:nowrap}
+.lb-tab{padding:8px 16px;border-radius:var(--radius-pill);font-size:12.5px;font-weight:700;border:1px solid rgba(20,44,79,.14);background:#fff;color:var(--muted);cursor:pointer;font-family:var(--ff-body);transition:background .2s,color .2s}
+.lb-tab.active{background:linear-gradient(135deg,var(--gold),var(--clay));border-color:transparent;color:#fff}
+.instr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-top:24px}
+.instr-card{background:#fff;border-radius:var(--radius);padding:26px 18px;text-align:center;border:1px solid rgba(192,138,62,.14);cursor:pointer;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s}
+.instr-card:hover{transform:translateY(-5px);box-shadow:0 16px 34px rgba(192,138,62,.16)}
+.instr-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-size:20px;font-weight:900;color:#fff}
+.instr-name{font-family:var(--ff-head);font-size:14px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.instr-role{font-size:11.5px;color:var(--muted);margin-bottom:6px;font-weight:500}
+.instr-loc{font-size:10.5px;font-weight:700;color:var(--navy)}
+.instr-stat{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(20,44,79,.14);font-size:11px;color:var(--muted)}
+
+/* ── TESTIMONIALS — blush & story theme ── */
+.testimonials{background:#FAF3F6}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.testi-card{border-radius:var(--radius);padding:30px 26px;position:relative;overflow:hidden;background:#fff;border:1px solid rgba(192,138,62,.13)}
+.testi-big-quote{font-family:var(--ff-head);font-size:76px;font-weight:900;line-height:.6;position:absolute;top:18px;right:18px;opacity:.1}
+.testi-text{font-size:13.5px;color:var(--ink);line-height:1.8;margin-bottom:18px;font-weight:600;font-style:italic;position:relative;z-index:1}
+.testi-author{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
+.testi-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.testi-name{font-size:12.5px;font-weight:800;color:var(--ink)}
+.testi-meta{font-size:11px;color:var(--muted);font-weight:500}
+.story-cta-card{margin-top:32px;padding:28px 30px;border-radius:20px;background:linear-gradient(135deg,var(--navy),var(--teal));display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.story-cta-card h3{font-family:var(--ff-head);color:#fff;font-size:19px;margin-bottom:6px}
+.story-cta-card p{color:rgba(255,255,255,.7);font-size:13px;max-width:420px;font-weight:500}
+.story-cta-card a{padding:12px 22px;background:#fff;color:var(--navy);border-radius:var(--radius-pill);font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap;transition:transform .2s}
+.story-cta-card a:hover{transform:translateY(-2px)}
+
+/* ── CTA — spectrum sweep theme ── */
+.cta-section{background:linear-gradient(135deg,var(--navy) 0%,var(--teal) 32%,var(--clay) 68%,var(--gold) 100%);padding:100px 24px;text-align:center}
+.cta-inner{position:relative;z-index:2;max-width:640px;margin:0 auto}
+.cta-inner h2{font-family:var(--ff-head);font-size:clamp(28px,5vw,56px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:16px}
+.cta-inner p{font-size:16px;color:rgba(255,255,255,.78);margin-bottom:40px;font-weight:500}
+.cta-form{display:flex;gap:8px;max-width:480px;margin:0 auto}
+.cta-input{flex:1;padding:14px 20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);border-radius:var(--radius-pill);font-size:14px;font-family:var(--ff-body);outline:none;font-weight:600;color:#fff;backdrop-filter:blur(8px)}
+.cta-input::placeholder{color:rgba(255,255,255,.55)}
+.cta-input:focus{border-color:rgba(255,255,255,.7)}
+.cta-submit{padding:14px 28px;background:#fff;color:var(--navy);border:none;border-radius:var(--radius-pill);font-size:14px;font-weight:800;cursor:pointer;font-family:var(--ff-body);transition:transform .2s,box-shadow .2s;white-space:nowrap}
+.cta-submit:hover{transform:scale(1.05);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+
+/* ── FOOTER ── */
+footer{background:#0f0520;padding:72px 24px 0}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;gap:40px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.06)}
+.footer-logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:16px}
+.footer-logo-mark{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;font-size:13px}
+.footer-logo-text{font-family:var(--ff-head);font-size:18px;font-weight:900;color:#fff}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,.35);line-height:1.8;max-width:240px;font-weight:500;margin-bottom:20px}
+.footer-social{display:flex;gap:8px;flex-wrap:wrap}
+.fsoc{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;transition:background .2s,transform .2s}
+.fsoc:hover{background:var(--navy);border-color:var(--navy);color:#fff;transform:translateY(-2px)}
+.footer-col h4{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--navy2);margin-bottom:18px}
+.footer-col a{display:block;font-size:12px;color:rgba(255,255,255,.38);text-decoration:none;margin-bottom:9px;font-weight:500;transition:color .2s}
+.footer-col a:hover{color:#fff}
+.footer-langs-row{display:flex;align-items:center;gap:10px;padding:24px 0;flex-wrap:wrap}
+.footer-langs-label{font-size:12px;color:rgba(255,255,255,.4);font-weight:600}
+.footer-copy{text-align:center;padding:24px 0;font-size:12px;color:rgba(255,255,255,.25)}
+
+/* ── REVEAL ON SCROLL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:980px){
+  .cat-grid,.cat-grid-sm{grid-template-columns:repeat(2,1fr)}
+  .steps-grid,.testi-grid{grid-template-columns:1fr}
+  .footer-top-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:680px){
+  nav{width:calc(100% - 20px);padding:8px 12px}
+  .nav-links{display:none}
+  .hero{padding:112px 16px 52px}
+  .hero-stats{flex-wrap:wrap}
+  .hero-stat{flex:1 1 50%;border-right:none;border-bottom:1px solid rgba(20,44,79,.1)}
+  .cat-grid,.cat-grid-sm{grid-template-columns:1fr}
+  .lb-podium{gap:12px}
+  .lb-podium-item{width:100px}
+  .footer-top-grid{grid-template-columns:1fr}
+}
+</style>
+<script defer src="js/i18n.js"></script>
+<script defer src="assets/odyssey-portal-translations.js"></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+<script defer src="assets/odyssey-scroll-reveal.js"></script>
+</head>
+<body>
+<!-- NAV -->
+<nav>
+<a class="nav-logo" href="#">
+<div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div>
+<span class="nav-logo-text"><span>Odyssey</span></span>
+</a>
+<div class="nav-links">
+<a class="active" data-i18n="nav_home" href="#">Home</a>
+<a data-i18n="nav_courses" href="learnworld_catalog.html">Courses</a>
+<a href="tests_marketplace.html">Tests</a>
+<a data-i18n="nav_explore" href="#categories">Explore</a>
+<a data-i18n="nav_exams" href="#regions">Exams</a>
+<a data-i18n="nav_instructors" href="#instructors">Instructors</a>
+<a data-i18n="nav_how" href="#how">How it works</a>
+<a data-i18n="nav_about" href="about.html">About</a>
+<a data-i18n="nav_contact" href="contact.html">Contact</a>
+</div>
+<div class="nav-right">
+<span data-i18n-switcher=""></span>
+<a class="nav-login" data-i18n="nav_login" href="auth.html?mode=login">Log in</a>
+<a class="nav-cta" data-i18n="nav_signup" href="auth.html?mode=signup">Sign up free ✨</a>
+</div>
+</nav>
+<!-- HERO -->
+<section class="hero">
+<div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div><div class="blob blob4"></div>
+<div class="hero-inner">
+<div class="hero-pill"><span class="dot"></span><span data-i18n="hero_learners_worldwide">12M+ learners worldwide 🌍</span></div>
+<h1>
+<span class="h1-line1" data-i18n="hero_line1">Transcend</span>
+<span class="h1-line2" data-i18n="hero_line2">beyond your</span>
+<span class="h1-line3" data-i18n="hero_line3">limits.</span>
+</h1>
+<p class="hero-sub" data-i18n="hero_sub">From JEE prep in Mumbai to artisan cookery in Lagos — the world's most joyful learning marketplace is right here on Odyssey.</p>
+<div class="hero-actions">
+<a class="btn-hero-primary" data-i18n="hero_explore" href="learnworld_catalog.html">🎓 Explore 840K courses</a>
+<a class="btn-hero-secondary" data-i18n="hero_teach" href="auth.html?mode=signup&role=instructor">✨ Start teaching</a>
+</div>
+<div class="hero-stats">
+<div class="hero-stat"><div class="stat-num" style="background:linear-gradient(90deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">190+</div><div class="stat-label" data-i18n="stat_countries">Countries 🌍</div></div>
+<div class="hero-stat"><div class="stat-num" style="background:linear-gradient(90deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">840K</div><div class="stat-label" data-i18n="stat_courses">Courses 📚</div></div>
+<div class="hero-stat"><div class="stat-num" style="background:linear-gradient(90deg,var(--orange),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">12M</div><div class="stat-label" data-i18n="stat_students">Students 🎒</div></div>
+<div class="hero-stat"><div class="stat-num" style="background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">62K</div><div class="stat-label" data-i18n="stat_instructors">Instructors 🧑‍🏫</div></div>
+</div>
+</div>
+</section>
+<!-- TICKER -->
+<div class="ticker">
+<div class="ticker-track">
+<span>JEE Advanced</span><span>Gaokao</span><span>Baccalauréat</span><span>WAEC &amp; JAMB</span>
+<span>SAT &amp; ACT</span><span>MCAT</span><span>BMAT</span><span>Abitur</span><span>IELTS</span>
+<span>TOEFL</span><span>Vestibular</span><span>A-Levels</span><span>NEET</span><span>Matura</span>
+<span>JEE Advanced</span><span>Gaokao</span><span>Baccalauréat</span><span>WAEC &amp; JAMB</span>
+<span>SAT &amp; ACT</span><span>MCAT</span><span>BMAT</span><span>Abitur</span><span>IELTS</span>
+<span>TOEFL</span><span>Vestibular</span><span>A-Levels</span><span>NEET</span><span>Matura</span>
+</div>
+</div>
+<!-- CATEGORIES -->
+<section class="categories reveal" id="categories">
+<div class="drift" style="width:280px;height:280px;background:var(--gold2);top:-60px;right:6%;animation-delay:-2s"></div>
+<div class="drift" style="width:200px;height:200px;background:var(--teal2);bottom:0;left:-40px;animation-delay:-6s"></div>
+<div class="section-inner">
+<span class="section-tag" data-i18n="cat_tag" style="background:rgba(20,44,79,0.1);color:var(--purple)">🧩 What you can learn</span>
+<h2 class="section-title" data-i18n="cat_title">Every field of human knowledge 🤯</h2>
+<p class="section-body" data-i18n="cat_body">Academic, vocational, professional — if humans do it, we teach it. Pick your level to explore.</p>
+<!-- Discipline group tabs -->
+<div class="disc-tabs">
+<button class="disc-tab active" onclick="showDisc('highschool',this)">
+<span class="disc-tab-icon"><svg viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 5 4 11l12 6 12-6-12-6Z" fill="#142C4F"/><path d="M9 14v6c0 2 3 4 7 4s7-2 7-4v-6" stroke="#142C4F" stroke-width="1.8" stroke-linecap="round"/><path d="M25 13v7" stroke="#C08A3E" stroke-width="1.8" stroke-linecap="round"/><circle cx="25" cy="21" r="1.6" fill="#C08A3E"/></svg></span>
+<span class="disc-tab-label" data-i18n="tab_hs">High School</span>
+<span class="disc-tab-sub" data-i18n="tab_hs_sub">K–12 Curriculum</span>
+</button>
+<button class="disc-tab" onclick="showDisc('university',this)">
+<span class="disc-tab-icon"><svg viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12c2-3 4-5 7-5s5 2 7 5c-2 3-4 5-7 5s-5-2-7-5Z" fill="#0F7A6C" opacity=".18"/><path d="M9 12c2-3 4-5 7-5s5 2 7 5c-2 3-4 5-7 5s-5-2-7-5Z" stroke="#142C4F" stroke-width="1.8" stroke-linejoin="round"/><path d="M16 17v9M16 26c-3 0-5 1-5 2M16 26c3 0 5 1 5 2" stroke="#C08A3E" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+<span class="disc-tab-label" data-i18n="tab_uni">University Fields</span>
+<span class="disc-tab-sub" data-i18n="tab_uni_sub">Degree-level disciplines</span>
+</button>
+<button class="disc-tab" onclick="showDisc('vocational',this)">
+<span class="disc-tab-icon"><svg viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 6c3 3 3 9-1 13-3 3-7 4-9.5 4 0-2.5 1-6.5 4-9.5C19 9.5 22 6 22 6Z" fill="#C08A3E" opacity=".4"/><path d="M22 6c3 3 3 9-1 13-3 3-7 4-9.5 4 0-2.5 1-6.5 4-9.5C19 9.5 22 6 22 6Z" stroke="#142C4F" stroke-width="1.8" stroke-linejoin="round"/><path d="M11.5 23c-1 1.5-2 2.5-4 3" stroke="#0F7A6C" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+<span class="disc-tab-label" data-i18n="tab_voc">Vocational &amp; Leisure</span>
+<span class="disc-tab-sub" data-i18n="tab_voc_sub">Skills, arts &amp; crafts</span>
+</button>
+</div>
+<!-- HIGH SCHOOL PANEL -->
+<div class="disc-panel active" id="disc-highschool">
+<div class="disc-group-label" style="--gc:var(--cyan)"><span class="grp-thumb" aria-hidden="true">📐</span><span data-i18n="grp_math">📐 Mathematics</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Mathematics')" style="cursor:pointer"><span class="cat-emoji">📐</span><div class="cat-name" data-i18n="card1_name">Calculus</div><div class="cat-desc" data-i18n="card1_desc">Limits, derivatives, integrals, differential equations</div><span class="cat-count" data-i18n-count="28,400" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">28,400 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Mathematics')" style="cursor:pointer"><span class="cat-emoji">📏</span><div class="cat-name" data-i18n="card2_name">Trigonometry</div><div class="cat-desc" data-i18n="card2_desc">Angles, identities, sine/cosine rules, unit circles</div><span class="cat-count" data-i18n-count="19,200" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">19,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Mathematics')" style="cursor:pointer"><span class="cat-emoji">🔢</span><div class="cat-name" data-i18n="card3_name">Algebra &amp; Statistics</div><div class="cat-desc" data-i18n="card3_desc">Equations, probability, data analysis, combinatorics</div><span class="cat-count" data-i18n-count="34,100" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">34,100 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Mathematics')" style="cursor:pointer"><span class="cat-emoji">📊</span><div class="cat-name" data-i18n="card4_name">Geometry</div><div class="cat-desc" data-i18n="card4_desc">Euclidean, coordinate, solid geometry, proofs</div><span class="cat-count" data-i18n-count="16,700" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">16,700 courses</span></div>
+</div>
+<div class="disc-group-label" style="--gc:var(--green)"><span class="grp-thumb" aria-hidden="true">🔬</span><span data-i18n="grp_sci">🔬 Sciences</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Physics')" style="cursor:pointer"><span class="cat-emoji">⚛️</span><div class="cat-name" data-i18n="card5_name">Physics</div><div class="cat-desc" data-i18n="card5_desc">Mechanics, waves, electromagnetism, thermodynamics, optics</div><span class="cat-count" data-i18n-count="41,300" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.1);color:var(--green)">41,300 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Chemistry')" style="cursor:pointer"><span class="cat-emoji">⚗️</span><div class="cat-name" data-i18n="card6_name">Chemistry</div><div class="cat-desc" data-i18n="card6_desc">Organic, inorganic, physical chemistry, stoichiometry</div><span class="cat-count" data-i18n-count="38,900" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.1);color:var(--green)">38,900 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Biology')" style="cursor:pointer"><span class="cat-emoji">🧬</span><div class="cat-name" data-i18n="card7_name">Biology</div><div class="cat-desc" data-i18n="card7_desc">Cell biology, genetics, ecology, human anatomy, evolution</div><span class="cat-count" data-i18n-count="35,600" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.1);color:var(--green)">35,600 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Physics')" style="cursor:pointer"><span class="cat-emoji">🌍</span><div class="cat-name" data-i18n="card8_name">Earth Sciences</div><div class="cat-desc" data-i18n="card8_desc">Geography, geology, meteorology, environmental science</div><span class="cat-count" data-i18n-count="14,800" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.1);color:var(--green)">14,800 courses</span></div>
+</div>
+<div class="disc-group-label" style="--gc:var(--pink)"><span class="grp-thumb" aria-hidden="true">📚</span><span data-i18n="grp_hum">📚 Humanities &amp; Languages</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','English Language')" style="cursor:pointer"><span class="cat-emoji">✍️</span><div class="cat-name" data-i18n="card9_name">Language &amp; Literature</div><div class="cat-desc" data-i18n="card9_desc">Grammar, essay writing, poetry, reading comprehension, rhetoric</div><span class="cat-count" data-i18n-count="52,100" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">52,100 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','History')" style="cursor:pointer"><span class="cat-emoji">🏛️</span><div class="cat-name" data-i18n="card10_name">History</div><div class="cat-desc" data-i18n="card10_desc">World history, national histories, civilisations, modern era</div><span class="cat-count" data-i18n-count="29,400" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">29,400 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Economics')" style="cursor:pointer"><span class="cat-emoji">💹</span><div class="cat-name" data-i18n="card11_name">Economics</div><div class="cat-desc" data-i18n="card11_desc">Micro/macroeconomics, supply &amp; demand, market structures</div><span class="cat-count" data-i18n-count="18,200" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">18,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','History')" style="cursor:pointer"><span class="cat-emoji">🗺️</span><div class="cat-name" data-i18n="card12_name">Social Studies &amp; Civics</div><div class="cat-desc" data-i18n="card12_desc">Government, citizenship, sociology, political systems, ethics</div><span class="cat-count" data-i18n-count="12,600" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">12,600 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">💻</span><div class="cat-name" data-i18n="card13_name">Computer Science (HS)</div><div class="cat-desc" data-i18n="card13_desc">Intro to programming, algorithms, digital literacy, web basics</div><span class="cat-count" data-i18n-count="23,700" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">23,700 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','English Language')" style="cursor:pointer"><span class="cat-emoji">🌐</span><div class="cat-name" data-i18n="card14_name">Foreign Languages</div><div class="cat-desc" data-i18n="card14_desc">French, Spanish, Arabic, Mandarin, German, Japanese for students</div><span class="cat-count" data-i18n-count="67,800" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">67,800 courses</span></div>
+</div>
+</div>
+<!-- UNIVERSITY PANEL -->
+<div class="disc-panel" id="disc-university">
+<div class="disc-group-label" style="--gc:var(--purple)"><span class="grp-thumb" aria-hidden="true">⚕️</span><span data-i18n="grp_health">⚕️ Health &amp; Life Sciences</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Medicine')" style="cursor:pointer"><span class="cat-emoji">🩺</span><div class="cat-name" data-i18n="card15_name">Medicine (MBBS/MD)</div><div class="cat-desc" data-i18n="card15_desc">Anatomy, pathology, pharmacology, clinical rotations, USMLE</div><span class="cat-count" data-i18n-count="94,200" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.1);color:var(--purple)">94,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Medicine')" style="cursor:pointer"><span class="cat-emoji">🦷</span><div class="cat-name" data-i18n="card16_name">Dentistry</div><div class="cat-desc" data-i18n="card16_desc">Oral anatomy, endodontics, orthodontics, dental surgery</div><span class="cat-count" data-i18n-count="18,400" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.1);color:var(--purple)">18,400 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Medicine')" style="cursor:pointer"><span class="cat-emoji">🐾</span><div class="cat-name" data-i18n="card17_name">Veterinary Science</div><div class="cat-desc" data-i18n="card17_desc">Animal anatomy, zoology, animal surgery, veterinary pharmacology</div><span class="cat-count" data-i18n-count="11,200" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.1);color:var(--purple)">11,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Medicine')" style="cursor:pointer"><span class="cat-emoji">💊</span><div class="cat-name" data-i18n="card18_name">Pharmacy &amp; Nursing</div><div class="cat-desc" data-i18n="card18_desc">Drug chemistry, patient care, clinical nursing, pharmacotherapy</div><span class="cat-count" data-i18n-count="24,600" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.1);color:var(--purple)">24,600 courses</span></div>
+</div>
+<div class="disc-group-label" style="--gc:var(--orange)"><span class="grp-thumb" aria-hidden="true">⚙️</span><span data-i18n="grp_eng">⚙️ Engineering &amp; Technology</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">💡</span><div class="cat-name" data-i18n="card19_name">Electrical Engineering</div><div class="cat-desc" data-i18n="card19_desc">Circuits, signal processing, power systems, electronics</div><span class="cat-count" data-i18n-count="38,400" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.1);color:var(--orange)">38,400 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">🏗️</span><div class="cat-name" data-i18n="card20_name">Civil &amp; Structural</div><div class="cat-desc" data-i18n="card20_desc">Structural analysis, geotechnics, fluid mechanics, construction</div><span class="cat-count" data-i18n-count="29,700" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.1);color:var(--orange)">29,700 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">⚙️</span><div class="cat-name" data-i18n="card21_name">Mechanical Engineering</div><div class="cat-desc" data-i18n="card21_desc">Thermodynamics, machine design, manufacturing, robotics</div><span class="cat-count" data-i18n-count="31,200" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.1);color:var(--orange)">31,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">🧪</span><div class="cat-name" data-i18n="card22_name">Chemical Engineering</div><div class="cat-desc" data-i18n="card22_desc">Process design, reaction engineering, mass transfer, control</div><span class="cat-count" data-i18n-count="19,800" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.1);color:var(--orange)">19,800 courses</span></div>
+</div>
+<div class="disc-group-label" style="--gc:var(--cyan)"><span class="grp-thumb" aria-hidden="true">📖</span><span data-i18n="grp_human2">📖 Humanities &amp; Social Sciences</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Law')" style="cursor:pointer"><span class="cat-emoji">⚖️</span><div class="cat-name" data-i18n="card23_name">Law &amp; Governance</div><div class="cat-desc" data-i18n="card23_desc">Constitutional, criminal, international, commercial law; bar prep</div><span class="cat-count" data-i18n-count="41,300" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">41,300 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','History')" style="cursor:pointer"><span class="cat-emoji">🧠</span><div class="cat-name" data-i18n="card24_name">Philosophy</div><div class="cat-desc" data-i18n="card24_desc">Ethics, metaphysics, logic, epistemology, political philosophy</div><span class="cat-count" data-i18n-count="14,700" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">14,700 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','English Language')" style="cursor:pointer"><span class="cat-emoji">🗣️</span><div class="cat-name" data-i18n="card25_name">Linguistics</div><div class="cat-desc" data-i18n="card25_desc">Phonetics, syntax, semantics, sociolinguistics, translation studies</div><span class="cat-count" data-i18n-count="12,900" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">12,900 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Economics')" style="cursor:pointer"><span class="cat-emoji">📈</span><div class="cat-name" data-i18n="card26_name">Economics &amp; Finance</div><div class="cat-desc" data-i18n="card26_desc">Econometrics, macroeconomics, financial markets, development econ</div><span class="cat-count" data-i18n-count="48,200" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">48,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','History')" style="cursor:pointer"><span class="cat-emoji">🧬</span><div class="cat-name" data-i18n="card27_name">Psychology &amp; Neuroscience</div><div class="cat-desc" data-i18n="card27_desc">Cognitive, clinical, social psychology, brain science, research methods</div><span class="cat-count" data-i18n-count="27,300" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">27,300 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Architecture')" style="cursor:pointer"><span class="cat-emoji">🏛️</span><div class="cat-name" data-i18n="card28_name">Architecture &amp; Urban Design</div><div class="cat-desc" data-i18n="card28_desc">Urban planning, structural design, landscape, interior architecture</div><span class="cat-count" data-i18n-count="32,800" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">32,800 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Business &amp; Finance')" style="cursor:pointer"><span class="cat-emoji">💼</span><div class="cat-name" data-i18n="card29_name">Business &amp; Management</div><div class="cat-desc" data-i18n="card29_desc">MBA, strategy, HRM, entrepreneurship, operations, marketing</div><span class="cat-count" data-i18n-count="76,100" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">76,100 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','History')" style="cursor:pointer"><span class="cat-emoji">🌍</span><div class="cat-name" data-i18n="card30_name">International Relations</div><div class="cat-desc" data-i18n="card30_desc">Diplomacy, geopolitics, global governance, foreign policy</div><span class="cat-count" data-i18n-count="9,400" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.1);color:var(--cyan)">9,400 courses</span></div>
+</div>
+</div>
+<!-- VOCATIONAL PANEL -->
+<div class="disc-panel" id="disc-vocational">
+<div class="disc-group-label" style="--gc:var(--pink)"><span class="grp-thumb" aria-hidden="true">🎨</span><span data-i18n="grp_visual">🎨 Visual Arts &amp; Crafts</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Tailoring &amp; Fashion')" style="cursor:pointer"><span class="cat-emoji">🧵</span><div class="cat-name" data-i18n="card31_name">Tailoring &amp; Fashion</div><div class="cat-desc" data-i18n="card31_desc">Pattern-making, garment construction, bespoke tailoring, textiles</div><span class="cat-count" data-i18n-count="14,200" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">14,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Tailoring &amp; Fashion')" style="cursor:pointer"><span class="cat-emoji">🖌️</span><div class="cat-name" data-i18n="card32_name">Fine Arts &amp; Drawing</div><div class="cat-desc" data-i18n="card32_desc">Sketching, oil painting, watercolour, portrait, still life, sculpture</div><span class="cat-count" data-i18n-count="21,600" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">21,600 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Tailoring &amp; Fashion')" style="cursor:pointer"><span class="cat-emoji">✒️</span><div class="cat-name" data-i18n="card33_name">Calligraphy &amp; Typography</div><div class="cat-desc" data-i18n="card33_desc">Arabic, Persian, Chinese, Latin calligraphy; brush lettering, fonts</div><span class="cat-count" data-i18n-count="8,900" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">8,900 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Architecture')" style="cursor:pointer"><span class="cat-emoji">📸</span><div class="cat-name" data-i18n="card34_name">Photography &amp; Videography</div><div class="cat-desc" data-i18n="card34_desc">Composition, lighting, editing, drone, cinematic storytelling</div><span class="cat-count" data-i18n-count="16,400" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.1);color:var(--pink)">16,400 courses</span></div>
+</div>
+<div class="disc-group-label" style="--gc:var(--yellow)"><span class="grp-thumb" aria-hidden="true">🎵</span><span data-i18n="grp_perform">🎵 Performing Arts</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Tailoring &amp; Fashion')" style="cursor:pointer"><span class="cat-emoji">🎸</span><div class="cat-name" data-i18n="card35_name">Music &amp; Instruments</div><div class="cat-desc" data-i18n="card35_desc">Guitar, piano, violin, voice, music theory, composition, production</div><span class="cat-count" data-i18n-count="31,700" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.15);color:#8A5A1F">31,700 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Tailoring &amp; Fashion')" style="cursor:pointer"><span class="cat-emoji">💃</span><div class="cat-name" data-i18n="card36_name">Dance &amp; Movement</div><div class="cat-desc" data-i18n="card36_desc">Ballet, contemporary, hip-hop, folk, salsa, choreography</div><span class="cat-count" data-i18n-count="9,200" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.15);color:#8A5A1F">9,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Tailoring &amp; Fashion')" style="cursor:pointer"><span class="cat-emoji">🎭</span><div class="cat-name" data-i18n="card37_name">Theatre &amp; Acting</div><div class="cat-desc" data-i18n="card37_desc">Stagecraft, improvisation, voice, screenplay, directing, make-up</div><span class="cat-count" data-i18n-count="6,800" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.15);color:#8A5A1F">6,800 courses</span></div>
+</div>
+<div class="disc-group-label" style="--gc:var(--green)"><span class="grp-thumb" aria-hidden="true">🍳</span><span data-i18n="grp_food">🍳 Food, Home &amp; Land</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Cookery')" style="cursor:pointer"><span class="cat-emoji">🍳</span><div class="cat-name" data-i18n="card38_name">Culinary Arts &amp; Baking</div><div class="cat-desc" data-i18n="card38_desc">Cookery, pastry, regional cuisines, food science, restaurant management</div><span class="cat-count" data-i18n-count="28,700" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.1);color:var(--green)">28,700 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Agriculture')" style="cursor:pointer"><span class="cat-emoji">🌱</span><div class="cat-name" data-i18n="card39_name">Agriculture &amp; Planting</div><div class="cat-desc" data-i18n="card39_desc">Irrigation, agronomy, horticulture, organic farming, rural enterprise</div><span class="cat-count" data-i18n-count="19,400" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.1);color:var(--green)">19,400 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Architecture')" style="cursor:pointer"><span class="cat-emoji">🔨</span><div class="cat-name" data-i18n="card40_name">DIY, Crafts &amp; Woodwork</div><div class="cat-desc" data-i18n="card40_desc">Carpentry, plumbing, electrical basics, pottery, jewellery making</div><span class="cat-count" data-i18n-count="11,300" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.1);color:var(--green)">11,300 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Medicine')" style="cursor:pointer"><span class="cat-emoji">💆</span><div class="cat-name" data-i18n="card41_name">Beauty, Wellness &amp; Fitness</div><div class="cat-desc" data-i18n="card41_desc">Hair, skincare, cosmetology, yoga, personal training, nutrition</div><span class="cat-count" data-i18n-count="17,600" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.1);color:var(--green)">17,600 courses</span></div>
+</div>
+<div class="disc-group-label" style="--gc:var(--purple)"><span class="grp-thumb" aria-hidden="true">💻</span><span data-i18n="grp_digital">💻 Digital &amp; Tech Skills</span></div>
+<div class="cat-grid cat-grid-sm">
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">🖥️</span><div class="cat-name" data-i18n="card42_name">Coding &amp; Programming</div><div class="cat-desc" data-i18n="card42_desc">Python, JavaScript, C++, Java — from beginner to pro developer</div><span class="cat-count" data-i18n-count="54,800" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.1);color:var(--purple)">54,800 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">📱</span><div class="cat-name" data-i18n="card43_name">App &amp; Web Design</div><div class="cat-desc" data-i18n="card43_desc">UI/UX, Figma, React, Flutter, Swift, mobile-first design systems</div><span class="cat-count" data-i18n-count="38,200" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.1);color:var(--purple)">38,200 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">🤖</span><div class="cat-name" data-i18n="card44_name">AI &amp; Data Science</div><div class="cat-desc" data-i18n="card44_desc">Machine learning, deep learning, data analysis, prompt engineering</div><span class="cat-count" data-i18n-count="29,400" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.1);color:var(--purple)">29,400 courses</span></div>
+<div class="cat-card" data-reveal="rise" onclick="goFilter('subject','Computer Science')" style="cursor:pointer"><span class="cat-emoji">🎬</span><div class="cat-name" data-i18n="card45_name">Digital Content &amp; Marketing</div><div class="cat-desc" data-i18n="card45_desc">Social media, SEO, video editing, graphic design, copywriting</div><span class="cat-count" data-i18n-count="33,100" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.1);color:var(--purple)">33,100 courses</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- REGIONS -->
+<section class="regions reveal" id="regions">
+<div class="drift" style="width:320px;height:320px;background:var(--gold);opacity:.14;top:-80px;left:8%"></div>
+<div class="drift ring" style="width:180px;height:180px;border-color:#fff;top:20%;right:10%"></div>
+<div class="drift dot" style="width:5px;height:5px;top:18%;left:30%"></div>
+<div class="drift dot" style="width:4px;height:4px;top:60%;left:60%;animation-delay:-3s"></div>
+<div class="drift dot" style="width:6px;height:6px;top:75%;left:15%;animation-delay:-5s"></div>
+<div class="section-inner">
+<span class="section-tag" data-i18n="reg_tag" style="background:rgba(255,255,255,0.1);color:white">📝 Exams &amp; competitions</span>
+<h2 class="section-title" style="color:white"><span data-i18n="reg_title1">Your exam. Your country.</span> <span data-i18n="reg_title2" style="background:linear-gradient(90deg,var(--yellow2),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Your prep.</span></h2>
+<p class="section-body" data-i18n="reg_body" style="color:rgba(255,255,255,0.55)">Entrance exams, language certifications, olympiads, and competitions — all in one place.</p>
+<div class="region-tabs" style="flex-wrap:wrap;gap:8px">
+<button class="rtab active" onclick="showRegion('asia',this)"><span data-i18n="rtab_asia">🌏 Asia-Pacific</span></button>
+<button class="rtab" onclick="showRegion('africa',this)"><span data-i18n="rtab_africa">🌍 Africa &amp; Middle East</span></button>
+<button class="rtab" onclick="showRegion('europe',this)"><span data-i18n="rtab_europe">🌎 Europe</span></button>
+<button class="rtab" onclick="showRegion('americas',this)"><span data-i18n="rtab_americas">🌎 Americas</span></button>
+<button class="rtab" onclick="showRegion('language',this)"><span data-i18n="rtab_language">🗣️ Language Exams</span></button>
+<button class="rtab" onclick="showRegion('olympiad',this)"><span data-i18n="rtab_olympiad">🏅 Olympiads &amp; Competitions</span></button>
+</div>
+<!-- Asia-Pacific -->
+<div class="region-panel active" id="panel-asia">
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇮🇳</div><div class="exam-name">JEE Advanced</div><div class="exam-country">India · Engineering</div><div><span class="exam-tag" data-i18n-count="2,400" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">2,400 courses</span><span class="exam-tag" data-i18n="exam_tag_mock_tests" style="background:rgba(20,44,79,0.2);color:var(--purple2)">Mock tests</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇮🇳</div><div class="exam-name">NEET-UG</div><div class="exam-country">India · Medical</div><div><span class="exam-tag" data-i18n-count="1,900" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">1,900 courses</span><span class="exam-tag" data-i18n="exam_tag_practice_sets" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">Practice sets</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇨🇳</div><div class="exam-name">Gaokao</div><div class="exam-country">China · University</div><div><span class="exam-tag" data-i18n-count="3,100" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">3,100 courses</span><span class="exam-tag" data-i18n="exam_tag_past_papers" style="background:rgba(166,103,43,0.2);color:var(--orange2)">Past papers</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇯🇵</div><div class="exam-name">Kyōtsū / JLPT</div><div class="exam-country">Japan · Unified</div><div><span class="exam-tag" data-i18n-count="800" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">800 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇰🇷</div><div class="exam-name">CSAT (Suneung)</div><div class="exam-country">South Korea</div><div><span class="exam-tag" data-i18n-count="640" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">640 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇵🇰</div><div class="exam-name">MDCAT / ECAT</div><div class="exam-country">Pakistan</div><div><span class="exam-tag" data-i18n-count="720" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.2);color:var(--orange2)">720 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇮🇩</div><div class="exam-name">SBMPTN / UTBK</div><div class="exam-country">Indonesia · University</div><div><span class="exam-tag" data-i18n-count="540" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">540 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇵🇭</div><div class="exam-name">UPCAT</div><div class="exam-country">Philippines · University</div><div><span class="exam-tag" data-i18n-count="310" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">310 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇧🇩</div><div class="exam-name">HSC / Admission Tests</div><div class="exam-country">Bangladesh</div><div><span class="exam-tag" data-i18n-count="280" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">280 courses</span></div></div>
+</div>
+<!-- Africa & Middle East -->
+<div class="region-panel" id="panel-africa">
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇳🇬</div><div class="exam-name">JAMB UTME</div><div class="exam-country">Nigeria · University</div><div><span class="exam-tag" data-i18n-count="1,200" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">1,200 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇬🇭</div><div class="exam-name">WAEC WASSCE</div><div class="exam-country">West Africa</div><div><span class="exam-tag" data-i18n-count="980" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">980 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇿🇦</div><div class="exam-name">NSC Matric</div><div class="exam-country">South Africa</div><div><span class="exam-tag" data-i18n-count="760" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">760 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇰🇪</div><div class="exam-name">KCSE</div><div class="exam-country">Kenya</div><div><span class="exam-tag" data-i18n-count="580" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">580 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇸🇦</div><div class="exam-name">Qiyas / Tahsili</div><div class="exam-country">Saudi Arabia</div><div><span class="exam-tag" data-i18n-count="430" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">430 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇪🇬</div><div class="exam-name">Thanawiyya Amma</div><div class="exam-country">Egypt</div><div><span class="exam-tag" data-i18n-count="390" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.2);color:var(--orange2)">390 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇮🇷</div><div class="exam-name">Konkur (کنکور)</div><div class="exam-country">Iran · University entrance</div><div><span class="exam-tag" data-i18n-count="1,400" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">1,400 courses</span><span class="exam-tag" style="background:rgba(20,44,79,0.2);color:var(--purple2)">ریاضی · تجربی · انسانی</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇲🇦</div><div class="exam-name">Bac Marocain</div><div class="exam-country">Morocco</div><div><span class="exam-tag" data-i18n-count="240" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">240 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇹🇿</div><div class="exam-name">CSEE / ACSEE</div><div class="exam-country">Tanzania</div><div><span class="exam-tag" data-i18n-count="190" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">190 courses</span></div></div>
+</div>
+<!-- Europe -->
+<div class="region-panel" id="panel-europe">
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇫🇷</div><div class="exam-name">Baccalauréat</div><div class="exam-country">France</div><div><span class="exam-tag" data-i18n-count="1,100" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">1,100 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇩🇪</div><div class="exam-name">Abitur</div><div class="exam-country">Germany</div><div><span class="exam-tag" data-i18n-count="870" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">870 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇬🇧</div><div class="exam-name">A-Levels / GCSE</div><div class="exam-country">United Kingdom</div><div><span class="exam-tag" data-i18n-count="2,400" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">2,400 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇪🇸</div><div class="exam-name">Selectividad (EBAU)</div><div class="exam-country">Spain</div><div><span class="exam-tag" data-i18n-count="560" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">560 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇮🇹</div><div class="exam-name">Maturità / TOLC</div><div class="exam-country">Italy</div><div><span class="exam-tag" data-i18n-count="480" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">480 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇵🇱</div><div class="exam-name">Matura</div><div class="exam-country">Poland</div><div><span class="exam-tag" data-i18n-count="320" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.2);color:var(--orange2)">320 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇷🇺</div><div class="exam-name">ЕГЭ (EGE)</div><div class="exam-country">Russia · University</div><div><span class="exam-tag" data-i18n-count="410" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.2);color:var(--purple2)">410 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇹🇷</div><div class="exam-name">YKS / TYT-AYT</div><div class="exam-country">Turkey · University</div><div><span class="exam-tag" data-i18n-count="590" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">590 courses</span></div></div>
+</div>
+<!-- Americas -->
+<div class="region-panel" id="panel-americas">
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇺🇸</div><div class="exam-name">SAT &amp; ACT</div><div class="exam-country">USA · College</div><div><span class="exam-tag" data-i18n-count="3,200" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">3,200 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇺🇸</div><div class="exam-name">MCAT</div><div class="exam-country">USA · Medical</div><div><span class="exam-tag" data-i18n-count="890" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">890 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇧🇷</div><div class="exam-name">ENEM / Vestibular</div><div class="exam-country">Brazil</div><div><span class="exam-tag" data-i18n-count="1,400" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">1,400 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇲🇽</div><div class="exam-name">EXANI / CENEVAL</div><div class="exam-country">Mexico</div><div><span class="exam-tag" data-i18n-count="640" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">640 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇨🇦</div><div class="exam-name">LSAT / MCAT CA</div><div class="exam-country">Canada</div><div><span class="exam-tag" data-i18n-count="500" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">500 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇦🇷</div><div class="exam-name">Ingreso UBA / CBC</div><div class="exam-country">Argentina</div><div><span class="exam-tag" data-i18n-count="280" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.2);color:var(--orange2)">280 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇨🇴</div><div class="exam-name">ICFES Saber 11</div><div class="exam-country">Colombia</div><div><span class="exam-tag" data-i18n-count="210" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.2);color:var(--purple2)">210 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🇨🇱</div><div class="exam-name">PAES (ex-PSU)</div><div class="exam-country">Chile</div><div><span class="exam-tag" data-i18n-count="180" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">180 courses</span></div></div>
+</div>
+<!-- Language Exams -->
+<div class="region-panel" id="panel-language">
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 GL</div><div class="exam-name">IELTS Academic</div><div class="exam-country">Global · English · British Council</div><div><span class="exam-tag" data-i18n-count="4,100" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">4,100 courses</span><span class="exam-tag" data-i18n="exam_tag_all_bands" style="background:rgba(46,125,91,0.2);color:var(--green2)">All bands</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 GL</div><div class="exam-name">TOEFL iBT</div><div class="exam-country">Global · English · ETS</div><div><span class="exam-tag" data-i18n-count="3,200" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">3,200 courses</span><span class="exam-tag" data-i18n="exam_tag_speaking_prep" style="background:rgba(20,44,79,0.2);color:var(--purple2)">Speaking prep</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 GL</div><div class="exam-name">Duolingo English Test</div><div class="exam-country">Global · English · Online</div><div><span class="exam-tag" data-i18n-count="1,100" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">1,100 courses</span><span class="exam-tag" data-i18n="exam_tag_fast_track" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">Fast-track</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 CA</div><div class="exam-name">CELPIP</div><div class="exam-country">Canada · English · PR &amp; Citizenship</div><div><span class="exam-tag" data-i18n-count="680" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.2);color:var(--orange2)">680 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 FR</div><div class="exam-name">DELF / DALF</div><div class="exam-country">Global · French · Ministry</div><div><span class="exam-tag" data-i18n-count="940" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">940 courses</span><span class="exam-tag" data-i18n="exam_tag_a1_c2" style="background:rgba(20,44,79,0.2);color:var(--purple2)">A1–C2</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 DE</div><div class="exam-name">TestDaF / Goethe-Zertifikat</div><div class="exam-country">Global · German</div><div><span class="exam-tag" data-i18n-count="720" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">720 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 JP</div><div class="exam-name">JLPT</div><div class="exam-country">Global · Japanese · N1–N5</div><div><span class="exam-tag" data-i18n-count="1,400" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">1,400 courses</span><span class="exam-tag" data-i18n="exam_tag_all_levels" style="background:rgba(192,138,62,0.2);color:var(--pink2)">All levels</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 CN</div><div class="exam-name">HSK (Hanyu Shuiping)</div><div class="exam-country">Global · Mandarin · HSK 1–6</div><div><span class="exam-tag" data-i18n-count="1,600" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.2);color:var(--orange2)">1,600 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 ES</div><div class="exam-name">DELE / SIELE</div><div class="exam-country">Global · Spanish · Cervantes</div><div><span class="exam-tag" data-i18n-count="860" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">860 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 BR</div><div class="exam-name">CELPE-Bras</div><div class="exam-country">Global · Portuguese</div><div><span class="exam-tag" data-i18n-count="340" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.2);color:var(--purple2)">340 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 RU</div><div class="exam-name">TORFL (ТРКИ)</div><div class="exam-country">Global · Russian</div><div><span class="exam-tag" data-i18n-count="290" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">290 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🗣 KR</div><div class="exam-name">TOPIK</div><div class="exam-country">Global · Korean · I &amp; II</div><div><span class="exam-tag" data-i18n-count="580" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">580 courses</span></div></div>
+</div>
+<!-- Olympiads & Competitions -->
+<div class="region-panel" id="panel-olympiad">
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 OL</div><div class="exam-name">IMO</div><div class="exam-country">International · Mathematics Olympiad</div><div><span class="exam-tag" data-i18n-count="1,200" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">1,200 courses</span><span class="exam-tag" data-i18n="exam_tag_problem_sets" style="background:rgba(192,138,62,0.2);color:var(--pink2)">Problem sets</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 OL</div><div class="exam-name">IPhO</div><div class="exam-country">International · Physics Olympiad</div><div><span class="exam-tag" data-i18n-count="890" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.2);color:var(--purple2)">890 courses</span><span class="exam-tag" data-i18n="exam_tag_past_papers" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">Past papers</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 OL</div><div class="exam-name">IChO</div><div class="exam-country">International · Chemistry Olympiad</div><div><span class="exam-tag" data-i18n-count="680" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">680 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 OL</div><div class="exam-name">IBO</div><div class="exam-country">International · Biology Olympiad</div><div><span class="exam-tag" data-i18n-count="520" data-i18n-template="tpl_courses_count" style="background:rgba(166,103,43,0.2);color:var(--orange2)">520 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 OL</div><div class="exam-name">IOI</div><div class="exam-country">International · Informatics Olympiad</div><div><span class="exam-tag" data-i18n-count="740" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">740 courses</span><span class="exam-tag" data-i18n="exam_tag_competitive_coding" style="background:rgba(20,44,79,0.2);color:var(--purple2)">Competitive coding</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 OL</div><div class="exam-name">IMC</div><div class="exam-country">International · Mathematics Competition · University</div><div><span class="exam-tag" data-i18n-count="390" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">390 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🧠 NS</div><div class="exam-name">BrainBEE</div><div class="exam-country">Global · Neuroscience · Grades 9–12</div><div><span class="exam-tag" data-i18n-count="310" data-i18n-template="tpl_courses_count" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">310 courses</span><span class="exam-tag" data-i18n="exam_tag_brain_science" style="background:rgba(46,125,91,0.2);color:var(--green2)">Brain science</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 AS</div><div class="exam-name">SASMO</div><div class="exam-country">Singapore &amp; Asian · Maths Olympiad</div><div><span class="exam-tag" data-i18n-count="460" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">460 courses</span><span class="exam-tag" data-i18n="exam_tag_grades_2_10" style="background:rgba(166,103,43,0.2);color:var(--orange2)">Grades 2–10</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🔬 SC</div><div class="exam-name">Vanda Science</div><div class="exam-country">Global · Multi-Science Competition</div><div><span class="exam-tag" data-i18n-count="280" data-i18n-template="tpl_courses_count" style="background:rgba(20,44,79,0.2);color:var(--purple2)">280 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 AM</div><div class="exam-name">AMC 8 / 10 / 12</div><div class="exam-country">USA / Global · American Maths</div><div><span class="exam-tag" data-i18n-count="840" data-i18n-template="tpl_courses_count" style="background:rgba(194,118,31,0.2);color:var(--yellow2)">840 courses</span><span class="exam-tag" data-i18n="exam_tag_all_levels" style="background:rgba(15,122,108,0.2);color:var(--cyan2)">All levels</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 KM</div><div class="exam-name">Kangaroo Math</div><div class="exam-country">Global · 80+ Countries</div><div><span class="exam-tag" data-i18n-count="620" data-i18n-template="tpl_courses_count" style="background:rgba(46,125,91,0.2);color:var(--green2)">620 courses</span></div></div>
+<div class="exam-card"><div class="exam-flag" data-no-auto-i18n="true" translate="no">🏅 UK</div><div class="exam-name">UKMT / Junior / Senior</div><div class="exam-country">United Kingdom · Maths Trust</div><div><span class="exam-tag" data-i18n-count="380" data-i18n-template="tpl_courses_count" style="background:rgba(192,138,62,0.2);color:var(--pink2)">380 courses</span></div></div>
+</div>
+</div>
+</section>
+<!-- HOW IT WORKS -->
+<section class="how reveal" id="how">
+<div class="drift" style="width:240px;height:240px;background:var(--teal2);opacity:.28;top:-40px;right:-30px"></div>
+<div class="section-inner">
+<span class="section-tag" data-i18n="how_tag" style="background:rgba(15,122,108,0.12);color:var(--cyan)">⚡ How it works</span>
+<h2 class="section-title" data-i18n="how_title">Simple for learners. Powerful for teachers. 💪</h2>
+<div class="steps-grid">
+<div class="step-card"><div class="step-num">1</div><div class="step-icon">🔍</div><div class="step-title" data-i18n="step1_title">Find your path</div><div class="step-desc" data-i18n="step1_desc">Pick your country, exam, or discipline. Our catalogue adapts instantly — in your language, at your level.</div></div>
+<div class="step-card"><div class="step-num">2</div><div class="step-icon">🎬</div><div class="step-title" data-i18n="step2_title">Learn with the best</div><div class="step-desc" data-i18n="step2_desc">Video lectures, live classes, AI practice tests, and peer groups. Works offline too — even on slow connections.</div></div>
+<div class="step-card"><div class="step-num">3</div><div class="step-icon">🏆</div><div class="step-title" data-i18n="step3_title">Prove it &amp; grow</div><div class="step-desc" data-i18n="step3_desc">Earn verified certificates, share your wins, and track progress with beautiful analytics. Your future is yours.</div></div>
+</div>
+</div>
+</section>
+<!-- INSTRUCTORS -->
+<section class="instructors reveal" id="instructors">
+<div class="drift" style="width:260px;height:260px;background:var(--gold2);opacity:.4;bottom:-60px;left:-40px"></div>
+<div class="drift dot" style="width:6px;height:6px;background:var(--clay);top:15%;right:20%"></div>
+<div class="drift dot" style="width:5px;height:5px;background:var(--gold);top:70%;right:8%;animation-delay:-2s"></div>
+<div class="section-inner">
+<span class="section-tag" data-i18n="instr_tag" style="background:rgba(166,103,43,0.1);color:var(--orange)">🧑‍🏫 Featured instructors</span>
+<h2 class="section-title" data-i18n="instr_title">World-class teachers, from every corner 🌐</h2>
+<p class="section-body" data-i18n="instr_body">Vetted for expertise. Loved by students. Paid in their local currency.</p>
+<!-- Leaderboard toggle -->
+<div style="display:flex;gap:8px;margin:32px 0 24px;flex-wrap:wrap">
+<button class="lb-tab active" data-i18n="lb_students" data-type="students" onclick="setLbTab('students',this)">🎓 Most students</button>
+<button class="lb-tab" data-i18n="lb_views" data-type="views" onclick="setLbTab('views',this)">👁️ Most viewed</button>
+<button class="lb-tab" data-i18n="lb_likes" data-type="likes" onclick="setLbTab('likes',this)">❤️ Most liked</button>
+</div>
+<!-- Leaderboard podium -->
+<div class="lb-wrap" id="lbWrap">
+<!-- Top 3 podium -->
+<div class="lb-podium">
+<!-- 2nd place -->
+<div class="lb-podium-item lb-2nd" onclick="goFilter('instructor','Rajesh Venkataraman')" style="cursor:pointer">
+<div class="lb-rank-badge" style="background:linear-gradient(135deg,#c0c0c0,#9ca3af)">2</div>
+<div class="lb-avatar" style="background:linear-gradient(135deg,var(--cyan),var(--purple));width:72px;height:72px;font-size:20px">RV</div>
+<div class="lb-pname">Rajesh Venkataraman</div>
+<div class="lb-prole"><span data-i18n="field_jee_mathematics">JEE Mathematics</span> · India 🇮🇳</div>
+<div class="lb-pstat" id="lb2-stat">38,700 students</div>
+<div class="lb-bar" style="background:linear-gradient(90deg,var(--cyan),var(--purple));height:60px"></div>
+</div>
+<!-- 1st place -->
+<div class="lb-podium-item lb-1st" onclick="goFilter('instructor','Wei Liang')" style="cursor:pointer">
+<div class="lb-crown">👑</div>
+<div class="lb-rank-badge" style="background:linear-gradient(135deg,var(--yellow),var(--orange))">1</div>
+<div class="lb-avatar" style="background:linear-gradient(135deg,var(--purple),var(--cyan));width:88px;height:88px;font-size:26px">WL</div>
+<div class="lb-pname">Wei Liang</div>
+<div class="lb-prole"><span data-i18n="field_gaokao_physics">Gaokao Physics</span> · China 🇨🇳</div>
+<div class="lb-pstat" id="lb1-stat">52,100 students</div>
+<div class="lb-bar" style="background:linear-gradient(90deg,var(--yellow),var(--orange));height:90px"></div>
+</div>
+<!-- 3rd place -->
+<div class="lb-podium-item lb-3rd" onclick="goFilter('instructor','Fatima Al-Harbi')" style="cursor:pointer">
+<div class="lb-rank-badge" style="background:linear-gradient(135deg,#cd7f32,#a0522d)">3</div>
+<div class="lb-avatar" style="background:linear-gradient(135deg,var(--pink),var(--orange));width:64px;height:64px;font-size:18px">FH</div>
+<div class="lb-pname">Fatima Al-Harbi</div>
+<div class="lb-prole"><span data-i18n="field_qiyas_prep">Qiyas Prep</span> · Saudi Arabia 🇸🇦</div>
+<div class="lb-pstat" id="lb3-stat">21,300 students</div>
+<div class="lb-bar" style="background:linear-gradient(90deg,var(--pink),var(--orange));height:44px"></div>
+</div>
+</div>
+<!-- Leaderboard rows 4–8 -->
+<div class="lb-rows" id="lbRows">
+<div class="lb-row" onclick="goFilter('instructor','Dr Aisha Kamara')" style="cursor:pointer"><span class="lb-row-rank">4</span><div class="lb-row-avatar" style="background:linear-gradient(135deg,var(--pink),var(--orange))">AK</div><div class="lb-row-info"><div class="lb-row-name">Dr Aisha Kamara</div><div class="lb-row-sub" data-i18n-field="field_organic_chem" data-i18n-field-en="Organic Chemistry"><span data-i18n="field_organic_chem">Organic Chemistry</span> · Nigeria 🇳🇬</div></div><div class="lb-row-stat" data-likes="98K likes" data-students="14,200 students" data-views="2.1M views"></div></div>
+<div class="lb-row" onclick="goFilter('instructor','Sophie Beaumont')" style="cursor:pointer"><span class="lb-row-rank">5</span><div class="lb-row-avatar" style="background:linear-gradient(135deg,var(--orange),var(--yellow))">SB</div><div class="lb-row-info"><div class="lb-row-name">Sophie Beaumont</div><div class="lb-row-sub"><span data-i18n="field_bac_french">Baccalauréat French</span> · France 🇫🇷</div></div><div class="lb-row-stat" data-likes="74K likes" data-students="9,800 students" data-views="1.4M views"></div></div>
+<div class="lb-row" onclick="goFilter('instructor','Chef Mateus Oliveira')" style="cursor:pointer"><span class="lb-row-rank">6</span><div class="lb-row-avatar" style="background:linear-gradient(135deg,var(--green),var(--cyan))">MO</div><div class="lb-row-info"><div class="lb-row-name">Chef Mateus Oliveira</div><div class="lb-row-sub" data-i18n-field="field_culinary" data-i18n-field-en="Culinary Arts"><span data-i18n="field_culinary">Culinary Arts</span> · Brazil 🇧🇷</div></div><div class="lb-row-stat" data-likes="62K likes" data-students="6,400 students" data-views="980K views"></div></div>
+<div class="lb-row" onclick="goFilter('instructor','Dr Njeri Waweru')" style="cursor:pointer"><span class="lb-row-rank">7</span><div class="lb-row-avatar" style="background:linear-gradient(135deg,var(--purple),var(--pink))">NW</div><div class="lb-row-info"><div class="lb-row-name">Dr Njeri Waweru</div><div class="lb-row-sub"><span data-i18n="field_sustainable_farming">Sustainable Farming</span> · Kenya 🇰🇪</div></div><div class="lb-row-stat" data-likes="58K likes" data-students="6,200 students" data-views="840K views"></div></div>
+<div class="lb-row" onclick="goFilter('instructor','Yuki Tanaka')" style="cursor:pointer"><span class="lb-row-rank">8</span><div class="lb-row-avatar" style="background:linear-gradient(135deg,var(--cyan),var(--green))">YT</div><div class="lb-row-info"><div class="lb-row-name">Yuki Tanaka</div><div class="lb-row-sub"><span data-i18n="field_jlpt_japanese">JLPT Japanese</span> · Japan 🇯🇵</div></div><div class="lb-row-stat" data-likes="51K likes" data-students="5,900 students" data-views="760K views"></div></div>
+</div>
+</div>
+<!-- Instructor cards -->
+<div style="margin-top:48px;padding-top:40px;border-top:2px dashed rgba(20,44,79,0.1)">
+<h3 data-i18n="instr_all" style="font-family:var(--ff-head);font-size:20px;font-weight:800;color:var(--text);margin-bottom:24px">All featured instructors</h3>
+<div class="instr-grid">
+<div class="instr-card" onclick="goFilter('instructor','Dr Aisha Kamara')" style="cursor:pointer"><div class="instr-avatar" style="background:linear-gradient(135deg,var(--pink),var(--orange))">AK</div><div class="instr-name">Dr Aisha Kamara</div><div class="instr-role" data-i18n="field_organic_chem">Organic Chemistry</div><div class="instr-loc">📍 Lagos, Nigeria</div><div class="instr-stat"><span data-i18n-count="14,200" data-i18n-template="tpl_students_count">14,200 students</span> · ❤️ <span data-i18n-count="98K" data-i18n-template="tpl_likes_count">98K likes</span> · 👁️ <span data-i18n-count="2.1M" data-i18n-template="tpl_views_count">2.1M views</span></div></div>
+<div class="instr-card" onclick="goFilter('instructor','Rajesh Venkataraman')" style="cursor:pointer"><div class="instr-avatar" style="background:linear-gradient(135deg,var(--orange),var(--yellow))">RV</div><div class="instr-name">Rajesh Venkataraman</div><div class="instr-role" data-i18n="field_jee_mathematics">JEE Mathematics</div><div class="instr-loc">📍 Chennai, India</div><div class="instr-stat"><span data-i18n-count="38,700" data-i18n-template="tpl_students_count">38,700 students</span> · ❤️ <span data-i18n-count="186K" data-i18n-template="tpl_likes_count">186K likes</span> · 👁️ <span data-i18n-count="5.8M" data-i18n-template="tpl_views_count">5.8M views</span></div></div>
+<div class="instr-card" onclick="goFilter('instructor','Sophie Beaumont')" style="cursor:pointer"><div class="instr-avatar" style="background:linear-gradient(135deg,var(--cyan),var(--green))">SB</div><div class="instr-name">Sophie Beaumont</div><div class="instr-role" data-i18n="field_bac_french">Baccalauréat French</div><div class="instr-loc">📍 Lyon, France</div><div class="instr-stat"><span data-i18n-count="9,800" data-i18n-template="tpl_students_count">9,800 students</span> · ❤️ <span data-i18n-count="74K" data-i18n-template="tpl_likes_count">74K likes</span> · 👁️ <span data-i18n-count="1.4M" data-i18n-template="tpl_views_count">1.4M views</span></div></div>
+<div class="instr-card" onclick="goFilter('instructor','Wei Liang')" style="cursor:pointer"><div class="instr-avatar" style="background:linear-gradient(135deg,var(--purple),var(--cyan))">WL</div><div class="instr-name">Wei Liang</div><div class="instr-role" data-i18n="field_gaokao_physics">Gaokao Physics</div><div class="instr-loc">📍 Shanghai, China</div><div class="instr-stat"><span data-i18n-count="52,100" data-i18n-template="tpl_students_count">52,100 students</span> · ❤️ <span data-i18n-count="241K" data-i18n-template="tpl_likes_count">241K likes</span> · 👁️ <span data-i18n-count="7.9M" data-i18n-template="tpl_views_count">7.9M views</span></div></div>
+<div class="instr-card" onclick="goFilter('instructor','Chef Mateus Oliveira')" style="cursor:pointer"><div class="instr-avatar" style="background:linear-gradient(135deg,var(--green),var(--cyan))">MO</div><div class="instr-name">Chef Mateus Oliveira</div><div class="instr-role" data-i18n="field_culinary">Culinary Arts</div><div class="instr-loc">📍 São Paulo, Brazil</div><div class="instr-stat"><span data-i18n-count="6,400" data-i18n-template="tpl_students_count">6,400 students</span> · ❤️ <span data-i18n-count="62K" data-i18n-template="tpl_likes_count">62K likes</span> · 👁️ <span data-i18n-count="980K" data-i18n-template="tpl_views_count">980K views</span></div></div>
+<div class="instr-card" onclick="goFilter('instructor','Fatima Al-Harbi')" style="cursor:pointer"><div class="instr-avatar" style="background:linear-gradient(135deg,var(--yellow),var(--orange))">FH</div><div class="instr-name">Fatima Al-Harbi</div><div class="instr-role" data-i18n="field_qiyas_prep_arabic">Qiyas Prep · Arabic</div><div class="instr-loc">📍 Riyadh, Saudi Arabia</div><div class="instr-stat"><span data-i18n-count="21,300" data-i18n-template="tpl_students_count">21,300 students</span> · ❤️ <span data-i18n-count="119K" data-i18n-template="tpl_likes_count">119K likes</span> · 👁️ <span data-i18n-count="3.2M" data-i18n-template="tpl_views_count">3.2M views</span></div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials reveal">
+<div class="drift" style="width:220px;height:220px;background:var(--gold2);opacity:.3;top:-30px;right:8%"></div>
+<div class="section-inner">
+<span class="section-tag" data-i18n="testi_tag" style="background:rgba(194,118,31,0.15);color:#8A5A1F">💬 Student stories</span>
+<h2 class="section-title" data-i18n="testi_title">Real wins. Real people. 🙌</h2>
+<div class="testi-grid">
+<div class="testi-card"><div class="testi-big-quote" style="color:var(--pink)">"</div><div class="testi-text" data-i18n="testi1_text">I found the only JAMB prep taught entirely in Yoruba. That made all the difference. I scored 312 and got into University of Ibadan!</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,var(--pink),var(--orange))">TF</div><div><div class="testi-name">Taiwo Folarin</div><div class="testi-meta" data-i18n="testi1_role">Medicine student · Nigeria 🇳🇬</div></div></div></div>
+<div class="testi-card"><div class="testi-big-quote" style="color:var(--purple)">"</div><div class="testi-text" data-i18n="testi2_text">As a tailor in Kolkata with no formal training, I completed three pattern-making courses. I now have a 12-person workshop and a waiting list! 🧵</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,var(--purple),var(--pink))">PD</div><div><div class="testi-name">Priya Datta</div><div class="testi-meta" data-i18n="role_entrepreneur_india">Entrepreneur · India 🇮🇳</div></div></div></div>
+<div class="testi-card"><div class="testi-big-quote" style="color:var(--green)">"</div><div class="testi-text" data-i18n="testi3_text">I passed my Abitur while working full-time using only offline videos downloaded on weekends. Odyssey works even on 3G in Bavaria. 🎉</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,var(--green),var(--cyan))">MK</div><div><div class="testi-name">Mia Köhler</div><div class="testi-meta" data-i18n="role_engineering_germany">Engineering student · Germany 🇩🇪</div></div></div></div>
+</div>
+<div class="story-cta-card">
+  <div>
+    <h3 data-i18n="share_story_title">Share your story</h3>
+    <p data-i18n="share_story_sub">Tell future learners how Odyssey helped you study, prepare, improve, or keep going when learning felt difficult.</p>
+  </div>
+  <a href="share-story.html" data-i18n="story_cta_button">Share your learning journey</a>
+</div>
+</div>
+</section>
+<!-- CTA -->
+<section class="cta-section">
+<div class="drift" style="width:300px;height:300px;background:rgba(255,255,255,.25);top:-80px;left:-60px"></div>
+<div class="drift dot" style="width:6px;height:6px;background:#fff;top:20%;right:14%"></div>
+<div class="drift dot" style="width:4px;height:4px;background:#fff;bottom:20%;left:12%;animation-delay:-4s"></div>
+<div class="cta-inner">
+<h2 data-i18n="cta_title">Ready to learn — or teach — the whole world? 🌍</h2>
+<p data-i18n="cta_body">Join 12 million students and 62,000 instructors on Odyssey. No subscription needed to browse.</p>
+<div class="cta-form">
+<input class="cta-input" data-i18n-placeholder="ph_cta_email" id="ctaEmail" placeholder="your@email.com" type="email"/>
+<button class="cta-submit" data-i18n="cta_btn" id="ctaBtn">Get started free! 🚀</button>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer>
+<div class="footer-inner">
+<div class="footer-top-grid">
+<!-- Brand -->
+<div class="footer-brand">
+<a class="footer-logo" href="index.html"><div class="footer-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="footer-logo-text">Odyssey</span></a>
+<p data-i18n="footer_brand_desc">The world's most joyful learning platform — every country, discipline, and language. 12M students. 62K instructors. One mission. 🌍</p>
+<div class="footer-social">
+<a class="fsoc" href="#" title="Twitter/X">𝕏</a>
+<a class="fsoc" href="#" title="LinkedIn">in</a>
+<a class="fsoc" href="#" title="Instagram">📸</a>
+<a class="fsoc" href="#" title="YouTube">▶</a>
+<a class="fsoc" href="#" title="TikTok">🎵</a>
+</div>
+</div>
+<!-- Learn -->
+<div class="footer-col">
+<h4 data-i18n="footer_learn">Learn</h4>
+<a data-i18n="footer_browse" href="learnworld_catalog.html">Browse all courses</a>
+<a data-i18n="footer_entrance" href="learnworld_catalog.html?field=Entrance Exam">Entrance exams</a>
+<a data-i18n="footer_language_exams" href="learnworld_catalog.html?field=Language Exam">Language exams</a>
+<a data-i18n="footer_vocational" href="learnworld_catalog.html?field=Vocational">Vocational skills</a>
+<a data-i18n="footer_university" href="learnworld_catalog.html?field=University">University fields</a>
+<a data-i18n="footer_k12" href="learnworld_catalog.html?field=K-12">High school (K–12)</a>
+<a data-i18n="footer_olympiads" href="learnworld_catalog.html">Olympiads &amp; competitions</a>
+<a data-i18n="footer_practice_tests" href="tests_marketplace.html">Practice tests</a>
+</div>
+<!-- Teach -->
+<div class="footer-col">
+<h4 data-i18n="footer_teach">Teach</h4>
+<a data-i18n="footer_become_instructor" href="contact.html">Become an instructor</a>
+<a data-i18n="footer_subscriptions" href="subscription.html">Subscriptions</a>
+<a data-i18n="footer_earnings_payouts" href="earnings.html">Earnings &amp; payouts</a>
+<a data-i18n="footer_accreditations_certificates" href="accreditations.html">Accreditations &amp; certificates</a>
+<a data-i18n="footer_institutional_plans" href="contact.html">Institutional plans</a>
+<a data-i18n="footer_course_builder_tour" href="contact.html">Course builder tour</a>
+<a data-i18n="footer_partnership_enquiries" href="contact.html">Partnership enquiries</a>
+<a data-i18n="footer_instructor_faq" href="faq.html#instructor">Instructor FAQ</a>
+</div>
+<!-- Company -->
+<div class="footer-col">
+<h4 data-i18n="footer_company">Company</h4>
+<a data-i18n="footer_about_odyssey" href="about.html">About Odyssey</a>
+<a data-i18n="footer_our_team" href="about.html#team">Our team</a>
+<a data-i18n="footer_our_story" href="about.html#timeline">Our story</a>
+<a data-i18n="footer_press_media" href="press-media.html">Press &amp; media</a>
+<a data-i18n="footer_careers" href="contact.html">Careers</a>
+<a data-i18n="footer_partnerships" href="contact.html">Partnerships</a>
+<a data-i18n="footer_contact" href="contact.html">Contact us</a>
+<a data-i18n="footer_stories" href="stories.html">Stories</a>
+<a data-i18n="share_story_title" href="share-story.html">Share your story</a>
+</div>
+<!-- Support & Legal -->
+<div class="footer-col">
+<h4 data-i18n="footer_support">Support &amp; Legal</h4>
+<a data-i18n="footer_help_faqs" href="faq.html">Help centre &amp; FAQs</a>
+<a data-i18n="footer_terms_service" href="terms.html">Terms of service</a>
+<a data-i18n="footer_privacy_policy" href="privacy.html">Privacy policy</a>
+<a data-i18n="footer_cookie_policy" href="privacy.html#cookies">Cookie policy</a>
+<a data-i18n="footer_accred" href="accreditations.html">Accreditations</a>
+<a data-i18n="footer_refund_policy" href="terms.html#refund">Refund policy</a>
+<a data-i18n="footer_accessibility" href="terms.html#accessibility">Accessibility</a>
+<a data-i18n="footer_trust_safety" href="terms.html#trust">Trust &amp; safety</a>
+</div>
+</div>
+<!-- Language switcher -->
+<div class="footer-langs-row">
+<span class="footer-langs-label" data-i18n="footer_lang_label">🌐 Available in:</span>
+<span data-i18n-switcher=""></span>
+</div></div>
+</footer>
+<script>
+// Region/exam tabs
+function showRegion(id,btn){
+  document.querySelectorAll('.region-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Discipline group tabs
+function showDisc(id,btn){
+  document.querySelectorAll('.disc-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.disc-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('disc-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Navigate to catalog with URL filter params
+function goFilter(type, value) {
+  const params = new URLSearchParams();
+  params.set(type, value);
+  window.location.href = 'learnworld_catalog.html?' + params.toString();
+}
+
+function goExamFilter(examName) {
+  const params = new URLSearchParams();
+  params.set('exam', examName);
+  window.location.href = 'learnworld_catalog.html?' + params.toString();
+}
+
+function normalizeExamCards(){
+  document.querySelectorAll('.exam-card').forEach(card=>{
+    const name = card.querySelector('.exam-name')?.textContent?.trim();
+    if(!name) return;
+    card.setAttribute('role','link');
+    card.setAttribute('tabindex','0');
+    card.setAttribute('aria-label',`Browse catalog courses for ${name}`);
+    card.style.cursor='pointer';
+    card.addEventListener('click',()=>goExamFilter(name));
+    card.addEventListener('keydown',event=>{
+      if(event.key==='Enter'||event.key===' '){
+        event.preventDefault();
+        goExamFilter(name);
+      }
+    });
+  });
+}
+
+function normalizeDisciplineCards(){
+  document.querySelectorAll('.disc-panel .cat-card').forEach(card=>{
+    card.setAttribute('role','link');
+    card.setAttribute('tabindex','0');
+    card.style.cursor='pointer';
+    card.addEventListener('keydown',event=>{
+      if(event.key==='Enter'||event.key===' '){
+        event.preventDefault();
+        card.click();
+      }
+    });
+  });
+  document.querySelectorAll('.disc-tab').forEach(tab=>{
+    tab.setAttribute('type','button');
+    tab.style.cursor='pointer';
+  });
+}
+normalizeDisciplineCards();
+normalizeExamCards();
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// CTA email
+document.getElementById('ctaBtn').addEventListener('click',()=>{
+  const email=document.getElementById('ctaEmail').value;
+  if(email.includes('@')){
+    document.getElementById('ctaBtn').textContent=T('cta_success_joined');
+    document.getElementById('ctaBtn').style.background='#2E7D5B';
+    document.getElementById('ctaBtn').style.color='white';
+    document.getElementById('ctaEmail').value='';
+  } else {
+    document.getElementById('ctaEmail').style.borderColor='rgba(255,100,100,0.8)';
+    setTimeout(()=>document.getElementById('ctaEmail').style.borderColor='',1500);
+  }
+});
+
+// Leaderboard tabs
+// Translation helper for dynamic content
+function T(key){
+  try{
+    if(window.OdysseyI18n && typeof window.OdysseyI18n.t==='function') return window.OdysseyI18n.t(key);
+    const lang=localStorage.getItem('odyssey_lang')||'en';
+    const d=(window.OdysseyI18n&&window.OdysseyI18n.DICT[lang])||{};
+    const en=(window.OdysseyI18n&&window.OdysseyI18n.DICT.en)||{};
+    return d[key]!==undefined?d[key]:(en[key]!==undefined?en[key]:String(key).replace(/_/g,' '));
+  }catch(e){return String(key).replace(/_/g,' ');}
+}
+
+const LB_NUMS = {
+  students: {top:['52,100','38,700','21,300'], rows:['14,200','9,800','6,400','6,200','5,900']},
+  views:    {top:['7.9M','5.8M','3.2M'],       rows:['2.1M','1.4M','980K','840K','760K']},
+  likes:    {top:['241K','186K','119K'],        rows:['98K','74K','62K','58K','51K']}
+};
+
+function getLbLabel(type, num){
+  const tpl = T('tpl_'+type+'_count');
+  return tpl.replace('{count}', num);
+}
+
+function setLbTab(type, btn){
+  document.querySelectorAll('.lb-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const d = LB_NUMS[type];
+  document.getElementById('lb1-stat').textContent = getLbLabel(type, d.top[0]);
+  document.getElementById('lb2-stat').textContent = getLbLabel(type, d.top[1]);
+  document.getElementById('lb3-stat').textContent = getLbLabel(type, d.top[2]);
+  document.querySelectorAll('.lb-row-stat').forEach((el,i)=>{
+    el.textContent = getLbLabel(type, d.rows[i]||'');
+  });
+}
+
+// Init leaderboard with translated labels
+function initLb(){
+  const activeTab = document.querySelector('.lb-tab.active');
+  const type = activeTab ? (activeTab.dataset.type||'students') : 'students';
+  const d = LB_NUMS[type];
+  ['lb1-stat','lb2-stat','lb3-stat'].forEach((id,i)=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = getLbLabel(type, d.top[i]);
+  });
+  document.querySelectorAll('.lb-row-stat').forEach((el,i)=>{
+    el.textContent = getLbLabel(type, d.rows[i]||'');
+  });
+}
+initLb();
+
+// Re-render leaderboard stats on language change
+window.addEventListener('odyssey:languageChanged', initLb);
+window.addEventListener('load', initLb);
+</script>
+
+</body>
+</html>
