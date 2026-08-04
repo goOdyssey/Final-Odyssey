@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Odyssey — Founder Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#F6F4EF;--panel:#ffffff;--text:#141C2B;--muted:#64708A;--line:rgba(20,28,43,.11);
+  --primary:#142C4F;--accent:#0F7A6C;--warn:#C2761F;--danger:#B23A48;--success:#16855A;--gold:#C08A3E;
+  --shadow:0 20px 60px rgba(15,23,42,.10);--radius:16px;--font:Manrope,system-ui,sans-serif;--head:"Newsreader",Georgia,serif;
+}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font)}
+button,input,select{font:inherit}
+.gate{display:flex;min-height:100vh;align-items:center;justify-content:center;color:var(--muted);font-weight:700;text-align:center;padding:20px}
+.shell{max-width:1180px;margin:0 auto;padding:30px 24px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+.brand{font-family:var(--head);font-size:26px;font-weight:900}
+.brand span{display:block;font-family:var(--font);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-top:2px}
+.who{text-align:right;font-size:12.5px;color:var(--muted);font-weight:600}
+.who b{display:block;color:var(--text);font-size:13.5px}
+.btn{border:0;border-radius:11px;padding:9px 13px;font-weight:800;cursor:pointer;background:var(--primary);color:#fff;font-size:13px}
+.btn.secondary{background:#eef1f5;color:var(--primary);border:1px solid var(--line)}
+.btn.tiny{padding:6px 10px;font-size:11.5px;border-radius:8px}
+.sub{color:var(--muted);font-weight:600;font-size:14px;margin:2px 0 22px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.kpi span{color:var(--muted);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
+.kpi strong{display:block;font-family:var(--head);font-size:24px;margin-top:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.toolbar input[type=text]{flex:1;min-width:200px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
+.toolbar select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
+.table-scroll{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--muted);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;background:var(--panel)}
+tbody tr:hover{background:#f7f9fc}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;text-transform:capitalize}
+.badge.student{background:rgba(20,44,79,.08);color:var(--primary)}
+.badge.instructor{background:rgba(15,122,108,.12);color:var(--accent)}
+.badge.institution{background:rgba(194,118,31,.12);color:var(--warn)}
+.badge.admin,.badge.support{background:rgba(20,44,79,.14);color:var(--primary)}
+.badge.superuser{background:rgba(192,138,62,.18);color:#8a5c1f}
+.badge.active{background:rgba(22,133,90,.12);color:var(--success)}
+.badge.pending{background:rgba(194,118,31,.14);color:var(--warn)}
+.badge.suspended,.badge.deleted{background:rgba(178,58,72,.13);color:var(--danger)}
+.role-select{padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-size:12.5px;background:#fff}
+.empty{padding:30px;text-align:center;color:var(--muted);font-weight:600}
+.you-tag{font-size:10.5px;font-weight:800;color:var(--gold);margin-left:6px}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">Checking your founder session...</div>
+
+<div class="shell" id="shell" style="display:none">
+  <div class="topbar">
+    <div class="brand">Odyssey<span>Founder Dashboard</span></div>
+    <div class="who">
+      <b id="whoName">—</b>
+      <span id="whoEmail"></span><br>
+      <button class="btn secondary tiny" style="margin-top:8px" onclick="location.href='admin_dashboard.html'">Admin dashboard</button>
+      <button class="btn tiny" style="margin-top:8px" onclick="signOutFounder()">Sign out</button>
+    </div>
+  </div>
+  <div class="sub">Every Odyssey account, in one place. Promote or relegate roles — every change is logged.</div>
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="card">
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="Search by name or email..." oninput="renderTable()">
+      <select id="roleFilter" onchange="renderTable()">
+        <option value="">All roles</option>
+        <option value="student">Student</option>
+        <option value="instructor">Instructor</option>
+        <option value="institution">Institution</option>
+        <option value="admin">Admin</option>
+        <option value="support">Support</option>
+        <option value="superuser">Superuser</option>
+      </select>
+      <button class="btn secondary tiny" onclick="loadUsers()">↻ Refresh</button>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Country</th><th>Joined</th><th>Change role to</th>
+        </tr></thead>
+        <tbody id="usersBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const ROLES = ['student','instructor','institution','support','admin','superuser'];
+let ME = null;
+let USERS = [];
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function fmtDate(d){return d?new Date(d).toLocaleDateString():'—'}
+function badge(v){return `<span class="badge ${esc(v)}">${esc(v||'—')}</span>`}
+
+async function requireFounderSession(){
+  const gate = document.getElementById('gate');
+  try{
+    if(!window.OdysseySupabase?.isConfigured?.()){
+      gate.textContent = 'Supabase is not configured. Add your project keys in js/supabase-config.js.';
+      return null;
+    }
+    const session = await OdysseySupabase.session();
+    if(!session){ location.href = 'admin-login.html'; return null; }
+    const profile = await OdysseySupabase.profile();
+    if(!profile || profile.role !== 'superuser'){
+      gate.textContent = "This dashboard is for the Odyssey founder account only. Redirecting...";
+      setTimeout(()=>{ location.href = profile && ['admin','support'].includes(profile.role) ? 'admin_dashboard.html' : 'student_portal.html'; }, 1200);
+      return null;
+    }
+    return profile;
+  }catch(error){
+    gate.textContent = 'Could not verify your session: ' + (error?.message || error);
+    return null;
+  }
+}
+
+async function signOutFounder(){
+  try{ await OdysseySupabase.signOut(); }catch(e){}
+  location.href = 'admin-login.html';
+}
+
+async function loadUsers(){
+  try{
+    USERS = await OdysseySupabase.founderListUsers();
+    renderKpis();
+    renderTable();
+  }catch(error){
+    alert('Could not load users: ' + (error?.message || error));
+  }
+}
+
+function renderKpis(){
+  const counts = {};
+  USERS.forEach(u => { counts[u.role] = (counts[u.role]||0) + 1; });
+  const cards = [
+    ['Total users', USERS.length],
+    ['Students', counts.student||0],
+    ['Instructors', counts.instructor||0],
+    ['Institutions', counts.institution||0],
+    ['Admin / support', (counts.admin||0) + (counts.support||0)],
+    ['Superusers', counts.superuser||0]
+  ];
+  document.getElementById('kpiGrid').innerHTML = cards.map(([label,val])=>
+    `<div class="kpi"><span>${label}</span><strong>${val}</strong></div>`
+  ).join('');
+}
+
+function renderTable(){
+  const q = (document.getElementById('search').value||'').toLowerCase().trim();
+  const roleFilter = document.getElementById('roleFilter').value;
+  const rows = USERS.filter(u=>{
+    if(roleFilter && u.role !== roleFilter) return false;
+    if(!q) return true;
+    return (u.full_name||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q);
+  });
+  const body = document.getElementById('usersBody');
+  if(!rows.length){
+    body.innerHTML = '<tr><td colspan="7" class="empty">No matching users.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(u=>{
+    const isMe = ME && u.id === ME.id;
+    const options = ROLES.map(r=>`<option value="${r}" ${r===u.role?'selected':''}>${r}</option>`).join('');
+    return `<tr>
+      <td>${esc(u.full_name||'—')}${isMe?'<span class="you-tag">YOU</span>':''}</td>
+      <td>${esc(u.email||'—')}</td>
+      <td>${badge(u.role)}</td>
+      <td>${badge(u.status)}</td>
+      <td>${esc(u.country||'—')}</td>
+      <td>${fmtDate(u.created_at)}</td>
+      <td>
+        <select class="role-select" onchange="changeRole('${u.id}', this)">${options}</select>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function changeRole(userId, selectEl){
+  const newRole = selectEl.value;
+  const user = USERS.find(u=>u.id===userId);
+  const oldRole = user?.role;
+  if(newRole === oldRole) return;
+  if(!confirm(`Change ${user?.full_name || user?.email || 'this user'} from "${oldRole}" to "${newRole}"?`)){
+    selectEl.value = oldRole;
+    return;
+  }
+  selectEl.disabled = true;
+  try{
+    await OdysseySupabase.founderSetUserRole(userId, newRole);
+    if(user) user.role = newRole;
+    renderKpis();
+    renderTable();
+  }catch(error){
+    alert('Could not change role: ' + (error?.message || error));
+    selectEl.value = oldRole;
+  }finally{
+    selectEl.disabled = false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async ()=>{
+  ME = await requireFounderSession();
+  if(!ME) return;
+  document.getElementById('whoName').textContent = ME.full_name || 'Founder';
+  document.getElementById('whoEmail').textContent = ME.email || '';
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('shell').style.display = 'block';
+  await loadUsers();
+});
+</script>
+</body>
+</html>

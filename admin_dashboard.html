@@ -99,6 +99,7 @@ tbody tr:hover{background:#f7f9fc}
     <div class="sidebar-foot">
       <div style="font-weight:800;font-size:13.5px" id="adminName">Admin</div>
       <div style="opacity:.7;font-size:12px;margin-bottom:10px" id="adminEmail"></div>
+      <button class="navlink" onclick="location.href='founder-dashboard.html'">Founder dashboard</button>
       <button class="navlink" onclick="refreshAll()">↻ Refresh data</button>
       <button class="navlink" onclick="logoutAdmin()">Sign out</button>
     </div>
@@ -277,9 +278,9 @@ async function requireAdminSession(){
       return null;
     }
     const session=await OdysseySupabase.session();
-    if(!session){location.href='auth.html?mode=login&redirect=admin_dashboard.html';return null}
+    if(!session){location.href='admin-login.html';return null}
     const profile=await OdysseySupabase.profile();
-    if(!profile||!['admin','support'].includes(profile.role)){
+    if(!profile||!['admin','support','superuser'].includes(profile.role)){
       gate.textContent="This area is for Odyssey admins only. Redirecting...";
       setTimeout(()=>location.href='student_portal.html',1200);
       return null;
@@ -290,7 +291,7 @@ async function requireAdminSession(){
     return null;
   }
 }
-async function logoutAdmin(){try{await OdysseySupabase.signOut()}catch(e){}location.href='auth.html?mode=login'}
+async function logoutAdmin(){try{await OdysseySupabase.signOut()}catch(e){}location.href='admin-login.html'}
 
 // ============================================================================
 // Navigation

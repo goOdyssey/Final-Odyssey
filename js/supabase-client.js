@@ -46,6 +46,7 @@
   }
 
   function routeForRole(role){
+    if (role === 'superuser') return 'founder-dashboard.html';
     if (role === 'admin' || role === 'support') return 'admin_dashboard.html';
     if (role === 'instructor') return 'instructor_portal.html';
     if (role === 'institution') return 'instructor_portal.html#subscriptions';
@@ -53,7 +54,7 @@
   }
 
   function normalizeRole(role){
-    return ['student','instructor','institution','admin','support'].includes(role) ? role : 'student';
+    return ['student','instructor','institution','admin','support','superuser'].includes(role) ? role : 'student';
   }
 
   function authMetadata(user){
@@ -265,6 +266,22 @@
     if (error) throw error;
   }
 
+  // ---- Founder-only: full user directory + role promote/demote (superuser gate is
+  // enforced server-side inside both RPCs, not just by hiding the UI) ----
+
+  async function founderListUsers(){
+    const sb = await client();
+    const { data, error } = await sb.rpc('founder_list_users');
+    if (error) throw error;
+    return data || [];
+  }
+
+  async function founderSetUserRole(targetUserId, newRole){
+    const sb = await client();
+    const { error } = await sb.rpc('founder_set_user_role', { target_user_id: targetUserId, new_role: newRole });
+    if (error) throw error;
+  }
+
   // ---- NEW: secure purchase / exam / certificate flow ----
   // These replace every place the old front-end read/wrote odyssey_purchased_tests,
   // odyssey_instructor_exams, odyssey_demo_logged_in, or issued certificates locally.
@@ -310,6 +327,7 @@
     session,
     adminSummary, adminCollections, adminStudentDetail, adminInstructorDetail,
     setUserStatus, setCourseStatus,
+    founderListUsers, founderSetUserRole,
     enrollInCourse, startExamAttempt, getExamQuestions, submitExamAttempt, issueCertificate
   };
 }());
