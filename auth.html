@@ -178,7 +178,7 @@ label.fl .opt{color:var(--muted);font-weight:500;text-transform:none;letter-spac
 
 /* Login form */
 .login-form{width:100%;max-width:400px}
-.login-role-selector{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}.login-role-card{border:2px solid var(--border);border-radius:14px;background:var(--bg);padding:13px 12px;text-align:left;cursor:pointer;font-family:var(--ff-body);transition:all .2s}.login-role-card b{display:block;font-size:13px;color:var(--text);margin-bottom:3px}.login-role-card span{display:block;font-size:11px;color:var(--muted);line-height:1.35}.login-role-card.active{border-color:var(--purple);background:linear-gradient(135deg,rgba(20,44,79,.08),rgba(192,138,62,.06));box-shadow:0 8px 22px rgba(20,44,79,.14)}.country-flag-select option{font-family:var(--ff-body),system-ui,sans-serif}.login-role-title{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.login-role-selector{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}.login-role-card{border:2px solid var(--border);border-radius:14px;background:var(--bg);padding:13px 12px;text-align:left;cursor:pointer;font-family:var(--ff-body);transition:all .2s}.login-role-card b{display:block;font-size:13px;color:var(--text);margin-bottom:3px}.login-role-card span{display:block;font-size:11px;color:var(--muted);line-height:1.35}.login-role-card.active{border-color:var(--purple);background:linear-gradient(135deg,rgba(20,44,79,.08),rgba(192,138,62,.06));box-shadow:0 8px 22px rgba(20,44,79,.14)}.country-flag-select option{font-family:var(--ff-body),system-ui,sans-serif}.login-role-title{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
 
 /* Responsive */
 @media(max-width:900px){.auth-layout{grid-template-columns:1fr}.auth-left{display:none}.auth-right{padding:36px 20px}}
@@ -261,6 +261,8 @@ html[dir="rtl"] nav .i18n-dropdown{
 <script defer src="assets/odyssey-scroll-reveal.js"></script>
 <script src="js/supabase-config.js"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/recaptcha-config.js"></script>
+<script src="js/security-guard.js"></script>
 </head>
 <body><div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
 <!-- ════════════════════════════════════════
@@ -1651,6 +1653,9 @@ async function renderAuthDiagnostics() {
     }
     setBusy(button, true, 'Creating account...');
     try {
+      const guard = await OdysseySecurity.check(profile.email, 'signup');
+      if (!guard.allowed) { authNotice(guard.message, 'bad'); setBusy(button, false); return; }
+
       const remote = await supabaseSignup(role, profile, password);
       if (!remote?.used || !remote?.result?.user) {
         throw new Error('Supabase did not return a created user. Please check your project settings.');
@@ -1704,11 +1709,16 @@ async function renderAuthDiagnostics() {
     }
     setBusy(button, true, 'Logging in...');
     try {
+      const guard = await OdysseySecurity.check(email, 'login');
+      if (!guard.allowed) { authNotice(guard.message, 'bad'); return; }
+
       const result = await OdysseySupabase.signIn(email, password);
       const verifiedRole = result.profile?.role || result.user?.user_metadata?.role || '';
-      if (loginRole === 'admin' && !['admin','support'].includes(verifiedRole)) {
-        throw new Error('This account is not registered as an Odyssey admin.');
+      if (['admin','support','superuser'].includes(verifiedRole)) {
+        await OdysseySupabase.signOut?.();
+        throw new Error('Admin accounts must sign in from the admin portal, not this page.');
       }
+      OdysseySecurity.record(email, 'success');
       const role = verifiedRole || loginRole || 'student';
       savePortalProfile(role, {
         name: result.profile?.full_name || result.user?.user_metadata?.full_name || email,
@@ -1720,6 +1730,7 @@ async function renderAuthDiagnostics() {
       authNotice('Login successful. Opening your portal...', 'good');
       setTimeout(()=>goPortal(role), 300);
     } catch (error) {
+      OdysseySecurity.record(email, 'failure');
       authNotice(authErrorMessage(error), 'bad');
     } finally {
       setBusy(button, false);
