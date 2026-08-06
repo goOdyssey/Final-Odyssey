@@ -8,7 +8,7 @@
  * 1. Get a free key: https://unsplash.com/developers → "New Application"
  *    (the free "Demo" tier allows 50 requests/hour, which easily covers
  *    this one-off run of 45 subjects).
- * 2. UNSPLASH_ACCESS_KEY=tKLJxxwAjViOlvKUgZxPml79gBwDmalMQy6jW3qQNvQ fetch-subject-images.mjs
+ * 2. UNSPLASH_ACCESS_KEY=tKLJxxwAjViOlvKUgZxPml79gBwDmalMQy6jW3qQNvQ node fetch-subject-images.mjs
  * 3. Commit the resulting assets/subjects/*.jpg files to your repo.
  *
  * Uses the official /search/photos endpoint (JSON, stable, licensed) —
