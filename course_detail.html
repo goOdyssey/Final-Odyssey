@@ -129,6 +129,61 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 .rel-title{font-family:var(--ff-head);font-weight:800;font-size:14.5px;margin-bottom:6px;line-height:1.3}
 .rel-meta{font-size:11.5px;color:var(--muted2)}
 
+/* ENGAGEMENT — like / rate / comment */
+.dh-engage-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.engage-pill{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius-pill);border:1px solid var(--border);background:#fff;font-size:12.5px;font-weight:700;color:var(--text);cursor:pointer;font-family:var(--ff-body);transition:border-color .2s,transform .2s}
+.engage-pill:hover{border-color:var(--navy);transform:translateY(-1px)}
+.engage-pill.liked{background:#FDEDF0;border-color:#e0748f;color:#b23a5b}
+.engage-btn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--cream);font-size:12.5px;font-weight:700;color:var(--text);cursor:pointer;font-family:var(--ff-body);transition:border-color .2s,background .2s}
+.engage-btn:hover{border-color:var(--navy);background:#fff}
+.engage-btn.liked{background:#FDEDF0;border-color:#e0748f;color:#b23a5b}
+
+/* RATING POPOVER */
+.rate-overlay{position:fixed;inset:0;background:rgba(13,27,42,.45);display:none;align-items:center;justify-content:center;z-index:500;padding:20px}
+.rate-overlay.open{display:flex}
+.rate-modal{background:#fff;border-radius:18px;padding:28px 26px;max-width:340px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.rate-modal h3{font-family:var(--ff-head);font-size:18px;margin-bottom:6px}
+.rate-modal p{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+.rate-stars-input{display:flex;justify-content:center;gap:6px;font-size:34px;margin-bottom:14px}
+.rate-star{cursor:pointer;color:#e3dcce;transition:transform .12s,color .12s}
+.rate-star:hover,.rate-star.hover,.rate-star.picked{color:var(--gold);transform:scale(1.12)}
+.rate-modal-close{margin-top:6px;font-size:12px;color:var(--muted2);background:none;border:none;cursor:pointer;font-family:var(--ff-body)}
+.rate-thanks{font-size:13px;color:var(--moss);font-weight:700;display:none}
+
+/* COMMENTS */
+.comments-section{max-width:1180px;margin:0 auto 90px;padding:0 24px}
+.comments-section h2{font-family:var(--ff-head);font-size:22px;font-weight:800;margin-bottom:20px}
+.comment-form{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:28px;box-shadow:var(--shadow)}
+.comment-form-row{display:flex;gap:10px;margin-bottom:10px}
+.comment-form input,.comment-form textarea{flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-family:var(--ff-body);font-size:13px;outline:none;background:var(--cream)}
+.comment-form input:focus,.comment-form textarea:focus{border-color:var(--navy)}
+.comment-form textarea{width:100%;min-height:80px;resize:vertical;margin-bottom:10px}
+.comment-form-submit{padding:11px 22px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--ff-body)}
+.comment-form-note{font-size:11px;color:var(--muted2);margin-top:8px}
+.comment-list{display:flex;flex-direction:column;gap:4px}
+.comment-item{position:relative;padding:16px 4px;border-bottom:1px solid var(--border)}
+.comment-item.reply{margin-left:44px;border-bottom:none;padding-bottom:6px}
+.comment-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.comment-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:800;font-size:12px;flex-shrink:0}
+.comment-name{font-size:13px;font-weight:800;color:var(--text)}
+.comment-meta{font-size:11px;color:var(--muted2)}
+.comment-body{font-size:13.5px;color:var(--text);line-height:1.7;margin-left:46px}
+.comment-actions{display:flex;align-items:center;gap:14px;margin-left:46px;margin-top:8px}
+.comment-action{font-size:11.5px;font-weight:700;color:var(--muted2);background:none;border:none;cursor:pointer;font-family:var(--ff-body);padding:0}
+.comment-action:hover{color:var(--navy)}
+.comment-reactions{display:flex;align-items:center;gap:4px;position:relative}
+.reaction-chip{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;padding:3px 8px;border-radius:var(--radius-pill);background:var(--cream);border:1px solid var(--border);cursor:pointer}
+.reaction-chip.mine{background:#E9F3F0;border-color:var(--teal)}
+.reaction-picker{display:none;position:absolute;bottom:100%;left:46px;margin-bottom:6px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-pill);padding:6px 8px;gap:4px;box-shadow:var(--shadow-md);z-index:20}
+.comment-item:hover .reaction-picker{display:flex}
+.reaction-picker button{background:none;border:none;font-size:17px;cursor:pointer;padding:2px 4px;border-radius:8px;transition:transform .12s,background .12s}
+.reaction-picker button:hover{transform:scale(1.25);background:var(--cream)}
+.reply-form{margin-left:46px;margin-top:10px;display:none;gap:8px}
+.reply-form.open{display:flex}
+.reply-form input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--cream)}
+.reply-form button{padding:9px 16px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
+.comments-empty{font-size:13px;color:var(--muted2);padding:20px 4px}
+
 footer{background:var(--navy2);padding:36px 24px;text-align:center}
 footer p{font-size:12px;color:rgba(255,255,255,.3)}
 footer a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;margin:0 10px}
@@ -186,9 +241,13 @@ footer a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;margin
     <p class="dh-sub" id="courseSub">—</p>
     <div class="dh-meta">
       <span class="dh-instructor"><span class="dh-avatar" id="instrAvatar">--</span><span id="instrName">—</span></span>
-      <span class="dh-rating">★ <span id="ratingNum">0.0</span> <small id="reviewCount">(0 reviews)</small></span>
       <span id="studentCount">0 students</span>
       <span id="courseFlag"></span>
+    </div>
+    <div class="dh-engage-row" id="dhEngageRow">
+      <button class="engage-pill" id="likeBtnHero" type="button">🤍 <span id="likeCountHero">0</span></button>
+      <button class="engage-pill" id="rateOpenBtnHero" type="button">⭐ <span id="rateSummaryHero">Not yet rated</span></button>
+      <button class="engage-pill" id="commentJumpBtnHero" type="button">💬 <span id="commentCountHero">0</span> comments</button>
     </div>
   </div>
 
@@ -220,14 +279,18 @@ footer a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;margin
       <h2>Ratings &amp; engagement</h2>
       <div class="rate-grid">
         <div class="rate-big">
-          <div class="num" id="rateBigNum">4.8</div>
-          <div class="stars">★★★★★</div>
-          <div class="count" id="rateBigCount">0 ratings</div>
+          <div class="num" id="rateBigNum">—</div>
+          <div class="stars" id="rateBigStars">☆☆☆☆☆</div>
+          <div class="count" id="rateBigCount">No ratings yet</div>
         </div>
         <div class="rate-bars" id="rateBars"></div>
       </div>
       <div class="like-strip">
-        <span class="like-chip">❤️ <span id="likeCount">0</span> likes</span>
+        <button class="engage-btn" id="likeBtn" type="button">🤍 <span id="likeCount">0</span> Like</button>
+        <button class="engage-btn" id="rateOpenBtn" type="button">⭐ Rate this course</button>
+        <button class="engage-btn" id="commentJumpBtn" type="button">💬 <span id="commentCountChip">0</span> Comments</button>
+      </div>
+      <div class="like-strip" style="margin-top:8px;padding-top:0;border-top:none">
         <span class="like-chip">👁️ <span id="viewCount">0</span> views</span>
         <span class="like-chip">🎓 <span id="completionRate">0%</span> completion rate</span>
       </div>
@@ -277,6 +340,36 @@ footer a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;margin
   <div class="related-grid" id="relatedGrid"></div>
 </div>
 
+<div class="comments-section" id="commentsSection">
+  <h2>Student comments</h2>
+  <div class="comment-form">
+    <div class="comment-form-row">
+      <input type="text" id="commentName" placeholder="Your name" maxlength="60">
+      <input type="text" id="commentCountry" placeholder="Your country" maxlength="60">
+    </div>
+    <textarea id="commentBody" placeholder="Share your thoughts on this course…" maxlength="2000"></textarea>
+    <button class="comment-form-submit" id="commentSubmitBtn" type="button">Post comment</button>
+    <div class="comment-form-note">Comments are public and stored against this course. Be kind — this is a shared space.</div>
+  </div>
+  <div class="comment-list" id="commentList"></div>
+</div>
+
+<div class="rate-overlay" id="rateOverlay">
+  <div class="rate-modal">
+    <h3>Rate this course</h3>
+    <p>Tap a star from 1 to 5 — you can update your rating any time.</p>
+    <div class="rate-stars-input" id="rateStarsInput">
+      <span class="rate-star" data-star="1">★</span>
+      <span class="rate-star" data-star="2">★</span>
+      <span class="rate-star" data-star="3">★</span>
+      <span class="rate-star" data-star="4">★</span>
+      <span class="rate-star" data-star="5">★</span>
+    </div>
+    <div class="rate-thanks" id="rateThanks">Thanks — your rating was saved!</div>
+    <button class="rate-modal-close" id="rateModalClose" type="button">Close</button>
+  </div>
+</div>
+
 <footer>
   <p>© 2026 Odyssey · Demo preview</p>
   <div>
@@ -285,6 +378,7 @@ footer a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;margin
 </footer>
 
 <script src="assets/odyssey-courses-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 /* This page is data-driven from the SAME COURSES array used by learnworld_catalog.html
    (assets/odyssey-courses-data.js) — one source of truth, no duplicated/drifting data. */
@@ -323,7 +417,7 @@ function renderRelated(course){
     <div class="rel-card" onclick="window.location.href='course_detail.html?id=${c.id}'">
       <div class="rel-emoji">${c.emoji}</div>
       <div class="rel-title">${c.title}</div>
-      <div class="rel-meta">★ ${c.rating} · ${c.students.toLocaleString()} students · ${c.hours}h</div>
+      <div class="rel-meta">${c.students.toLocaleString()} students · ${c.hours}h</div>
     </div>`).join('');
 }
 
@@ -360,8 +454,6 @@ function render(){
   document.getElementById('instrAvatar').textContent = initials(course.instructor);
   document.getElementById('instrAvatar2').textContent = initials(course.instructor);
   document.getElementById('instrName').textContent = course.instructor;
-  document.getElementById('ratingNum').textContent = course.rating.toFixed(1);
-  document.getElementById('reviewCount').textContent = `(${course.reviews.toLocaleString()} reviews)`;
   document.getElementById('studentCount').textContent = `${course.students.toLocaleString()} students`;
   document.getElementById('courseFlag').textContent = `${course.flag} ${course.country}`;
   document.getElementById('videoEmoji').textContent = course.emoji;
@@ -373,14 +465,8 @@ function render(){
     window.location.href = 'auth.html?mode=signup';
   };
 
-  document.getElementById('rateBigNum').textContent = course.rating.toFixed(1);
-  document.getElementById('rateBigCount').textContent = `${course.reviews.toLocaleString()} ratings`;
-  const dist = [72,18,6,3,1]; // 5★ → 1★ percentage shape, applied to any course
-  document.getElementById('rateBars').innerHTML = dist.map((pct,i)=>`
-    <div class="rate-bar-row"><span>${5-i}★</span><span class="track"><span class="fill" style="width:${pct}%"></span></span><span>${pct}%</span></div>`).join('');
-  document.getElementById('likeCount').textContent = Math.round(course.students*0.31).toLocaleString();
   document.getElementById('viewCount').textContent = (Math.round(course.students*3.4)/1000).toFixed(1)+'K';
-  document.getElementById('completionRate').textContent = Math.min(94, 60 + Math.round(course.rating*6)) + '%';
+  document.getElementById('completionRate').textContent = Math.min(94, 60 + Math.round(course.students % 20)) + '%';
 
   document.getElementById('instructorNote').textContent = '"' + buildInstructorNote(course) + '"';
   document.getElementById('instructorWho').textContent = `${course.instructor} · ${course.subject} instructor`;
@@ -403,7 +489,267 @@ function render(){
 
   renderCurriculum(course);
   renderRelated(course);
+  initEngagement(course);
 }
+/* ─────────────────────────────────────────────────────────────
+   ENGAGEMENT — live ratings, likes, and threaded comments with
+   emoji reactions, backed by Supabase (public.course_ratings,
+   public.course_likes, public.course_comments, public.comment_reactions).
+───────────────────────────────────────────────────────────── */
+const SUPABASE_URL = 'https://yxewqmemegiogqwyklai.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4ZXdxbWVtZWdpb2dxd3lrbGFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjY3NTksImV4cCI6MjA5NzgwMjc1OX0.dQzu4llCv0WjHs93a4w9SN3zng1c1dW5moOsjwL6dDM';
+const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+// A stable, anonymous per-browser identifier — lets someone rate/react once
+// per course without requiring a login wall on this page. If they're signed
+// in elsewhere, this still works standalone; wiring it to a real user_id is
+// a one-line change once this page shares a session with the rest of the site.
+function anonKey(){
+  let k = localStorage.getItem('odyssey_anon_key');
+  if(!k){ k = (crypto.randomUUID ? crypto.randomUUID() : 'ak-'+Date.now()+'-'+Math.random().toString(16).slice(2)); localStorage.setItem('odyssey_anon_key', k); }
+  return k;
+}
+
+// The six reactions are a fixed, curated set of native emoji — no picker
+// library, no font/icon-set download. Keeping this list tiny is also what
+// makes the "run a separate query" approach below cheap: reaction rows are
+// fetched independently of comment text, in one small grouped query.
+const REACTION_SET = ['👍','❤️','😂','😮','🎉','🤔'];
+
+function timeAgo(iso){
+  const s = Math.floor((Date.now() - new Date(iso).getTime())/1000);
+  if(s<60) return 'just now';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h ago';
+  if(s<2592000) return Math.floor(s/86400)+'d ago';
+  return new Date(iso).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+}
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/* ---------- RATING ---------- */
+async function loadRatingSummary(courseId){
+  if(!sb) return;
+  const { data, error } = await sb.from('course_ratings').select('stars').eq('course_id', courseId);
+  if(error){ console.error(error); return; }
+  const count = data.length;
+  const heroSummary = document.getElementById('rateSummaryHero');
+  if(count === 0){
+    document.getElementById('rateBigNum').textContent = '—';
+    document.getElementById('rateBigStars').textContent = '☆☆☆☆☆';
+    document.getElementById('rateBigCount').textContent = 'No ratings yet';
+    document.getElementById('rateBars').innerHTML = '';
+    if(heroSummary) heroSummary.textContent = 'Not yet rated';
+    return;
+  }
+  const avg = data.reduce((a,r)=>a+r.stars,0) / count;
+  const full = Math.round(avg);
+  document.getElementById('rateBigNum').textContent = avg.toFixed(1);
+  document.getElementById('rateBigStars').textContent = '★★★★★☆☆☆☆☆'.slice(5-full, 10-full);
+  document.getElementById('rateBigCount').textContent = `${count} rating${count===1?'':'s'}`;
+  if(heroSummary) heroSummary.textContent = `${avg.toFixed(1)} (${count})`;
+
+  const counts = [0,0,0,0,0];
+  data.forEach(r => counts[r.stars-1]++);
+  document.getElementById('rateBars').innerHTML = [5,4,3,2,1].map(star=>{
+    const c = counts[star-1];
+    const pct = Math.round((c/count)*100);
+    return `<div class="rate-bar-row"><span>${star}★</span><span class="track"><span class="fill" style="width:${pct}%"></span></span><span>${pct}%</span></div>`;
+  }).join('');
+}
+
+async function submitRating(courseId, stars){
+  if(!sb) return;
+  const { error } = await sb.from('course_ratings')
+    .upsert({ course_id: courseId, rater_key: anonKey(), stars }, { onConflict: 'course_id,rater_key' });
+  if(error){ console.error(error); alert('Could not save your rating — please try again.'); return; }
+  document.getElementById('rateThanks').style.display = 'block';
+  loadRatingSummary(courseId);
+}
+
+function openRatingPopover(){ document.getElementById('rateOverlay').classList.add('open'); }
+function closeRatingPopover(){
+  document.getElementById('rateOverlay').classList.remove('open');
+  document.getElementById('rateThanks').style.display = 'none';
+  document.querySelectorAll('.rate-star').forEach(s=>s.classList.remove('picked','hover'));
+}
+
+/* ---------- LIKE ---------- */
+async function loadLikeState(courseId){
+  if(!sb) return;
+  const { count } = await sb.from('course_likes').select('id', {count:'exact', head:true}).eq('course_id', courseId);
+  const { data: mine } = await sb.from('course_likes').select('id').eq('course_id', courseId).eq('liker_key', anonKey()).maybeSingle();
+  const total = count || 0;
+  ['likeCount','likeCountHero'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = total; });
+  const liked = !!mine;
+  document.querySelectorAll('#likeBtn,#likeBtnHero').forEach(btn=>{
+    if(!btn) return;
+    btn.classList.toggle('liked', liked);
+    btn.innerHTML = (liked?'❤️ ':'🤍 ') + `<span id="${btn.id==='likeBtn'?'likeCount':'likeCountHero'}">${total}</span>` + (btn.id==='likeBtn' ? ' Like' : '');
+  });
+}
+
+async function toggleLike(courseId){
+  if(!sb) return;
+  const key = anonKey();
+  const { data: mine } = await sb.from('course_likes').select('id').eq('course_id', courseId).eq('liker_key', key).maybeSingle();
+  if(mine){
+    await sb.from('course_likes').delete().eq('id', mine.id);
+  } else {
+    await sb.from('course_likes').insert({ course_id: courseId, liker_key: key });
+  }
+  loadLikeState(courseId);
+}
+
+/* ---------- COMMENTS + REPLIES + REACTIONS ---------- */
+async function loadComments(courseId){
+  if(!sb) return;
+  const { data: comments, error } = await sb.from('course_comments')
+    .select('id, parent_comment_id, display_name, country, body, created_at')
+    .eq('course_id', courseId)
+    .order('created_at', { ascending: true });
+  if(error){ console.error(error); return; }
+
+  const total = comments.length;
+  ['commentCountChip','commentCountHero'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = total; });
+
+  if(total === 0){
+    document.getElementById('commentList').innerHTML = '<div class="comments-empty">No comments yet — be the first to share your thoughts.</div>';
+    return;
+  }
+
+  // Separate, lightweight aggregate query — reaction rows are never bundled
+  // into the comments payload, so browsing comments stays cheap even if a
+  // comment collects a lot of reactions.
+  const ids = comments.map(c=>c.id);
+  const { data: reactions } = await sb.from('comment_reactions').select('comment_id, emoji, reactor_key').in('comment_id', ids);
+  const reactionMap = {};
+  (reactions||[]).forEach(r=>{
+    reactionMap[r.comment_id] = reactionMap[r.comment_id] || {};
+    reactionMap[r.comment_id][r.emoji] = reactionMap[r.comment_id][r.emoji] || { count:0, mine:false };
+    reactionMap[r.comment_id][r.emoji].count++;
+    if(r.reactor_key === anonKey()) reactionMap[r.comment_id][r.emoji].mine = true;
+  });
+
+  const byParent = {};
+  comments.forEach(c=>{
+    const p = c.parent_comment_id || 'root';
+    byParent[p] = byParent[p] || [];
+    byParent[p].push(c);
+  });
+
+  function renderComment(c, isReply){
+    const rx = reactionMap[c.id] || {};
+    const chips = Object.keys(rx).map(e => `<span class="reaction-chip ${rx[e].mine?'mine':''}" onclick="toggleReaction('${c.id}',  '${e}')">${e} ${rx[e].count}</span>`).join('');
+    const picker = REACTION_SET.map(e=>`<button onclick="toggleReaction('${c.id}','${e}')">${e}</button>`).join('');
+    const initialsStr = (c.display_name||'?').trim().split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    return `
+    <div class="comment-item${isReply?' reply':''}">
+      <div class="comment-head">
+        <span class="comment-avatar">${initialsStr}</span>
+        <div>
+          <span class="comment-name">${escapeHtml(c.display_name)}</span>
+          <span class="comment-meta"> · ${escapeHtml(c.country||'')} · ${timeAgo(c.created_at)}</span>
+        </div>
+      </div>
+      <div class="comment-body">${escapeHtml(c.body)}</div>
+      <div class="comment-actions">
+        <div class="comment-reactions">
+          ${chips}
+          <div class="reaction-picker">${picker}</div>
+        </div>
+        ${!isReply ? `<button class="comment-action" onclick="toggleReplyForm('${c.id}')">Reply</button>` : ''}
+      </div>
+      ${!isReply ? `<div class="reply-form" id="reply-form-${c.id}">
+        <input type="text" id="reply-name-${c.id}" placeholder="Your name">
+        <input type="text" id="reply-body-${c.id}" placeholder="Write a reply…">
+        <button onclick="submitReply('${c.id}', ${courseId})">Send</button>
+      </div>` : ''}
+      ${(byParent[c.id]||[]).map(r=>renderComment(r, true)).join('')}
+    </div>`;
+  }
+
+  document.getElementById('commentList').innerHTML = (byParent['root']||[]).map(c=>renderComment(c,false)).join('');
+}
+
+function toggleReplyForm(commentId){
+  const el = document.getElementById('reply-form-'+commentId);
+  if(el) el.classList.toggle('open');
+}
+
+async function submitReply(parentId, courseId){
+  const name = document.getElementById('reply-name-'+parentId).value.trim();
+  const body = document.getElementById('reply-body-'+parentId).value.trim();
+  if(!name || !body){ alert('Please add your name and a reply.'); return; }
+  const { error } = await sb.from('course_comments').insert({
+    course_id: courseId, parent_comment_id: parentId, display_name: name, country: '', body
+  });
+  if(error){ console.error(error); alert('Could not post your reply — please try again.'); return; }
+  loadComments(courseId);
+}
+
+async function submitComment(courseId){
+  const name = document.getElementById('commentName').value.trim();
+  const country = document.getElementById('commentCountry').value.trim();
+  const body = document.getElementById('commentBody').value.trim();
+  if(!name || !body){ alert('Please add your name and a comment.'); return; }
+  const { error } = await sb.from('course_comments').insert({
+    course_id: courseId, display_name: name, country, body
+  });
+  if(error){ console.error(error); alert('Could not post your comment — please try again.'); return; }
+  document.getElementById('commentBody').value = '';
+  loadComments(courseId);
+}
+
+async function toggleReaction(commentId, emoji){
+  if(!sb) return;
+  const key = anonKey();
+  const { data: mine } = await sb.from('comment_reactions').select('id').eq('comment_id', commentId).eq('emoji', emoji).eq('reactor_key', key).maybeSingle();
+  if(mine){
+    await sb.from('comment_reactions').delete().eq('id', mine.id);
+  } else {
+    await sb.from('comment_reactions').insert({ comment_id: commentId, emoji, reactor_key: key });
+  }
+  const courseId = getCourse().id;
+  loadComments(courseId);
+}
+
+/* ---------- WIRING ---------- */
+function initEngagement(course){
+  if(!sb){ console.warn('Supabase client not loaded — engagement features are disabled.'); return; }
+
+  loadRatingSummary(course.id);
+  loadLikeState(course.id);
+  loadComments(course.id);
+
+  document.getElementById('likeBtn').onclick = () => toggleLike(course.id);
+  document.getElementById('likeBtnHero').onclick = () => toggleLike(course.id);
+  document.getElementById('rateOpenBtn').onclick = openRatingPopover;
+  document.getElementById('rateOpenBtnHero').onclick = openRatingPopover;
+  document.getElementById('commentJumpBtn').onclick = () => document.getElementById('commentsSection').scrollIntoView({behavior:'smooth'});
+  document.getElementById('commentJumpBtnHero').onclick = () => document.getElementById('commentsSection').scrollIntoView({behavior:'smooth'});
+  document.getElementById('commentSubmitBtn').onclick = () => submitComment(course.id);
+  document.getElementById('rateModalClose').onclick = closeRatingPopover;
+  document.getElementById('rateOverlay').addEventListener('click', e => { if(e.target.id==='rateOverlay') closeRatingPopover(); });
+
+  let picked = 0;
+  document.querySelectorAll('.rate-star').forEach(star=>{
+    const n = Number(star.dataset.star);
+    star.addEventListener('mouseenter', () => {
+      document.querySelectorAll('.rate-star').forEach(s => s.classList.toggle('hover', Number(s.dataset.star) <= n));
+    });
+    star.addEventListener('mouseleave', () => {
+      document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('hover'));
+    });
+    star.addEventListener('click', () => {
+      picked = n;
+      document.querySelectorAll('.rate-star').forEach(s => s.classList.toggle('picked', Number(s.dataset.star) <= n));
+      submitRating(course.id, picked);
+    });
+  });
+}
+
 render();
 </script>
 </body>
