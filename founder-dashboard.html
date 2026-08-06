@@ -4,110 +4,161 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Odyssey — Founder Dashboard</title>
+<title>Select user to change | Odyssey administration</title>
 <link href="https://fonts.googleapis.com" rel="preconnect" />
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
 <script src="js/supabase-config.js"></script>
 <script src="js/supabase-client.js"></script>
 <style>
-*{box-sizing:border-box}
 :root{
-  --bg:#F6F4EF;--panel:#ffffff;--text:#141C2B;--muted:#64708A;--line:rgba(20,28,43,.11);
-  --primary:#142C4F;--accent:#0F7A6C;--warn:#C2761F;--danger:#B23A48;--success:#16855A;--gold:#C08A3E;
-  --shadow:0 20px 60px rgba(15,23,42,.10);--radius:16px;--font:Manrope,system-ui,sans-serif;--head:"Newsreader",Georgia,serif;
+  --primary:#79aec8;--secondary:#417690;--accent:#f5dd5d;--primary-fg:#fff;
+  --body-fg:#333;--body-bg:#fff;--body-quiet-color:#666;--body-loud-color:#000;
+  --header-color:#ffc;--header-bg:var(--secondary);--header-link-color:var(--primary-fg);
+  --breadcrumbs-fg:#c4dce8;--breadcrumbs-link-fg:var(--body-bg);--breadcrumbs-bg:var(--primary);
+  --link-fg:#447e9b;--link-hover-color:#036;--link-selected-fg:#5b80b2;
+  --hairline-color:#e8e8e8;--border-color:#ccc;
+  --darkened-bg:#f8f8f8;--selected-bg:#e4e4e4;--selected-row:#fffbcc;
+  --button-fg:#fff;--button-bg:var(--secondary);--button-hover-bg:#205067;
+  --close-button-bg:#888;--close-button-hover-bg:#747474;
+  --delete-button-bg:#ba2121;--delete-button-hover-bg:#a41515;
+  --font:"Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
 }
-body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font)}
-button,input,select{font:inherit}
-.gate{display:flex;min-height:100vh;align-items:center;justify-content:center;color:var(--muted);font-weight:700;text-align:center;padding:20px}
-.shell{max-width:1180px;margin:0 auto;padding:30px 24px 60px}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px}
-.brand{font-family:var(--head);font-size:26px;font-weight:900}
-.brand span{display:block;font-family:var(--font);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-top:2px}
-.who{text-align:right;font-size:12.5px;color:var(--muted);font-weight:600}
-.who b{display:block;color:var(--text);font-size:13.5px}
-.btn{border:0;border-radius:11px;padding:9px 13px;font-weight:800;cursor:pointer;background:var(--primary);color:#fff;font-size:13px}
-.btn.secondary{background:#eef1f5;color:var(--primary);border:1px solid var(--line)}
-.btn.tiny{padding:6px 10px;font-size:11.5px;border-radius:8px}
-.sub{color:var(--muted);font-weight:600;font-size:14px;margin:2px 0 22px}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
-.kpi span{color:var(--muted);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
-.kpi strong{display:block;font-family:var(--head);font-size:24px;margin-top:4px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
-.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
-.toolbar input[type=text]{flex:1;min-width:200px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
-.toolbar select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
-.table-scroll{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid var(--line);border-radius:12px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
-th{color:var(--muted);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;background:var(--panel)}
-tbody tr:hover{background:#f7f9fc}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;text-transform:capitalize}
-.badge.student{background:rgba(20,44,79,.08);color:var(--primary)}
-.badge.instructor{background:rgba(15,122,108,.12);color:var(--accent)}
-.badge.institution{background:rgba(194,118,31,.12);color:var(--warn)}
-.badge.admin,.badge.support{background:rgba(20,44,79,.14);color:var(--primary)}
-.badge.superuser{background:rgba(192,138,62,.18);color:#8a5c1f}
-.badge.active{background:rgba(22,133,90,.12);color:var(--success)}
-.badge.pending{background:rgba(194,118,31,.14);color:var(--warn)}
-.badge.suspended,.badge.deleted{background:rgba(178,58,72,.13);color:var(--danger)}
-.role-select{padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-size:12.5px;background:#fff}
-.empty{padding:30px;text-align:center;color:var(--muted);font-weight:600}
-.you-tag{font-size:10.5px;font-weight:800;color:var(--gold);margin-left:6px}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);font-size:13px;color:var(--body-fg);background:#fff}
+a{color:var(--link-fg);text-decoration:none}
+a:hover{color:var(--link-hover-color)}
+button,input,select{font-family:inherit;font-size:inherit}
+.gate{display:flex;min-height:100vh;align-items:center;justify-content:center;color:var(--body-quiet-color);font-weight:500;text-align:center;padding:20px}
+#header{background:var(--header-bg);color:var(--header-color);display:flex;align-items:center;justify-content:space-between;padding:10px 40px;overflow:hidden}
+#branding h1{font-size:20px;margin:0;font-weight:400;color:var(--header-color)}
+#branding h1 a{color:var(--header-color)}
+#branding h1 .accent{color:var(--accent);font-weight:700}
+#user-tools{font-size:13px;color:var(--header-color)}
+#user-tools a{color:var(--header-link-color);border-bottom:1px solid rgba(255,255,255,.35)}
+#user-tools a:hover{color:#fff}
+#user-tools strong{font-weight:700}
+.breadcrumbs{background:var(--breadcrumbs-bg);color:var(--breadcrumbs-fg);padding:10px 40px;font-size:13px}
+.breadcrumbs a{color:var(--breadcrumbs-link-fg)}
+.breadcrumbs a:hover{color:var(--header-color)}
+#container{padding:0 40px 40px}
+#content{display:flex;gap:0;align-items:flex-start;margin-top:20px}
+#content-main{flex:1;min-width:0}
+#content-related{width:280px;margin-left:30px;flex-shrink:0}
+.o-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+h1.o-h1{font-size:20px;font-weight:400;color:var(--body-loud-color);margin:0}
+.o-refresh{background:var(--close-button-bg);color:#fff;border:0;border-radius:4px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.o-refresh:hover{background:var(--close-button-hover-bg)}
+#toolbar{margin-bottom:14px;display:flex;gap:8px}
+#toolbar input[type=text]{border:1px solid var(--border-color);border-radius:4px;padding:6px 8px;font-size:13px;width:280px;max-width:60vw}
+#toolbar button{background:var(--secondary);color:#fff;border:0;border-radius:4px;padding:7px 15px;font-size:13px;cursor:pointer;font-weight:700}
+#toolbar button:hover{background:var(--button-hover-bg)}
+.o-actions{display:flex;align-items:center;gap:8px;background:var(--darkened-bg);border:1px solid var(--hairline-color);border-radius:4px;padding:8px 10px}
+.o-actions select{padding:5px 6px;border:1px solid var(--border-color);border-radius:4px;background:#fff}
+.o-actions button{background:var(--button-bg);color:var(--button-fg);border:0;border-radius:4px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.o-actions button:hover{background:var(--button-hover-bg)}
+.o-actions .o-selected-count{font-size:12px;color:var(--body-quiet-color);margin-left:auto}
+#result_list{width:100%;border-collapse:collapse;margin-top:0;font-size:13px}
+#result_list thead th{background:var(--darkened-bg);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border-color);font-weight:700;color:var(--body-fg);white-space:nowrap}
+#result_list thead th.o-check{width:22px}
+#result_list tbody td{padding:8px 10px;border-bottom:1px solid var(--hairline-color);vertical-align:middle}
+#result_list tbody tr:nth-child(even){background:var(--darkened-bg)}
+#result_list tbody tr.selected{background:var(--selected-row)}
+#result_list tbody tr:hover{background:var(--selected-bg)}
+#result_list .field-email a{font-weight:700}
+.o-you{font-size:10px;font-weight:700;color:var(--secondary);background:var(--accent);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle}
+.o-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;color:#fff;text-transform:capitalize}
+.o-badge.student{background:#6c8ea3}
+.o-badge.instructor{background:var(--secondary)}
+.o-badge.institution{background:#8a6d3b}
+.o-badge.support{background:#5b80b2}
+.o-badge.admin{background:#2f4f6f}
+.o-badge.superuser{background:#ba7d21}
+.o-badge.active{background:#2e7d4f}
+.o-badge.pending{background:#a5760a}
+.o-badge.suspended,.o-badge.deleted{background:var(--delete-button-bg)}
+.o-role-select{padding:4px 6px;border:1px solid var(--border-color);border-radius:4px;background:#fff;font-size:12px}
+.paginator{padding:10px 0 0;color:var(--body-quiet-color);font-size:13px}
+.module{border:1px solid var(--hairline-color);border-radius:4px;margin-bottom:20px;background:#fff}
+.module h2{background:var(--secondary);color:#fff;font-size:13px;font-weight:700;padding:8px 12px;margin:0;border-radius:4px 4px 0 0}
+.module .module-body{padding:0}
+.o-filter-group{border-bottom:1px solid var(--hairline-color)}
+.o-filter-group:last-child{border-bottom:0}
+.o-filter-group h3{font-size:12px;font-weight:700;color:var(--body-fg);margin:0;padding:10px 12px 4px}
+.o-filter-group ul{list-style:none;margin:0;padding:0 12px 10px}
+.o-filter-group li{padding:2px 0}
+.o-filter-group a{display:block;padding:2px 0;color:var(--link-fg);font-size:13px}
+.o-filter-group a.selected{color:var(--body-loud-color);font-weight:700}
+.o-filter-group a:hover{color:var(--link-hover-color)}
+.kpi-module .module-body{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--darkened-bg);border:1px solid var(--hairline-color);border-radius:4px;padding:8px 10px}
+.kpi .n{font-size:19px;font-weight:700;color:var(--body-loud-color);display:block}
+.kpi .l{font-size:11px;color:var(--body-quiet-color);text-transform:uppercase;letter-spacing:.03em}
+.empty-row td{text-align:center;color:var(--body-quiet-color);padding:24px !important}
 </style>
 </head>
 <body>
-
 <div class="gate" id="gate">Checking your founder session...</div>
-
-<div class="shell" id="shell" style="display:none">
-  <div class="topbar">
-    <div class="brand">Odyssey<span>Founder Dashboard</span></div>
-    <div class="who">
-      <b id="whoName">—</b>
-      <span id="whoEmail"></span><br>
-      <button class="btn secondary tiny" style="margin-top:8px" onclick="location.href='admin_dashboard.html'">Admin dashboard</button>
-      <button class="btn tiny" style="margin-top:8px" onclick="signOutFounder()">Sign out</button>
-    </div>
+<div id="shell" style="display:none">
+  <div id="header">
+    <div id="branding"><h1><a href="founder-dashboard.html">Odyssey <span class="accent">administration</span></a></h1></div>
+    <div id="user-tools">Welcome, <strong id="whoName">Founder</strong>. <a href="admin_dashboard.html">Admin dashboard</a> / <a href="#" onclick="signOutFounder();return false;">Log out</a></div>
   </div>
-  <div class="sub">Every Odyssey account, in one place. Promote or relegate roles — every change is logged.</div>
-
-  <div class="kpi-grid" id="kpiGrid"></div>
-
-  <div class="card">
-    <div class="toolbar">
-      <input type="text" id="search" placeholder="Search by name or email..." oninput="renderTable()">
-      <select id="roleFilter" onchange="renderTable()">
-        <option value="">All roles</option>
-        <option value="student">Student</option>
-        <option value="instructor">Instructor</option>
-        <option value="institution">Institution</option>
-        <option value="admin">Admin</option>
-        <option value="support">Support</option>
-        <option value="superuser">Superuser</option>
-      </select>
-      <button class="btn secondary tiny" onclick="loadUsers()">↻ Refresh</button>
-    </div>
-    <div class="table-scroll">
-      <table>
-        <thead><tr>
-          <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Country</th><th>Joined</th><th>Change role to</th>
-        </tr></thead>
-        <tbody id="usersBody"></tbody>
-      </table>
+  <div class="breadcrumbs"><a href="founder-dashboard.html">Home</a> &rsaquo; Authentication and Authorization &rsaquo; Users</div>
+  <div id="container">
+    <div class="o-title-row"><h1 class="o-h1">Select user to change</h1><button class="o-refresh" onclick="loadUsers()">↻ Refresh</button></div>
+    <div id="content">
+      <div id="content-main">
+        <div id="toolbar">
+          <input type="text" id="search" placeholder="Search by name or email…" oninput="renderTable()">
+          <button type="button" onclick="document.getElementById('search').value='';renderTable()">Clear</button>
+        </div>
+        <div class="o-actions">
+          <select id="bulkAction">
+            <option value="">--------- Set role to ---------</option>
+            <option value="student">Student</option>
+            <option value="instructor">Instructor</option>
+            <option value="institution">Institution</option>
+            <option value="support">Support</option>
+            <option value="admin">Admin</option>
+            <option value="superuser">Superuser</option>
+          </select>
+          <button type="button" onclick="applyBulkAction()">Go</button>
+          <span class="o-selected-count" id="selectedCount">0 of 0 selected</span>
+        </div>
+        <table id="result_list">
+          <thead><tr>
+            <th class="o-check"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th>
+            <th>EMAIL</th><th>FULL NAME</th><th>ROLE</th><th>STATUS</th><th>COUNTRY</th><th>DATE JOINED</th><th>CHANGE ROLE</th>
+          </tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+        <p class="paginator" id="paginatorText">0 users</p>
+      </div>
+      <div id="content-related">
+        <div class="module">
+          <h2>Filter</h2>
+          <div class="module-body">
+            <div class="o-filter-group"><h3>By role</h3><ul id="roleFilterList"></ul></div>
+            <div class="o-filter-group"><h3>By status</h3><ul id="statusFilterList"></ul></div>
+          </div>
+        </div>
+        <div class="module kpi-module"><h2>Summary</h2><div class="module-body" id="kpiGrid"></div></div>
+      </div>
     </div>
   </div>
 </div>
-
 <script>
 const ROLES = ['student','instructor','institution','support','admin','superuser'];
+const STATUSES = ['active','pending','suspended','deleted'];
 let ME = null;
 let USERS = [];
+let activeRoleFilter = '';
+let activeStatusFilter = '';
 
 function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 function fmtDate(d){return d?new Date(d).toLocaleDateString():'—'}
-function badge(v){return `<span class="badge ${esc(v)}">${esc(v||'—')}</span>`}
+function badge(v){return `<span class="o-badge ${esc(v)}">${esc(v||'—')}</span>`}
 
 async function requireFounderSession(){
   const gate = document.getElementById('gate');
@@ -139,6 +190,7 @@ async function signOutFounder(){
 async function loadUsers(){
   try{
     USERS = await OdysseySupabase.founderListUsers();
+    renderFilters();
     renderKpis();
     renderTable();
   }catch(error){
@@ -146,50 +198,80 @@ async function loadUsers(){
   }
 }
 
+function renderFilters(){
+  const roleCounts = {}; const statusCounts = {};
+  USERS.forEach(u=>{ roleCounts[u.role]=(roleCounts[u.role]||0)+1; statusCounts[u.status]=(statusCounts[u.status]||0)+1; });
+  const roleList = document.getElementById('roleFilterList');
+  roleList.innerHTML = `<li><a href="#" class="${activeRoleFilter===''?'selected':''}" onclick="setRoleFilter('');return false;">All (${USERS.length})</a></li>` +
+    ROLES.map(r=>`<li><a href="#" class="${activeRoleFilter===r?'selected':''}" onclick="setRoleFilter('${r}');return false;">${r} (${roleCounts[r]||0})</a></li>`).join('');
+  const statusList = document.getElementById('statusFilterList');
+  statusList.innerHTML = `<li><a href="#" class="${activeStatusFilter===''?'selected':''}" onclick="setStatusFilter('');return false;">All (${USERS.length})</a></li>` +
+    STATUSES.map(s=>`<li><a href="#" class="${activeStatusFilter===s?'selected':''}" onclick="setStatusFilter('${s}');return false;">${s} (${statusCounts[s]||0})</a></li>`).join('');
+}
+
+function setRoleFilter(r){ activeRoleFilter=r; renderFilters(); renderTable(); }
+function setStatusFilter(s){ activeStatusFilter=s; renderFilters(); renderTable(); }
+
 function renderKpis(){
   const counts = {};
   USERS.forEach(u => { counts[u.role] = (counts[u.role]||0) + 1; });
   const cards = [
-    ['Total users', USERS.length],
+    ['Total', USERS.length],
     ['Students', counts.student||0],
     ['Instructors', counts.instructor||0],
     ['Institutions', counts.institution||0],
-    ['Admin / support', (counts.admin||0) + (counts.support||0)],
+    ['Admin/Support', (counts.admin||0)+(counts.support||0)],
     ['Superusers', counts.superuser||0]
   ];
-  document.getElementById('kpiGrid').innerHTML = cards.map(([label,val])=>
-    `<div class="kpi"><span>${label}</span><strong>${val}</strong></div>`
-  ).join('');
+  document.getElementById('kpiGrid').innerHTML = cards.map(([l,v])=>`<div class="kpi"><span class="n">${v}</span><span class="l">${l}</span></div>`).join('');
+}
+
+function matchesFilters(u, q){
+  if(activeRoleFilter && u.role !== activeRoleFilter) return false;
+  if(activeStatusFilter && u.status !== activeStatusFilter) return false;
+  if(!q) return true;
+  return (u.full_name||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q);
 }
 
 function renderTable(){
   const q = (document.getElementById('search').value||'').toLowerCase().trim();
-  const roleFilter = document.getElementById('roleFilter').value;
-  const rows = USERS.filter(u=>{
-    if(roleFilter && u.role !== roleFilter) return false;
-    if(!q) return true;
-    return (u.full_name||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q);
-  });
+  const rows = USERS.filter(u=>matchesFilters(u,q));
   const body = document.getElementById('usersBody');
+  document.getElementById('paginatorText').textContent = `${rows.length} user${rows.length===1?'':'s'}`;
   if(!rows.length){
-    body.innerHTML = '<tr><td colspan="7" class="empty">No matching users.</td></tr>';
+    body.innerHTML = '<tr class="empty-row"><td colspan="8">No users match these filters.</td></tr>';
+    updateSelectedCount();
     return;
   }
   body.innerHTML = rows.map(u=>{
     const isMe = ME && u.id === ME.id;
     const options = ROLES.map(r=>`<option value="${r}" ${r===u.role?'selected':''}>${r}</option>`).join('');
-    return `<tr>
-      <td>${esc(u.full_name||'—')}${isMe?'<span class="you-tag">YOU</span>':''}</td>
-      <td>${esc(u.email||'—')}</td>
+    return `<tr data-id="${u.id}">
+      <td><input type="checkbox" class="row-check" value="${u.id}" onchange="onRowCheck(this)"></td>
+      <td class="field-email"><a href="#" onclick="return false;">${esc(u.email||'—')}</a></td>
+      <td>${esc(u.full_name||'—')}${isMe?'<span class="o-you">YOU</span>':''}</td>
       <td>${badge(u.role)}</td>
       <td>${badge(u.status)}</td>
       <td>${esc(u.country||'—')}</td>
       <td>${fmtDate(u.created_at)}</td>
-      <td>
-        <select class="role-select" onchange="changeRole('${u.id}', this)">${options}</select>
-      </td>
+      <td><select class="o-role-select" onchange="changeRole('${u.id}', this)">${options}</select></td>
     </tr>`;
   }).join('');
+  updateSelectedCount();
+}
+
+function toggleSelectAll(checkbox){
+  document.querySelectorAll('.row-check').forEach(cb=>{ cb.checked = checkbox.checked; cb.closest('tr').classList.toggle('selected', checkbox.checked); });
+  updateSelectedCount();
+}
+function onRowCheck(checkbox){
+  checkbox.closest('tr').classList.toggle('selected', checkbox.checked);
+  updateSelectedCount();
+}
+function updateSelectedCount(){
+  const total = document.querySelectorAll('.row-check').length;
+  const selected = document.querySelectorAll('.row-check:checked').length;
+  document.getElementById('selectedCount').textContent = `${selected} of ${total} selected`;
 }
 
 async function changeRole(userId, selectEl){
@@ -205,8 +287,7 @@ async function changeRole(userId, selectEl){
   try{
     await OdysseySupabase.founderSetUserRole(userId, newRole);
     if(user) user.role = newRole;
-    renderKpis();
-    renderTable();
+    renderFilters(); renderKpis(); renderTable();
   }catch(error){
     alert('Could not change role: ' + (error?.message || error));
     selectEl.value = oldRole;
@@ -215,11 +296,28 @@ async function changeRole(userId, selectEl){
   }
 }
 
+async function applyBulkAction(){
+  const newRole = document.getElementById('bulkAction').value;
+  const ids = [...document.querySelectorAll('.row-check:checked')].map(cb=>cb.value);
+  if(!newRole){ alert('Choose a role to apply first.'); return; }
+  if(!ids.length){ alert('Select at least one user first.'); return; }
+  if(!confirm(`Set role to "${newRole}" for ${ids.length} selected user(s)?`)) return;
+  let failed = 0;
+  for(const id of ids){
+    try{
+      await OdysseySupabase.founderSetUserRole(id, newRole);
+      const u = USERS.find(x=>x.id===id);
+      if(u) u.role = newRole;
+    }catch(error){ failed++; console.error('Bulk role change failed for', id, error); }
+  }
+  renderFilters(); renderKpis(); renderTable();
+  if(failed) alert(`${ids.length - failed} succeeded, ${failed} failed. Check console for details.`);
+}
+
 document.addEventListener('DOMContentLoaded', async ()=>{
   ME = await requireFounderSession();
   if(!ME) return;
-  document.getElementById('whoName').textContent = ME.full_name || 'Founder';
-  document.getElementById('whoEmail').textContent = ME.email || '';
+  document.getElementById('whoName').textContent = ME.full_name || ME.email || 'Founder';
   document.getElementById('gate').style.display = 'none';
   document.getElementById('shell').style.display = 'block';
   await loadUsers();
