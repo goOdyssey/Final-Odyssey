@@ -660,33 +660,74 @@ let currentView = 'grid';
 let currentPage = 1;
 const PER_PAGE = 12;
 
-// ── SAMPLE COURSES
-const COURSES = [
-  {id:1,title:"Complete JEE Advanced Mathematics",field:"Entrance Exam",discipline:"South Asian Exams",subject:"JEE Advanced (India)",country:"India",instructor:"Rajesh Venkataraman",flag:"🇮🇳",emoji:"📐",rating:4.9,reviews:12400,students:38700,hours:120,price:29,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:2,title:"NEET Biology Master Class",field:"Entrance Exam",discipline:"South Asian Exams",subject:"NEET-UG (India)",country:"India",instructor:"Dr Priya Sharma",flag:"🇮🇳",emoji:"🧬",rating:4.8,reviews:9800,students:24300,hours:95,price:24,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:3,title:"Gaokao Physics — Full Syllabus",field:"Entrance Exam",discipline:"East Asian Exams",subject:"Gaokao (China)",country:"China",instructor:"Wei Liang",flag:"🇨🇳",emoji:"⚛️",rating:4.9,reviews:18200,students:52100,hours:140,price:32,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:4,title:"Baccalauréat Littérature Française",field:"K-12",discipline:"Literature & Language",subject:"Essay Writing",country:"France",instructor:"Sophie Beaumont",flag:"🇫🇷",emoji:"📖",rating:4.7,reviews:4200,students:9800,hours:60,price:18,level:"Intermediate",badge:"badge-k12",badgeLabel:"K–12",cert:true,practice:false},
-  {id:5,title:"JAMB UTME Complete Prep 2025",field:"Entrance Exam",discipline:"African Exams",subject:"JAMB UTME (Nigeria)",country:"Nigeria",instructor:"Chukwuemeka Eze",flag:"🇳🇬",emoji:"📝",rating:4.8,reviews:7600,students:21000,hours:80,price:12,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:6,title:"Culinary Arts: West African Cuisine",field:"Vocational",discipline:"Culinary Arts & Baking",subject:"West African Cuisine",country:"Nigeria",instructor:"Chef Amara Diallo",flag:"🇳🇬",emoji:"🍲",rating:4.6,reviews:3100,students:8400,hours:40,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-  {id:7,title:"Professional Tailoring & Garment Design",field:"Vocational",discipline:"Fashion & Tailoring",subject:"Pattern Making",country:"India",instructor:"Priya Datta",flag:"🇮🇳",emoji:"🧵",rating:4.8,reviews:5200,students:14100,hours:55,price:22,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-  {id:8,title:"IELTS Academic Band 8+ Strategy",field:"Language Exam",discipline:"English Proficiency",subject:"IELTS Academic — Writing",country:"United Kingdom",instructor:"Dr James Hartley",flag:"🇬🇧",emoji:"🗣️",rating:4.9,reviews:22000,students:64000,hours:35,price:19,level:"Advanced",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
-  {id:9,title:"MBBS Year 1 — Anatomy & Physiology",field:"University",discipline:"Medicine (MBBS/MD)",subject:"Anatomy",country:"United Kingdom",instructor:"Prof Elena Marchetti",flag:"🇬🇧",emoji:"⚕️",rating:4.8,reviews:8100,students:18600,hours:110,price:45,level:"Advanced",badge:"badge-uni",badgeLabel:"University",cert:true,practice:true},
-  {id:10,title:"Abitur Mathematik Intensivkurs",field:"K-12",discipline:"Mathematics",subject:"Calculus",country:"Germany",instructor:"Hans-Peter Müller",flag:"🇩🇪",emoji:"🔢",rating:4.7,reviews:3400,students:8700,hours:72,price:16,level:"Advanced",badge:"badge-k12",badgeLabel:"K–12",cert:false,practice:true},
-  {id:11,title:"TOEFL iBT Complete Preparation",field:"Language Exam",discipline:"English Proficiency",subject:"TOEFL iBT — Speaking",country:"United States",instructor:"Sarah Kim",flag:"🇺🇸",emoji:"🎙️",rating:4.8,reviews:14200,students:38000,hours:42,price:21,level:"Intermediate",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
-  {id:12,title:"Sustainable Farming & Agroecology",field:"Vocational",discipline:"Agriculture & Farming",subject:"Organic Farming",country:"Kenya",instructor:"Dr Njeri Waweru",flag:"🇰🇪",emoji:"🌱",rating:4.7,reviews:2100,students:6200,hours:38,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-  {id:13,title:"A-Level Chemistry — Full Syllabus",field:"K-12",discipline:"Chemistry",subject:"Organic Chemistry",country:"United Kingdom",instructor:"Dr Rachel Okonkwo",flag:"🇬🇧",emoji:"⚗️",rating:4.9,reviews:11200,students:29400,hours:88,price:28,level:"Advanced",badge:"badge-k12",badgeLabel:"K–12",cert:true,practice:true},
-  {id:14,title:"SAT Math — Score 800 Blueprint",field:"Entrance Exam",discipline:"American Exams",subject:"SAT (USA)",country:"United States",instructor:"Kevin Chen",flag:"🇺🇸",emoji:"📊",rating:4.9,reviews:19800,students:54000,hours:50,price:35,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
-  {id:15,title:"DELF B2 — Préparation Complète",field:"Language Exam",discipline:"French",subject:"DELF B1–B2",country:"France",instructor:"Marie-Claire Fontaine",flag:"🇫🇷",emoji:"🇫🇷",rating:4.6,reviews:4800,students:11200,hours:30,price:17,level:"Upper-Intermediate",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
-  {id:16,title:"Civil Engineering: Structural Design",field:"University",discipline:"Engineering — Civil",subject:"Structural Analysis",country:"Germany",instructor:"Prof Klaus Bergmann",flag:"🇩🇪",emoji:"🏗️",rating:4.8,reviews:5600,students:13800,hours:130,price:42,level:"Advanced",badge:"badge-uni",badgeLabel:"University",cert:true,practice:false},
-  {id:17,title:"WAEC WASSCE Mathematics & Sciences",field:"Entrance Exam",discipline:"African Exams",subject:"WAEC WASSCE (West Africa)",country:"Nigeria",instructor:"Emmanuel Asante",flag:"🇬🇭",emoji:"📐",rating:4.7,reviews:6300,students:17800,hours:65,price:8,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
-  {id:18,title:"Japanese N1 JLPT Master Course",field:"Language Exam",discipline:"Japanese",subject:"JLPT N2–N1 (Advanced)",country:"Japan",instructor:"Yuki Tanaka",flag:"🇯🇵",emoji:"🗾",rating:4.8,reviews:7100,students:16400,hours:90,price:26,level:"Expert",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
-  {id:19,title:"ENEM — Redação e Ciências Humanas",field:"Entrance Exam",discipline:"American Exams",subject:"ENEM / Vestibular (Brazil)",country:"Brazil",instructor:"Prof Fernanda Costa",flag:"🇧🇷",emoji:"📜",rating:4.7,reviews:8900,students:24100,hours:75,price:14,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
-  {id:20,title:"Organic Chemistry for MCAT",field:"Entrance Exam",discipline:"Medical & Professional",subject:"MCAT (USA/Canada)",country:"United States",instructor:"Dr Aisha Kamara",flag:"🇺🇸",emoji:"🧪",rating:4.9,reviews:13400,students:34200,hours:85,price:38,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:21,title:"Introduction to Baking & Pastry Arts",field:"Vocational",discipline:"Culinary Arts & Baking",subject:"Pastry & Confectionery",country:"France",instructor:"Chef Mateus Oliveira",flag:"🇫🇷",emoji:"🥐",rating:4.8,reviews:4600,students:12300,hours:45,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-  {id:22,title:"Konkur / کنکور — Full Prep (Riyazi)",field:"Entrance Exam",discipline:"Middle East & Iran",subject:"Konkur / کنکور (Iran)",country:"Iran",instructor:"Dr Maryam Hosseini",flag:"🇮🇷",emoji:"📗",rating:4.9,reviews:11200,students:29400,hours:120,price:20,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:23,title:"Qiyas & Tahsili — Arabic Full Prep",field:"Entrance Exam",discipline:"Middle East & Iran",subject:"Qiyas / Tahsili (Saudi Arabia)",country:"Saudi Arabia",instructor:"Fatima Al-Harbi",flag:"🇸🇦",emoji:"📗",rating:4.9,reviews:9200,students:21300,hours:70,price:20,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:24,title:"Machine Learning A–Z: Python & R",field:"Vocational",discipline:"AI & Data Science",subject:"Machine Learning",country:"United States",instructor:"Prof Chen Wei",flag:"🇺🇸",emoji:"🤖",rating:4.9,reviews:28000,students:86000,hours:110,price:35,level:"Intermediate",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-];
+// ── REAL COURSES, loaded from Supabase. This used to be a hardcoded demo
+// array with fake ids - "enrolling" in one of those could never mean
+// anything real, since no course with that id existed anywhere in the
+// actual database. COURSES now starts empty and is populated by
+// loadRealCourses() before the page does its first render (see the IIFE
+// at the bottom of this script), so every id here is a genuine course
+// UUID that the payment flow and enrollment system can actually act on.
+let COURSES = [];
+
+// Small country -> flag-emoji helper (the old fake data hardcoded a flag
+// per row; the real courses table doesn't store one, so this derives it
+// from the country name instead). Falls back to a globe if unrecognized.
+const ODYSSEY_COUNTRY_FLAGS = {
+  'India':'🇮🇳','China':'🇨🇳','France':'🇫🇷','Nigeria':'🇳🇬','United Kingdom':'🇬🇧','Germany':'🇩🇪',
+  'United States':'🇺🇸','Kenya':'🇰🇪','Japan':'🇯🇵','Brazil':'🇧🇷','Iran':'🇮🇷','Saudi Arabia':'🇸🇦',
+  'Ghana':'🇬🇭','Canada':'🇨🇦','Spain':'🇪🇸','Italy':'🇮🇹','Mexico':'🇲🇽','Turkey':'🇹🇷','Egypt':'🇪🇬',
+  'South Africa':'🇿🇦','South Korea':'🇰🇷','Indonesia':'🇮🇩','Pakistan':'🇵🇰','Bangladesh':'🇧🇩',
+};
+function odysseyCountryFlag(country){ return ODYSSEY_COUNTRY_FLAGS[country] || '🌍'; }
+
+// Field -> default emoji (the old data had a hand-picked emoji per course;
+// the real schema doesn't have that column, so this gives a sensible
+// default per field instead of nothing).
+const ODYSSEY_FIELD_EMOJI = {
+  'Entrance Exam':'📝','Vocational':'🛠️','K-12':'📖','Language Exam':'🗣️','University':'🎓',
+};
+function odysseyFieldEmoji(field){ return ODYSSEY_FIELD_EMOJI[field] || '🎓'; }
+
+async function loadRealCourses(){
+  try{
+    if(!window.OdysseySupabase?.isConfigured?.()){
+      console.warn('Supabase is not configured - the catalog cannot load real courses.');
+      COURSES = [];
+      return;
+    }
+    const sb = await OdysseySupabase.client();
+    const { data, error } = await sb.from('courses')
+      .select('id, title, field, discipline, subject, country, level, price_cents, rating, enrolled_count, session_count, certificate_enabled, qa_enabled, instructor:instructor_id(full_name)')
+      .eq('status', 'published')
+      .order('enrolled_count', { ascending: false });
+    if(error){ console.error('Could not load courses.', error); COURSES = []; return; }
+
+    const badgeByField = {
+      'Vocational':['badge-voc','Vocational'], 'University':['badge-uni','University'],
+      'K-12':['badge-k12','K–12'], 'Entrance Exam':['badge-ent','Entrance Exam'],
+      'Language Exam':['badge-lng','Language Exam'],
+    };
+    COURSES = (data||[]).map(c=>{
+      const [badge,badgeLabel] = badgeByField[c.field] || ['badge-voc', c.field || 'Course'];
+      return {
+        id: c.id, // real UUID - this is what makes real enrollment/payment possible
+        title: c.title, field: c.field, discipline: c.discipline, subject: c.subject,
+        country: c.country, flag: odysseyCountryFlag(c.country), emoji: odysseyFieldEmoji(c.field),
+        instructor: c.instructor?.full_name || 'Odyssey instructor',
+        rating: c.rating || 0, reviews: 0, // no review system exists yet - shown honestly as 0, not invented
+        students: c.enrolled_count || 0,
+        hours: c.session_count ? Math.round(c.session_count * 1.5) : null, // rough estimate from session count
+        price: (c.price_cents || 0) / 100,
+        level: c.level || 'All levels',
+        badge, badgeLabel,
+        cert: !!c.certificate_enabled, practice: !!c.qa_enabled,
+      };
+    });
+  }catch(error){
+    console.error('Could not load courses.', error);
+    COURSES = [];
+  }
+}
 
 // ════════════════════════════════════════════════
 // STEP 1: FIELD
@@ -1139,31 +1180,65 @@ function renderCourses(data) {
 }
 
 
-function enrollCourse(courseId) {
-  localStorage.setItem('odyssey_pending_course_id', String(courseId));
-  if (!window.OdysseySessionUI?.requireStudentLogin?.('learnworld_catalog.html')) return;
+async function enrollCourse(courseId) {
   const course = COURSES.find(c => c.id === courseId);
   if (!course) return;
-  const enrolled = JSON.parse(localStorage.getItem('odyssey_enrolled_courses') || '[]');
-  if (!enrolled.some(c => c.id === course.id)) {
-    enrolled.unshift({
-      id: course.id,
-      title: course.title,
-      instructor: course.instructor,
-      description: [course.field, course.discipline, course.subject].filter(Boolean).join(' · '),
-      emoji: course.emoji || '🎓',
-      field: course.field,
-      level: course.level,
-      hours: course.hours,
-      price: course.price,
-      interactionPrice: coursePriceOptions(course).interaction,
-      cert: course.cert,
-      practice: course.practice,
-      progress: Math.floor(12 + Math.random() * 18)
-    });
-    localStorage.setItem('odyssey_enrolled_courses', JSON.stringify(enrolled));
+
+  if(!window.OdysseySupabase?.isConfigured?.()){
+    alert('Enrollment is not available right now - Supabase is not configured on this deployment.');
+    return;
   }
-  window.location.href = 'student_portal.html';
+  const session = await OdysseySupabase.session();
+  if(!session){
+    localStorage.setItem('odyssey_after_login', 'learnworld_catalog.html');
+    window.location.href = 'auth.html?mode=login&role=student&redirect=learnworld_catalog.html';
+    return;
+  }
+
+  // Free course: no payment needed. enroll_in_course() is the real,
+  // server-verified path - it re-checks the price itself, so nothing here
+  // can grant free access to a course that actually costs money.
+  if(!course.price || course.price <= 0){
+    try{
+      await OdysseySupabase.enrollInCourse(courseId);
+      window.location.href = 'student_portal.html';
+    }catch(error){
+      alert('Could not enroll: ' + (error?.message || error));
+    }
+    return;
+  }
+
+  // Paid course: go through real Stripe Checkout. This calls our own
+  // server, which re-fetches the real price from the database, creates an
+  // actual Stripe Checkout Session, and only ever enrolls the student
+  // after Stripe itself confirms the charge (see api/stripe-webhook.js) -
+  // nothing here can fake a purchase.
+  try{
+    const btn = event?.target?.closest?.('button');
+    if(btn){ btn.disabled = true; btn.textContent = 'Redirecting to payment...'; }
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ courseId }),
+    });
+    const result = await response.json();
+    if(!response.ok){
+      if(result.alreadyOwned){
+        window.location.href = 'student_portal.html';
+        return;
+      }
+      if(result.missingEnvVars){
+        alert('Payment processing is not set up yet on this deployment (Stripe keys have not been added). Once that\'s configured this button will take you to real checkout.');
+        return;
+      }
+      alert(result.error || 'Could not start checkout.');
+      if(btn){ btn.disabled = false; btn.textContent = 'Enroll'; }
+      return;
+    }
+    window.location.href = result.url;
+  }catch(error){
+    alert('Could not start checkout: ' + (error?.message || error));
+  }
 }
 
 function renderPagination(total) {
@@ -1283,9 +1358,11 @@ function goPage(p){currentPage=p;renderCourses(getFiltered());window.scrollTo({t
     const ch = document.querySelector('.catalog-header');
     if(ch) ch.parentElement.insertBefore(banner,ch);
   }
-  updateCounts();
-  applyFilters();
-  updateChips();
+  loadRealCourses().then(()=>{
+    updateCounts();
+    applyFilters();
+    updateChips();
+  });
 })();
 </script>
 <script id="i18n-dark-init">
