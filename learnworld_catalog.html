@@ -315,13 +315,13 @@ nav{background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.10);
 </head>
 <body><div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
 <nav>
-<a class="nav-logo" href="learnworld_landing.html">
+<a class="nav-logo" href="index.html">
 <div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="34" height="34" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div>
 <span class="nav-logo-text"><span>Odyssey</span></span>
 </a>
 <div class="nav-right" id="navRight">
 <span class="i18n-dark-wrap" data-i18n-switcher=""></span>
-<a href="learnworld_landing.html"><span data-i18n="nav_home">Home</span></a>
+<a href="index.html"><span data-i18n="nav_home">Home</span></a>
 <a class="active" href="#">Courses</a>
 <a href="tests_marketplace.html">Tests</a>
 <a href="about.html"><span data-i18n="nav_about">About</span></a>
@@ -1302,7 +1302,7 @@ setTimeout(()=>{document.querySelectorAll('.i18n-dark-wrap .i18n-switcher').forE
 // was checking could only have been a leftover localStorage value, never a
 // real session. This runs after every other script on the page (deferred
 // scripts + DOMContentLoaded), so it always has the final, correct word.
-const ODYSSEY_LOGGED_OUT_NAV = `<span class="i18n-dark-wrap" data-i18n-switcher=""></span><a href="learnworld_landing.html"><span data-i18n="nav_home">Home</span></a><a class="active" href="#">Courses</a><a href="tests_marketplace.html">Tests</a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a href="auth.html?mode=login"><span data-i18n="nav_login">Log in</span></a><a class="nav-cta" href="auth.html?mode=signup"><span data-i18n="nav_signup">Sign up ✨</span></a>`;
+const ODYSSEY_LOGGED_OUT_NAV = `<span class="i18n-dark-wrap" data-i18n-switcher=""></span><a href="index.html"><span data-i18n="nav_home">Home</span></a><a class="active" href="#">Courses</a><a href="tests_marketplace.html">Tests</a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a href="auth.html?mode=login"><span data-i18n="nav_login">Log in</span></a><a class="nav-cta" href="auth.html?mode=signup"><span data-i18n="nav_signup">Sign up ✨</span></a>`;
 
 async function odysseyFixNavAuthState(){
   const navRight = document.getElementById('navRight');
@@ -1325,7 +1325,7 @@ async function odysseyFixNavAuthState(){
     const portalHref = profile.role === 'instructor' || profile.role === 'institution'
       ? 'instructor_portal.html'
       : (profile.role === 'admin' || profile.role === 'support' ? 'admin_dashboard.html' : 'student_portal.html');
-    navRight.innerHTML = `<span class="i18n-dark-wrap" data-i18n-switcher=""></span><a href="learnworld_landing.html"><span data-i18n="nav_home">Home</span></a><a class="active" href="#">Courses</a><a href="tests_marketplace.html">Tests</a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a class="nav-cta" href="${portalHref}">Hi, ${(profile.full_name||'Learner').split(' ')[0]} →</a>`;
+    navRight.innerHTML = `<span class="i18n-dark-wrap" data-i18n-switcher=""></span><a href="index.html"><span data-i18n="nav_home">Home</span></a><a class="active" href="#">Courses</a><a href="tests_marketplace.html">Tests</a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a class="nav-cta" href="${portalHref}">Hi, ${(profile.full_name||'Learner').split(' ')[0]} →</a>`;
   }catch(error){
     console.error('Could not verify session, defaulting to logged-out nav.', error);
     navRight.innerHTML = ODYSSEY_LOGGED_OUT_NAV;

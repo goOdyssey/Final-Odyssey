@@ -184,13 +184,15 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 .comment-action{font-size:11.5px;font-weight:700;color:var(--muted2);background:none;border:none;cursor:pointer;font-family:var(--ff-body);padding:0}
 .comment-action:hover{color:var(--navy)}
 .comment-reactions{display:flex;align-items:center;gap:4px;position:relative}
-.reaction-chip{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;padding:3px 8px;border-radius:var(--radius-pill);background:var(--cream);border:1px solid var(--border);cursor:pointer}
+.reaction-chip{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;padding:3px 8px;border-radius:var(--radius-pill);background:var(--cream);border:1px solid var(--border);cursor:pointer;transition:background .15s,border-color .15s}
 .reaction-chip.mine{background:#E9F3F0;border-color:var(--teal)}
-.reaction-picker{display:none;position:absolute;bottom:100%;left:46px;margin-bottom:6px;background:#fff;border:1px solid var(--border);border-radius:16px;padding:8px;grid-template-columns:repeat(8,1fr);gap:2px;box-shadow:var(--shadow-md);z-index:20;width:224px}
-.comment-item:hover .reaction-picker,.reaction-picker.pinned{display:grid}
-.reaction-picker button{background:none;border:none;font-size:17px;cursor:pointer;padding:4px;border-radius:8px;transition:transform .12s,background .12s}
-.reaction-picker button:hover{transform:scale(1.25);background:var(--cream)}
+.reaction-picker{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:16px;padding:8px;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;box-shadow:var(--shadow-md);z-index:30;width:224px;opacity:0;visibility:hidden;transform:translateY(-4px) scale(.96);transform-origin:top left;transition:opacity .16s ease,transform .16s ease,visibility 0s linear .16s;pointer-events:none}
+.reaction-picker.pinned{opacity:1;visibility:visible;transform:translateY(0) scale(1);transition:opacity .16s ease,transform .16s ease;pointer-events:auto}
+.reaction-picker button{background:none;border:none;font-size:17px;cursor:pointer;padding:4px;border-radius:8px;transition:transform .12s,background .12s;line-height:1}
+.reaction-picker button:hover{transform:scale(1.22);background:var(--cream)}
 .reaction-picker button.active{background:#E9F3F0;box-shadow:inset 0 0 0 1.5px var(--teal)}
+.react-toggle{font-size:11.5px;padding:3px 8px;border-radius:var(--radius-pill);background:var(--cream);border:1px solid var(--border);cursor:pointer;color:var(--muted2);font-weight:700}
+.react-toggle:hover{border-color:var(--navy);color:var(--navy)}
 .reply-form{margin-left:46px;margin-top:10px;display:none;gap:8px}
 .reply-form.open{display:flex}
 .reply-form input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--cream)}
@@ -635,10 +637,12 @@ async function loadComments(courseId){
     .order('created_at', { ascending: true });
   if(error){ console.error(error); return; }
 
-  const total = comments.length;
-  ['commentCountChip','commentCountHero'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = total; });
+  // Only top-level comments count as "comments" — replies are part of the
+  // conversation under them, not separate entries in the count.
+  const topLevelCount = comments.filter(c => !c.parent_comment_id).length;
+  ['commentCountChip','commentCountHero'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = topLevelCount; });
 
-  if(total === 0){
+  if(comments.length === 0){
     document.getElementById('commentList').innerHTML = '<div class="comments-empty">No comments yet — be the first to share your thoughts.</div>';
     return;
   }
@@ -663,6 +667,7 @@ async function loadComments(courseId){
       </div>
       <div class="comment-body">${escapeHtml(c.body)}</div>
       <div class="comment-actions">
+        <button class="react-toggle" type="button" onclick="openReactionPicker(event,'${c.id}')">😊 React</button>
         <div class="comment-reactions" id="reactions-${c.id}"><!-- filled in by loadReactionsExtension() --></div>
         ${!isReply ? `<button class="comment-action" onclick="toggleReplyForm('${c.id}')">Reply</button>` : ''}
       </div>
@@ -716,7 +721,28 @@ async function submitComment(courseId){
    text is already rendered, runs a single grouped query for every visible
    comment at once (never one query per comment), and only touches the
    small #reactions-{id} slot inside each comment — so it can never slow
-   down or block comment browsing. */
+   down or block comment browsing.
+
+   The picker opens on an explicit click (not :hover) so it can never
+   "bleed" onto other comments — hover state on a parent comment used to
+   also match its nested replies' pickers since replies live inside the
+   parent's markup. A click always targets exactly one comment. */
+let reactionState = {}; // commentId -> { counts, mine } — kept in memory for instant re-renders
+
+function renderReactionSlot(id){
+  const slot = document.getElementById('reactions-'+id);
+  if(!slot) return;
+  const info = reactionState[id] || { counts:{}, mine:null };
+  const chips = Object.keys(info.counts).filter(e=>info.counts[e]>0).map(e =>
+    `<span class="reaction-chip ${info.mine===e?'mine':''}" onclick="toggleReaction('${id}','${e}')">${e} ${info.counts[e]}</span>`
+  ).join('');
+  const picker = REACTION_SET.map(e =>
+    `<button class="${info.mine===e?'active':''}" onclick="toggleReaction('${id}','${e}')">${e}</button>`
+  ).join('');
+  const wasPinned = slot.querySelector('.reaction-picker.pinned');
+  slot.innerHTML = `${chips}<div class="reaction-picker${wasPinned?' pinned':''}">${picker}</div>`;
+}
+
 async function loadReactionsExtension(commentIds){
   if(!sb || !commentIds.length) return;
   const { data: reactions, error } = await sb.from('comment_reactions')
@@ -731,26 +757,46 @@ async function loadReactionsExtension(commentIds){
     byComment[r.comment_id].counts[r.emoji] = (byComment[r.comment_id].counts[r.emoji]||0) + 1;
     if(r.reactor_key === myKey) byComment[r.comment_id].mine = r.emoji;
   });
-
-  commentIds.forEach(id=>{
-    const slot = document.getElementById('reactions-'+id);
-    if(!slot) return;
-    const info = byComment[id] || { counts:{}, mine:null };
-    const chips = Object.keys(info.counts).map(e =>
-      `<span class="reaction-chip ${info.mine===e?'mine':''}" onclick="toggleReaction('${id}','${e}')">${e} ${info.counts[e]}</span>`
-    ).join('');
-    const picker = REACTION_SET.map(e =>
-      `<button class="${info.mine===e?'active':''}" onclick="toggleReaction('${id}','${e}')">${e}</button>`
-    ).join('');
-    slot.innerHTML = `${chips}<div class="reaction-picker">${picker}</div>`;
-  });
+  commentIds.forEach(id => { reactionState[id] = byComment[id] || { counts:{}, mine:null }; });
+  commentIds.forEach(renderReactionSlot);
 }
 
+// Click a "😊 React" button to open exactly that comment's picker; clicking
+// elsewhere, or the button again, closes it. Only one picker is ever open.
+function openReactionPicker(evt, commentId){
+  evt.stopPropagation();
+  const slot = document.getElementById('reactions-'+commentId);
+  const picker = slot && slot.querySelector('.reaction-picker');
+  const alreadyOpen = picker && picker.classList.contains('pinned');
+  document.querySelectorAll('.reaction-picker.pinned').forEach(p => p.classList.remove('pinned'));
+  if(picker && !alreadyOpen) picker.classList.add('pinned');
+}
+document.addEventListener('click', () => {
+  document.querySelectorAll('.reaction-picker.pinned').forEach(p => p.classList.remove('pinned'));
+});
+
 // One reactor can only ever have a single active emoji on a comment —
-// clicking a different one replaces it rather than adding a second.
+// clicking a different one replaces it instantly (optimistic UI update
+// happens first, the Supabase write happens in the background) rather
+// than waiting on a round-trip before anything visibly changes.
 async function toggleReaction(commentId, emoji){
   if(!sb) return;
   const key = anonKey();
+  const prev = reactionState[commentId] || { counts:{}, mine:null };
+  const nextCounts = { ...prev.counts };
+  let nextMine = prev.mine;
+
+  if(prev.mine === emoji){
+    nextCounts[emoji] = Math.max(0, (nextCounts[emoji]||1) - 1);
+    nextMine = null;
+  } else {
+    if(prev.mine){ nextCounts[prev.mine] = Math.max(0, (nextCounts[prev.mine]||1) - 1); }
+    nextCounts[emoji] = (nextCounts[emoji]||0) + 1;
+    nextMine = emoji;
+  }
+  reactionState[commentId] = { counts: nextCounts, mine: nextMine };
+  renderReactionSlot(commentId); // instant — no waiting on the network
+
   const { data: mine } = await sb.from('comment_reactions').select('id, emoji').eq('comment_id', commentId).eq('reactor_key', key).maybeSingle();
   if(mine && mine.emoji === emoji){
     await sb.from('comment_reactions').delete().eq('id', mine.id);
@@ -759,7 +805,6 @@ async function toggleReaction(commentId, emoji){
   } else {
     await sb.from('comment_reactions').insert({ comment_id: commentId, emoji, reactor_key: key });
   }
-  loadReactionsExtension([commentId]);
 }
 
 /* ---------- WIRING ---------- */
