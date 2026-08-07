@@ -7,12 +7,12 @@
 <title>Odyssey — Course Discovery</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0d1b2a;--navy2:#162032;--navy3:#1f2d3d;
-  --gold:#c8973a;--gold2:#e8b55a;--gold-pale:#fdf3e3;
+  --navy:#142C4F;--navy2:#0B1930;--navy3:#2A4A78;
+  --gold:#C08A3E;--gold2:#E7C88A;--gold-pale:#F3E9D3;
   --cream:#f5f0e8;--cream2:#ede6d6;
   --text:#0d1b2a;--muted:#4a5568;--muted2:#718096;
   --border:#d8cfc0;--border2:#e8e2d8;--white:#ffffff;
@@ -27,7 +27,7 @@ body{font-family:var(--ff-body);background:var(--cream);color:var(--text);min-he
 /* NAV */
 nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:60px;background:rgba(13,27,42,0.98);border-bottom:1px solid rgba(200,151,58,0.2);backdrop-filter:blur(12px)}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-logo-mark{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ff4d8d);display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-weight:700;color:white;font-size:12px}
+.nav-logo-mark{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#142C4F,#0F7A6C);display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-weight:700;color:white;font-size:12px}
 .nav-logo-text{font-family:var(--ff-display);font-size:17px;font-weight:600;color:white}
 .nav-logo-text span{color:var(--gold)}
 .nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
@@ -148,7 +148,7 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 .thumb-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
 .thumb-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,27,42,0.6) 0%,rgba(13,27,42,0.2) 100%)}
 .course-badge{position:absolute;top:8px;left:8px;font-family:var(--ff-mono);font-size:9px;letter-spacing:0.8px;text-transform:uppercase;padding:3px 7px;border-radius:3px;color:var(--navy);font-weight:500}
-.badge-voc{background:#a8d5b5}.badge-uni{background:#b5c8f0}.badge-k12{background:#f5d5a0}.badge-ent{background:#f0b5b5}.badge-lng{background:#d5b5f0}
+.badge-voc{background:#A8D0BE}.badge-uni{background:#A8C0D9}.badge-k12{background:#E7C88A}.badge-ent{background:#D9A9BE}.badge-lng{background:#B8A8D6}
 .course-fav{position:absolute;top:8px;right:8px;width:26px;height:26px;background:rgba(255,255,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:transform 0.2s}
 .course-fav:hover{transform:scale(1.15)}
 .course-body{padding:14px 16px;display:flex;flex-direction:column;flex:1}
@@ -163,12 +163,12 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 .course-dot{width:2px;height:2px;border-radius:50%;background:var(--border)}
 .course-footer{margin-top:auto;padding-top:10px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
 .course-price{font-family:var(--ff-display);font-size:15px;font-weight:700;color:var(--navy)}
-.price-free{color:#3a8a5a}
+.price-free{color:#2E7D5B}
 .course-prices{display:grid;gap:5px;min-width:158px}
 .price-line{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
 .price-line strong{font-family:var(--ff-display);font-size:15px;color:var(--navy)}
-.price-line.price-free strong{color:#3a8a5a}
-.price-line.interactive strong{color:#0f766e}
+.price-line.price-free strong{color:#2E7D5B}
+.price-line.interactive strong{color:#0F7A6C}
 .btn-enroll{padding:6px 14px;background:var(--navy);color:white;border:none;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ff-body);transition:background 0.2s}
 .btn-enroll:hover{background:var(--gold);color:var(--navy)}
 
@@ -209,9 +209,10 @@ footer .i18n-dropdown,.site-footer .i18n-dropdown{top:auto!important;bottom:calc
 </style>
 </style>
 </style>
+<script defer="" src="js/i18n.js"></script>
 <script src="js/supabase-config.js"></script>
 <script src="js/supabase-client.js"></script>
-<script defer="" src="js/i18n.js"></script>
+<script src="assets/odyssey-courses-data.js"></script>
 <script defer src="js/session-ui.js"></script>
 <script defer src="assets/odyssey-portal-translations.js"></script>
 <script defer src="assets/odyssey-translation-completion.js"></script>
@@ -285,43 +286,42 @@ html[dir="rtl"] nav .i18n-dropdown{
 </style>
 <style id="odyssey-2026-catalog-refresh">
 :root{
-  --navy:#17202c;--navy2:#223044;--navy3:#334155;--gold:#d6a246;--gold2:#e1b866;--gold-pale:#f6ead1;
-  --cream:#eef1f4;--cream2:#e5e9ef;--text:#17202c;--muted:#5f6b7a;--muted2:#7b8796;
+  --navy:#142C4F;--navy2:#0B1930;--navy3:#2A4A78;--gold:#C08A3E;--gold2:#E7C88A;--gold-pale:#F3E9D3;
+  --cream:#F6F4EF;--cream2:#EFEDE6;--text:#141C2B;--muted:#64708A;--muted2:#7B8796;
   --border:#d7dde6;--border2:#e5e9ef;--white:#ffffff;--shadow:0 12px 38px rgba(15,23,42,.08);--shadow-md:0 24px 70px rgba(15,23,42,.14);
 }
 body{background:linear-gradient(135deg,rgba(15,118,110,.08),transparent 30%),var(--cream);letter-spacing:0}
 nav{background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.10);box-shadow:0 18px 48px rgba(15,23,42,.16)}
-.nav-logo-mark{border-radius:11px;background:linear-gradient(135deg,#17202c,#0f766e)}
-.nav-cta{background:#d6a246;border-radius:10px}.nav-cta:hover{background:#e1b866!important}
+.nav-logo-mark{border-radius:11px;background:linear-gradient(135deg,#141C2B,#0F7A6C)}
+.nav-cta{background:#C08A3E;border-radius:10px}.nav-cta:hover{background:#E7C88A!important}
 .search-hero{background:linear-gradient(135deg,rgba(23,32,44,.95),rgba(15,63,61,.92)),url("assets/odyssey-global-learning-fast.jpg") center/cover;padding:58px 40px 0}
 .sh-grid{background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px)}
 .sh-glow{background:radial-gradient(circle,rgba(214,162,70,.18),transparent 70%)}
-.sh-label{color:#e1b866}.sh-inner h1{font-family:var(--ff-display);letter-spacing:0;color:#fff}.sh-sub{color:rgba(255,255,255,.70)}
+.sh-label{color:#E7C88A}.sh-inner h1{font-family:var(--ff-display);letter-spacing:0;color:#fff}.sh-sub{color:rgba(255,255,255,.70)}
 .search-wrap{background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-color:rgba(255,255,255,.42);box-shadow:0 28px 80px rgba(15,23,42,.24)}
-.search-input-wrap,.cs.active-step{background:rgba(255,255,255,.72)}.search-btn{background:#17202c;color:white}.search-btn:hover{background:#0f766e;color:white}
-.cs.done .cs-num{background:#0f766e;color:#fff}.cs.active-step .cs-num{background:#17202c}.cs-val{color:#0f766e}
+.search-input-wrap,.cs.active-step{background:rgba(255,255,255,.72)}.search-btn{background:#141C2B;color:white}.search-btn:hover{background:#0F7A6C;color:white}
+.cs.done .cs-num{background:#0F7A6C;color:#fff}.cs.active-step .cs-num{background:#141C2B}.cs-val{color:#0F7A6C}
 .cat-type-bar{background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(15,23,42,.10)}
-.cat-btn.active{border-bottom-color:#0f766e}.cat-btn.active .cc{background:#0f766e;color:#fff}
-.main{max-width:1180px}.sidebar-card{background:linear-gradient(135deg,#17202c,#0f3f3d);box-shadow:0 18px 48px rgba(15,23,42,.16)}
+.cat-btn.active{border-bottom-color:#0F7A6C}.cat-btn.active .cc{background:#0F7A6C;color:#fff}
+.main{max-width:1180px}.sidebar-card{background:linear-gradient(135deg,#141C2B,#0f3f3d);box-shadow:0 18px 48px rgba(15,23,42,.16)}
 .course-card{border:1px solid rgba(15,23,42,.10);box-shadow:0 14px 34px rgba(15,23,42,.07);border-radius:14px}.course-card:hover{border-color:rgba(15,118,110,.34);box-shadow:0 26px 60px rgba(15,23,42,.14)}
 .thumb-bg{font-size:42px;background-blend-mode:overlay}.thumb-overlay{background:linear-gradient(135deg,rgba(23,32,44,.58),rgba(15,118,110,.18))}
-.course-title{font-size:15px;color:#17202c}.course-field{color:#0f766e}.course-rating{color:#b7791f}.btn-enroll{background:#17202c;border-radius:10px}.btn-enroll:hover{background:#0f766e;color:white}
-.course-price{color:#17202c}.price-free{color:#0f766e}.page-btn:hover,.page-btn.active{background:#17202c;border-color:#17202c}
+.course-title{font-size:15px;color:#141C2B}.course-field{color:#0F7A6C}.course-rating{color:#A6672B}.btn-enroll{background:#141C2B;border-radius:10px}.btn-enroll:hover{background:#0F7A6C;color:white}
+.course-price{color:#141C2B}.price-free{color:#0F7A6C}.page-btn:hover,.page-btn.active{background:#141C2B;border-color:#141C2B}
 @media(max-width:768px){.search-hero{padding:38px 16px 0}.main{padding:18px 16px 56px}}
 </style>
-<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
-<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
-<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+<link rel="stylesheet" href="assets/odyssey-design-system.css" />
+<script defer src="assets/odyssey-scroll-reveal.js"></script>
 </head>
-<body>
+<body><div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
 <nav>
-<a class="nav-logo" href="index.html">
-<div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div>
+<a class="nav-logo" href="learnworld_landing.html">
+<div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="34" height="34" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div>
 <span class="nav-logo-text"><span>Odyssey</span></span>
 </a>
-<div class="nav-right">
+<div class="nav-right" id="navRight">
 <span class="i18n-dark-wrap" data-i18n-switcher=""></span>
-<a href="index.html"><span data-i18n="nav_home">Home</span></a>
+<a href="learnworld_landing.html"><span data-i18n="nav_home">Home</span></a>
 <a class="active" href="#">Courses</a>
 <a href="tests_marketplace.html">Tests</a>
 <a href="about.html"><span data-i18n="nav_about">About</span></a>
@@ -662,32 +662,8 @@ let currentPage = 1;
 const PER_PAGE = 12;
 
 // ── SAMPLE COURSES
-const COURSES = [
-  {id:1,title:"Complete JEE Advanced Mathematics",field:"Entrance Exam",discipline:"South Asian Exams",subject:"JEE Advanced (India)",country:"India",instructor:"Rajesh Venkataraman",flag:"🇮🇳",emoji:"📐",rating:4.9,reviews:12400,students:38700,hours:120,price:29,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:2,title:"NEET Biology Master Class",field:"Entrance Exam",discipline:"South Asian Exams",subject:"NEET-UG (India)",country:"India",instructor:"Dr Priya Sharma",flag:"🇮🇳",emoji:"🧬",rating:4.8,reviews:9800,students:24300,hours:95,price:24,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:3,title:"Gaokao Physics — Full Syllabus",field:"Entrance Exam",discipline:"East Asian Exams",subject:"Gaokao (China)",country:"China",instructor:"Wei Liang",flag:"🇨🇳",emoji:"⚛️",rating:4.9,reviews:18200,students:52100,hours:140,price:32,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:4,title:"Baccalauréat Littérature Française",field:"K-12",discipline:"Literature & Language",subject:"Essay Writing",country:"France",instructor:"Sophie Beaumont",flag:"🇫🇷",emoji:"📖",rating:4.7,reviews:4200,students:9800,hours:60,price:18,level:"Intermediate",badge:"badge-k12",badgeLabel:"K–12",cert:true,practice:false},
-  {id:5,title:"JAMB UTME Complete Prep 2025",field:"Entrance Exam",discipline:"African Exams",subject:"JAMB UTME (Nigeria)",country:"Nigeria",instructor:"Chukwuemeka Eze",flag:"🇳🇬",emoji:"📝",rating:4.8,reviews:7600,students:21000,hours:80,price:12,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:6,title:"Culinary Arts: West African Cuisine",field:"Vocational",discipline:"Culinary Arts & Baking",subject:"West African Cuisine",country:"Nigeria",instructor:"Chef Amara Diallo",flag:"🇳🇬",emoji:"🍲",rating:4.6,reviews:3100,students:8400,hours:40,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-  {id:7,title:"Professional Tailoring & Garment Design",field:"Vocational",discipline:"Fashion & Tailoring",subject:"Pattern Making",country:"India",instructor:"Priya Datta",flag:"🇮🇳",emoji:"🧵",rating:4.8,reviews:5200,students:14100,hours:55,price:22,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-  {id:8,title:"IELTS Academic Band 8+ Strategy",field:"Language Exam",discipline:"English Proficiency",subject:"IELTS Academic — Writing",country:"United Kingdom",instructor:"Dr James Hartley",flag:"🇬🇧",emoji:"🗣️",rating:4.9,reviews:22000,students:64000,hours:35,price:19,level:"Advanced",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
-  {id:9,title:"MBBS Year 1 — Anatomy & Physiology",field:"University",discipline:"Medicine (MBBS/MD)",subject:"Anatomy",country:"United Kingdom",instructor:"Prof Elena Marchetti",flag:"🇬🇧",emoji:"⚕️",rating:4.8,reviews:8100,students:18600,hours:110,price:45,level:"Advanced",badge:"badge-uni",badgeLabel:"University",cert:true,practice:true},
-  {id:10,title:"Abitur Mathematik Intensivkurs",field:"K-12",discipline:"Mathematics",subject:"Calculus",country:"Germany",instructor:"Hans-Peter Müller",flag:"🇩🇪",emoji:"🔢",rating:4.7,reviews:3400,students:8700,hours:72,price:16,level:"Advanced",badge:"badge-k12",badgeLabel:"K–12",cert:false,practice:true},
-  {id:11,title:"TOEFL iBT Complete Preparation",field:"Language Exam",discipline:"English Proficiency",subject:"TOEFL iBT — Speaking",country:"United States",instructor:"Sarah Kim",flag:"🇺🇸",emoji:"🎙️",rating:4.8,reviews:14200,students:38000,hours:42,price:21,level:"Intermediate",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
-  {id:12,title:"Sustainable Farming & Agroecology",field:"Vocational",discipline:"Agriculture & Farming",subject:"Organic Farming",country:"Kenya",instructor:"Dr Njeri Waweru",flag:"🇰🇪",emoji:"🌱",rating:4.7,reviews:2100,students:6200,hours:38,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-  {id:13,title:"A-Level Chemistry — Full Syllabus",field:"K-12",discipline:"Chemistry",subject:"Organic Chemistry",country:"United Kingdom",instructor:"Dr Rachel Okonkwo",flag:"🇬🇧",emoji:"⚗️",rating:4.9,reviews:11200,students:29400,hours:88,price:28,level:"Advanced",badge:"badge-k12",badgeLabel:"K–12",cert:true,practice:true},
-  {id:14,title:"SAT Math — Score 800 Blueprint",field:"Entrance Exam",discipline:"American Exams",subject:"SAT (USA)",country:"United States",instructor:"Kevin Chen",flag:"🇺🇸",emoji:"📊",rating:4.9,reviews:19800,students:54000,hours:50,price:35,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
-  {id:15,title:"DELF B2 — Préparation Complète",field:"Language Exam",discipline:"French",subject:"DELF B1–B2",country:"France",instructor:"Marie-Claire Fontaine",flag:"🇫🇷",emoji:"🇫🇷",rating:4.6,reviews:4800,students:11200,hours:30,price:17,level:"Upper-Intermediate",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
-  {id:16,title:"Civil Engineering: Structural Design",field:"University",discipline:"Engineering — Civil",subject:"Structural Analysis",country:"Germany",instructor:"Prof Klaus Bergmann",flag:"🇩🇪",emoji:"🏗️",rating:4.8,reviews:5600,students:13800,hours:130,price:42,level:"Advanced",badge:"badge-uni",badgeLabel:"University",cert:true,practice:false},
-  {id:17,title:"WAEC WASSCE Mathematics & Sciences",field:"Entrance Exam",discipline:"African Exams",subject:"WAEC WASSCE (West Africa)",country:"Nigeria",instructor:"Emmanuel Asante",flag:"🇬🇭",emoji:"📐",rating:4.7,reviews:6300,students:17800,hours:65,price:8,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
-  {id:18,title:"Japanese N1 JLPT Master Course",field:"Language Exam",discipline:"Japanese",subject:"JLPT N2–N1 (Advanced)",country:"Japan",instructor:"Yuki Tanaka",flag:"🇯🇵",emoji:"🗾",rating:4.8,reviews:7100,students:16400,hours:90,price:26,level:"Expert",badge:"badge-lng",badgeLabel:"Language Exam",cert:true,practice:true},
-  {id:19,title:"ENEM — Redação e Ciências Humanas",field:"Entrance Exam",discipline:"American Exams",subject:"ENEM / Vestibular (Brazil)",country:"Brazil",instructor:"Prof Fernanda Costa",flag:"🇧🇷",emoji:"📜",rating:4.7,reviews:8900,students:24100,hours:75,price:14,level:"Intermediate",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:false,practice:true},
-  {id:20,title:"Organic Chemistry for MCAT",field:"Entrance Exam",discipline:"Medical & Professional",subject:"MCAT (USA/Canada)",country:"United States",instructor:"Dr Aisha Kamara",flag:"🇺🇸",emoji:"🧪",rating:4.9,reviews:13400,students:34200,hours:85,price:38,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:21,title:"Introduction to Baking & Pastry Arts",field:"Vocational",discipline:"Culinary Arts & Baking",subject:"Pastry & Confectionery",country:"France",instructor:"Chef Mateus Oliveira",flag:"🇫🇷",emoji:"🥐",rating:4.8,reviews:4600,students:12300,hours:45,price:0,level:"Beginner",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-  {id:22,title:"Konkur / کنکور — Full Prep (Riyazi)",field:"Entrance Exam",discipline:"Middle East & Iran",subject:"Konkur / کنکور (Iran)",country:"Iran",instructor:"Dr Maryam Hosseini",flag:"🇮🇷",emoji:"📗",rating:4.9,reviews:11200,students:29400,hours:120,price:20,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:23,title:"Qiyas & Tahsili — Arabic Full Prep",field:"Entrance Exam",discipline:"Middle East & Iran",subject:"Qiyas / Tahsili (Saudi Arabia)",country:"Saudi Arabia",instructor:"Fatima Al-Harbi",flag:"🇸🇦",emoji:"📗",rating:4.9,reviews:9200,students:21300,hours:70,price:20,level:"Advanced",badge:"badge-ent",badgeLabel:"Entrance Exam",cert:true,practice:true},
-  {id:24,title:"Machine Learning A–Z: Python & R",field:"Vocational",discipline:"AI & Data Science",subject:"Machine Learning",country:"United States",instructor:"Prof Chen Wei",flag:"🇺🇸",emoji:"🤖",rating:4.9,reviews:28000,students:86000,hours:110,price:35,level:"Intermediate",badge:"badge-voc",badgeLabel:"Vocational",cert:true,practice:false},
-];
+// COURSES now lives in assets/odyssey-courses-data.js (shared with course_detail.html)
+
 
 // ════════════════════════════════════════════════
 // STEP 1: FIELD
@@ -1104,7 +1080,7 @@ function renderCourses(data) {
   grid.innerHTML = page.map((c,i) => {
     const prices = coursePriceOptions(c);
     return `
-    <div class="course-card${currentView==='list'?' list-view':''}" style="animation-delay:${i*0.04}s">
+    <div class="course-card${currentView==='list'?' list-view':''}" data-reveal="rise" data-reveal-delay="${Math.min(i*40,320)}" style="animation-delay:${i*0.04}s" onclick="window.location.href='course_detail.html?id=${c.id}'" role="link" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
       <div class="course-thumb" style="${currentView==='list'?'width:180px;height:auto;min-height:120px':'height:140px'}">
         <div class="thumb-bg" style="background:${thumbColor(c.field)}">${c.emoji}<div class="thumb-overlay"></div></div>
         <span class="course-badge ${c.badge}">${T(BADGE_KEY[c.badgeLabel] || c.badgeLabel)}</span>
@@ -1136,13 +1112,13 @@ function renderCourses(data) {
     </div>`}).join('');
   document.querySelectorAll('.course-fav').forEach(f=>f.addEventListener('click',e=>{e.stopPropagation();f.textContent=f.textContent==='♡'?'♥':'♡';f.style.color=f.textContent==='♥'?'#e05555':''}));
   renderPagination(total);
+  window.OdysseyReveal?.scan();
 }
 
 
-async function enrollCourse(courseId) {
+function enrollCourse(courseId) {
   localStorage.setItem('odyssey_pending_course_id', String(courseId));
-  const allowed = await window.OdysseySessionUI?.requireStudentLogin?.('learnworld_catalog.html');
-  if (!allowed) return;
+  if (!window.OdysseySessionUI?.requireStudentLogin?.('learnworld_catalog.html')) return;
   const course = COURSES.find(c => c.id === courseId);
   if (!course) return;
   const enrolled = JSON.parse(localStorage.getItem('odyssey_enrolled_courses') || '[]');
@@ -1318,8 +1294,48 @@ setTimeout(()=>{document.querySelectorAll('.i18n-dark-wrap .i18n-switcher').forE
   window.odysseyPlaceCountryDrop=placeCountryDrop;
 })();
 </script>
-<script src="assets/odyssey-global-motion.js" defer></script>
-<script src="assets/odyssey-investor-final-polish.js" defer></script>
-<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+<script>
+// Definitive nav login-state fix. This page previously showed a signed-in
+// name in the header regardless of whether anyone was actually logged in -
+// most likely because the page never loaded the real Supabase client at
+// all (confirmed: it wasn't in the script list), so whatever session-ui.js
+// was checking could only have been a leftover localStorage value, never a
+// real session. This runs after every other script on the page (deferred
+// scripts + DOMContentLoaded), so it always has the final, correct word.
+const ODYSSEY_LOGGED_OUT_NAV = `<span class="i18n-dark-wrap" data-i18n-switcher=""></span><a href="learnworld_landing.html"><span data-i18n="nav_home">Home</span></a><a class="active" href="#">Courses</a><a href="tests_marketplace.html">Tests</a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a href="auth.html?mode=login"><span data-i18n="nav_login">Log in</span></a><a class="nav-cta" href="auth.html?mode=signup"><span data-i18n="nav_signup">Sign up ✨</span></a>`;
+
+async function odysseyFixNavAuthState(){
+  const navRight = document.getElementById('navRight');
+  if(!navRight) return;
+  try{
+    if(!window.OdysseySupabase?.isConfigured?.()){
+      navRight.innerHTML = ODYSSEY_LOGGED_OUT_NAV;
+      return;
+    }
+    const session = await OdysseySupabase.session();
+    if(!session){
+      navRight.innerHTML = ODYSSEY_LOGGED_OUT_NAV;
+      return;
+    }
+    const profile = await OdysseySupabase.profile();
+    if(!profile){
+      navRight.innerHTML = ODYSSEY_LOGGED_OUT_NAV;
+      return;
+    }
+    const portalHref = profile.role === 'instructor' || profile.role === 'institution'
+      ? 'instructor_portal.html'
+      : (profile.role === 'admin' || profile.role === 'support' ? 'admin_dashboard.html' : 'student_portal.html');
+    navRight.innerHTML = `<span class="i18n-dark-wrap" data-i18n-switcher=""></span><a href="learnworld_landing.html"><span data-i18n="nav_home">Home</span></a><a class="active" href="#">Courses</a><a href="tests_marketplace.html">Tests</a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a class="nav-cta" href="${portalHref}">Hi, ${(profile.full_name||'Learner').split(' ')[0]} →</a>`;
+  }catch(error){
+    console.error('Could not verify session, defaulting to logged-out nav.', error);
+    navRight.innerHTML = ODYSSEY_LOGGED_OUT_NAV;
+  }
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', odysseyFixNavAuthState);
+}else{
+  odysseyFixNavAuthState();
+}
+</script>
 </body>
 </html>

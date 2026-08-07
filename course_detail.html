@@ -32,6 +32,18 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 .nav-right{display:flex;align-items:center;gap:18px}
 .nav-right a{font-size:13px;font-weight:500;color:rgba(255,255,255,.62);text-decoration:none}
 .nav-right a:hover{color:var(--gold)}
+.nav-burger{display:none;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);cursor:pointer;flex-shrink:0;position:relative;align-items:center;justify-content:center}
+.nav-burger span,.nav-burger span::before,.nav-burger span::after{content:"";position:absolute;width:15px;height:2px;background:#fff;border-radius:2px;transition:transform .25s,opacity .2s}
+.nav-burger span::before{transform:translateY(-5px)}
+.nav-burger span::after{transform:translateY(5px)}
+.nav-burger.open span{background:transparent}
+.nav-burger.open span::before{transform:translateY(0) rotate(45deg)}
+.nav-burger.open span::after{transform:translateY(0) rotate(-45deg)}
+.nav-mobile-panel{display:none;position:fixed;top:64px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:#0d1b2a;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.4);padding:8px;z-index:250;flex-direction:column;gap:2px}
+.nav-mobile-panel.open{display:flex}
+.nav-mobile-panel a{padding:12px 14px;border-radius:10px;font-size:14px;font-weight:600;color:rgba(255,255,255,.8);text-decoration:none}
+.nav-mobile-panel a:hover,.nav-mobile-panel a.active{background:rgba(255,255,255,.08);color:#fff}
+.nav-mobile-panel .nav-cta{text-align:center;justify-content:center;margin-top:6px;display:flex;color:var(--navy)!important}
 .nav-cta{padding:8px 16px;background:var(--gold);color:var(--navy)!important;border-radius:8px;font-weight:700!important}
 
 /* BREADCRUMB */
@@ -174,10 +186,11 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 .comment-reactions{display:flex;align-items:center;gap:4px;position:relative}
 .reaction-chip{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;padding:3px 8px;border-radius:var(--radius-pill);background:var(--cream);border:1px solid var(--border);cursor:pointer}
 .reaction-chip.mine{background:#E9F3F0;border-color:var(--teal)}
-.reaction-picker{display:none;position:absolute;bottom:100%;left:46px;margin-bottom:6px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-pill);padding:6px 8px;gap:4px;box-shadow:var(--shadow-md);z-index:20}
-.comment-item:hover .reaction-picker{display:flex}
-.reaction-picker button{background:none;border:none;font-size:17px;cursor:pointer;padding:2px 4px;border-radius:8px;transition:transform .12s,background .12s}
+.reaction-picker{display:none;position:absolute;bottom:100%;left:46px;margin-bottom:6px;background:#fff;border:1px solid var(--border);border-radius:16px;padding:8px;grid-template-columns:repeat(8,1fr);gap:2px;box-shadow:var(--shadow-md);z-index:20;width:224px}
+.comment-item:hover .reaction-picker,.reaction-picker.pinned{display:grid}
+.reaction-picker button{background:none;border:none;font-size:17px;cursor:pointer;padding:4px;border-radius:8px;transition:transform .12s,background .12s}
 .reaction-picker button:hover{transform:scale(1.25);background:var(--cream)}
+.reaction-picker button.active{background:#E9F3F0;box-shadow:inset 0 0 0 1.5px var(--teal)}
 .reply-form{margin-left:46px;margin-top:10px;display:none;gap:8px}
 .reply-form.open{display:flex}
 .reply-form input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:var(--cream)}
@@ -194,6 +207,7 @@ footer a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;margin
   .info-grid{grid-template-columns:1fr}
   nav{padding:0 16px}
   .nav-right a:not(.nav-cta){display:none}
+  .nav-burger{display:flex}
 }
 @media(max-width:640px){
   nav{height:54px;padding:0 12px}
@@ -223,7 +237,14 @@ footer a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;margin
 <a href="about.html">About</a>
 <a class="nav-cta" href="auth.html?mode=signup">Sign up free</a>
 </div>
+<button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
 </nav>
+<div class="nav-mobile-panel">
+<a href="index.html">Home</a>
+<a href="learnworld_catalog.html">Courses</a>
+<a href="about.html">About</a>
+<a class="nav-cta" href="auth.html?mode=signup">Sign up free</a>
+</div>
 
 <div class="crumb">
 <a href="index.html">Home</a><span>/</span>
@@ -510,11 +531,14 @@ function anonKey(){
   return k;
 }
 
-// The six reactions are a fixed, curated set of native emoji — no picker
-// library, no font/icon-set download. Keeping this list tiny is also what
-// makes the "run a separate query" approach below cheap: reaction rows are
-// fetched independently of comment text, in one small grouped query.
-const REACTION_SET = ['👍','❤️','😂','😮','🎉','🤔'];
+// A broader curated emoji set — still a fixed list (not a full picker
+// library), so there's no font/icon-set download. Reactions are handled as
+// a self-contained "extension": comments render immediately from their own
+// query, and this reaction layer loads separately afterwards and patches
+// itself into the DOM — so a slow or heavy reaction load never blocks the
+// comment text from appearing, and browsing comments stays cheap even when
+// a comment collects a lot of reactions.
+const REACTION_SET = ['👍','❤️','😂','😮','🎉','🤔','🔥','👏','😢','😍','🙌','💯','✨','😅','🤯','🙏'];
 
 function timeAgo(iso){
   const s = Math.floor((Date.now() - new Date(iso).getTime())/1000);
@@ -602,7 +626,7 @@ async function toggleLike(courseId){
   loadLikeState(courseId);
 }
 
-/* ---------- COMMENTS + REPLIES + REACTIONS ---------- */
+/* ---------- COMMENTS + REPLIES ---------- */
 async function loadComments(courseId){
   if(!sb) return;
   const { data: comments, error } = await sb.from('course_comments')
@@ -619,19 +643,6 @@ async function loadComments(courseId){
     return;
   }
 
-  // Separate, lightweight aggregate query — reaction rows are never bundled
-  // into the comments payload, so browsing comments stays cheap even if a
-  // comment collects a lot of reactions.
-  const ids = comments.map(c=>c.id);
-  const { data: reactions } = await sb.from('comment_reactions').select('comment_id, emoji, reactor_key').in('comment_id', ids);
-  const reactionMap = {};
-  (reactions||[]).forEach(r=>{
-    reactionMap[r.comment_id] = reactionMap[r.comment_id] || {};
-    reactionMap[r.comment_id][r.emoji] = reactionMap[r.comment_id][r.emoji] || { count:0, mine:false };
-    reactionMap[r.comment_id][r.emoji].count++;
-    if(r.reactor_key === anonKey()) reactionMap[r.comment_id][r.emoji].mine = true;
-  });
-
   const byParent = {};
   comments.forEach(c=>{
     const p = c.parent_comment_id || 'root';
@@ -640,12 +651,9 @@ async function loadComments(courseId){
   });
 
   function renderComment(c, isReply){
-    const rx = reactionMap[c.id] || {};
-    const chips = Object.keys(rx).map(e => `<span class="reaction-chip ${rx[e].mine?'mine':''}" onclick="toggleReaction('${c.id}',  '${e}')">${e} ${rx[e].count}</span>`).join('');
-    const picker = REACTION_SET.map(e=>`<button onclick="toggleReaction('${c.id}','${e}')">${e}</button>`).join('');
     const initialsStr = (c.display_name||'?').trim().split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
     return `
-    <div class="comment-item${isReply?' reply':''}">
+    <div class="comment-item${isReply?' reply':''}" data-comment-id="${c.id}">
       <div class="comment-head">
         <span class="comment-avatar">${initialsStr}</span>
         <div>
@@ -655,10 +663,7 @@ async function loadComments(courseId){
       </div>
       <div class="comment-body">${escapeHtml(c.body)}</div>
       <div class="comment-actions">
-        <div class="comment-reactions">
-          ${chips}
-          <div class="reaction-picker">${picker}</div>
-        </div>
+        <div class="comment-reactions" id="reactions-${c.id}"><!-- filled in by loadReactionsExtension() --></div>
         ${!isReply ? `<button class="comment-action" onclick="toggleReplyForm('${c.id}')">Reply</button>` : ''}
       </div>
       ${!isReply ? `<div class="reply-form" id="reply-form-${c.id}">
@@ -671,6 +676,10 @@ async function loadComments(courseId){
   }
 
   document.getElementById('commentList').innerHTML = (byParent['root']||[]).map(c=>renderComment(c,false)).join('');
+
+  // Reactions are a separate "extension": fired after comment text is
+  // already on screen, using its own independent query.
+  loadReactionsExtension(comments.map(c=>c.id));
 }
 
 function toggleReplyForm(commentId){
@@ -702,17 +711,55 @@ async function submitComment(courseId){
   loadComments(courseId);
 }
 
+/* ---------- REACTIONS EXTENSION (own table, own query, own render pass) ----------
+   Deliberately decoupled from loadComments(): it's called after comment
+   text is already rendered, runs a single grouped query for every visible
+   comment at once (never one query per comment), and only touches the
+   small #reactions-{id} slot inside each comment — so it can never slow
+   down or block comment browsing. */
+async function loadReactionsExtension(commentIds){
+  if(!sb || !commentIds.length) return;
+  const { data: reactions, error } = await sb.from('comment_reactions')
+    .select('comment_id, emoji, reactor_key')
+    .in('comment_id', commentIds);
+  if(error){ console.error(error); return; }
+
+  const myKey = anonKey();
+  const byComment = {};
+  (reactions||[]).forEach(r=>{
+    byComment[r.comment_id] = byComment[r.comment_id] || { counts:{}, mine:null };
+    byComment[r.comment_id].counts[r.emoji] = (byComment[r.comment_id].counts[r.emoji]||0) + 1;
+    if(r.reactor_key === myKey) byComment[r.comment_id].mine = r.emoji;
+  });
+
+  commentIds.forEach(id=>{
+    const slot = document.getElementById('reactions-'+id);
+    if(!slot) return;
+    const info = byComment[id] || { counts:{}, mine:null };
+    const chips = Object.keys(info.counts).map(e =>
+      `<span class="reaction-chip ${info.mine===e?'mine':''}" onclick="toggleReaction('${id}','${e}')">${e} ${info.counts[e]}</span>`
+    ).join('');
+    const picker = REACTION_SET.map(e =>
+      `<button class="${info.mine===e?'active':''}" onclick="toggleReaction('${id}','${e}')">${e}</button>`
+    ).join('');
+    slot.innerHTML = `${chips}<div class="reaction-picker">${picker}</div>`;
+  });
+}
+
+// One reactor can only ever have a single active emoji on a comment —
+// clicking a different one replaces it rather than adding a second.
 async function toggleReaction(commentId, emoji){
   if(!sb) return;
   const key = anonKey();
-  const { data: mine } = await sb.from('comment_reactions').select('id').eq('comment_id', commentId).eq('emoji', emoji).eq('reactor_key', key).maybeSingle();
-  if(mine){
+  const { data: mine } = await sb.from('comment_reactions').select('id, emoji').eq('comment_id', commentId).eq('reactor_key', key).maybeSingle();
+  if(mine && mine.emoji === emoji){
     await sb.from('comment_reactions').delete().eq('id', mine.id);
+  } else if(mine){
+    await sb.from('comment_reactions').update({ emoji }).eq('id', mine.id);
   } else {
     await sb.from('comment_reactions').insert({ comment_id: commentId, emoji, reactor_key: key });
   }
-  const courseId = getCourse().id;
-  loadComments(courseId);
+  loadReactionsExtension([commentId]);
 }
 
 /* ---------- WIRING ---------- */
@@ -751,6 +798,49 @@ function initEngagement(course){
 }
 
 render();
+</script>
+<script defer>
+// Shared mobile nav: toggles the hamburger + dropdown panel used on every
+// page. Panel position is computed from the real nav element on each open/
+// resize, instead of a fixed pixel guess, so it stays aligned no matter
+// how the nav's height changes across breakpoints.
+document.addEventListener('DOMContentLoaded', function(){
+  const nav = document.querySelector('nav');
+  const burger = document.querySelector('.nav-burger');
+  const panel = document.querySelector('.nav-mobile-panel');
+  if(!nav || !burger || !panel) return;
+
+  function position(){
+    const r = nav.getBoundingClientRect();
+    panel.style.top = Math.round(r.bottom + 8) + 'px';
+  }
+  function open(){
+    position();
+    burger.classList.add('open');
+    panel.classList.add('open');
+    burger.setAttribute('aria-expanded','true');
+  }
+  function close(){
+    burger.classList.remove('open');
+    panel.classList.remove('open');
+    burger.setAttribute('aria-expanded','false');
+  }
+  function toggle(){
+    if(panel.classList.contains('open')) close(); else open();
+  }
+
+  burger.addEventListener('click', function(e){ e.stopPropagation(); toggle(); });
+  panel.addEventListener('click', function(e){ e.stopPropagation(); });
+  panel.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('click', function(e){
+    if(panel.classList.contains('open') && !panel.contains(e.target) && e.target !== burger) close();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  window.addEventListener('resize', function(){
+    if(panel.classList.contains('open')) position();
+    if(window.innerWidth > 900) close();
+  });
+});
 </script>
 </body>
 </html>

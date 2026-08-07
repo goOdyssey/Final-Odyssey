@@ -15,6 +15,18 @@ button,input,select,textarea{font:inherit}
 nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:62px;background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);box-shadow:0 18px 48px rgba(15,23,42,.16)}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-logo-mark{width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#17202c,#0f766e);display:grid;place-items:center;color:white;font-family:var(--head);font-weight:800;font-size:12px}.nav-logo-text{font-family:var(--head);font-size:18px;font-weight:700;color:white}.nav-logo-text span{color:var(--gold)}
 .nav-right{display:flex;align-items:center;gap:14px}.nav-right a{font-size:13px;font-weight:600;color:rgba(255,255,255,.64);text-decoration:none;white-space:nowrap}.nav-right a:hover,.nav-right a.active{color:var(--gold)}.nav-cta{padding:8px 14px;background:var(--gold);color:var(--navy)!important;border-radius:10px;font-weight:800!important}
+.nav-burger{display:none;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);cursor:pointer;flex-shrink:0;position:relative;align-items:center;justify-content:center}
+.nav-burger span,.nav-burger span::before,.nav-burger span::after{content:"";position:absolute;width:15px;height:2px;background:#fff;border-radius:2px;transition:transform .25s,opacity .2s}
+.nav-burger span::before{transform:translateY(-5px)}
+.nav-burger span::after{transform:translateY(5px)}
+.nav-burger.open span{background:transparent}
+.nav-burger.open span::before{transform:translateY(0) rotate(45deg)}
+.nav-burger.open span::after{transform:translateY(0) rotate(-45deg)}
+.nav-mobile-panel{display:none;position:fixed;top:70px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:#17202c;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.4);padding:8px;z-index:250;flex-direction:column;gap:2px}
+.nav-mobile-panel.open{display:flex}
+.nav-mobile-panel a{padding:12px 14px;border-radius:10px;font-size:14px;font-weight:700;color:rgba(255,255,255,.8);text-decoration:none}
+.nav-mobile-panel a:hover,.nav-mobile-panel a.active{background:rgba(255,255,255,.08);color:#fff}
+.nav-mobile-panel .nav-cta{text-align:center;justify-content:center;margin-top:6px;display:flex;color:var(--navy)!important}
 .hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#111827 0%,#173044 48%,#0f766e 100%);padding:70px 40px 34px;color:white}
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 22%,rgba(214,162,70,.26),transparent 28%),radial-gradient(circle at 82% 18%,rgba(29,78,216,.26),transparent 30%),linear-gradient(180deg,transparent,rgba(0,0,0,.14));pointer-events:none}
 .hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:28px;align-items:end}.label{display:inline-flex;padding:7px 13px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.09);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.78)}
@@ -29,29 +41,39 @@ h1,h2,h3{font-family:var(--head);margin:0}h1{font-size:clamp(38px,6vw,72px);line
 .test-body{padding:17px}.meta-top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.subject{font-size:12px;color:var(--teal);font-weight:900}.level{font-size:11px;border-radius:999px;background:rgba(214,162,70,.16);color:#8a5a04;padding:5px 9px;font-weight:900}.test-title{font-family:var(--head);font-size:22px;line-height:1.15;margin-bottom:8px;color:var(--navy)}.instructor{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:13px}.details{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.detail{border:1px solid var(--line);border-radius:12px;padding:9px;background:#f8fafc}.detail strong{display:block;font-family:var(--head);font-size:18px;line-height:1}.detail span{font-size:10px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.04em}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.tag{font-size:11px;font-weight:800;border-radius:999px;padding:5px 9px;background:rgba(29,78,216,.08);color:var(--blue)}
 .actions{display:flex;gap:9px}.actions .btn{flex:1;padding:10px 12px;font-size:12px}.empty{display:none;text-align:center;padding:48px 20px;color:var(--muted)}.empty.show{display:block}
 .publish{margin-top:22px;padding:20px}.publish h2{font-size:28px;margin-bottom:6px}.publish p{color:var(--muted);margin:0 0 18px;line-height:1.6}.publish-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.publish-grid .wide{grid-column:span 3}.switch-row{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 16px}.switch-row label{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--muted);font-size:13px}.switch-row input{accent-color:var(--teal)}
-@media(max-width:920px){nav{padding:0 16px}.nav-right{gap:9px}.hero{padding:52px 16px 28px}.hero-inner,.main{grid-template-columns:1fr}.main{padding:22px 16px 58px}.sidebar{position:static}.grid{grid-template-columns:1fr}.publish-grid{grid-template-columns:1fr}.publish-grid .wide{grid-column:auto}}
-@media(max-width:620px){.nav-right a:not(.nav-cta):not(.active){display:none}.search-row{grid-template-columns:1fr}.details{grid-template-columns:1fr 1fr}.hero-card{display:none}}
+@media(max-width:920px){nav{padding:0 16px}.nav-right{gap:9px}.nav-right a:not(.nav-cta){display:none}.hero{padding:52px 16px 28px}.hero-inner,.main{grid-template-columns:1fr}.main{padding:22px 16px 58px}.sidebar{position:static}.grid{grid-template-columns:1fr}.publish-grid{grid-template-columns:1fr}.publish-grid .wide{grid-column:auto}.nav-burger{display:flex}}
+@media(max-width:620px){.search-row{grid-template-columns:1fr}.details{grid-template-columns:1fr 1fr}.hero-card{display:none}}
 </style>
-<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
-<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
-<link rel="stylesheet" href="assets/odyssey-dashboard-minimal.css" />
-<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
 </head>
 <body>
 <nav>
-  <a class="nav-logo" href="learnworld_landing.html"><div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="nav-logo-text"><span>Odyssey</span></span></a>
+  <a class="nav-logo" href="index.html"><div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="32" height="32" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="nav-logo-text"><span>Odyssey</span></span></a>
   <div class="nav-right">
     <span class="i18n-dark-wrap" data-i18n-switcher></span>
-    <a href="learnworld_landing.html">Home</a>
+    <a href="index.html">Home</a>
     <a href="learnworld_catalog.html">Courses</a>
     <a class="active" href="#">Tests</a>
     <a href="about.html">About</a>
     <a href="auth.html?mode=login">Log in</a>
     <a class="nav-cta" href="auth.html?mode=signup">Sign up</a>
   </div>
+  <button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
 </nav>
+<div class="nav-mobile-panel">
+  <a href="index.html">Home</a>
+  <a href="learnworld_catalog.html">Courses</a>
+  <a class="active" href="#">Tests</a>
+  <a href="about.html">About</a>
+  <a href="auth.html?mode=login">Log in</a>
+  <a class="nav-cta" href="auth.html?mode=signup">Sign up</a>
+</div>
 
 <section class="hero">
+  <div class="drift" style="position:absolute;width:280px;height:280px;background:var(--gold);opacity:.16;filter:blur(70px);top:-60px;left:10%;border-radius:50%;pointer-events:none;animation:hDrift 13s ease-in-out infinite"></div>
+  <div class="drift" style="position:absolute;width:220px;height:220px;background:#1d4ed8;opacity:.16;filter:blur(60px);bottom:-60px;right:14%;border-radius:50%;pointer-events:none;animation:hDrift 16s ease-in-out infinite reverse"></div>
+  <div style="position:absolute;width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:.7;top:24%;right:26%;animation:hDot 8s ease-in-out infinite"></div>
+  <div style="position:absolute;width:5px;height:5px;border-radius:50%;background:#5AC4B0;opacity:.7;top:60%;left:8%;animation:hDot 10s ease-in-out infinite -3s"></div>
+  <style>@keyframes hDrift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-24px) scale(1.1)}}@keyframes hDot{0%,100%{transform:translate(0,0)}50%{transform:translate(14px,-18px)}}@media(prefers-reduced-motion:reduce){.drift,[style*="hDot"]{animation:none!important}}</style>
   <div class="hero-inner">
     <div>
       <span class="label">Exam marketplace</span>
@@ -214,8 +236,48 @@ function previewTest(id){
 document.addEventListener('DOMContentLoaded', setup);
 document.addEventListener('odyssey:languageChanged', applyFilters);
 </script>
-<script src="assets/odyssey-global-motion.js" defer></script>
-<script src="assets/odyssey-investor-final-polish.js" defer></script>
-<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+<script defer>
+// Shared mobile nav: toggles the hamburger + dropdown panel used on every
+// page. Panel position is computed from the real nav element on each open/
+// resize, instead of a fixed pixel guess, so it stays aligned no matter
+// how the nav's height changes across breakpoints.
+document.addEventListener('DOMContentLoaded', function(){
+  const nav = document.querySelector('nav');
+  const burger = document.querySelector('.nav-burger');
+  const panel = document.querySelector('.nav-mobile-panel');
+  if(!nav || !burger || !panel) return;
+
+  function position(){
+    const r = nav.getBoundingClientRect();
+    panel.style.top = Math.round(r.bottom + 8) + 'px';
+  }
+  function open(){
+    position();
+    burger.classList.add('open');
+    panel.classList.add('open');
+    burger.setAttribute('aria-expanded','true');
+  }
+  function close(){
+    burger.classList.remove('open');
+    panel.classList.remove('open');
+    burger.setAttribute('aria-expanded','false');
+  }
+  function toggle(){
+    if(panel.classList.contains('open')) close(); else open();
+  }
+
+  burger.addEventListener('click', function(e){ e.stopPropagation(); toggle(); });
+  panel.addEventListener('click', function(e){ e.stopPropagation(); });
+  panel.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('click', function(e){
+    if(panel.classList.contains('open') && !panel.contains(e.target) && e.target !== burger) close();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  window.addEventListener('resize', function(){
+    if(panel.classList.contains('open')) position();
+    if(window.innerWidth > 900) close();
+  });
+});
+</script>
 </body>
 </html>

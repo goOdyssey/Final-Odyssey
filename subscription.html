@@ -3,8 +3,362 @@
 <link href="https://fonts.googleapis.com" rel="preconnect" />
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   ODYSSEY SITE THEME — shared by every page outside the landing/
+   catalog build. One file, no !important, no per-page duplication.
+   Palette matches index-redesigned.html (navy/gold/teal/clay/moss).
+═══════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#142C4F;--navy2:#0B1930;--navy3:#2A4A78;
+  --gold:#C08A3E;--gold2:#E7C88A;--gold-pale:#F3E9D3;
+  --teal:#0F7A6C;--teal2:#5AC4B0;--moss:#2E7D5B;--moss2:#7FBFA0;
+  --clay:#A6672B;--amber:#E7C88A;--pink:#B23A6B;--pink2:#D9A9BE;
+  --cream:#F6F4EF;--white:#ffffff;
+  --ink:#141C2B;--text:#141C2B;--muted:#64708A;--muted2:#8a93a8;
+  --border:#e3dcce;
+  --radius:16px;--radius-sm:10px;--radius-lg:20px;--radius-pill:999px;
+  --ff-head:"Newsreader",Georgia,serif;--ff-body:Manrope,system-ui,sans-serif;
+  --shadow:0 8px 28px rgba(20,44,79,.1);--shadow-md:0 20px 50px rgba(20,44,79,.14);
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-body);background:var(--cream);color:var(--ink);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;width:calc(100% - 32px);max-width:1200px;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-radius:var(--radius-pill);border:1px solid rgba(20,44,79,.14);box-shadow:0 8px 32px rgba(20,44,79,.12)}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
+.nav-logo-mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;font-size:12px;box-shadow:0 4px 12px rgba(20,44,79,.4);overflow:hidden}
+.nav-logo-text{font-family:var(--ff-head);font-size:17px;font-weight:900;color:var(--ink)}
+.nav-logo-text span{color:var(--navy)}
+.nav-links{display:flex;align-items:center;gap:1px;flex:1;min-width:0;justify-content:center}
+.nav-links a{padding:6px 11px;border-radius:var(--radius-pill);font-size:12.5px;font-weight:600;color:var(--muted);text-decoration:none;transition:background .2s,color .2s;white-space:nowrap}
+.nav-links a:hover{background:var(--cream);color:var(--navy)}
+.nav-links a.active{background:rgba(20,44,79,.08);color:var(--navy)}
+.nav-cta{padding:7px 16px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-radius:var(--radius-pill);font-size:12.5px;font-weight:700;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 14px rgba(20,44,79,.35);white-space:nowrap;flex-shrink:0}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(20,44,79,.45)}
+
+/* ── MOBILE NAV: hamburger + dropdown panel ── */
+.nav-burger{display:none;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(20,44,79,.16);background:#fff;cursor:pointer;flex-shrink:0;position:relative;align-items:center;justify-content:center}
+.nav-burger span,.nav-burger span::before,.nav-burger span::after{content:"";position:absolute;width:16px;height:2px;background:var(--navy);border-radius:2px;transition:transform .25s,opacity .2s}
+.nav-burger span::before{transform:translateY(-5px)}
+.nav-burger span::after{transform:translateY(5px)}
+.nav-burger.open span{background:transparent}
+.nav-burger.open span::before{transform:translateY(0) rotate(45deg)}
+.nav-burger.open span::after{transform:translateY(0) rotate(-45deg)}
+.nav-mobile-panel{display:none;position:fixed;top:64px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:420px;background:#fff;border-radius:20px;border:1px solid rgba(20,44,79,.14);box-shadow:0 20px 50px rgba(20,44,79,.22);padding:10px;z-index:199;flex-direction:column;gap:2px}
+.nav-mobile-panel.open{display:flex}
+.nav-mobile-panel a{padding:13px 16px;border-radius:12px;font-size:14.5px;font-weight:700;color:var(--ink);text-decoration:none;transition:background .2s}
+.nav-mobile-panel a:hover,.nav-mobile-panel a.active{background:var(--cream);color:var(--navy)}
+.nav-mobile-panel .nav-cta{text-align:center;justify-content:center;margin-top:6px;display:flex}
+@media(max-width:900px){.nav-burger{display:flex}}
+
+/* ── DECORATIVE DRIFT / BLOB SYSTEM (shared with landing page) ── */
+.blob{position:absolute;border-radius:50%;filter:blur(75px);opacity:.32;pointer-events:none;animation:blobFloat 9s ease-in-out infinite;z-index:0}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(28px,-22px) scale(1.06)}66%{transform:translate(-20px,16px) scale(.96)}}
+.drift{position:absolute;pointer-events:none;z-index:0;border-radius:50%;filter:blur(50px) hue-rotate(0deg);opacity:.5;animation:drift 13s ease-in-out infinite,hueDrift 16s linear infinite}
+.drift.ring{border-radius:50%;filter:none;background:none;border:2px solid;opacity:.28;animation:driftRing 17s ease-in-out infinite}
+.drift.dot{filter:none;opacity:.6;animation:driftDot 8s ease-in-out infinite}
+.drift.square{border-radius:9px;filter:none;opacity:.22;animation:driftSquare 16s ease-in-out infinite}
+.drift.tri{border-radius:0;filter:none;opacity:.2;clip-path:polygon(50% 0%,0% 100%,100% 100%);animation:driftTri 19s ease-in-out infinite}
+.drift.hex{border-radius:0;filter:none;opacity:.2;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);animation:driftSquare 21s ease-in-out infinite}
+.drift.icon{border-radius:0;filter:none;background:none!important;opacity:.48;animation:driftIcon 15s ease-in-out infinite}
+.drift.icon svg{width:100%;height:100%;display:block}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-32px) scale(1.12)}66%{transform:translate(-26px,22px) scale(.92)}}
+@keyframes hueDrift{0%{filter:blur(50px) hue-rotate(0deg)}50%{filter:blur(50px) hue-rotate(30deg)}100%{filter:blur(50px) hue-rotate(0deg)}}
+@keyframes driftRing{0%,100%{transform:translate(0,0) rotate(0deg) scale(1)}50%{transform:translate(-28px,24px) rotate(22deg) scale(1.1)}}
+@keyframes driftDot{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,-20px)}}
+@keyframes driftSquare{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-24px,22px) rotate(32deg)}}
+@keyframes driftTri{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(20px,18px) rotate(-26deg)}}
+@keyframes driftIcon{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(14px,-20px) rotate(8deg)}}
+
+/* ── PAGE HERO (subpages) ── */
+.page-hero{padding:132px 24px 64px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(160deg,#F6F4EF 0%,#F3EEE3 55%,#F6F4EF 100%)}
+.page-hero-inner,.hero-inner{position:relative;z-index:2;max-width:700px;margin:0 auto}
+.page-tag{display:inline-flex;align-items:center;gap:7px;padding:7px 18px;border-radius:var(--radius-pill);background:#fff;border:1.5px solid rgba(20,44,79,.16);color:var(--navy);font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:18px;box-shadow:0 4px 14px rgba(20,44,79,.08)}
+.page-hero h1{font-family:var(--ff-head);font-size:clamp(32px,5.4vw,58px);font-weight:900;line-height:1.08;letter-spacing:-1px;margin-bottom:16px;color:var(--ink)}
+.grad,.grad-text{background:linear-gradient(90deg,var(--navy),var(--gold),var(--clay));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.page-hero p{font-size:15.5px;color:var(--muted);font-weight:500;line-height:1.75;max-width:580px;margin:0 auto}
+
+/* ── PROSE / CONTENT PAGES (accreditations, etc.) ── */
+.prose-page{max-width:800px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:1}
+.prose-page h2{font-family:var(--ff-head);font-size:22px;font-weight:900;color:var(--ink);margin:40px 0 14px;padding-top:8px;border-top:2px solid rgba(20,44,79,.08)}
+.prose-page h2:first-child{margin-top:0;border-top:none}
+.prose-page h3{font-family:var(--ff-head);font-size:16px;font-weight:800;color:var(--ink);margin:20px 0 8px}
+.prose-page p{font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:14px;font-weight:500}
+.prose-page ul{padding-left:20px;margin-bottom:14px}
+.prose-page li{font-size:14px;color:var(--muted);line-height:1.9;font-weight:500;margin-bottom:6px}
+.prose-page a{color:var(--navy);text-decoration:none;font-weight:700}
+.prose-page a:hover{text-decoration:underline}
+.prose-page .highlight-box{background:linear-gradient(135deg,rgba(20,44,79,.05),rgba(192,138,62,.06));border:2px solid rgba(20,44,79,.13);border-radius:var(--radius-sm);padding:20px 24px;margin:20px 0}
+.prose-page .highlight-box p{margin:0;color:var(--ink);font-weight:600}
+.prose-page .big-stat{font-family:var(--ff-head);font-size:44px;font-weight:900;background:linear-gradient(90deg,var(--navy),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:4px}
+.stat-cards{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.stat-card{padding:20px 28px;background:#fff;border-radius:16px;border:2px solid rgba(20,44,79,.1);text-align:center;min-width:160px;box-shadow:var(--shadow)}
+.stat-card .ic{font-size:34px;margin-bottom:8px}
+.stat-card .t{font-family:var(--ff-head);font-size:15px;font-weight:800;color:var(--ink)}
+.stat-card .s{font-size:12px;color:var(--muted);font-weight:500}
+
+/* ── BUTTONS (shared) ── */
+.btn-primary,.cta-btn-white{padding:14px 30px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-radius:var(--radius-pill);font-size:14.5px;font-weight:800;text-decoration:none;border:none;cursor:pointer;font-family:var(--ff-body);box-shadow:0 8px 22px rgba(20,44,79,.32);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover,.cta-btn-white:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,44,79,.4)}
+.btn-secondary,.cta-btn-outline{padding:14px 30px;background:#fff;color:var(--navy);border-radius:var(--radius-pill);font-size:14.5px;font-weight:800;text-decoration:none;border:2px solid rgba(20,44,79,.22);cursor:pointer;font-family:var(--ff-body);transition:transform .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover,.cta-btn-outline:hover{border-color:var(--navy);transform:translateY(-2px)}
+.btn,.form-submit,.cta-btn-white{cursor:pointer}
+
+/* ── FORMS ── */
+.form-input,.form-select,.form-textarea,input,select,textarea{width:100%;padding:12px 15px;border:2px solid rgba(20,44,79,.12);border-radius:var(--radius-sm);font-family:var(--ff-body);font-size:13.5px;color:var(--ink);background:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;font-weight:500}
+.form-input:focus,.form-select:focus,.form-textarea:focus,input:focus,select:focus,textarea:focus{border-color:var(--navy);box-shadow:0 0 0 4px rgba(20,44,79,.08);background:#fff}
+.form-textarea,textarea{resize:vertical;min-height:120px}
+.inq-pill{padding:8px 16px;border-radius:var(--radius-pill);border:2px solid rgba(20,44,79,.15);background:var(--cream);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--ff-body)}
+.inq-pill:hover{border-color:var(--navy);color:var(--navy);background:#fff}
+.inq-pill.selected{background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(20,44,79,.3)}
+
+/* ── CARDS ── */
+.info-card,.val-card,.team-card{background:#fff;border-radius:var(--radius);padding:26px;border:2px solid rgba(20,44,79,.08);transition:transform .2s,box-shadow .2s,border-color .2s}
+.info-card:hover,.val-card:hover{transform:translateY(-4px);border-color:rgba(20,44,79,.2);box-shadow:var(--shadow-md)}
+.info-icon,.val-emoji{font-size:28px;margin-bottom:12px;display:block}
+.info-label{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.info-value{font-family:var(--ff-head);font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.info-value a{color:var(--navy);text-decoration:none}
+.info-value a:hover{text-decoration:underline}
+.info-sub{font-size:13px;color:var(--muted);font-weight:500}
+.val-title{font-family:var(--ff-head);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.val-desc{font-size:13px;color:var(--muted);line-height:1.8;font-weight:500}
+
+/* ── FAQ ACCORDION ── */
+.faq-item{background:#fff;border:2px solid rgba(20,44,79,.08);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden;transition:border-color .2s}
+.faq-item:hover{border-color:rgba(20,44,79,.18)}
+.faq-item.open{border-color:rgba(20,44,79,.28);box-shadow:var(--shadow)}
+.faq-q{padding:18px 22px;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none;font-family:var(--ff-head)}
+.faq-arrow{font-size:16px;transition:transform .3s;color:var(--navy);flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;font-size:13.5px;color:var(--muted);font-weight:500;line-height:1.8;padding:0 22px}
+.faq-item.open .faq-a{max-height:420px;padding:0 22px 18px}
+.faq-a a{color:var(--navy);text-decoration:none;font-weight:700}
+.faq-a a:hover{text-decoration:underline}
+
+/* ── DARK SECTION (team, FAQ strip, CTA-adjacent) ── */
+.dark-section{padding:80px 24px;background:linear-gradient(160deg,#0E1D36 0%,#142C4F 55%,#0B1930 100%);position:relative;overflow:hidden}
+.dark-section h2{color:#fff}
+.dark-section .sub{color:rgba(255,255,255,.55)}
+.dark-empty{max-width:760px;margin:0 auto;padding:44px 28px;border:1px dashed rgba(255,255,255,.28);border-radius:26px;text-align:center;background:rgba(255,255,255,.05);position:relative;z-index:1}
+.dark-empty b{display:block;color:#fff;font-family:var(--ff-head);font-size:26px;margin-bottom:10px}
+.dark-empty p{color:rgba(255,255,255,.6);font-size:14px;line-height:1.8}
+
+/* ── CTA GRADIENT SECTION ── */
+.page-cta{padding:80px 24px;background:linear-gradient(135deg,var(--navy) 0%,var(--teal) 40%,var(--clay) 74%,var(--gold) 100%);text-align:center;position:relative;overflow:hidden}
+.page-cta h2{font-family:var(--ff-head);font-size:clamp(26px,4.6vw,48px);font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:14px;position:relative;z-index:1}
+.page-cta p{font-size:15px;color:rgba(255,255,255,.78);font-weight:500;margin-bottom:32px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+
+/* ── FOOTER ── */
+footer{background:#0f0520;padding:44px 24px 30px;text-align:center}
+.footer-logo-wrap{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;margin-bottom:14px}
+.footer-logo-mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;font-size:12px;overflow:hidden}
+.footer-logo-text{font-family:var(--ff-head);font-size:16px;font-weight:900;color:#fff}
+.footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s;font-weight:500}
+.footer-links a:hover{color:#fff}
+footer p{font-size:11px;color:rgba(255,255,255,.18);font-weight:500}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── i18n LANGUAGE-SWITCHER DROPDOWN SAFETY (kept from prior fix, centralized once) ── */
+.i18n-switcher,.i18n-dropdown{z-index:1000}
+nav .i18n-dropdown{position:absolute;top:calc(100% + 8px);max-height:min(420px,70vh);overflow:auto}
+footer .i18n-dropdown{position:absolute;bottom:calc(100% + 8px);top:auto;max-height:min(420px,70vh);overflow:auto}
+
+/* ── RESPONSIVE (900px tablet / 640px mobile, per site standard) ── */
+@media(max-width:900px){
+  nav{width:calc(100% - 24px);padding:8px 14px}
+  .nav-links{display:none}
+  .page-hero{padding:118px 20px 52px}
+}
+@media(max-width:640px){
+  nav{width:calc(100% - 16px);padding:7px 10px}
+  .nav-logo-text{font-size:15px}
+  .nav-cta{padding:7px 12px;font-size:11.5px}
+  .page-hero{padding:104px 16px 44px}
+  .prose-page{padding:44px 16px 70px}
+  .cta-btns{flex-direction:column;align-items:stretch}
+}
+
+</style>
 <script src="js/i18n.js" defer></script>
-<link rel="stylesheet" href="assets/odyssey-global-vibrant.css" />
-<link rel="stylesheet" href="assets/odyssey-unified-theme.css" />
-<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" /><title>Odyssey subscriptions</title><style>:root{--ink:#172033;--muted:#617084;--line:rgba(23,32,51,.14);--purple:#7c3aed;--pink:#ff4d8d;--cyan:#06b6d4;--green:#10b981;--gold:#d6a246;--navy:#071c2b;--bg:#f7f3ff;--head:Newsreader,Georgia,serif;--body:Manrope,system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;font-family:var(--body);color:var(--ink);background:radial-gradient(circle at 8% 10%,rgba(124,58,237,.16),transparent 28%),radial-gradient(circle at 90% 5%,rgba(255,77,141,.14),transparent 26%),linear-gradient(135deg,#f9fbff,#fff7fb 48%,#f2fbff)}nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 24px;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--head);font-size:22px;font-weight:800}.brand img{width:38px;height:38px;border-radius:13px;object-fit:contain;background:#071c2b;padding:4px}.navlinks{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.navlinks a{color:var(--muted);font-weight:800;font-size:13px;text-decoration:none}.navlinks a:hover{color:var(--purple)}.hero{padding:78px 22px 42px;text-align:center}.tag{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid rgba(124,58,237,.18);border-radius:999px;background:rgba(255,255,255,.68);color:var(--purple);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.hero h1{font-family:var(--head);font-size:clamp(38px,6vw,76px);line-height:1;margin:18px auto 14px;max-width:920px}.hero p{max-width:720px;margin:0 auto;color:var(--muted);line-height:1.75;font-weight:650}.wrap{width:min(1120px,calc(100% - 32px));margin:0 auto 70px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.80);box-shadow:0 24px 70px rgba(15,23,42,.10);padding:24px}.card::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:42px;transform:rotate(18deg);background:var(--accent);opacity:.14}.card h2{font-family:var(--head);font-size:28px;margin:0 0 8px}.price{font-family:var(--head);font-size:48px;font-weight:900;margin:10px 0}.price small{font-family:var(--body);font-size:14px;color:var(--muted)}.desc{color:var(--muted);line-height:1.6;font-size:14px}.features{display:grid;gap:10px;margin:18px 0}.features li{list-style:none;padding:10px 11px;border-radius:13px;background:rgba(23,32,51,.045);font-weight:760;font-size:13px;color:#253044}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:0;border-radius:14px;padding:12px 16px;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;font-weight:900;text-decoration:none;cursor:pointer;box-shadow:0 14px 34px rgba(124,58,237,.22)}.btn.secondary{background:#071c2b}.form{display:grid;gap:14px}.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:7px}.field label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;background:white;color:var(--ink);font:inherit}textarea{min-height:150px;resize:vertical}.story-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.story{border:1px solid var(--line);border-radius:18px;padding:18px;background:rgba(255,255,255,.82);box-shadow:0 14px 38px rgba(15,23,42,.07)}.story b{font-family:var(--head);font-size:20px}.story p{color:var(--muted);line-height:1.65}.pill{display:inline-flex;border-radius:999px;background:rgba(124,58,237,.10);color:var(--purple);font-weight:900;font-size:12px;padding:6px 9px;margin:4px 4px 0 0}footer{background:#0f0520;color:white;text-align:center;padding:36px 20px}.footer-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:14px 0}.footer-links a{color:rgba(255,255,255,.58);text-decoration:none;font-weight:750;font-size:13px}@media(max-width:900px){.grid,.story-grid,.split{grid-template-columns:1fr}.navlinks{justify-content:flex-end}.hero{padding-top:54px}}</style></head><body><nav><a class="brand" href="learnworld_landing.html"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo"><span>Odyssey</span></a><div class="navlinks"><a href="learnworld_landing.html" data-i18n="nav_home">Home</a><a href="subscription.html" data-i18n="footer_subscriptions">Subscriptions</a><a href="stories.html" data-i18n="footer_stories">Stories</a><span data-i18n-switcher></span></div></nav><section class="hero"><span class="tag" data-i18n="subs_tag">Creator subscriptions</span><h1 data-i18n="subs_title">Publish more, understand students better, and grow faster.</h1><p data-i18n="subs_sub">Choose a plan for your teaching scale. Paid subscriptions unlock higher publishing limits and a richer analytics workspace for instructors and institutions.</p></section><main class="wrap"><div class="grid"><article class="card" style="--accent:linear-gradient(135deg,#64748b,#94a3b8)"><h2 data-i18n="plan_free_name">Free</h2><div class="price">$0 <small data-i18n="plan_per_month">/ month</small></div><p class="desc" data-i18n="plan_free_desc">Best for new instructors testing Odyssey with a small course catalog and a limited exam library.</p><ul class="features"><li data-i18n="plan_free_courses">5 active published courses</li><li data-i18n="plan_free_exams">20 published exams</li><li data-i18n="plan_basic_dashboard">Basic dashboard and enrollment overview</li><li data-i18n="plan_community_support">Community support and standard review queue</li></ul><a class="btn secondary" href="auth.html?mode=signup&role=instructor" data-i18n="plan_start_free">Start free</a></article><article class="card" style="--accent:linear-gradient(135deg,#7c3aed,#06b6d4);border-color:rgba(124,58,237,.32)"><span class="tag" data-i18n="plan_popular">Most popular</span><h2 data-i18n="plan_pro_name">Pro</h2><div class="price">$15 <small data-i18n="plan_per_month">/ month</small></div><p class="desc" data-i18n="plan_pro_desc">Built for solo instructors who publish multiple courses, sell exam packs, and need clearer insight into student progress.</p><ul class="features"><li data-i18n="plan_pro_courses">25 active published courses</li><li data-i18n="plan_pro_exams">100 published exams</li><li data-i18n="plan_advanced_dashboard">Advanced dashboard with student progress, completion, revenue, and engagement analytics</li><li data-i18n="plan_priority_review">Priority course review and marketplace placement signals</li><li data-i18n="plan_email_exports">CSV exports for rosters, exam results, and payout records</li></ul><a class="btn" href="instructor_portal.html#subscriptions" data-i18n="plan_upgrade_pro">Upgrade to Pro</a></article><article class="card" style="--accent:linear-gradient(135deg,#071c2b,#d6a246)"><h2 data-i18n="plan_inst_name">Institutional</h2><div class="price">$40 <small data-i18n="plan_per_month">/ month</small></div><p class="desc" data-i18n="plan_inst_desc">Designed for schools, academies, and organizations offering many subjects with multiple instructors and high-volume exams.</p><ul class="features"><li data-i18n="plan_inst_courses">100 active published courses</li><li data-i18n="plan_inst_exams">Unlimited exam publishing</li><li data-i18n="plan_team_seats">Team workspace for departments, coordinators, and multiple instructors</li><li data-i18n="plan_institution_analytics">Institution-level analytics by subject, teacher, cohort, country, and exam performance</li><li data-i18n="plan_branding">Institution branding, certificate identity, and partner onboarding support</li></ul><a class="btn" href="auth.html?mode=signup&role=institution" data-i18n="plan_start_institution">Enroll institution</a></article></div></main><footer><strong>Odyssey</strong><div class="footer-links"><a href="subscription.html" data-i18n="footer_subscriptions">Subscriptions</a><a href="share-story.html" data-i18n="share_story_title">Share your story</a><a href="stories.html" data-i18n="footer_stories">Stories</a><a href="earnings.html" data-i18n="footer_earnings">Earnings</a><a href="terms.html" data-i18n="footer_terms">Terms</a></div><p data-i18n="footer_rights">© 2026 Odyssey · Demo preview</p></footer><script src="assets/odyssey-global-motion.js" defer></script><script src="assets/odyssey-investor-final-polish.js" defer></script>
-<script src="assets/odyssey-language-switcher-fix.js" defer></script></body></html>
+<title>Odyssey subscriptions</title>
+<style>
+.hero{padding:130px 24px 40px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(160deg,#F6F4EF 0%,#F3EEE3 60%,#F6F4EF 100%)}
+.hero-inner{position:relative;z-index:2;max-width:760px;margin:0 auto}
+.tag{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:999px;background:#fff;border:1.5px solid rgba(20,44,79,.16);color:var(--navy);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.hero h1{font-family:var(--ff-head);font-size:clamp(34px,5.6vw,58px);line-height:1.08;margin:16px auto 14px;letter-spacing:-1px}
+.hero p{max-width:620px;margin:0 auto;color:var(--muted);line-height:1.75;font-weight:550;font-size:15.5px}
+.wrap{width:min(1120px,calc(100% - 32px));margin:0 auto 80px;position:relative;z-index:1}
+
+/* ── ENHANCED PLAN CARDS ── */
+.plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:56px}
+.plan-card{position:relative;background:#fff;border-radius:24px;padding:2px;overflow:hidden;box-shadow:0 20px 54px rgba(20,44,79,.1);transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
+.plan-card:hover{transform:translateY(-8px);box-shadow:0 30px 70px rgba(20,44,79,.18)}
+.plan-card-inner{position:relative;background:#fff;border-radius:22px;padding:34px 28px;height:100%;display:flex;flex-direction:column}
+.plan-card.featured{box-shadow:0 26px 64px rgba(192,138,62,.28)}
+.plan-card.featured:hover{transform:translateY(-10px) scale(1.015)}
+.plan-topbar{position:absolute;top:0;left:0;right:0;height:6px;border-radius:24px 24px 0 0}
+.plan-card:nth-child(1) .plan-topbar{background:linear-gradient(90deg,#94a3b8,#cbd5e1)}
+.plan-card:nth-child(2) .plan-topbar{background:linear-gradient(90deg,var(--navy),var(--gold),var(--teal));background-size:200% auto;animation:sweep 5s linear infinite}
+.plan-card:nth-child(3) .plan-topbar{background:linear-gradient(90deg,var(--navy2),var(--gold))}
+@keyframes sweep{0%{background-position:0% center}100%{background-position:200% center}}
+.plan-ribbon{position:absolute;top:18px;right:-32px;transform:rotate(40deg);background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;font-size:11px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:6px 40px;box-shadow:0 6px 14px rgba(20,44,79,.35)}
+.plan-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
+.plan-card:nth-child(1) .plan-icon{background:linear-gradient(135deg,#f1f5f9,#e2e8f0);color:#475569}
+.plan-card:nth-child(2) .plan-icon{background:linear-gradient(135deg,var(--gold-pale),var(--gold2));color:var(--clay)}
+.plan-card:nth-child(3) .plan-icon{background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff}
+.plan-card h2{font-family:var(--ff-head);font-size:24px;font-weight:800;margin:0 0 4px}
+.plan-price{font-family:var(--ff-head);font-size:44px;font-weight:900;margin:8px 0 2px;display:flex;align-items:baseline;gap:6px}
+.plan-price small{font-family:var(--ff-body);font-size:13px;color:var(--muted);font-weight:600}
+.plan-desc{color:var(--muted);line-height:1.65;font-size:13.5px;margin-bottom:22px;flex-grow:0}
+.plan-features{display:grid;gap:11px;margin:0 0 26px;flex-grow:1}
+.plan-features li{list-style:none;display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink);font-weight:600;line-height:1.5}
+.plan-features li::before{content:"✓";flex-shrink:0;width:19px;height:19px;border-radius:50%;background:var(--moss);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.plan-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:14px;font-size:14.5px;font-weight:800;text-decoration:none;font-family:var(--ff-body);cursor:pointer;border:none;transition:transform .2s,box-shadow .2s}
+.plan-card:nth-child(1) .plan-btn{background:#f1f5f9;color:var(--navy);border:2px solid rgba(20,44,79,.14)}
+.plan-card:nth-child(1) .plan-btn:hover{border-color:var(--navy);transform:translateY(-2px)}
+.plan-card:nth-child(2) .plan-btn{background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;box-shadow:0 10px 26px rgba(192,138,62,.4)}
+.plan-card:nth-child(2) .plan-btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(192,138,62,.5)}
+.plan-card:nth-child(3) .plan-btn{background:var(--navy2);color:#fff;box-shadow:0 10px 26px rgba(20,44,79,.35)}
+.plan-card:nth-child(3) .plan-btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(20,44,79,.45)}
+.plan-note{text-align:center;margin-top:36px;color:var(--muted);font-size:13px}
+.plan-note a{color:var(--navy);font-weight:700;text-decoration:none}
+.plan-note a:hover{text-decoration:underline}
+@media(max-width:900px){.plan-grid{grid-template-columns:1fr}.plan-card.featured{order:-1}}
+</style>
+</head><body>
+<nav>
+<a class="nav-logo" href="index.html"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="34" height="34" style="width:34px;height:34px;border-radius:50%;object-fit:contain;background:#071c2b;padding:3px"><span class="nav-logo-text">Odyssey</span></a>
+<div class="nav-links"><a href="index.html" data-i18n="nav_home">Home</a><a href="subscription.html" class="active" data-i18n="footer_subscriptions">Subscriptions</a><a href="stories.html" data-i18n="footer_stories">Stories</a></div>
+<span data-i18n-switcher></span>
+<button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+</nav>
+<div class="nav-mobile-panel"><a href="index.html" data-i18n="nav_home">Home</a><a href="subscription.html" class="active" data-i18n="footer_subscriptions">Subscriptions</a><a href="stories.html" data-i18n="footer_stories">Stories</a></div>
+
+<section class="hero">
+<div class="blob" style="width:340px;height:340px;background:var(--navy2);top:-90px;left:-80px"></div>
+<div class="blob" style="width:260px;height:260px;background:var(--gold2);top:20px;right:-50px;animation-delay:-3s"></div>
+<div class="drift dot" style="width:5px;height:5px;background:var(--teal);top:60%;left:14%"></div>
+<div class="hero-inner">
+<span class="tag" data-i18n="subs_tag">Creator subscriptions</span>
+<h1 data-i18n="subs_title">Publish more, understand students better, and grow faster.</h1>
+<p data-i18n="subs_sub">Choose a plan for your teaching scale. Paid subscriptions unlock higher publishing limits and a richer analytics workspace for instructors and institutions.</p>
+</div>
+</section>
+<main class="wrap">
+<div class="plan-grid">
+
+<article class="plan-card">
+<div class="plan-topbar"></div>
+<div class="plan-card-inner">
+<div class="plan-icon">🌱</div>
+<h2 data-i18n="plan_free_name">Free</h2>
+<div class="plan-price">$0 <small data-i18n="plan_per_month">/ month</small></div>
+<p class="plan-desc" data-i18n="plan_free_desc">Best for new instructors testing Odyssey with a small course catalog and a limited exam library.</p>
+<ul class="plan-features">
+<li data-i18n="plan_free_courses">5 active published courses</li>
+<li data-i18n="plan_free_exams">20 published exams</li>
+<li data-i18n="plan_basic_dashboard">Basic dashboard and enrollment overview</li>
+<li data-i18n="plan_community_support">Community support and standard review queue</li>
+</ul>
+<a class="plan-btn" href="auth.html?mode=signup&role=instructor" data-i18n="plan_start_free">Start free</a>
+</div>
+</article>
+
+<article class="plan-card featured">
+<div class="plan-ribbon" data-i18n="plan_popular">Most popular</div>
+<div class="plan-topbar"></div>
+<div class="plan-card-inner">
+<div class="plan-icon">🚀</div>
+<h2 data-i18n="plan_pro_name">Pro</h2>
+<div class="plan-price">$15 <small data-i18n="plan_per_month">/ month</small></div>
+<p class="plan-desc" data-i18n="plan_pro_desc">Built for solo instructors who publish multiple courses, sell exam packs, and need clearer insight into student progress.</p>
+<ul class="plan-features">
+<li data-i18n="plan_pro_courses">25 active published courses</li>
+<li data-i18n="plan_pro_exams">100 published exams</li>
+<li data-i18n="plan_advanced_dashboard">Advanced dashboard with student progress, completion, revenue, and engagement analytics</li>
+<li data-i18n="plan_priority_review">Priority course review and marketplace placement signals</li>
+<li data-i18n="plan_email_exports">CSV exports for rosters, exam results, and payout records</li>
+</ul>
+<a class="plan-btn" href="instructor_portal.html#subscriptions" data-i18n="plan_upgrade_pro">Upgrade to Pro</a>
+</div>
+</article>
+
+<article class="plan-card">
+<div class="plan-topbar"></div>
+<div class="plan-card-inner">
+<div class="plan-icon">🏛️</div>
+<h2 data-i18n="plan_inst_name">Institutional</h2>
+<div class="plan-price">$40 <small data-i18n="plan_per_month">/ month</small></div>
+<p class="plan-desc" data-i18n="plan_inst_desc">Designed for schools, academies, and organizations offering many subjects with multiple instructors and high-volume exams.</p>
+<ul class="plan-features">
+<li data-i18n="plan_inst_courses">100 active published courses</li>
+<li data-i18n="plan_inst_exams">Unlimited exam publishing</li>
+<li data-i18n="plan_team_seats">Team workspace for departments, coordinators, and multiple instructors</li>
+<li data-i18n="plan_institution_analytics">Institution-level analytics by subject, teacher, cohort, country, and exam performance</li>
+<li data-i18n="plan_branding">Institution branding, certificate identity, and partner onboarding support</li>
+</ul>
+<a class="plan-btn" href="auth.html?mode=signup&role=institution" data-i18n="plan_start_institution">Enroll institution</a>
+</div>
+</article>
+
+</div>
+<p class="plan-note">All plans include a 14-day trial of the next tier up. Need something custom? <a href="contact.html">Talk to us →</a></p>
+</main>
+<footer>
+<a class="footer-logo-wrap" href="index.html"><div class="footer-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="footer-logo-text">Odyssey</span></a>
+<div class="footer-links"><a href="subscription.html" data-i18n="footer_subscriptions">Subscriptions</a><a href="share-story.html" data-i18n="share_story_title">Share your story</a><a href="stories.html" data-i18n="footer_stories">Stories</a><a href="earnings.html" data-i18n="footer_earnings">Earnings</a><a href="terms.html" data-i18n="footer_terms">Terms</a></div>
+<p data-i18n="footer_rights">© 2026 Odyssey · Demo preview</p>
+</footer>
+<script defer>
+// Shared mobile nav: toggles the hamburger + dropdown panel used on every
+// page. Panel position is computed from the real nav element on each open/
+// resize, instead of a fixed pixel guess, so it stays aligned no matter
+// how the nav's height changes across breakpoints.
+document.addEventListener('DOMContentLoaded', function(){
+  const nav = document.querySelector('nav');
+  const burger = document.querySelector('.nav-burger');
+  const panel = document.querySelector('.nav-mobile-panel');
+  if(!nav || !burger || !panel) return;
+
+  function position(){
+    const r = nav.getBoundingClientRect();
+    panel.style.top = Math.round(r.bottom + 8) + 'px';
+  }
+  function open(){
+    position();
+    burger.classList.add('open');
+    panel.classList.add('open');
+    burger.setAttribute('aria-expanded','true');
+  }
+  function close(){
+    burger.classList.remove('open');
+    panel.classList.remove('open');
+    burger.setAttribute('aria-expanded','false');
+  }
+  function toggle(){
+    if(panel.classList.contains('open')) close(); else open();
+  }
+
+  burger.addEventListener('click', function(e){ e.stopPropagation(); toggle(); });
+  panel.addEventListener('click', function(e){ e.stopPropagation(); });
+  panel.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('click', function(e){
+    if(panel.classList.contains('open') && !panel.contains(e.target) && e.target !== burger) close();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  window.addEventListener('resize', function(){
+    if(panel.classList.contains('open')) position();
+    if(window.innerWidth > 900) close();
+  });
+});
+</script>
+</body></html>
