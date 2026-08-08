@@ -1,17 +1,39 @@
 (function () {
-  async function jsonRequest(path, options) {
-    const response = await fetch(path, {
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json', ...(options && options.headers) },
-      ...options
+  // Rewritten to call the real "storage-api" Supabase Edge Function instead of
+  // a /api/storage/* backend that never existed. Function names and signatures
+  // (uploadFile, listObjects, downloadObject) are unchanged, so
+  // student_portal.html and instructor_portal.html need no changes at all.
+
+  function functionUrl(){
+    const cfg = window.ODYSSEY_SUPABASE || {};
+    if (!cfg.url) return null;
+    return `${cfg.url.replace(/\/$/, '')}/functions/v1/storage-api`;
+  }
+
+  async function callStorageApi(action, payload){
+    if (!window.OdysseySupabase?.isConfigured?.()) {
+      throw new Error('Sign in through Odyssey to use file storage.');
+    }
+    const sb = await OdysseySupabase.client();
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Sign in to use file storage.');
+    const url = functionUrl();
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+        apikey: window.ODYSSEY_SUPABASE.anonKey
+      },
+      body: JSON.stringify({ action, ...payload })
     });
+    const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      const payload = await response.json().catch(() => ({}));
-      const error = new Error(payload.error || 'Storage request failed.');
+      const error = new Error(data.error || 'Storage request failed.');
       error.status = response.status;
       throw error;
     }
-    return response.json();
+    return data;
   }
 
   async function checksumSha256(file) {
@@ -22,43 +44,33 @@
 
   async function uploadFile(file, input) {
     if (!file) throw new Error('Choose a file first.');
-    const grant = await jsonRequest('/api/storage/upload-grants', {
-      method: 'POST',
-      body: JSON.stringify({
-        ...input,
-        filename: file.name,
-        contentType: file.type || 'application/octet-stream',
-        sizeBytes: file.size
-      })
+    const grant = await callStorageApi('upload-grant', {
+      ...input,
+      filename: file.name,
+      contentType: file.type || 'application/octet-stream',
+      sizeBytes: file.size
     });
-    if (grant.upload.provider !== 'demo') {
-      const response = await fetch(grant.upload.url, {
-        method: grant.upload.method || 'PUT',
-        headers: grant.upload.headers || {},
-        body: file
-      });
-      if (!response.ok) throw new Error(`Storage provider rejected the upload (${response.status}).`);
-    }
-    const object = await jsonRequest(`/api/storage/objects/${encodeURIComponent(grant.object.id)}/complete`, {
-      method: 'POST',
-      body: JSON.stringify({
-        sizeBytes: file.size,
-        checksumSha256: await checksumSha256(file)
-      })
+    const uploadResponse = await fetch(grant.upload.url, {
+      method: grant.upload.method || 'PUT',
+      headers: grant.upload.headers || {},
+      body: file
     });
-    return object.object;
+    if (!uploadResponse.ok) throw new Error(`Storage provider rejected the upload (${uploadResponse.status}).`);
+    const completed = await callStorageApi('complete', {
+      objectId: grant.object.id,
+      sizeBytes: file.size,
+      checksumSha256: await checksumSha256(file)
+    });
+    return completed.object;
   }
 
   async function listObjects() {
-    return jsonRequest('/api/storage/objects').then(result => result.objects || []);
+    const result = await callStorageApi('list', {});
+    return result.objects || [];
   }
 
   async function downloadObject(objectId) {
-    const grant = await jsonRequest(`/api/storage/objects/${encodeURIComponent(objectId)}/download-grant`, {
-      method: 'POST',
-      body: '{}'
-    });
-    if (grant.download.provider === 'demo') return grant;
+    const grant = await callStorageApi('download-grant', { objectId });
     window.location.assign(grant.download.url);
     return grant;
   }
