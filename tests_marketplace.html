@@ -10,6 +10,18 @@
 <style>
 :root{--navy:#17202c;--deep:#101824;--paper:#f3f6f8;--panel:rgba(255,255,255,.9);--line:rgba(23,32,44,.12);--muted:#667085;--teal:#0f766e;--blue:#1d4ed8;--gold:#d6a246;--rose:#be3455;--green:#15803d;--shadow:0 22px 70px rgba(15,23,42,.12);--head:"Newsreader",Georgia,serif;--body:Manrope,system-ui,sans-serif;--radius:18px}
 *{box-sizing:border-box}
+.drift{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(55px);opacity:.35;animation:drift 14s ease-in-out infinite}
+.drift.dot{filter:none;opacity:.55;border-radius:50%;animation:driftDot 8s ease-in-out infinite}
+.drift.square{filter:none;opacity:.2;border-radius:8px;animation:driftSquare 16s ease-in-out infinite}
+.drift.tri{filter:none;opacity:.18;clip-path:polygon(50% 0%,0% 100%,100% 100%);animation:driftTri 19s ease-in-out infinite}
+.drift.icon{filter:none;background:none!important;opacity:.45;animation:driftIcon 15s ease-in-out infinite}
+.drift.icon svg{width:100%;height:100%;display:block}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(28px,-24px) scale(1.08)}}
+@keyframes driftDot{0%,100%{transform:translate(0,0)}50%{transform:translate(14px,-18px)}}
+@keyframes driftSquare{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-20px,18px) rotate(28deg)}}
+@keyframes driftTri{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(16px,14px) rotate(-22deg)}}
+@keyframes driftIcon{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(10px,-16px) rotate(8deg)}}
+@media(prefers-reduced-motion:reduce){.drift{animation:none!important}}
 body{margin:0;font-family:var(--body);color:var(--navy);background:linear-gradient(135deg,rgba(29,78,216,.08),transparent 28%),radial-gradient(circle at 88% 8%,rgba(15,118,110,.14),transparent 30%),var(--paper);min-height:100vh}
 button,input,select,textarea{font:inherit}
 nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:62px;background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);box-shadow:0 18px 48px rgba(15,23,42,.16)}
@@ -34,9 +46,9 @@ h1,h2,h3{font-family:var(--head);margin:0}h1{font-size:clamp(38px,6vw,72px);line
 .hero-card{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.10);border-radius:22px;padding:18px;backdrop-filter:blur(16px);box-shadow:0 26px 70px rgba(0,0,0,.18)}.hero-card strong{display:block;font-family:var(--head);font-size:36px}.hero-card span{color:rgba(255,255,255,.7);font-size:13px}
 .search-wrap{max-width:1180px;margin:26px auto 0;position:relative;z-index:1;background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.4);border-radius:22px;padding:16px;box-shadow:0 24px 80px rgba(0,0,0,.18)}.search-row{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px}.search-row input{height:52px;border:1px solid var(--line);border-radius:14px;padding:0 16px;background:#f8fafc;color:var(--navy);outline:none}.btn{border:0;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--navy);color:white}.btn.secondary{background:rgba(29,78,216,.10);color:var(--blue);border:1px solid rgba(29,78,216,.14)}.btn.gold{background:var(--gold);color:var(--navy)}
 .quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{border:1px solid var(--line);background:white;color:var(--muted);border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer}.chip.active,.chip:hover{background:var(--navy);border-color:var(--navy);color:white}
-.main{max-width:1180px;margin:0 auto;padding:28px 40px 70px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:22px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.sidebar{padding:18px;position:sticky;top:82px;align-self:start}.filter{margin-bottom:20px}.filter-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:var(--muted);margin-bottom:10px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:12px;font-weight:900;color:var(--muted)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:white;color:var(--navy);padding:11px}.field textarea{min-height:84px;resize:vertical}.check{display:flex;align-items:center;gap:9px;margin:9px 0;color:var(--muted);font-size:13px;font-weight:700}.check input{accent-color:var(--teal)}
+.main{max-width:1180px;margin:0 auto;padding:28px 40px 70px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:22px;position:relative;z-index:1}.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.sidebar{padding:18px;position:sticky;top:82px;align-self:start}.filter{margin-bottom:20px}.filter-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:var(--muted);margin-bottom:10px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:12px;font-weight:900;color:var(--muted)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:white;color:var(--navy);padding:11px}.field textarea{min-height:84px;resize:vertical}.check{display:flex;align-items:center;gap:9px;margin:9px 0;color:var(--muted);font-size:13px;font-weight:700}.check input{accent-color:var(--teal)}
 .market-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap}.count{color:var(--muted);font-size:13px}.count strong{color:var(--navy)}.sort{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 12px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.test-card{position:relative;overflow:hidden;background:white;border:1px solid rgba(15,23,42,.10);border-radius:18px;box-shadow:0 16px 42px rgba(15,23,42,.08);transition:.22s}.test-card:hover{transform:translateY(-4px);box-shadow:0 28px 70px rgba(15,23,42,.15);border-color:rgba(15,118,110,.28)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.test-card{position:relative;overflow:hidden;background:white;border:1px solid rgba(15,23,42,.10);border-radius:18px;box-shadow:0 16px 42px rgba(15,23,42,.08);transition:.22s;cursor:pointer}.test-card:hover{transform:translateY(-4px);box-shadow:0 28px 70px rgba(15,23,42,.15);border-color:rgba(15,118,110,.28)}
 .test-art{height:116px;padding:16px;color:white;background:linear-gradient(135deg,#17202c,#0f766e);position:relative;display:flex;align-items:flex-end;justify-content:space-between}.test-art::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 22%,rgba(214,162,70,.35),transparent 30%),linear-gradient(135deg,transparent,rgba(255,255,255,.10));pointer-events:none}.exam-icon{font-size:42px;position:relative}.price{position:relative;border-radius:999px;background:rgba(255,255,255,.92);color:var(--navy);padding:7px 11px;font-size:12px;font-weight:900}.price.free{color:var(--green)}
 .test-body{padding:17px}.meta-top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.subject{font-size:12px;color:var(--teal);font-weight:900}.level{font-size:11px;border-radius:999px;background:rgba(214,162,70,.16);color:#8a5a04;padding:5px 9px;font-weight:900}.test-title{font-family:var(--head);font-size:22px;line-height:1.15;margin-bottom:8px;color:var(--navy)}.instructor{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:13px}.details{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.detail{border:1px solid var(--line);border-radius:12px;padding:9px;background:#f8fafc}.detail strong{display:block;font-family:var(--head);font-size:18px;line-height:1}.detail span{font-size:10px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.04em}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.tag{font-size:11px;font-weight:800;border-radius:999px;padding:5px 9px;background:rgba(29,78,216,.08);color:var(--blue)}
 .actions{display:flex;gap:9px}.actions .btn{flex:1;padding:10px 12px;font-size:12px}.empty{display:none;text-align:center;padding:48px 20px;color:var(--muted)}.empty.show{display:block}
@@ -46,6 +58,21 @@ h1,h2,h3{font-family:var(--head);margin:0}h1{font-size:clamp(38px,6vw,72px);line
 </style>
 </head>
 <body>
+<!-- fixed decorative background layer: stays put while the page scrolls -->
+<div class="drift" style="width:260px;height:260px;background:var(--gold);top:8%;left:-60px"></div>
+<div class="drift" style="width:220px;height:220px;background:#1d4ed8;top:55%;right:-50px;animation-delay:-4s"></div>
+<div class="drift" style="width:200px;height:200px;background:var(--teal);bottom:4%;left:20%;animation-delay:-7s"></div>
+<div class="drift dot" style="width:6px;height:6px;background:var(--gold);top:18%;left:30%"></div>
+<div class="drift dot" style="width:5px;height:5px;background:#1d4ed8;top:40%;right:20%;animation-delay:-3s"></div>
+<div class="drift dot" style="width:6px;height:6px;background:var(--teal);top:70%;left:12%;animation-delay:-5s"></div>
+<div class="drift dot" style="width:4px;height:4px;background:var(--gold);bottom:14%;right:30%;animation-delay:-2s"></div>
+<div class="drift square" style="width:18px;height:18px;background:var(--teal);top:28%;right:10%;animation-delay:-4s"></div>
+<div class="drift square" style="width:15px;height:15px;background:var(--gold);bottom:22%;left:8%;animation-delay:-6s"></div>
+<div class="drift tri" style="width:16px;height:16px;background:#1d4ed8;top:62%;left:40%;animation-delay:-3s"></div>
+<div class="drift icon" style="width:22px;height:22px;top:14%;right:26%;color:var(--gold);animation-delay:-2s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5c2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0V5Z"/><path d="M20 5c-2-1.3-5-1.3-8 0v14c3-1.3 6-1.3 8 0V5Z"/></svg></div>
+<div class="drift icon" style="width:20px;height:20px;bottom:30%;right:14%;color:#1d4ed8;animation-delay:-5s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M17 3l4 4L9 19l-5 1 1-5L17 3Z"/><path d="M14 6l4 4"/></svg></div>
+<div class="drift icon" style="width:19px;height:19px;top:48%;left:6%;color:var(--teal);animation-delay:-7s"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 10l-5.2 4.3L17.4 21 12 17.3 6.6 21l1.6-6.7L3 10l6.4-1.4L12 2Z"/></svg></div>
+<div class="drift icon" style="width:20px;height:20px;bottom:8%;left:45%;color:var(--gold);animation-delay:-1s"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 10l-5.2 4.3L17.4 21 12 17.3 6.6 21l1.6-6.7L3 10l6.4-1.4L12 2Z"/></svg></div>
 <nav>
   <a class="nav-logo" href="index.html"><div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="32" height="32" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="nav-logo-text"><span>Odyssey</span></span></a>
   <div class="nav-right">
@@ -140,17 +167,9 @@ h1,h2,h3{font-family:var(--head);margin:0}h1{font-size:clamp(38px,6vw,72px);line
 <script src="js/session-ui.js" defer></script>
 <script src="assets/odyssey-portal-translations.js" defer></script>
 <script defer src="assets/odyssey-translation-completion.js"></script>
+<script src="assets/odyssey-tests-data.js"></script>
 <script>
-const BASE_TESTS = [
-  {id:1,title:'IELTS Academic Writing Mock Exam',subject:'IELTS Writing',field:'Language Exam',instructor:'Dr James Hartley',level:'Advanced',time:60,questions:24,price:9,rating:4.9,students:18400,icon:'🗣️',language:'English',features:['Timed','Solutions'],description:'Band-focused writing prompts, model answers, scoring rubric, and examiner-style feedback guidance.'},
-  {id:2,title:'JEE Advanced Mathematics Grand Test',subject:'JEE Advanced Mathematics',field:'Entrance Exam',instructor:'Rajesh Venkataraman',level:'Expert',time:180,questions:54,price:18,rating:4.9,students:22100,icon:'📐',language:'English',features:['Timed','Solutions','Certificate'],description:'High-pressure mathematics paper with mixed single-answer, numerical, and multi-concept problems.'},
-  {id:3,title:'NEET Biology Diagnostic Pack',subject:'NEET Biology',field:'Entrance Exam',instructor:'Dr Priya Sharma',level:'Advanced',time:90,questions:80,price:0,rating:4.8,students:30700,icon:'🧬',language:'English',features:['Timed','Solutions'],description:'Free diagnostic assessment for cell biology, genetics, physiology, ecology, and revision planning.'},
-  {id:4,title:'SAT Math Score 800 Practice Test',subject:'SAT Math',field:'Entrance Exam',instructor:'Kevin Chen',level:'Intermediate',time:70,questions:44,price:12,rating:4.8,students:14600,icon:'📊',language:'English',features:['Timed','Solutions'],description:'Calculator and no-calculator style practice with full explanations and pacing notes.'},
-  {id:5,title:'MBBS Anatomy Practical Viva Prep',subject:'Anatomy',field:'University',instructor:'Prof Elena Marchetti',level:'Advanced',time:45,questions:35,price:15,rating:4.7,students:8300,icon:'⚕️',language:'English',features:['Solutions'],description:'Case-style anatomy prompts with oral exam preparation and key structure identification.'},
-  {id:6,title:'Machine Learning Certification Quiz',subject:'Machine Learning',field:'Vocational',instructor:'Prof Chen Wei',level:'Intermediate',time:75,questions:60,price:21,rating:4.9,students:11900,icon:'🤖',language:'English',features:['Timed','Solutions','Certificate'],description:'Model evaluation, supervised learning, regularization, and practical Python interpretation questions.'},
-  {id:7,title:'DELF B2 Reading and Listening Test',subject:'French DELF B2',field:'Language Exam',instructor:'Marie-Claire Fontaine',level:'Advanced',time:85,questions:42,price:11,rating:4.6,students:6400,icon:'🇫🇷',language:'French',features:['Timed','Solutions'],description:'A polished DELF-style test pack for reading strategy, listening accuracy, and exam pacing.'},
-  {id:8,title:'Civil Service Policy Reasoning Exam',subject:'Public Administration',field:'Professional',instructor:'Dr Nadia Rahman',level:'Expert',time:120,questions:50,price:24,rating:4.8,students:9100,icon:'🏛️',language:'English',features:['Timed','Solutions','Certificate'],description:'Scenario-based governance, ethics, policy analysis, and public administration decision questions.'}
-];
+// TESTS data now lives in assets/odyssey-tests-data.js (shared with test_detail.html)
 const quickSubjects = ['All','IELTS Writing','JEE Advanced Mathematics','NEET Biology','SAT Math','Machine Learning','Anatomy'];
 function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch(e){return fallback}}
 function writeJSON(key,value){localStorage.setItem(key,JSON.stringify(value))}
@@ -158,7 +177,7 @@ function currentStudentProfile(){return readJSON('odyssey_student_profile',{})}
 function purchasedExamKey(){const p=currentStudentProfile();return 'odyssey_purchased_tests_'+(p.email||p.name||'guest').toLowerCase().replace(/[^a-z0-9]+/g,'_')}
 function recordPurchasedTest(test){if(!test)return;const key=purchasedExamKey();const existing=readJSON(key,[]).filter(t=>String(t.id)!==String(test.id));writeJSON(key,[{...test,purchasedAt:new Date().toISOString()},...existing]);const legacy=readJSON('odyssey_purchased_tests',[]).filter(t=>String(t.id)!==String(test.id));writeJSON('odyssey_purchased_tests',[{...test,purchasedAt:new Date().toISOString()},...legacy])}
 function PT(text, vars){return window.OdysseyPortalT ? window.OdysseyPortalT(text, vars) : text}
-function allTests(){return [...readJSON('odyssey_market_tests',[]), ...BASE_TESTS]}
+function allTests(){return [...readJSON('odyssey_market_tests',[]), ...(window.BASE_TESTS||[])]}
 function money(price){return Number(price)===0?'Free':'$'+Number(price)}
 function setup(){
   quickChips.innerHTML = quickSubjects.map((s,i)=>`<button class="chip ${i===0?'active':''}" type="button" onclick="quickSubject('${s}',this)">${s}</button>`).join('');
@@ -201,7 +220,7 @@ function renderTests(data){
   emptyState.classList.toggle('show', !data.length);
   testGrid.style.display = data.length ? 'grid' : 'none';
   testGrid.innerHTML = data.map(t => `
-    <article class="test-card">
+    <article class="test-card" onclick="previewTest(${t.id})" role="link" tabindex="0" onkeydown="if(event.key==='Enter'){previewTest(${t.id})}">
       <div class="test-art" style="background:${artColor(t.field)}"><span class="exam-icon">${t.icon}</span><span class="price ${Number(t.price)===0?'free':''}">${money(t.price)}</span></div>
       <div class="test-body">
         <div class="meta-top"><span class="subject">${t.subject}</span><span class="level">${t.level}</span></div>
@@ -214,7 +233,7 @@ function renderTests(data){
         </div>
         <div class="tags">${t.features.map(f=>`<span class="tag">${f}</span>`).join('')}<span class="tag">${t.language}</span></div>
         <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 14px">${t.description}</p>
-        <div class="actions"><button class="btn gold" onclick="startTest(${t.id})">${Number(t.price)===0?PT('Start free'):PT('Buy test')}</button><button class="btn secondary" onclick="previewTest(${t.id})">${PT('Details')}</button></div>
+        <div class="actions"><button class="btn gold" onclick="event.stopPropagation();startTest(${t.id})">${Number(t.price)===0?PT('Start free'):PT('Buy test')}</button><button class="btn secondary" onclick="event.stopPropagation();previewTest(${t.id})">${PT('Details')}</button></div>
       </div>
     </article>`).join('');
 }
@@ -230,8 +249,7 @@ function startTest(id){
   location.href = 'exam_portal.html?marketTest=' + encodeURIComponent(test.id);
 }
 function previewTest(id){
-  const t = allTests().find(x=>String(x.id)===String(id));
-  alert(`${t.title}\n\nSubject: ${t.subject}\nInstructor: ${t.instructor}\nDifficulty: ${t.level}\nTime limit: ${t.time} minutes\nQuestions: ${t.questions}\nPrice: ${money(t.price)}`);
+  window.location.href = 'test_detail.html?id=' + encodeURIComponent(id);
 }
 document.addEventListener('DOMContentLoaded', setup);
 document.addEventListener('odyssey:languageChanged', applyFilters);
