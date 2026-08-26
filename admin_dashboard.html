@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Odyssey - Admin Command Center</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#F6F4EF;--ink:#141C2B;--muted:#64708A;--line:rgba(20,44,79,.14);--panel:rgba(255,255,255,.86);--panel2:rgba(255,255,255,.62);--navy:#142C4F;--navy2:#2A4A78;--gold:#C08A3E;--gold2:#E7C88A;--teal:#0F7A6C;--good:#2E7D5B;--warn:#A6672B;--bad:#B23A6B;--shadow:0 20px 60px rgba(20,44,79,.12);--head:"Newsreader",Georgia,serif;--font:Manrope,system-ui,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:var(--font);font-size:12.5px;color:var(--ink);background:radial-gradient(circle at 8% 10%,rgba(20,44,79,.10),transparent 28%),radial-gradient(circle at 90% 5%,rgba(192,138,62,.12),transparent 26%),linear-gradient(135deg,#F8F6F1,#F3E9D3 48%,#EFEDE6);overflow-x:hidden}.backdrop{display:none}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;width:min(1500px,100%);margin:0 auto;padding:18px}.sidebar{position:sticky;top:18px;height:calc(100vh - 36px);display:flex;flex-direction:column;gap:14px;padding:16px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,var(--navy),#0e2038);box-shadow:var(--shadow);color:#fff}.brand{display:flex;align-items:center;gap:10px}.mark{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),var(--gold2));font-weight:900;box-shadow:inset 0 1px rgba(255,255,255,.28)}.brand strong{font-family:var(--head);font-size:20px;font-weight:700}.brand small{display:block;color:rgba(255,255,255,.58);font-size:10.5px;margin-top:2px}.nav{display:grid;gap:4px}.nav button{width:100%;border:0;border-radius:11px;padding:9px 11px;text-align:left;background:transparent;color:rgba(255,255,255,.68);font-weight:700;font-size:12px;cursor:pointer;font-family:inherit}.nav button:hover,.nav button.active{background:rgba(192,138,62,.22);color:#fff}.status-card{margin-top:auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px;background:rgba(255,255,255,.06)}.status-card b{display:block;font-family:var(--head);font-size:17px}.status-card span{display:block;color:rgba(255,255,255,.58);font-size:10.5px;line-height:1.5;margin-top:4px}
+.main{display:grid;gap:16px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--ink);padding:4px 2px}.topbar h1{font-family:var(--head);font-size:clamp(26px,3vw,38px);line-height:1;margin:0;font-weight:600}.topbar p{margin:6px 0 0;color:var(--muted);max-width:700px;line-height:1.5;font-size:12px}.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.btn{border:0;border-radius:11px;background:var(--navy);color:#fff;padding:9px 13px;font-weight:700;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 8px 18px rgba(20,44,79,.18);font-family:inherit}.btn.secondary{background:rgba(20,44,79,.08);color:var(--navy);box-shadow:none}.btn.light{background:#fff;color:var(--navy);border:1px solid var(--line)}.btn.danger{background:var(--bad)}.panel,.card{border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--shadow);backdrop-filter:blur(14px)}.panel{display:none;padding:16px}.panel.active{display:block}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:13px}.panel h2,.card h2{font-family:var(--head);font-size:20px;line-height:1.15;margin:0;font-weight:600;color:var(--ink)}.panel p,.desc{color:var(--muted);line-height:1.5;margin:5px 0 0;font-size:11.5px}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.kpi{padding:14px;border-radius:16px;background:linear-gradient(145deg,#fff,rgba(255,255,255,.7));border:1px solid var(--line);position:relative;overflow:hidden}.kpi:after{content:"";position:absolute;right:-18px;top:-18px;width:60px;height:60px;border-radius:50%;background:var(--tint,rgba(192,138,62,.14))}.kpi span{display:block;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.kpi b{display:block;font-family:var(--head);font-size:24px;margin-top:6px;color:var(--navy);font-weight:600}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.tri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{padding:16px}.filters{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.input,select{height:36px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.85);padding:0 11px;font:inherit;font-size:12px;font-weight:650;color:var(--ink)}.input{min-width:200px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.55)}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:top}th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:rgba(255,255,255,.6);font-weight:800}tr:last-child td{border-bottom:0}.chip{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800;background:rgba(20,44,79,.08);color:var(--navy)}.chip.good{background:rgba(46,125,91,.12);color:var(--good)}.chip.warn{background:rgba(166,103,43,.14);color:var(--warn)}.chip.bad{background:rgba(178,58,107,.12);color:var(--bad)}.mini{height:29px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font-weight:800;font-size:11px;cursor:pointer;padding:0 9px;font-family:inherit}.split-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.55);border-radius:14px;padding:10px;margin-bottom:8px}.split-row b{display:block;font-size:12.5px}.split-row small{color:var(--muted);display:block;margin-top:3px;line-height:1.4;font-size:11px}.meter{height:8px;border-radius:999px;background:rgba(20,44,79,.08);overflow:hidden;margin-top:8px}.meter span{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:inherit}.notice{border-radius:14px;padding:11px 13px;border:1px solid rgba(192,138,62,.32);background:rgba(255,247,230,.78);color:#6f4700;font-size:12px}.empty{padding:20px;text-align:center;color:var(--muted);font-size:12px}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto}.nav{grid-template-columns:repeat(3,minmax(0,1fr))}.kpis,.tri{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}}@media(max-width:680px){.layout{padding:12px}.topbar,.panel-head{flex-direction:column;align-items:flex-start}.nav,.kpis,.tri{grid-template-columns:1fr}.input,select{width:100%;min-width:0}}
+</style>
+<style>
+.detail-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:flex-end;background:rgba(20,44,79,.42);backdrop-filter:blur(8px);z-index:50}.detail-overlay.open{display:flex}.detail-drawer{width:min(880px,calc(100vw - 24px));height:calc(100vh - 24px);overflow:auto;margin:12px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,#fff,#F8F6F1);box-shadow:0 24px 70px rgba(20,44,79,.28);padding:18px}.detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}.detail-head h2{margin:0;font-family:var(--head);font-size:24px;font-weight:600;color:var(--ink)}.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.detail-section{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.7);padding:12px}.detail-section h3{margin:0 0 8px;font-family:var(--head);font-size:16px;font-weight:600;color:var(--navy)}.detail-list{display:grid;gap:8px}.detail-item{border:1px solid var(--line);border-radius:12px;padding:9px;background:rgba(255,255,255,.75);font-size:11.5px}.detail-item b{display:block}.detail-item small{display:block;color:var(--muted);margin-top:3px;line-height:1.4}@media(max-width:680px){.detail-overlay{align-items:flex-end}.detail-drawer{height:88vh;width:100vw;margin:0;border-radius:22px 22px 0 0}.detail-grid{grid-template-columns:1fr}}
+</style>
+<meta name="robots" content="noindex, nofollow">
+<script defer src="js/i18n.js"></script>
+<script defer src="assets/odyssey-portal-translations.js"></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/mfa.js"></script>
+<link rel="stylesheet" href="assets/odyssey-vibrant-sitewide.css" />
+  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<div class="backdrop"></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><div><strong>Odyssey Admin</strong><small>Global operations console</small></div></div>
+<nav class="nav" id="nav">
+<button class="active" data-target="overview">Overview</button>
+<button data-target="analytics">Analytics</button>
+<button data-target="users">Users</button>
+<button data-target="instructors">Instructors</button>
+<button data-target="courses">Courses</button>
+<button data-target="commerce">Payments</button>
+<button data-target="refunds">Refunds</button>
+<button data-target="learning">Exams & video</button>
+<button data-target="certificates">Certificates</button>
+<button data-target="comments">Comments</button>
+<button data-target="messages">Messages</button>
+<button data-target="content">Site content</button>
+<button data-target="privacy">Privacy requests</button>
+<button data-target="ops">Deployment</button>
+<button data-target="audit">Audit logs</button>
+</nav>
+<div class="status-card"><b id="riskLevel">Loading</b><span id="riskCopy">Checking platform readiness and provider configuration.</span></div>
+</aside>
+<main class="main">
+<header class="topbar">
+<div><h1>Command center</h1><p>Control users, instructors, course moderation, certificates, commerce, communication, platform health, and deployment readiness from one place.</p></div>
+<div class="actions"><span class="chip warn" id="adminAuthState">Checking auth</span><button class="btn light" onclick="refreshAll()">Refresh data</button><a class="btn secondary" href="index.html">View site</a></div>
+</header>
+<section id="overview" class="panel active">
+<div class="panel-head"><div><h2>Platform overview</h2><p>High-level operational snapshot across Odyssey.</p></div><span class="chip" id="generatedAt">Live</span></div>
+<div id="adminNotice"></div>
+<div class="kpis" id="kpis"></div>
+<div class="grid" style="margin-top:16px">
+<div class="card"><h2>Recent users</h2><div id="recentUsers"></div></div>
+<div class="card"><h2>Recent courses</h2><div id="recentCourses"></div></div>
+</div>
+</section>
+<section id="analytics" class="panel">
+<div class="panel-head"><div><h2>Analytics & statistics</h2><p>Live, computed fresh from the database on every load - nothing here is cached or precomputed.</p></div><button class="mini" onclick="loadAnalytics()">Refresh</button></div>
+<div class="kpis" id="analyticsKpis"></div>
+<div class="grid" style="margin-top:16px">
+<div class="card"><h2>Enrollment trend (30 days)</h2><canvas id="chartEnrollTrend" height="180"></canvas></div>
+<div class="card"><h2>Revenue trend (30 days)</h2><canvas id="chartRevenueTrend" height="180"></canvas></div>
+</div>
+<div class="tri" style="margin-top:14px">
+<div class="card"><h2>Student : Instructor ratio</h2><canvas id="chartRoleRatio" height="200"></canvas></div>
+<div class="card"><h2>Enrollment by field</h2><canvas id="chartByField" height="200"></canvas></div>
+<div class="card"><h2>Enrollment by country</h2><canvas id="chartByCountry" height="200"></canvas></div>
+</div>
+<div class="grid" style="margin-top:14px">
+<div class="card"><h2>Enrollment by discipline</h2><canvas id="chartByDiscipline" height="180"></canvas></div>
+<div class="card"><h2>Enrollment by subject</h2><canvas id="chartBySubject" height="180"></canvas></div>
+</div>
+</section>
+<section id="users" class="panel">
+<div class="panel-head"><div><h2>User control</h2><p>Search users, adjust account status, and review learning footprint.</p></div></div>
+<div class="filters"><input id="userSearch" class="input" placeholder="Search name, email, role..." oninput="renderUsers()"><select id="roleFilter" onchange="renderUsers()"><option value="">All roles</option><option>student</option><option>instructor</option><option>employer</option><option>admin</option></select><select id="statusFilter" onchange="renderUsers()"><option value="">All statuses</option><option>active</option><option>pending</option><option>suspended</option><option>deleted</option></select></div>
+<div class="table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Status</th><th>Learning</th><th>Payout</th><th>Action</th></tr></thead><tbody id="usersTable"></tbody></table></div>
+</section>
+<section id="instructors" class="panel">
+<div class="panel-head"><div><h2>Instructor command</h2><p>Track teaching footprint, payouts, courses, certificates, and marketplace quality.</p></div></div>
+<div class="tri" id="instructorCards"></div>
+</section>
+<section id="courses" class="panel">
+<div class="panel-head"><div><h2>Course moderation</h2><p>Publish, suspend, review, or archive courses and inspect catalog data.</p></div></div>
+<div class="filters"><input id="courseSearch" class="input" placeholder="Search course, field, discipline..." oninput="renderCourses()"><select id="courseStatus" onchange="renderCourses()"><option value="">All statuses</option><option>published</option><option>draft</option><option>review</option><option>suspended</option><option>archived</option></select></div>
+<div class="table-wrap"><table><thead><tr><th>Course</th><th>Instructor</th><th>Catalog</th><th>Price</th><th>Status</th><th>Moderation</th></tr></thead><tbody id="coursesTable"></tbody></table></div>
+</section>
+<section id="commerce" class="panel"><div class="panel-head"><div><h2>Payments and payouts</h2><p>Revenue, provider events, payments, and instructor ledger records.</p></div></div><div class="grid"><div class="card"><h2>Payments</h2><div id="paymentsList"></div></div><div class="card"><h2>Payout ledger</h2><div id="ledgerList"></div></div></div></section>
+<section id="refunds" class="panel"><div class="panel-head"><div><h2>Refund requests</h2><p>Every refund request submitted from the student portal lands here for review.</p></div><button class="mini" onclick="loadRefundRequests()">Refresh</button></div><div class="filters"><select id="refundStatusFilter" onchange="renderRefundRequests()"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="processed">Processed</option></select></div><div class="table-wrap"><table><thead><tr><th>Student</th><th>Course</th><th>Progress</th><th>Reason</th><th>Refund method</th><th>Status</th><th>Requested</th><th>Action</th></tr></thead><tbody id="refundTable"></tbody></table></div></section>
+<section id="learning" class="panel"><div class="panel-head"><div><h2>Exams and video</h2><p>Exam inventory, uploaded video assets, question banks, and learning delivery signals.</p></div></div><div class="grid"><div class="card"><h2>Exams</h2><div id="examList"></div></div><div class="card"><h2>Video assets</h2><div id="videoList"></div></div></div></section>
+<section id="certificates" class="panel"><div class="panel-head"><div><h2>Certificate registry</h2><p>Issued certificates, verification codes, revocation status, and traceability.</p></div></div><div class="table-wrap"><table><thead><tr><th>Student</th><th>Course</th><th>Code</th><th>Status</th><th>Issued</th></tr></thead><tbody id="certificateTable"></tbody></table></div></section>
+<section id="comments" class="panel">
+<div class="panel-head"><div><h2>Comment moderation</h2><p>Every comment and reply left on course and test pages, across the live Supabase-backed discussion system. Deleting a comment also removes its replies and reactions.</p></div></div>
+<div class="filters"><input id="commentSearch" class="input" placeholder="Search name, comment text, course/test id..." oninput="renderComments()"><select id="commentTypeFilter" onchange="renderComments()"><option value="">Courses &amp; tests</option><option value="course">Courses only</option><option value="test">Tests only</option></select></div>
+<div class="table-wrap"><table><thead><tr><th>Author</th><th>Comment</th><th>On</th><th>Posted</th><th>Moderation</th></tr></thead><tbody id="commentsTable"></tbody></table></div>
+</section>
+<section id="messages" class="panel"><div class="panel-head"><div><h2>Contact & support messages</h2><p>Every message submitted through the public contact form, live from the database.</p></div></div><div class="filters"><input id="messageSearch" class="input" placeholder="Search name, email, subject, message..." oninput="renderMessages()"><select id="messageStatusFilter" onchange="renderMessages()"><option value="">All statuses</option><option value="sent">Unread</option><option value="read">Read</option><option value="resolved">Resolved</option></select></div><div class="table-wrap"><table><thead><tr><th>From</th><th>Inquiry</th><th>Message</th><th>Status</th><th>Received</th><th>Action</th></tr></thead><tbody id="messagesTable"></tbody></table></div></section>
+<section id="content" class="panel"><div class="panel-head"><div><h2>Site content & text</h2><p>Edit copy shown on the live site. Leave the override blank to keep showing the original text.</p></div><button class="mini" onclick="loadSiteContent()">Refresh</button></div><div id="contentList"></div></section>
+<section id="privacy" class="panel"><div class="panel-head"><div><h2>Privacy requests</h2><p>Track data exports, deletion requests, cancellation periods, and completed erasure workflows.</p></div></div><div class="table-wrap"><table><thead><tr><th>User</th><th>Request</th><th>Status</th><th>Requested</th><th>Scheduled</th></tr></thead><tbody id="privacyTable"></tbody></table></div></section>
+<section id="ops" class="panel"><div class="panel-head"><div><h2>Deployment readiness</h2><p>Readiness checks, provider configuration, and incident response.</p></div><span class="chip warn" id="providerScore">Checking</span></div><div class="grid"><div class="card"><h2>Checklist</h2><div id="checklist"></div></div><div class="card"><h2>Provider status</h2><div id="providerList"></div></div></div><div class="card" style="margin-top:16px"><div class="panel-head"><div><h2>Platform signals</h2><p>Live traffic, latency, and application error indicators since the current server started.</p></div><button class="mini" onclick="refreshPlatformMetrics()">Refresh</button></div><div id="platformMetrics" class="kpis"></div></div><div class="card" style="margin-top:16px"><div class="panel-head"><div><h2>Background workers</h2><p>Email delivery, upload scanning, storage cleanup, and privacy erasure schedules.</p></div><button class="mini" onclick="refreshWorkerStatus()">Refresh</button></div><div id="workerStatus" class="empty">Checking worker heartbeat...</div></div><div class="card" style="margin-top:16px"><div class="panel-head"><div><h2>Administrator security</h2><p>Protect privileged access with an authenticator app. Resetting shows a new QR code here, once, for you to scan — never on the login page.</p></div><button class="btn" id="mfaResetBtn" onclick="resetAdminMfa()">Reset MFA</button></div><div id="mfaStatus" class="empty">Checking administrator MFA status...</div><div id="mfaResetPanel" class="card" style="display:none;margin-top:12px;text-align:center"><img id="mfaResetQr" alt="New MFA QR code" style="width:220px;height:220px;background:#fff;border-radius:8px;border:1px solid var(--line)"><p class="desc" style="margin:10px 0">Scan with your authenticator app, then enter the 6-digit code to confirm.</p><input id="mfaResetCode" class="input" inputmode="numeric" maxlength="6" placeholder="000000" style="max-width:160px;text-align:center;letter-spacing:.25em;font-size:18px"><button class="mini" style="margin-left:8px" onclick="confirmAdminMfaReset()">Confirm</button></div></div><div class="card" style="margin-top:16px"><div class="panel-head"><div><h2>Incident center</h2><p>Open, investigate, and resolve production incidents.</p></div></div><div class="filters"><input id="incidentTitle" class="input" placeholder="Incident title"><select id="incidentSeverity"><option>low</option><option>medium</option><option>high</option><option>critical</option></select><button class="btn" onclick="createIncident()">Open incident</button></div><div id="incidentList"></div></div></section>
+<section id="audit" class="panel"><div class="panel-head"><div><h2>Audit logs</h2><p>Recent sensitive actions across authentication, courses, payments, certificates, and admin updates.</p></div></div><div id="auditList"></div></section>
+</main>
+</div>
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetailDrawer(event)">
+<aside class="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle" onclick="event.stopPropagation()">
+<div class="detail-head">
+<div>
+<h2 id="detailTitle">Student details</h2>
+<p id="detailSubtitle" class="desc">Full admin record from Supabase.</p>
+</div>
+<button class="mini" onclick="closeDetailDrawer()">Close</button>
+</div>
+<div id="detailBody" class="detail-grid"></div>
+</aside>
+</div>
+<script src="assets/odyssey-global-motion.js"></script>
+<script>
+const fallback={overview:{generatedAt:new Date().toISOString(),metrics:{totalUsers:4,students:1,instructors:1,employers:1,admins:1,activeUsers:4,suspendedUsers:0,publishedCourses:4,draftCourses:0,enrollments:1,exams:2,certificatesIssued:1,openMessages:2,revenueCents:12900,pendingPayoutCents:9030},recentAudit:[],recentUsers:[],recentCourses:[]},collections:{users:[],instructors:[],students:[],courses:[],payments:[],payoutLedger:[],exams:[],questionBanks:[],certificates:[],messages:[],notifications:[],deliveryAttempts:[],videos:[],privacyRequests:[],audit:[]},ops:{riskLevel:'high',providerScore:{ready:1,total:9,percent:11},providers:{payments:{stripe:{configured:false},paypal:{configured:false}},video:{demo:{configured:true},mux:{configured:false},cloudflareStream:{configured:false}},notifications:{demoEmail:{configured:true},postmark:{configured:false},sendgrid:{configured:false},twilio:{configured:false}}},checklist:[{label:'Production database',status:'action_required',detail:'Connect managed PostgreSQL and run migrations.'},{label:'Payments',status:'action_required',detail:'Connect Stripe and PayPal live mode.'},{label:'Video streaming',status:'action_required',detail:'Connect Mux or Cloudflare Stream.'},{label:'File malware scanning',status:'action_required',detail:'DEFERRED, LAUNCH BLOCKER: deploy ClamAV and the scan worker before public uploads are enabled.'}]}};
+let state={overview:fallback.overview,collections:fallback.collections,ops:fallback.ops};
+const money=cents=>'$'+(Number(cents||0)/100).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2});
+const esc=value=>String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+async function api(path,options){const res=await fetch(path,{credentials:'include',headers:{'Content-Type':'application/json'},...options});if(!res.ok)throw new Error(await res.text());return res.json()}
+let mfaResetFactorId='';
+async function refreshMfaStatus(){
+  try{
+    const verified=await OdysseyMFA.verifiedTotpFactor();
+    mfaStatus.textContent=verified?'MFA is enabled for this account.':'MFA is not enabled for this administrator.';
+  }catch(error){mfaStatus.textContent='Sign in as an administrator to manage MFA.'}
+}
+async function resetAdminMfa(){
+  if(!confirm('This will invalidate your current authenticator entry and show a new QR code to scan right now. Continue?'))return;
+  const btn=document.getElementById('mfaResetBtn');btn.disabled=true;btn.textContent='Preparing…';
+  try{
+    const data=await OdysseyMFA.resetAndEnroll();
+    mfaResetFactorId=data.id;
+    const qrSrc=data.totp?.qr_code||'';
+    document.getElementById('mfaResetQr').src=/^\s*<svg[\s>]/i.test(qrSrc)?URL.createObjectURL(new Blob([qrSrc],{type:'image/svg+xml'})):qrSrc;
+    document.getElementById('mfaResetPanel').style.display='block';
+    document.getElementById('mfaResetCode').focus();
+  }catch(error){alert('MFA reset failed: '+(error?.message||error))}
+  finally{btn.disabled=false;btn.textContent='Reset MFA'}
+}
+async function confirmAdminMfaReset(){
+  const code=document.getElementById('mfaResetCode').value.trim();
+  if(code.length!==6||!mfaResetFactorId)return;
+  try{
+    await OdysseyMFA.verify(mfaResetFactorId,code);
+    document.getElementById('mfaResetPanel').style.display='none';
+    document.getElementById('mfaResetCode').value='';
+    refreshMfaStatus();
+  }catch(error){alert(error?.message||'Invalid code. Try the next code from your app.')}
+}
+async function refreshPlatformMetrics(){try{const metrics=await api('/api/ops/metrics');platformMetrics.innerHTML=[['Requests',metrics.requests],['Error rate',metrics.errorRatePercent+'%'],['Average latency',metrics.averageDurationMs+' ms'],['Slow requests',metrics.slowRequests],['Uptime',Math.floor(metrics.uptimeSeconds/60)+' min']].map(([label,value])=>`<div class="kpi"><span>${esc(label)}</span><b>${esc(value)}</b></div>`).join('')}catch(error){platformMetrics.innerHTML='<div class="empty">Metrics become available after the backend is running and an administrator signs in.</div>'}}
+async function refreshWorkerStatus(){try{const status=await api('/api/ops/workers');workerStatus.innerHTML=(status.jobs||[]).map(job=>`<div class="split-row"><div><b>${esc(job.id)}</b><small>${job.enabled?'Every '+Math.round(job.intervalMs/1000)+' seconds':'Disabled'} · ${job.runs||0} runs · ${job.failures||0} failures</small></div>${statusChip(job.running?'running':job.lastExitCode===0?'healthy':job.lastExitCode==null?'waiting':'failed')}</div>`).join('')||'<div class="empty">No workers configured.</div>'}catch(error){workerStatus.textContent='The worker process is not running or its heartbeat is stale.'}}
+function setAdminNotice(message,type='warn'){if(adminNotice)adminNotice.innerHTML=message?`<div class="notice" style="margin-bottom:14px">${message}</div>`:'';if(adminAuthState){adminAuthState.className='chip '+(type==='good'?'good':type==='bad'?'bad':'warn');adminAuthState.textContent=type==='good'?'Live admin data':type==='bad'?'Admin blocked':'Setup needed'}}
+async function refreshAll(){try{if(window.OdysseySupabase?.isConfigured?.()){const activeSession=await OdysseySupabase.session();if(!activeSession){location.href='admin-login.html';return}const currentProfile=await OdysseySupabase.profile();if(!currentProfile||!['admin','support','superuser'].includes(currentProfile.role)){await OdysseySupabase.signOut?.();location.href='admin-login.html';return}const aal=await OdysseyMFA.assurance().catch(()=>null);if(!aal||aal.currentLevel!=='aal2'){location.href='mfa-verify.html?next='+encodeURIComponent('admin_dashboard.html');return}const [summary,collections]=await Promise.all([OdysseySupabase.adminSummary(),OdysseySupabase.adminCollections()]);state={overview:{generatedAt:new Date().toISOString(),metrics:summary.metrics||{},recentUsers:[...(summary.recentStudents||[]),...(summary.recentInstructors||[])].map(u=>({fullName:u.full_name,email:u.email,role:u.student_id?'student':'instructor',status:u.status,enrollmentsCount:u.enrolled_courses||0,coursesCount:u.courses_posted||0,certificatesCount:u.certificates_issued||0,pendingPayoutCents:u.payroll_pending_cents||0})),recentCourses:collections.courses||[]},collections,ops:fallback.ops};setAdminNotice('', 'good');renderAll();return}setAdminNotice('Supabase is not configured on this deployment. Open <a href="auth_diagnostics.html" style="color:var(--primary);font-weight:900">auth diagnostics</a> and confirm it says Enabled: Yes.','bad');seedFallback();renderAll();return}catch(error){console.warn('Admin live data failed.',error);setAdminNotice(`Live admin data could not load: <b>${esc(error.message||error)}</b>. Demo preview is shown below so the dashboard remains usable.`, 'bad');seedFallback()}renderAll();refreshMfaStatus();refreshPlatformMetrics();refreshWorkerStatus()}
+function seedFallback(){const now=new Date().toISOString();state.overview=fallback.overview;state.collections={...fallback.collections,users:[{id:'u1',fullName:'Odyssey Student',email:'student@odyssey.demo',role:'student',status:'active',enrollmentsCount:2,coursesCount:0,certificatesCount:1,pendingPayoutCents:0,createdAt:now},{id:'u2',fullName:'Odyssey Instructor',email:'instructor@odyssey.demo',role:'instructor',status:'active',enrollmentsCount:0,coursesCount:4,certificatesCount:0,pendingPayoutCents:9030,createdAt:now}],instructors:[{id:'u2',fullName:'Odyssey Instructor',email:'instructor@odyssey.demo',role:'instructor',status:'active',coursesCount:4,pendingPayoutCents:9030}],courses:[{id:'c1',title:'Machine Learning A-Z',instructorName:'Odyssey Instructor',field:'Vocational',discipline:'Technology and AI',subject:'Machine Learning',priceCents:12900,interactionPriceCents:18900,currency:'USD',status:'published',sessionCount:48,rating:4.8,enrolledCount:18424}],payments:[{id:'p1',provider:'stripe',amountCents:12900,status:'paid',createdAt:now}],payoutLedger:[{id:'l1',entryType:'course_sale',instructorNetCents:9030,status:'pending_payout',createdAt:now}],exams:[{id:'e1',title:'ML Final Exam',difficulty:'Intermediate',questionCount:40,timeLimitMinutes:90,status:'published'}],videos:[{id:'v1',title:'Welcome lesson',status:'ready',provider:'demo'}],certificates:[{id:'cert1',studentName:'Odyssey Student',courseTitle:'Machine Learning A-Z',verificationCode:'411234567890',status:'issued',createdAt:now}],messages:[{id:'m1',subject:'Question about exam',body:'Can you explain question 4?',status:'sent',createdAt:now}],deliveryAttempts:[{id:'d1',provider:'demo_email',channel:'email',status:'queued',attemptedAt:now}],audit:[{id:'a1',action:'admin.preview.loaded',entityType:'dashboard',createdAt:now}]};state.ops=fallback.ops}
+function renderAll(){renderOverview();renderUsers();renderInstructors();renderCourses();renderCommerce();renderLearning();renderCertificates();renderMessages();renderPrivacy();renderOps();renderAudit()}
+function renderOverview(){const m=state.overview.metrics||{};generatedAt.textContent='Updated '+new Date(state.overview.generatedAt||Date.now()).toLocaleTimeString();kpis.innerHTML=[['Total users',m.totalUsers,'rgba(15,118,110,.16)'],['Published courses',m.publishedCourses,'rgba(23,58,94,.15)'],['Revenue',money(m.revenueCents),'rgba(215,154,49,.2)'],['Certificates',m.certificatesIssued,'rgba(100,87,200,.15)'],['Instructors',m.instructors,'rgba(181,71,98,.14)'],['Enrollments',m.enrollments,'rgba(18,128,92,.14)'],['Open messages',m.openMessages,'rgba(23,58,94,.12)'],['Pending payouts',money(m.pendingPayoutCents),'rgba(215,154,49,.18)']].map(([label,value,tint])=>`<div class="kpi" style="--tint:${tint}"><span>${label}</span><b>${value??0}</b></div>`).join('');recentUsers.innerHTML=rows(state.overview.recentUsers,'No recent users',u=>`<div class="split-row"><div><b>${esc(u.fullName)}</b><small>${esc(u.email)} · ${esc(u.role)} · ${esc(u.status)}</small></div><span class="chip">${u.enrollmentsCount||0} enroll</span></div>`);recentCourses.innerHTML=rows(state.overview.recentCourses,'No recent courses',c=>`<div class="split-row"><div><b>${esc(c.title)}</b><small>${esc(c.instructorName)} · ${esc(c.field)} · ${esc(c.status)}</small></div><span class="chip good">${c.enrolledCount||0}</span></div>`)}
+function rows(list,empty,fn){return (list&&list.length)?list.map(fn).join(''):`<div class="empty">${empty}</div>`}
+function statusChip(status){const s=String(status||'').toLowerCase();const cls=s.includes('active')||s.includes('published')||s.includes('paid')||s.includes('issued')||s.includes('ready')?'good':s.includes('suspend')||s.includes('fail')||s.includes('revoked')?'bad':'warn';return `<span class="chip ${cls}">${esc(status||'unknown')}</span>`}
+function renderUsers(){const q=(userSearch?.value||'').toLowerCase(),role=roleFilter?.value||'',status=statusFilter?.value||'';const users=(state.collections.users||[]).filter(u=>(!role||u.role===role)&&(!status||u.status===status)&&(!q||[u.fullName,u.email,u.memberCode,u.role,u.status].join(' ').toLowerCase().includes(q)));usersTable.innerHTML=rows(users,'No users found',u=>`<tr><td><b>${esc(u.fullName)}</b><br><small>${esc(u.email)}${u.memberCode?' · ID '+esc(u.memberCode):''}</small></td><td>${esc(u.role)}</td><td>${statusChip(u.status)}${window.OdysseyBan?window.OdysseyBan.banInfo(u):''}</td><td>${u.enrollmentsCount||0} enrollments<br>${u.certificatesCount||0} certificates</td><td>${money(u.pendingPayoutCents)}</td><td>${u.role==='student'?`<button class="mini" onclick="openStudentDetail('${u.id}')">View profile</button> `:''}${u.role==='instructor'?`<button class="mini" onclick="openInstructorDetail('${u.id}')">View profile</button> `:''}${u.role!=='superuser'?(u.status==='suspended'?`<button class="mini" onclick="OdysseyBan.reactivate('${u.id}')">Reactivate</button> `:`<button class="mini" onclick="OdysseyBan.stall('${u.id}','${esc(u.fullName).replace(/'/g,"\\'")}')">Stall</button> <button class="mini" onclick="OdysseyBan.ban('${u.id}','${esc(u.fullName).replace(/'/g,"\\'")}')">Ban</button>`):''}</td></tr>`);window.OdysseyBan?.healExpired?.(users)}
+function renderInstructors(){const instructors=state.collections.instructors||[];instructorCards.innerHTML=rows(instructors,'No instructors found',i=>`<div class="card"><h2>${esc(i.fullName)}</h2><p>${esc(i.email)}</p><div class="meter"><span style="width:${Math.min(100,(i.coursesCount||0)*18)}%"></span></div><p><b>${i.coursesCount||0}</b> courses · pending payout ${money(i.pendingPayoutCents)}</p>${statusChip(i.status)}</div>`)}
+function renderCourses(){const q=(courseSearch?.value||'').toLowerCase(),status=courseStatus?.value||'';const courses=(state.collections.courses||[]).filter(c=>(!status||c.status===status)&&(!q||[c.title,c.instructorName,c.field,c.discipline,c.subject].join(' ').toLowerCase().includes(q)));coursesTable.innerHTML=rows(courses,'No courses found',c=>`<tr><td><b>${esc(c.title)}</b><br><small>${c.sessionCount||0} sessions · rating ${c.rating||0}</small></td><td>${esc(c.instructorName)}</td><td>${esc(c.field)}<br><small>${esc(c.discipline)} · ${esc(c.subject)}</small></td><td>${money(c.priceCents)}<br><small>Interactive ${money(c.interactionPriceCents)}</small></td><td>${statusChip(c.status)}</td><td><button class="mini" onclick="setCourseStatus('${c.id}','published')">Publish</button> <button class="mini" onclick="setCourseStatus('${c.id}','review')">Review</button> <button class="mini" onclick="setCourseStatus('${c.id}','suspended')">Suspend</button></td></tr>`)}
+function renderCommerce(){paymentsList.innerHTML=rows(state.collections.payments,'No payments yet',p=>`<div class="split-row"><div><b>${esc(p.provider||'payment')}</b><small>${esc(p.id)} · ${new Date(p.createdAt||Date.now()).toLocaleDateString()}</small></div><div>${money(p.amountCents)} ${statusChip(p.status)}</div></div>`);ledgerList.innerHTML=rows(state.collections.payoutLedger,'No payout records',l=>`<div class="split-row"><div><b>${esc(l.entryType||'ledger')}</b><small>${esc(l.id)} · ${new Date(l.createdAt||Date.now()).toLocaleDateString()}</small></div><div>${money(l.instructorNetCents)} ${statusChip(l.status)}</div></div>`)}
+function renderLearning(){examList.innerHTML=rows(state.collections.exams,'No exams yet',e=>`<div class="split-row"><div><b>${esc(e.title)}</b><small>${esc(e.difficulty)} · ${e.questionCount||0} questions · ${e.timeLimitMinutes||0} min</small></div>${statusChip(e.status)}</div>`);videoList.innerHTML=rows(state.collections.videos,'No videos yet',v=>`<div class="split-row"><div><b>${esc(v.title)}</b><small>${esc(v.provider)} · ${esc(v.id)}</small></div>${statusChip(v.status)}</div>`)}
+function renderCertificates(){certificateTable.innerHTML=rows(state.collections.certificates,'No certificates found',c=>`<tr><td>${esc(c.studentName)}</td><td>${esc(c.courseTitle)}</td><td><b>${esc(c.verificationCode)}</b></td><td>${statusChip(c.status)}</td><td>${new Date(c.createdAt||Date.now()).toLocaleDateString()}</td></tr>`)}
+function renderMessages(){
+  const tbody=document.getElementById('messagesTable');if(!tbody)return;
+  const q=(document.getElementById('messageSearch')?.value||'').toLowerCase().trim();
+  const statusFilter=document.getElementById('messageStatusFilter')?.value||'';
+  let list=state.collections.messages||[];
+  if(statusFilter) list=list.filter(m=>m.status===statusFilter);
+  if(q) list=list.filter(m=>[m.guest_name,m.guest_email,m.subject,m.body,m.inquiry_type].some(v=>String(v||'').toLowerCase().includes(q)));
+  tbody.innerHTML=list.length?list.map(m=>`<tr>
+    <td><b>${esc(m.guest_name||'Anonymous')}</b><br><small style="color:var(--muted)">${esc(m.guest_email||'')}</small></td>
+    <td>${esc(m.inquiry_type||'general')}</td>
+    <td><b>${esc(m.subject||'(no subject)')}</b><br><small style="color:var(--muted)">${esc((m.body||'').slice(0,140))}${(m.body||'').length>140?'…':''}</small></td>
+    <td>${statusChip(m.status)}</td>
+    <td><small>${new Date(m.created_at).toLocaleString()}</small></td>
+    <td>
+      ${m.status!=='read'?`<button class="mini" onclick="markMessage('${m.id}','read')">Mark read</button>`:''}
+      ${m.status!=='resolved'?`<button class="mini" onclick="markMessage('${m.id}','resolved')">Resolve</button>`:''}
+    </td>
+  </tr>`).join(''):'<tr><td colspan="6" class="empty">No messages match these filters.</td></tr>';
+}
+window.markMessage=async function(id,status){
+  try{
+    await OdysseySupabase.adminSetMessageStatus(id,status);
+    const m=(state.collections.messages||[]).find(x=>x.id===id);
+    if(m){m.status=status;if(!m.read_at)m.read_at=new Date().toISOString();}
+    renderMessages();
+  }catch(error){alert('Could not update message: '+(error?.message||error))}
+}
+
+let ANALYTICS_CHARTS={};
+async function loadAnalytics(){
+  const kpisEl=document.getElementById('analyticsKpis');
+  if(kpisEl) kpisEl.innerHTML='<div class="empty">Loading live analytics...</div>';
+  try{
+    const data=await OdysseySupabase.adminAnalyticsSnapshot();
+    renderAnalytics(data);
+  }catch(error){
+    if(kpisEl) kpisEl.innerHTML=`<div class="empty">Could not load analytics: ${esc(error.message||error)}</div>`;
+  }
+}
+function renderAnalytics(data){
+  const t=data.totals||{};
+  const kpisEl=document.getElementById('analyticsKpis');
+  if(kpisEl) kpisEl.innerHTML=[
+    ['Total students',t.total_students,'rgba(15,118,110,.16)'],
+    ['Total instructors',t.total_instructors,'rgba(181,71,98,.14)'],
+    ['Total enrollments',t.total_enrollments,'rgba(18,128,92,.14)'],
+    ['Total revenue',money(t.total_revenue_cents),'rgba(215,154,49,.2)'],
+    ['Published courses',t.total_courses,'rgba(23,58,94,.15)']
+  ].map(([label,value,tint])=>`<div class="kpi" style="--tint:${tint}"><span>${label}</span><b>${value??0}</b></div>`).join('');
+
+  const navy='#173A5E',gold='#C08A3E',teal='#0F766E',rose='#B54762';
+  const destroy=id=>{if(ANALYTICS_CHARTS[id]){ANALYTICS_CHARTS[id].destroy();delete ANALYTICS_CHARTS[id]}};
+  const dayLabel=d=>new Date(d).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+
+  destroy('enroll');
+  const enroll=data.enrollment_trend||[];
+  ANALYTICS_CHARTS.enroll=new Chart(document.getElementById('chartEnrollTrend'),{type:'line',data:{labels:enroll.map(r=>dayLabel(r.day)),datasets:[{label:'Enrollments',data:enroll.map(r=>r.count),borderColor:navy,backgroundColor:'rgba(23,58,94,.12)',tension:.35,fill:true,pointRadius:0}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+
+  destroy('revenue');
+  const revenue=data.revenue_trend||[];
+  ANALYTICS_CHARTS.revenue=new Chart(document.getElementById('chartRevenueTrend'),{type:'line',data:{labels:revenue.map(r=>dayLabel(r.day)),datasets:[{label:'Revenue',data:revenue.map(r=>(r.cents||0)/100),borderColor:gold,backgroundColor:'rgba(192,138,62,.14)',tension:.35,fill:true,pointRadius:0}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'$'+v}}}}});
+
+  destroy('ratio');
+  const ratio=data.role_ratio||[];
+  ANALYTICS_CHARTS.ratio=new Chart(document.getElementById('chartRoleRatio'),{type:'doughnut',data:{labels:ratio.map(r=>r.role),datasets:[{data:ratio.map(r=>r.count),backgroundColor:[navy,teal,gold,rose]}]},options:{plugins:{legend:{position:'bottom'}}}});
+
+  const barChart=(id,rows,labelKey)=>{
+    destroy(id);
+    const top=(rows||[]).slice(0,8);
+    ANALYTICS_CHARTS[id]=new Chart(document.getElementById('chart'+id.charAt(0).toUpperCase()+id.slice(1)),{type:'bar',data:{labels:top.map(r=>r[labelKey]),datasets:[{label:'Enrollments',data:top.map(r=>r.count),backgroundColor:teal,borderRadius:6}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0}}}}});
+  };
+  barChart('ByField',data.enrollment_by_field,'field');
+  barChart('ByCountry',data.enrollment_by_country,'country');
+  barChart('ByDiscipline',data.enrollment_by_discipline,'discipline');
+  barChart('BySubject',data.enrollment_by_subject,'subject');
+}
+
+let SITE_CONTENT_ROWS=[];
+async function loadSiteContent(){
+  const el=document.getElementById('contentList');
+  if(el) el.innerHTML='<div class="empty">Loading site content...</div>';
+  try{
+    SITE_CONTENT_ROWS=await OdysseySupabase.listSiteContent();
+    renderSiteContent();
+  }catch(error){
+    if(el) el.innerHTML=`<div class="empty">Could not load site content: ${esc(error.message||error)}</div>`;
+  }
+}
+function renderSiteContent(){
+  const el=document.getElementById('contentList');if(!el)return;
+  if(!SITE_CONTENT_ROWS.length){el.innerHTML='<div class="empty">No editable content entries yet.</div>';return}
+  const byPage={};
+  SITE_CONTENT_ROWS.forEach(r=>{(byPage[r.page]=byPage[r.page]||[]).push(r)});
+  el.innerHTML=Object.entries(byPage).map(([page,rows])=>`
+    <h3 style="font-family:var(--head);font-size:14px;margin:16px 0 8px;color:var(--navy)">${esc(page)}</h3>
+    ${rows.map(r=>`
+      <div class="split-row" style="grid-template-columns:1fr;align-items:stretch">
+        <div>
+          <b>${esc(r.content_key)}</b>
+          <small style="display:block;margin:4px 0 6px">Original: "${esc(r.original_text||'')}"</small>
+          <textarea id="content-${r.content_key}" class="input" style="width:100%;min-height:56px;height:auto;padding:8px 11px" placeholder="Leave blank to keep showing the original text">${esc(r.override_text||'')}</textarea>
+          <button class="mini" style="margin-top:6px" onclick="saveSiteContent('${r.content_key}')">Save</button>
+        </div>
+      </div>
+    `).join('')}
+  `).join('');
+}
+window.saveSiteContent=async function(key){
+  const val=document.getElementById('content-'+key)?.value||'';
+  try{
+    await OdysseySupabase.updateSiteContent(key, val, state.overview?.adminEmail||null);
+    const row=SITE_CONTENT_ROWS.find(r=>r.content_key===key);
+    if(row) row.override_text=val;
+    alert('Saved.');
+  }catch(error){alert('Could not save: '+(error?.message||error))}
+}
+function renderPrivacy(){privacyTable.innerHTML=rows(state.collections.privacyRequests,'No privacy requests',r=>`<tr><td><b>${esc(r.fullName||r.userId)}</b><br><small>${esc(r.email||'')}</small></td><td>${esc(r.requestType)}</td><td>${statusChip(r.status)}</td><td>${new Date(r.requestedAt||Date.now()).toLocaleString()}</td><td>${r.scheduledFor?new Date(r.scheduledFor).toLocaleString():'—'}</td></tr>`)}
+function renderOps(){const ops=state.ops||fallback.ops;riskLevel.textContent=String(ops.riskLevel||'unknown').toUpperCase()+' risk';riskCopy.textContent='Provider readiness '+(ops.providerScore?.percent||0)+'%';providerScore.textContent=`${ops.providerScore?.ready||0}/${ops.providerScore?.total||0} providers ready`;checklist.innerHTML=rows(ops.checklist,'No checklist data',c=>`<div class="split-row"><div><b>${esc(c.label)}</b><small>${esc(c.detail)}</small></div>${statusChip(c.status)}</div>`);const providers=[];Object.entries(ops.providers||{}).forEach(([group,items])=>Object.entries(items||{}).forEach(([name,item])=>providers.push({group,name,...item})));providerList.innerHTML=rows(providers,'No provider data',p=>`<div class="split-row"><div><b>${esc(p.group)} / ${esc(p.name)}</b><small>${p.missing?.length?'Missing '+p.missing.join(', '):'Configuration checked'}</small></div>${statusChip(p.configured?'ready':'missing')}</div>`);const incidents=ops.incidents||state.collections.incidents||[];incidentList.innerHTML=rows(incidents,'No incidents reported',i=>`<div class="split-row"><div><b>${esc(i.title)}</b><small>${esc(i.severity)} severity · ${esc(i.summary||'No summary')} · ${new Date(i.createdAt||Date.now()).toLocaleString()}</small></div><div>${statusChip(i.status)} ${i.status!=='resolved'?`<button class="mini" onclick="updateIncident('${i.id}','resolved')">Resolve</button>`:''}</div></div>`)}
+function renderAudit(){auditList.innerHTML=rows(state.collections.audit||state.overview.recentAudit,'No audit logs',a=>`<div class="split-row"><div><b>${esc(a.action)}</b><small>${esc(a.entityType||'entity')} · ${esc(a.entityId||'')} · ${new Date(a.createdAt||Date.now()).toLocaleString()}</small></div><span class="chip">${esc(a.actorUserId||'system')}</span></div>`)}
+function detailList(list,empty,fn){return `<div class="detail-list">${(list&&list.length)?list.map(fn).join(''):`<div class="empty">${esc(empty)}</div>`}</div>`}
+function detailSection(title,body){return `<section class="detail-section"><h3>${esc(title)}</h3>${body}</section>`}
+function enrollmentDetailBlock(profile){
+  if(!profile) return '<div class="empty">No profile found.</div>';
+  const rowsHtml=[
+    ['Phone',profile.phone],
+    ['Timezone',profile.timezone],
+    ['Grade level',profile.grade_level],
+    ['School',profile.school_name],
+    ['Guardian email',profile.guardian_email],
+    ['Learning goal',profile.learning_goal],
+    ['Preferred language',profile.learning_preferred_language],
+    ['Profile visibility',profile.profile_visibility],
+    ['Member code',profile.member_code||profile.student_code||profile.instructor_code]
+  ].filter(([,v])=>v!==null&&v!==undefined&&v!=='');
+  if(!rowsHtml.length) return '<div class="empty">This student has not filled in any enrollment details yet.</div>';
+  return `<div class="detail-list">${rowsHtml.map(([label,value])=>`<div class="detail-item"><b>${esc(label)}</b><small>${esc(value)}</small></div>`).join('')}</div>`;
+}
+function profileSummary(profile){if(!profile)return '<div class="empty">No profile found.</div>';return `<div class="detail-list"><div class="detail-item"><b>${esc(profile.full_name||profile.owner_name||'Unnamed')}</b><small>${esc(profile.email||profile.owner_email||'')} · ${esc(profile.country||'')} ${esc(profile.city||'')}</small></div><div class="detail-item"><b>Status</b><small>${esc(profile.status)} · ID ${esc(profile.member_code||profile.student_code||profile.instructor_code||profile.student_id||profile.instructor_id||profile.owner_id||'')}</small></div><div class="detail-item"><b>Learning footprint</b><small>${profile.enrolled_courses||0} enrolled · ${profile.completed_courses||0} completed · ${profile.certificates_issued||0} certificates · average progress ${profile.average_progress_percent||0}%</small></div><div class="detail-item"><b>Commerce</b><small>Total paid ${money(profile.total_paid_cents)} · average exam score ${profile.average_exam_score_percent||0}%</small></div></div>`}
+function closeDetailDrawer(event){if(event&&event.target!==detailOverlay)return;detailOverlay.classList.remove('open')}
+async function openStudentDetail(id){detailTitle.textContent='Student details';detailSubtitle.textContent='Loading Supabase record...';detailBody.innerHTML='<div class="empty">Loading student details...</div>';detailOverlay.classList.add('open');try{if(!window.OdysseySupabase?.isConfigured?.())throw new Error('Supabase is not configured on this deployment.');const d=await OdysseySupabase.adminStudentDetail(id);detailSubtitle.textContent='Profile, courses, progress, exams, payments, certificates, and messages.';detailBody.innerHTML=detailSection('Profile',profileSummary(d.profile))+detailSection('Enrollment details (entered by the student at sign-up)',enrollmentDetailBlock(d.profile))+detailSection('Enrollments and progress',detailList(d.enrollments,'No enrollments yet',e=>`<div class="detail-item"><b>${esc(e.course_title)}</b><small>${esc(e.instructor_name)} · ${esc(e.enrollment_status)} · ${e.progress_percent||0}% progress · ${e.completed_sessions||0}/${e.tracked_sessions||0} sessions · paid ${money(e.paid_cents)}</small></div>`))+detailSection('Exam results',detailList(d.examResults,'No exam attempts yet',e=>`<div class="detail-item"><b>${esc(e.exam_title)}</b><small>${esc(e.status)} · score ${e.score_percent??'not graded'}% · tab switches ${e.tab_switch_count||0} · ${new Date(e.started_at||Date.now()).toLocaleString()}</small></div>`))+detailSection('Payments',detailList(d.payments,'No payments yet',p=>`<div class="detail-item"><b>${money(p.amount_cents)} ${esc(p.currency||'USD')}</b><small>${esc(p.course_title)} · ${esc(p.provider)} · ${esc(p.status)} · ${new Date(p.created_at||Date.now()).toLocaleString()}</small></div>`))+detailSection('Certificates',detailList(d.certificates,'No certificates yet',c=>`<div class="detail-item"><b>${esc(c.verification_code)}</b><small>${esc(c.status)} · score ${c.final_score_percent??'n/a'} · issued ${new Date(c.issued_at||Date.now()).toLocaleDateString()}</small></div>`))+detailSection('Messages',detailList(d.messages,'No messages yet',m=>`<div class="detail-item"><b>${esc(m.subject||'Message')}</b><small>${esc(m.body||'').slice(0,180)} · ${esc(m.status)} · ${new Date(m.created_at||Date.now()).toLocaleString()}</small></div>`))}catch(error){detailSubtitle.textContent='Could not load student details.';detailBody.innerHTML=`<div class="empty">${esc(error.message||'Admin detail access failed. Sign in as an admin account and run migration 003.')}</div>`}}
+async function openInstructorDetail(id){detailTitle.textContent='Instructor details';detailSubtitle.textContent='Loading Supabase record...';detailBody.innerHTML='<div class="empty">Loading instructor details...</div>';detailOverlay.classList.add('open');try{if(!window.OdysseySupabase?.isConfigured?.())throw new Error('Supabase is not configured on this deployment.');const d=await OdysseySupabase.adminInstructorDetail(id);detailSubtitle.textContent='Courses, subscriptions, payments, payouts, exams, and messages.';detailBody.innerHTML=detailSection('Profile',profileSummary(d.profile))+detailSection('Courses',detailList(d.courses,'No courses yet',c=>`<div class="detail-item"><b>${esc(c.title)}</b><small>${esc(c.status)} · ${esc(c.field)} / ${esc(c.subject)} · ${c.enrollments||0} enrollments · ${c.view_count||0} views · ${c.like_count||0} likes · sales ${money(c.gross_sales_cents)}</small></div>`))+detailSection('Subscriptions',detailList(d.subscriptions,'No subscription records',s=>`<div class="detail-item"><b>${esc(s.plan)}</b><small>${esc(s.status)} · ${money(s.price_cents)}/month · courses ${s.course_limit} · exams ${s.exam_limit??'unlimited'}</small></div>`))+detailSection('Payments',detailList(d.payments,'No payments yet',p=>`<div class="detail-item"><b>${money(p.amount_cents)}</b><small>${esc(p.course_title)} · ${esc(p.student_name)} · ${esc(p.status)}</small></div>`))+detailSection('Payouts',detailList(d.payouts,'No payouts yet',p=>`<div class="detail-item"><b>${money(p.amount_cents)}</b><small>${esc(p.status)} · ${new Date(p.created_at||Date.now()).toLocaleDateString()}</small></div>`))+detailSection('Exam results',detailList(d.examResults,'No exam records yet',e=>`<div class="detail-item"><b>${esc(e.exam_title)}</b><small>${esc(e.student_name)} · score ${e.score_percent??'not graded'}% · ${esc(e.status)}</small></div>`))}catch(error){detailSubtitle.textContent='Could not load instructor details.';detailBody.innerHTML=`<div class="empty">${esc(error.message||'Admin detail access failed. Sign in as an admin account and run migration 003.')}</div>`}}
+async function setUserStatus(id,status){try{if(window.OdysseySupabase?.isConfigured?.()){await OdysseySupabase.setUserStatus(id,status);await refreshAll();return}await api('/api/admin/users/'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({status})});await refreshAll()}catch(error){alert(error.message||'Admin API unavailable. Sign in as admin.')}}
+async function setCourseStatus(id,status){try{if(window.OdysseySupabase?.isConfigured?.()){await OdysseySupabase.setCourseStatus(id,status);await refreshAll();return}await api('/api/admin/courses/'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({status})});await refreshAll()}catch(error){alert(error.message||'Admin API unavailable. Sign in as admin.')}}
+async function createIncident(){const title=incidentTitle.value.trim();if(!title)return;try{await api('/api/admin/incidents',{method:'POST',body:JSON.stringify({title,severity:incidentSeverity.value})});incidentTitle.value='';await refreshAll()}catch(error){alert('Incident could not be created. Sign in as an administrator and try again.')}}
+async function updateIncident(id,status){try{await api('/api/admin/incidents/'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({status})});await refreshAll()}catch(error){alert('Incident could not be updated.')}}
+nav.addEventListener('click',event=>{const btn=event.target.closest('button[data-target]');if(!btn)return;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b===btn));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===btn.dataset.target))});
+refreshAll();
+</script>
+<script>
+(function(){
+const readJSON=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}};
+const writeJSON=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
+const statusKey='odyssey_admin_course_statuses';
+const userStatusKey='odyssey_admin_user_statuses';
+const certKey='odyssey_admin_certificates';
+const auditKey='odyssey_admin_local_audit';
+function localProfile(role){
+return role==='instructor'?readJSON('odyssey_instructor_profile',{}):readJSON('odyssey_student_profile',{});
+}
+function localUserId(role,email){return `${role}-${String(email||role+'@odyssey.demo').toLowerCase().replace(/[^a-z0-9]+/g,'-')}`}
+function purchasedTests(){const all=[];Object.keys(localStorage).forEach(key=>{if(key==='odyssey_purchased_tests'||key.startsWith('odyssey_purchased_tests_'))all.push(...readJSON(key,[]))});const map=new Map();all.forEach(t=>t&&t.id!==undefined&&map.set(String(t.id),t));return [...map.values()]}
+function localEnrollments(){return readJSON('odyssey_enrolled_courses',[])}
+function localInstructorCourses(){return readJSON('odyssey_instructor_courses',[])}
+function localCerts(){return readJSON(certKey,[])}
+function addAudit(action,entityType,entityId){const logs=readJSON(auditKey,[]);logs.unshift({id:'local-'+Date.now(),action,entityType,entityId,actorUserId:'local-admin',createdAt:new Date().toISOString()});writeJSON(auditKey,logs.slice(0,100));state.collections.audit=[...logs.slice(0,100),...(state.collections.audit||[])];}
+function uniqueBy(list,keyFn){const map=new Map();(list||[]).forEach(item=>{const key=keyFn(item);if(key&&!map.has(key))map.set(key,item)});return [...map.values()]}
+function enhanceLocalAdminData(){
+const sp=localProfile('student');
+const ip=localProfile('instructor');
+const enrollments=localEnrollments();
+const tests=purchasedTests();
+const instructorCourses=localInstructorCourses();
+const userStatuses=readJSON(userStatusKey,{});
+const courseStatuses=readJSON(statusKey,{});
+const certs=localCerts();
+const studentEmail=sp.email||'student@odyssey.demo';
+const instructorEmail=ip.email||'instructor@odyssey.demo';
+const student={id:localUserId('student',studentEmail),fullName:sp.name||sp.full_name||'Odyssey Student',email:studentEmail,role:'student',status:userStatuses[localUserId('student',studentEmail)]||'active',enrollmentsCount:enrollments.length,certificatesCount:certs.length,purchasesCount:tests.length,pendingPayoutCents:0,createdAt:new Date().toISOString()};
+const instructor={id:localUserId('instructor',instructorEmail),fullName:ip.name||ip.full_name||'Odyssey Instructor',email:instructorEmail,role:'instructor',status:userStatuses[localUserId('instructor',instructorEmail)]||'active',coursesCount:instructorCourses.length,pendingPayoutCents:0,viewsCount:instructorCourses.reduce((s,c)=>s+Number(c.views||c.view_count||0),0),likesCount:instructorCourses.reduce((s,c)=>s+Number(c.likes||c.like_count||0),0),createdAt:new Date().toISOString()};
+const localCourses=[...instructorCourses.map(c=>({id:c.id,title:c.title,instructorName:instructor.fullName,field:c.field,discipline:c.discipline,subject:c.subject,priceCents:Number(c.priceBase||c.price||0)*100,interactionPriceCents:Number(c.priceQA||c.interactionPrice||0)*100,status:courseStatuses[c.id]||c.status||'review',sessionCount:c.sessions||c.sessionCount||0,rating:c.rating||0,enrolledCount:c.students||0,likeCount:c.likes||0,viewCount:c.views||0})),...enrollments.map(c=>({id:'student-'+c.id,title:c.title,instructorName:c.instructor,field:c.field,discipline:c.discipline||'',subject:c.subject||'',priceCents:Number(c.price||0)*100,interactionPriceCents:Number(c.interactionPrice||0)*100,status:courseStatuses['student-'+c.id]||'active for student',sessionCount:c.sessions||5,rating:c.rating||0,enrolledCount:1}))];
+const payments=tests.map(t=>({id:'test-'+t.id,provider:'Odyssey checkout',amountCents:Number(t.price||0)*100,status:Number(t.price)>0?'paid':'free',createdAt:t.purchasedAt||new Date().toISOString(),studentName:student.fullName,courseTitle:t.title}));
+state.collections.users=[student,instructor,...(state.collections.users||[]).filter(u=>![student.id,instructor.id].includes(u.id))];
+state.collections.students=[{...student,full_name:student.fullName,total_paid_cents:payments.reduce((s,p)=>s+p.amountCents,0),enrolled_courses:enrollments.length,purchased_exams:tests.length},...(state.collections.students||[])];
+state.collections.instructors=[instructor,...(state.collections.instructors||[]).filter(i=>i.id!==instructor.id)];
+state.collections.courses=[...localCourses,...(state.collections.courses||[]).filter(c=>!localCourses.some(l=>String(l.id)===String(c.id)))];
+state.collections.payments=uniqueBy([...payments,...(state.collections.payments||[])],p=>p.id);
+state.collections.certificates=uniqueBy([...certs,...(state.collections.certificates||[])],c=>c.id||c.verificationCode);
+state.collections.audit=uniqueBy([...readJSON(auditKey,[]),...(state.collections.audit||[])],a=>a.id||`${a.action}-${a.entityId}-${a.createdAt}`);
+state.overview.recentUsers=state.collections.users.slice(0,6);
+state.overview.recentCourses=state.collections.courses.slice(0,6);
+}
+const oldRenderAll=window.renderAll||renderAll;
+window.renderAll=function(){enhanceLocalAdminData();oldRenderAll();}
+renderAll=window.renderAll;
+window.renderUsers=function(){const q=(userSearch?.value||'').toLowerCase(),role=roleFilter?.value||'',status=statusFilter?.value||'';const users=(state.collections.users||[]).filter(u=>(!role||u.role===role)&&(!status||u.status===status)&&(!q||[u.fullName,u.email,u.memberCode,u.role,u.status].join(' ').toLowerCase().includes(q)));usersTable.innerHTML=rows(users,'No users found',u=>`<tr><td><b>${esc(u.fullName)}</b><br><small>${esc(u.email)}${u.memberCode?' · ID '+esc(u.memberCode):''}</small></td><td>${esc(u.role)}</td><td>${statusChip(u.status)}${window.OdysseyBan?window.OdysseyBan.banInfo(u):''}</td><td>${u.enrollmentsCount||0} enrollments<br>${u.certificatesCount||0} certificates<br>${u.purchasesCount||0} purchases</td><td>${money(u.pendingPayoutCents)}</td><td>${u.role==='student'?`<button class="mini" onclick="openStudentDetail('${u.id}')">View profile</button> `:''}${u.role==='instructor'?`<button class="mini" onclick="openInstructorDetail('${u.id}')">View profile</button> `:''}${u.role!=='superuser'?(u.status==='suspended'?`<button class="mini" onclick="OdysseyBan.reactivate('${u.id}')">Reactivate</button> `:`<button class="mini" onclick="OdysseyBan.stall('${u.id}','${esc(u.fullName).replace(/'/g,"\\'")}')">Stall</button> <button class="mini" onclick="OdysseyBan.ban('${u.id}','${esc(u.fullName).replace(/'/g,"\\'")}')">Ban</button>`):''}</td></tr>`);window.OdysseyBan?.healExpired?.(users)}
+window.renderInstructors=function(){const instructors=state.collections.instructors||[];instructorCards.innerHTML=rows(instructors,'No instructors found',i=>`<div class="card"><h2>${esc(i.fullName)}</h2><p>${esc(i.email)}</p><div class="meter"><span style="width:${Math.min(100,(i.coursesCount||0)*18)}%"></span></div><p><b>${i.coursesCount||0}</b> courses · ${i.likesCount||0} likes · ${i.viewsCount||0} views · pending payout ${money(i.pendingPayoutCents)}</p>${statusChip(i.status)}<br><br><button class="mini" onclick="openInstructorDetail('${i.id}')">Open full instructor record</button></div>`)}
+window.renderCourses=function(){const q=(courseSearch?.value||'').toLowerCase(),status=courseStatus?.value||'';const courses=(state.collections.courses||[]).filter(c=>(!status||String(c.status).toLowerCase().includes(status))&&(!q||[c.title,c.instructorName,c.field,c.discipline,c.subject].join(' ').toLowerCase().includes(q)));coursesTable.innerHTML=rows(courses,'No courses found',c=>`<tr><td><b>${esc(c.title)}</b><br><small>${c.sessionCount||0} sessions · rating ${c.rating||0} · ${c.viewCount||0} views · ${c.likeCount||0} likes</small></td><td>${esc(c.instructorName)}</td><td>${esc(c.field)}<br><small>${esc(c.discipline)} · ${esc(c.subject)}</small></td><td>${money(c.priceCents)}<br><small>Interactive ${money(c.interactionPriceCents)}</small></td><td>${statusChip(c.status)}</td><td><button class="mini" onclick="setCourseStatus('${c.id}','active')">Activate</button> <button class="mini" onclick="setCourseStatus('${c.id}','deactivated')">Deactivate</button> <button class="mini" onclick="setCourseStatus('${c.id}','review')">Review</button> <button class="mini" onclick="setCourseStatus('${c.id}','archived')">Archive</button></td></tr>`)}
+window.renderCertificates=function(){certificateTable.innerHTML=rows(state.collections.certificates,'No certificates found',c=>`<tr><td>${esc(c.studentName)}</td><td>${esc(c.courseTitle)}</td><td><b>${esc(c.verificationCode||'Pending')}</b></td><td>${statusChip(c.status||'pending')}</td><td>${c.createdAt?new Date(c.createdAt).toLocaleDateString():'Not issued'}<br><button class="mini" onclick="issueCertificate('${c.id||''}')">Issue / e-sign</button> <button class="mini" onclick="revokeCertificate('${c.id||''}')">Revoke</button></td></tr>`)}
+window.setUserStatus=async function(id,status){try{if(window.OdysseySupabase?.isConfigured?.()&&!String(id).includes('-')){await OdysseySupabase.setUserStatus(id,status);await refreshAll();return}}catch(error){console.warn('Supabase user status failed; applying local admin status.',error)}const statuses=readJSON(userStatusKey,{});statuses[id]=status;writeJSON(userStatusKey,statuses);(state.collections.users||[]).forEach(u=>{if(String(u.id)===String(id))u.status=status});addAudit('admin.user.status.updated','user',id);renderAll()}
+window.setCourseStatus=async function(id,status){try{if(window.OdysseySupabase?.isConfigured?.()&&!String(id).startsWith('student-')){await OdysseySupabase.setCourseStatus(id,status);await refreshAll();return}}catch(error){console.warn('Supabase course status failed; applying local admin status.',error)}const statuses=readJSON(statusKey,{});statuses[id]=status;writeJSON(statusKey,statuses);(state.collections.courses||[]).forEach(c=>{if(String(c.id)===String(id))c.status=status});addAudit('admin.course.status.updated','course',id);renderAll()}
+window.issueCertificate=function(id){const signer=prompt('E-sign certificate as:', 'Nima Khoei, Odyssey Admin');if(!signer)return;const certs=localCerts();let cert=certs.find(c=>String(c.id)===String(id));if(!cert){const sp=localProfile('student');const course=localEnrollments()[0]||{};cert={id:'cert-'+Date.now(),studentName:sp.name||'Odyssey Student',courseTitle:course.title||'Odyssey Course',verificationCode:'OD-'+Date.now().toString().slice(-10),createdAt:new Date().toISOString()};certs.unshift(cert)}Object.assign(cert,{status:'issued',signedBy:signer,eSignature:`${signer} · ${new Date().toLocaleString()}`,createdAt:cert.createdAt||new Date().toISOString()});writeJSON(certKey,certs);addAudit('admin.certificate.e_signed','certificate',cert.id);renderAll()}
+window.revokeCertificate=function(id){const certs=localCerts().map(c=>String(c.id)===String(id)?{...c,status:'revoked'}:c);writeJSON(certKey,certs);addAudit('admin.certificate.revoked','certificate',id);renderAll()}
+function localStudentDetail(id){const sp=localProfile('student');const enrollments=localEnrollments();const tests=purchasedTests();const certs=localCerts();return detailSection('Profile',profileSummary({full_name:sp.name||'Odyssey Student',email:sp.email||'',country:sp.country||'',city:sp.city||'',status:'active',student_id:id,enrolled_courses:enrollments.length,certificates_issued:certs.length,total_paid_cents:tests.reduce((s,t)=>s+Number(t.price||0)*100,0)}))+detailSection('Enrolled courses',detailList(enrollments,'No enrollments yet',e=>`<div class="detail-item"><b>${esc(e.title)}</b><small>${esc(e.instructor)} · ${esc(e.field)} · ${e.progress||0}% progress · paid ${money(Number(e.price||0)*100)}</small></div>`))+detailSection('Purchase history',detailList(tests,'No exam purchases yet',t=>`<div class="detail-item"><b>${esc(t.title)}</b><small>${esc(t.subject)} · ${esc(t.instructor)} · ${Number(t.price)>0?money(Number(t.price)*100):'Free'} · ${new Date(t.purchasedAt||Date.now()).toLocaleString()}</small></div>`))+detailSection('Certificates',detailList(certs,'No certificates yet',c=>`<div class="detail-item"><b>${esc(c.courseTitle)}</b><small>${esc(c.verificationCode)} · ${esc(c.status)} · signed by ${esc(c.signedBy||'not signed')}</small></div>`))}
+function localInstructorDetail(id){const ip=localProfile('instructor');const courses=localInstructorCourses();return detailSection('Profile',profileSummary({full_name:ip.name||'Odyssey Instructor',email:ip.email||'',country:ip.country||'',city:ip.city||'',status:'active',instructor_id:id}))+detailSection('Course catalog',detailList(courses,'No courses posted yet',c=>`<div class="detail-item"><b>${esc(c.title)}</b><small>${esc(c.status||'review')} · ${esc(c.field)} / ${esc(c.subject)} · ${c.students||0} students · ${c.likes||0} likes · ${c.views||0} views · price ${money(Number(c.priceBase||c.price||0)*100)}</small></div>`))+detailSection('Subscription and payout',`<div class="detail-list"><div class="detail-item"><b>${esc(localStorage.getItem('odyssey_subscription_plan')||'free')} plan</b><small>${courses.length} active courses · payroll pending ${money(0)}</small></div></div>`)}
+const oldOpenStudent=window.openStudentDetail||openStudentDetail;
+const oldOpenInstructor=window.openInstructorDetail||openInstructorDetail;
+window.openStudentDetail=async function(id){detailTitle.textContent='Student details';detailSubtitle.textContent='Profile, enrollments, purchase history, certificates, and messages.';detailBody.innerHTML=localStudentDetail(id);detailOverlay.classList.add('open');try{if(window.OdysseySupabase?.isConfigured?.()&&!String(id).startsWith('student-'))await oldOpenStudent(id)}catch(error){}}
+window.openInstructorDetail=async function(id){detailTitle.textContent='Instructor details';detailSubtitle.textContent='Courses, subscription, likes, views, students, and payout summary.';detailBody.innerHTML=localInstructorDetail(id);detailOverlay.classList.add('open');try{if(window.OdysseySupabase?.isConfigured?.()&&!String(id).startsWith('instructor-'))await oldOpenInstructor(id)}catch(error){}}
+enhanceLocalAdminData();
+renderAll();
+}());
+</script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+/* Comment moderation — talks directly to the live course_comments /
+   comment_reactions / course_likes / course_ratings / banned_identities
+   tables built for course_detail.html and test_detail.html. This is a
+   separate Supabase client from OdysseySupabase on purpose: those tables
+   aren't part of the wrapper it was built against, so this avoids
+   guessing at (and possibly colliding with) its internals. */
+(function(){
+  const MOD_URL = 'https://yxewqmemegiogqwyklai.supabase.co';
+  const MOD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4ZXdxbWVtZWdpb2dxd3lrbGFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjY3NTksImV4cCI6MjA5NzgwMjc1OX0.dQzu4llCv0WjHs93a4w9SN3zng1c1dW5moOsjwL6dDM';
+  const modSb = window.supabase ? window.supabase.createClient(MOD_URL, MOD_KEY) : null;
+  let allComments = [];
+
+  /* ── Ban / stall a user account ──
+     admin_ban_user / admin_stall_user / admin_unban_user are SECURITY
+     DEFINER RPCs (added alongside the pre-existing admin_set_user_status)
+     that also set auth.users.banned_until so the account is actually
+     blocked at the Supabase Auth layer, not just flagged in profiles, and
+     terminate any session that's already open. Exposed as window.OdysseyBan
+     so both renderUsers() implementations below can call it. */
+  window.OdysseyBan = {
+    async ban(id, name){
+      if(!modSb) return;
+      if(String(id).indexOf('-') === -1){ alert('This is a local demo user, not a real account — nothing to ban.'); return; }
+      if(!confirm(`Permanently ban ${name || 'this user'}? This blocks their login immediately and ends any active session. This does not expire on its own.`)) return;
+      const reason = prompt('Reason for the ban (optional, shown in the audit log):') || null;
+      const { error } = await modSb.rpc('admin_ban_user', { target_user_id: id, reason });
+      if(error){ alert('Could not ban: ' + error.message); return; }
+      window.refreshAll();
+    },
+    async stall(id, name){
+      if(!modSb) return;
+      if(String(id).indexOf('-') === -1){ alert('This is a local demo user, not a real account — nothing to stall.'); return; }
+      const hoursRaw = prompt(`Stall ${name || 'this user'} for how many hours? (e.g. 24 for one day, 168 for one week)`);
+      if(hoursRaw === null) return;
+      const hours = parseInt(hoursRaw, 10);
+      if(!Number.isFinite(hours) || hours <= 0){ alert('Enter a positive number of hours.'); return; }
+      const reason = prompt('Reason for the stall (optional):') || null;
+      const { error } = await modSb.rpc('admin_stall_user', { target_user_id: id, hours, reason });
+      if(error){ alert('Could not stall: ' + error.message); return; }
+      window.refreshAll();
+    },
+    async reactivate(id){
+      if(!modSb) return;
+      if(String(id).indexOf('-') === -1){ window.setUserStatus(id, 'active'); return; }
+      const { error } = await modSb.rpc('admin_unban_user', { target_user_id: id });
+      if(error){ alert('Could not reactivate: ' + error.message); return; }
+      window.refreshAll();
+    },
+    // Lazily heals a badge that's still showing "suspended" after a
+    // temporary stall's clock has already run out (Supabase Auth itself
+    // stops blocking login the instant banned_until passes; this just
+    // catches the profiles.status/ban_type fields up to match).
+    async healExpired(users){
+      if(!modSb) return;
+      const now = Date.now();
+      const expired = (users || []).filter(u => u.ban_type === 'temporary' && u.stalled_until && new Date(u.stalled_until).getTime() <= now);
+      for(const u of expired){
+        await modSb.rpc('admin_unban_user', { target_user_id: u.id }).catch(()=>{});
+      }
+      if(expired.length) window.refreshAll();
+    },
+    banInfo(u){
+      if(u.status !== 'suspended' || !u.ban_type) return '';
+      if(u.ban_type === 'permanent') return `<br><small style="color:var(--bad)">Banned${u.ban_reason?': '+escM(u.ban_reason):''}</small>`;
+      if(u.ban_type === 'temporary' && u.stalled_until) return `<br><small style="color:var(--warn)">Stalled until ${new Date(u.stalled_until).toLocaleString()}${u.ban_reason?' · '+escM(u.ban_reason):''}</small>`;
+      return '';
+    }
+  };
+
+  function escM(v){ return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+  let ALL_REFUNDS = [];
+  async function loadRefundRequests(){
+    if(!modSb) return;
+    const { data, error } = await modSb.rpc('admin_list_refund_requests');
+    if(error){ console.error('Could not load refund requests', error); return; }
+    ALL_REFUNDS = data || [];
+    renderRefundRequests();
+  }
+  function refundMethodLabel(r){
+    if(r.refund_destination === 'different') return `Different card (${escM(r.card_brand||'—')} ····${escM(r.alt_card_last4||'????')}, ${escM(r.alt_cardholder_name||'—')})`;
+    return `Original card (${escM(r.card_brand||'—')})`;
+  }
+  function renderRefundRequests(){
+    const tbody = document.getElementById('refundTable');
+    if(!tbody) return;
+    const filter = document.getElementById('refundStatusFilter')?.value || '';
+    const rows = filter ? ALL_REFUNDS.filter(r => r.status === filter) : ALL_REFUNDS;
+    if(!rows.length){ tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No refund requests found</td></tr>'; return; }
+    tbody.innerHTML = rows.map(r => `<tr>
+      <td><b>${escM(r.student_name)}</b><br><small>${escM(r.student_email)}<br>ID: ${escM(r.student_id)}</small></td>
+      <td>${escM(r.course_title || '—')}</td>
+      <td><b>${r.course_progress_percent ?? 0}%</b></td>
+      <td>${escM((r.reason||'').slice(0,140))}${(r.reason||'').length>140?'…':''}</td>
+      <td>${refundMethodLabel(r)}</td>
+      <td><span class="chip ${r.status==='pending'?'warn':r.status==='rejected'?'bad':'good'}">${escM(r.status)}</span></td>
+      <td>${new Date(r.created_at).toLocaleString()}</td>
+      <td>${r.status==='pending' ? `
+          <button class="mini" onclick="reviewRefund('${r.id}','approved')">Approve</button>
+          <button class="mini" onclick="reviewRefund('${r.id}','rejected')">Reject</button>
+        ` : (r.status==='approved' ? `<button class="mini" onclick="reviewRefund('${r.id}','processed')">Mark processed</button>` : '—')}
+      </td>
+    </tr>`).join('');
+  }
+  window.reviewRefund = async function(id, status){
+    const notes = prompt(status==='rejected' ? 'Reason for rejecting (optional, visible in the audit log):' : 'Any notes for this decision (optional):') || null;
+    const { error } = await modSb.rpc('admin_review_refund_request', { p_id: id, p_status: status, p_notes: notes });
+    if(error){ alert('Could not update this refund request: ' + error.message); return; }
+    loadRefundRequests();
+  };
+  window.loadRefundRequests = loadRefundRequests;
+  window.renderRefundRequests = renderRefundRequests;
+
+  async function loadComments(){
+    if(!modSb) return;
+    const { data, error } = await modSb.from('course_comments')
+      .select('id, course_id, parent_comment_id, display_name, country, body, poster_key, created_at')
+      .order('created_at', { ascending: false })
+      .limit(500);
+    if(error){ console.error('Comment moderation load failed', error); return; }
+    allComments = data || [];
+    window.renderComments();
+  }
+
+  window.renderComments = function(){
+    const tbody = document.getElementById('commentsTable');
+    if(!tbody) return;
+    const q = (document.getElementById('commentSearch')?.value || '').toLowerCase();
+    const typeFilter = document.getElementById('commentTypeFilter')?.value || '';
+    const filtered = allComments.filter(c => {
+      if(typeFilter === 'course' && c.course_id < 0) return false;
+      if(typeFilter === 'test' && c.course_id >= 0) return false;
+      if(!q) return true;
+      return [c.display_name, c.body, String(c.course_id)].join(' ').toLowerCase().includes(q);
+    });
+    if(!filtered.length){
+      tbody.innerHTML = '<tr><td colspan="5" class="empty">No comments found</td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtered.map(c => {
+      const isReply = !!c.parent_comment_id;
+      const onLabel = c.course_id < 0 ? `Test #${Math.abs(c.course_id)}` : `Course #${c.course_id}`;
+      return `<tr>
+        <td><b>${escM(c.display_name)}</b>${c.country?`<br><small>${escM(c.country)}</small>`:''}</td>
+        <td>${isReply?'<span class="chip">reply</span> ':''}${escM((c.body||'').slice(0,140))}${(c.body||'').length>140?'…':''}</td>
+        <td>${onLabel}</td>
+        <td>${new Date(c.created_at).toLocaleString()}</td>
+        <td>
+          <button class="mini" onclick="deleteComment('${c.id}')">Delete</button>
+          ${c.poster_key ? `<button class="mini" onclick="banCommenter('${c.poster_key}','${escM(c.display_name).replace(/'/g,"\\'")}')">Ban author</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('');
+  };
+
+  window.deleteComment = async function(id){
+    if(!confirm('Delete this comment? Any replies and reactions on it will be deleted too. This cannot be undone.')) return;
+    const { error } = await modSb.from('course_comments').delete().eq('id', id);
+    if(error){ alert('Could not delete: ' + error.message); return; }
+    if(typeof addAudit === 'function') addAudit('admin.comment.deleted', 'comment', id);
+    loadComments();
+  };
+
+  window.banCommenter = async function(posterKey, name){
+    if(!confirm(`Ban "${name}" from posting new comments? Their existing comments stay unless you delete them separately.`)) return;
+    const reason = prompt('Reason for ban (optional, for your own records):') || null;
+    const { error } = await modSb.from('banned_identities').insert({
+      identity_key: posterKey, display_name: name, reason, banned_by: 'admin dashboard'
+    });
+    if(error){ alert('Could not ban: ' + error.message); return; }
+    if(typeof addAudit === 'function') addAudit('admin.commenter.banned', 'identity', posterKey);
+    alert(`${name} is now banned from posting new comments.`);
+  };
+
+  document.addEventListener('DOMContentLoaded', loadComments);
+  document.addEventListener('DOMContentLoaded', loadRefundRequests);
+  document.addEventListener('DOMContentLoaded', loadAnalytics);
+  document.addEventListener('DOMContentLoaded', loadSiteContent);
+}());
+</script>
+</body>
+</html>

@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title data-i18n="student_portal_title">Odyssey - Student Portal</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<style>
+:root{
+  --bg:#F6F4EF;--panel:rgba(255,255,255,.82);--panel-strong:#fff;--text:#141C2B;--muted:#64708A;
+  --line:rgba(20,28,43,.12);--primary:#142C4F;--accent:#0F7A6C;--warm:#C08A3E;--danger:#B23A48;
+  --soft:#EFEDE6;--shadow:0 24px 70px rgba(15,23,42,.12);--radius:18px;--font:Manrope, system-ui, sans-serif;--head:"Newsreader", Georgia, serif;
+}
+[data-theme="dark"]{--bg:#0B1930;--panel:rgba(19,37,64,.86);--panel-strong:#132540;--text:#F6F4EF;--muted:#A9B4C5;--line:rgba(255,255,255,.12);--soft:#1B2F4D;--shadow:0 26px 80px rgba(0,0,0,.36)}
+[data-scheme="voyager"]{--primary:#0B1E3D;--accent:#2D6CDF;--warm:#7C8DA6}
+[data-scheme="blossom"]{--primary:#C2356B;--accent:#FF8FA3;--warm:#F2B441}
+[data-scheme="nebula"]{--primary:#2E1F52;--accent:#7C5CFF;--warm:#4FD1E0}
+[data-scheme="meadow"]{--primary:#3D5A28;--accent:#D9A441;--warm:#C1653D}
+[data-theme="light"][data-scheme="voyager"]{--bg:#EEF2F8;--panel:rgba(255,255,255,.88);--panel-strong:#fff;--text:#0B1E3D;--muted:#5C6E88;--line:rgba(11,30,61,.16);--soft:#E3E9F3}
+[data-theme="light"][data-scheme="blossom"]{--bg:#FCEEF2;--panel:rgba(255,255,255,.86);--panel-strong:#fff;--text:#3A1626;--muted:#8A5A6C;--line:rgba(194,53,107,.16);--soft:#FBE1E9}
+[data-theme="light"][data-scheme="nebula"]{--bg:#F1EEFB;--panel:rgba(255,255,255,.86);--panel-strong:#fff;--text:#2E1F52;--muted:#6E5F94;--line:rgba(46,31,82,.16);--soft:#E8E3F8}
+[data-theme="light"][data-scheme="meadow"]{--bg:#F3F5EA;--panel:rgba(255,255,255,.86);--panel-strong:#fff;--text:#2C3B1E;--muted:#6B7A57;--line:rgba(61,90,40,.16);--soft:#E9EDDC}
+[data-theme="dark"][data-scheme="voyager"]{--bg:#050B18;--panel:rgba(15,26,48,.9);--panel-strong:#0F1A30;--text:#EAF0FB;--muted:#93A4C0;--line:rgba(45,108,223,.20);--soft:#152443}
+[data-theme="dark"][data-scheme="blossom"]{--bg:#2A0E1B;--panel:rgba(58,22,38,.9);--panel-strong:#3A1626;--text:#FDEEF3;--muted:#D8A8B8;--line:rgba(255,143,163,.20);--soft:#421C2E}
+[data-theme="dark"][data-scheme="nebula"]{--bg:#120B26;--panel:rgba(35,25,64,.9);--panel-strong:#241A44;--text:#EFEBFC;--muted:#B7ABDD;--line:rgba(124,92,255,.22);--soft:#2A2050}
+[data-theme="dark"][data-scheme="meadow"]{--bg:#101A0B;--panel:rgba(28,44,20,.9);--panel-strong:#1F311A;--text:#EFF5E7;--muted:#AFC29C;--line:rgba(217,164,65,.20);--soft:#26391C}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;font-family:var(--font);color:var(--text);
+  background:
+    linear-gradient(135deg,rgba(20,44,79,.09),transparent 34%),
+    radial-gradient(circle at 96% 0%,rgba(15,122,108,.10),transparent 28%),
+    var(--bg);
+}
+[data-scheme="voyager"] body{background:linear-gradient(135deg,rgba(11,30,61,.14),transparent 32%),radial-gradient(circle at 90% 8%,rgba(45,108,223,.14),transparent 34%),var(--bg)}
+[data-scheme="blossom"] body{background:linear-gradient(135deg,rgba(194,53,107,.12),transparent 32%),radial-gradient(circle at 90% 10%,rgba(255,143,163,.14),transparent 34%),var(--bg)}
+[data-scheme="nebula"] body{background:linear-gradient(135deg,rgba(46,31,82,.14),transparent 32%),radial-gradient(circle at 90% 8%,rgba(124,92,255,.16),transparent 34%),var(--bg)}
+[data-scheme="meadow"] body{background:linear-gradient(135deg,rgba(61,90,40,.13),transparent 32%),radial-gradient(circle at 90% 10%,rgba(217,164,65,.13),transparent 32%),var(--bg)}
+button,input,textarea,select{font:inherit}
+.portal{display:grid;grid-template-columns:228px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;padding:20px 13px;background:rgba(255,255,255,.86);border-right:1px solid var(--line);overflow:auto}
+[data-theme="dark"] .sidebar{background:rgba(13,19,32,.78)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;margin:0 6px 18px}
+.brand-mark{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:white;font-weight:800;font-size:13px;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 12px 26px rgba(20,44,79,.20)}
+.brand strong{font-family:var(--font);font-size:16.5px;font-weight:800;letter-spacing:-.01em}
+.tools-label{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin:16px 9px 8px}
+.navbtn{width:100%;display:flex;align-items:center;gap:9px;border:0;background:transparent;color:var(--text);padding:8px 10px;border-radius:11px;font-weight:650;letter-spacing:.005em;cursor:pointer;text-align:left;margin-bottom:2px;transition:.15s;text-decoration:none}
+.navbtn:hover,.navbtn.active{background:rgba(20,44,79,.10);color:var(--primary);transform:translateX(2px)}
+.logout{margin-top:14px;background:rgba(220,38,38,.09);color:var(--danger)}
+.main{position:relative;padding:26px;overflow:hidden}
+.welcome{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:28px;padding:30px;background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.54)),var(--panel);box-shadow:var(--shadow);margin-bottom:22px}
+[data-theme="dark"] .welcome{background:linear-gradient(135deg,rgba(22,31,46,.92),rgba(22,31,46,.60))}
+.welcome::after{content:"";position:absolute;right:24px;top:22px;width:240px;height:130px;border-radius:34px;background:linear-gradient(135deg,var(--primary),var(--accent));opacity:.12;transform:rotate(-8deg)}
+.welcome h1{font-family:var(--head);font-size:clamp(30px,4vw,54px);line-height:1.02;margin:0 0 10px;max-width:760px}
+.welcome p{margin:0;color:var(--muted);font-size:16px;max-width:780px;line-height:1.65}
+.quick-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
+.stat-card span{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.stat-card strong{display:block;font-family:var(--head);font-size:28px;margin-top:6px}
+.grid{display:grid;grid-template-columns:1.55fr .9fr;gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:19px;box-shadow:var(--shadow)}
+.card h2{font-family:var(--head);font-size:23px;margin:0 0 14px}
+.panel{display:none;position:relative;z-index:1}.panel.active{display:block}
+.course{display:grid;grid-template-columns:74px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;background:rgba(255,255,255,.48);cursor:pointer;transition:border-color .18s ease,box-shadow .18s ease;content-visibility:auto;contain-intrinsic-size:1px 150px}
+[data-theme="dark"] .course{background:rgba(255,255,255,.04)}
+.course:hover{box-shadow:0 16px 34px rgba(15,23,42,.09);border-color:rgba(20,44,79,.28)}
+.emoji{width:74px;height:74px;border-radius:18px;display:grid;place-items:center;font-size:30px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white}
+.course h3{font-family:var(--head);font-size:17px;margin:0}
+.meta,.desc{color:var(--muted);font-size:13px;line-height:1.45}.meta{margin-top:4px}.desc{margin-top:7px}
+.progress-wrap{margin-top:10px}.progress-label{display:flex;justify-content:space-between;gap:10px;font-weight:900;font-size:12px;margin-bottom:6px}.bar{height:10px;border-radius:999px;background:rgba(20,44,79,.13);overflow:hidden}.bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--accent),var(--warm))}
+.session-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.session-pill{font-size:12px;font-weight:800;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:5px 9px}
+.cert-card{display:grid;grid-template-columns:74px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;background:linear-gradient(135deg,rgba(217,119,6,.10),rgba(15,118,110,.08))}
+.cert-seal{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--warm),var(--accent));color:white;font-family:var(--head);font-size:26px;font-weight:900}.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.share-row a{font-size:12px;font-weight:900;color:var(--primary);text-decoration:none;background:rgba(20,44,79,.09);border-radius:999px;padding:6px 10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn{border:0;border-radius:13px;padding:10px 13px;font-weight:900;cursor:pointer;background:var(--primary);color:white;text-decoration:none;display:inline-flex;align-items:center;gap:7px;justify-content:center}.btn.secondary{background:rgba(20,44,79,.10);color:var(--primary)}.btn.danger{background:rgba(220,38,38,.11);color:var(--danger)}.btn.small{padding:6px 10px;font-size:12px;border-radius:9px}.btn.tiny{padding:5px 9px;font-size:11.5px;border-radius:8px}.btn:disabled{opacity:.5;cursor:not-allowed}
+.list{display:grid;gap:10px}.item{padding:12px 13px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.42);font-size:14px;color:var(--muted)}[data-theme="dark"] .item{background:rgba(255,255,255,.04)}.item b{display:block;color:var(--text);margin-bottom:3px}
+.catalog-connect{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:stretch}.catalog-art{min-height:230px;border-radius:20px;background:linear-gradient(135deg,rgba(20,44,79,.92),rgba(15,118,110,.86)),url("assets/odyssey-global-learning-fast.jpg") center/cover;position:relative;overflow:hidden}.catalog-art::after{content:"Explore 840K+ courses";position:absolute;left:18px;bottom:18px;color:white;font-family:var(--head);font-size:28px;line-height:1.05;max-width:280px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:var(--panel-strong);color:var(--text)}textarea{min-height:104px;resize:vertical}.check-list{display:grid;gap:10px}.check-list label{display:flex;align-items:center;gap:9px;color:var(--muted);font-weight:700}.check-list input{width:auto}
+.theme-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.theme-card{border:1px solid var(--line);border-radius:18px;padding:13px;cursor:pointer;background:var(--panel-strong);transition:.18s}.theme-card:hover,.theme-card.active{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 18px 42px rgba(15,23,42,.10)}.theme-preview{height:58px;border-radius:14px;margin-bottom:9px}.theme-card[data-scheme="voyager"] .theme-preview{background:linear-gradient(135deg,#0B1E3D,#2D6CDF,#7C8DA6)}.theme-card[data-scheme="blossom"] .theme-preview{background:linear-gradient(135deg,#C2356B,#FF8FA3,#F2B441)}.theme-card[data-scheme="nebula"] .theme-preview{background:linear-gradient(135deg,#2E1F52,#7C5CFF,#4FD1E0)}.theme-card[data-scheme="meadow"] .theme-preview{background:linear-gradient(135deg,#3D5A28,#D9A441,#C1653D)}
+.mode-toggle{border:1px solid var(--line);background:var(--panel-strong);color:var(--text)}.mode-toggle.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent;box-shadow:0 16px 36px rgba(15,23,42,.14)}
+.footer-note{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 8px}
+.student-photo-frame{width:82px;height:82px;border-radius:50%;margin:0 auto 14px;border:3px solid rgba(255,255,255,.72);background:linear-gradient(135deg,var(--primary),var(--accent),var(--warm));display:grid;place-items:center;overflow:hidden;color:white;font-family:var(--head);font-size:24px;font-weight:900;box-shadow:0 18px 42px rgba(15,23,42,.18)}.student-photo-frame img{width:100%;height:100%;object-fit:cover;display:block}.brand strong{font-size:20px;font-weight:650}.brand-id{display:block;margin-top:2px;font-size:11px;font-weight:760;color:var(--muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.navbtn{font-size:12.5px;font-weight:650}.tools-label,.stat-card span,.field label{font-size:10.5px}.welcome h1{font-size:clamp(28px,3.45vw,46px);font-weight:650;line-height:1.08}.welcome p{font-size:15px}.stat-card strong{font-size:24px;font-weight:650}.card h2{font-size:20px;font-weight:650}.course h3{font-size:16px;font-weight:650}.catalog-art::after{font-size:24px;font-weight:650}.btn{font-size:13.5px;font-weight:760}.item,.desc,.meta{font-size:13px}.theme-card b{font-weight:750}
+.ambient-float{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;border-radius:inherit}
+.ambient-float span{position:absolute;border-radius:50%;filter:blur(38px);opacity:.15}
+.ambient-float span:nth-child(1){width:220px;height:220px;background:var(--primary);top:-50px;left:4%;animation:odyFloatA 26s ease-in-out infinite}
+.ambient-float span:nth-child(2){width:170px;height:170px;background:var(--accent);top:32%;right:2%;animation:odyFloatB 22s ease-in-out infinite}
+.ambient-float span:nth-child(3){width:140px;height:140px;background:var(--warm);bottom:4%;left:16%;animation:odyFloatA 30s ease-in-out infinite reverse}
+.ambient-float span:nth-child(4){width:110px;height:110px;background:var(--accent);top:6%;right:26%;animation:odyFloatB 20s ease-in-out infinite reverse}
+.ambient-float span:nth-child(5){width:190px;height:190px;background:var(--primary);bottom:-40px;right:10%;animation:odyFloatA 34s ease-in-out infinite}
+.ambient-float span:nth-child(6){width:130px;height:130px;background:var(--warm);top:52%;left:44%;animation:odyFloatB 27s ease-in-out infinite}
+.ambient-float span:nth-child(7){width:95px;height:95px;background:var(--primary);top:14%;left:34%;animation:odyFloatA 19s ease-in-out infinite reverse}
+.ambient-float span:nth-child(8){width:160px;height:160px;background:var(--accent);bottom:10%;left:2%;animation:odyFloatB 31s ease-in-out infinite reverse}
+.ambient-float span:nth-child(9){width:105px;height:105px;background:var(--warm);top:44%;right:38%;animation:odyFloatA 23s ease-in-out infinite}
+.ambient-float span:nth-child(10){width:150px;height:150px;background:var(--primary);bottom:22%;right:44%;animation:odyFloatB 25s ease-in-out infinite}
+@keyframes odyFloatA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(22px,-16px) scale(1.08)}}
+@keyframes odyFloatB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-18px,20px) scale(.94)}}
+@media(prefers-reduced-motion:reduce){.ambient-float span{animation:none}}
+.theme-object-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;border-radius:inherit}
+.theme-object-layer span{position:absolute;font-size:26px;opacity:.16;filter:drop-shadow(0 6px 10px rgba(0,0,0,.08));animation:odyDrift 24s ease-in-out infinite}
+.theme-object-layer span:nth-child(2){animation-duration:29s;animation-direction:reverse}
+.theme-object-layer span:nth-child(3){animation-duration:20s}
+.theme-object-layer span:nth-child(4){animation-duration:33s;animation-direction:reverse}
+.theme-object-layer span:nth-child(5){animation-duration:26s}
+@keyframes odyDrift{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(18px,-22px) rotate(8deg)}}
+@media(prefers-reduced-motion:reduce){.theme-object-layer span{animation:none}}
+/* ── MOBILE: hamburger + off-canvas sidebar drawer (same motion language as index.html) ── */
+.portal-topbar{display:none}
+.nav-burger{display:flex;width:38px;height:38px;flex-shrink:0;overflow:hidden;border-radius:50%;border:1.5px solid rgba(20,44,79,.16);background:linear-gradient(145deg,rgba(20,44,79,.05),rgba(192,138,62,.09));cursor:pointer;position:relative;box-shadow:0 2px 8px rgba(20,44,79,.08);transition:background .3s ease,border-color .3s ease,box-shadow .3s ease,transform .3s cubic-bezier(.34,1.56,.64,1)}
+.nav-burger:hover{transform:scale(1.06);box-shadow:0 4px 14px rgba(20,44,79,.16)}
+.nav-burger span,.nav-burger span::before,.nav-burger span::after{content:"";position:absolute;top:50%;left:50%;width:17px;height:2.5px;margin:-1.25px 0 0 -8.5px;border-radius:3px;background:var(--primary);transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .2s,background .25s ease}
+.nav-burger span::before{transform:translateY(-6px)}
+.nav-burger span::after{transform:translateY(6px)}
+.nav-burger.open{background:linear-gradient(135deg,var(--primary),#2A4A78);border-color:transparent;box-shadow:0 6px 18px rgba(20,44,79,.32)}
+.nav-burger.open span{background:transparent}
+.nav-burger.open span::before,.nav-burger.open span::after{background:#E7C88A}
+.nav-burger.open span::before{transform:translateY(0) rotate(45deg)}
+.nav-burger.open span::after{transform:translateY(0) rotate(-45deg)}
+.sidebar-scrim{position:fixed;inset:0;background:rgba(7,17,28,.42);z-index:190;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility 0s linear .3s}
+.sidebar-scrim.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .3s ease,visibility 0s linear 0s}
+@media(max-width:1000px){
+  .portal{grid-template-columns:1fr}
+  .portal-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:150;padding:11px 16px;background:rgba(255,255,255,.92);backdrop-filter:blur(18px) saturate(160%);border-bottom:1px solid var(--line)}
+  [data-theme="dark"] .portal-topbar{background:rgba(13,20,31,.9)}
+  .portal-topbar .brand{padding:0;border:0;margin:0}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:min(300px,84vw);z-index:200;padding:20px 15px;background:rgba(255,255,255,.94);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 30px 80px rgba(15,23,42,.32);border-right:1px solid var(--line);transform:translateX(-100%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .3s ease,visibility 0s linear .3s}
+  [data-theme="dark"] .sidebar{background:rgba(13,20,31,.94)}
+  .sidebar.open{transform:translateX(0);opacity:1;visibility:visible;pointer-events:auto;transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .3s ease,visibility 0s linear 0s}
+  .sidebar > .brand{display:none}
+  .sidebar > *{opacity:0;transform:translateY(10px)}
+  .sidebar.waving > *{animation:sidebarWave .48s cubic-bezier(.22,1,.36,1) both}
+  @keyframes sidebarWave{0%{opacity:0;transform:translateY(13px)}55%{opacity:1;transform:translateY(-3px)}100%{opacity:1;transform:translateY(0)}}
+  .main{padding:18px}.grid,.catalog-connect,.split{grid-template-columns:1fr}.quick-stats,.theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.course{grid-template-columns:58px 1fr}.emoji{width:58px;height:58px}.actions{grid-column:1/-1;justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){.sidebar>*{opacity:1;transform:none}.sidebar.waving>*{animation:none}}
+/* Language switcher: clamp width and anchor explicitly so its dropdown can't
+   render wider than the sidebar and poke out past the page's edge. */
+[data-i18n-switcher]{position:relative;max-width:100%}
+.i18n-dropdown{max-width:min(260px,calc(100vw - 32px))!important;left:0!important;right:auto!important;box-sizing:border-box}
+.sidebar [data-i18n-switcher],.portal-topbar [data-i18n-switcher]{overflow:visible}
+@media(max-width:620px){.quick-stats,.theme-grid{grid-template-columns:1fr}.welcome{padding:22px}.catalog-art::after{font-size:22px}.navbtn:hover,.navbtn.active{transform:none}}
+.crop-overlay{display:none;position:fixed;inset:0;background:rgba(7,17,28,.62);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.crop-overlay.open{display:flex}
+.crop-modal{background:var(--panel-strong);border-radius:20px;width:100%;max-width:480px;box-shadow:0 30px 90px rgba(0,0,0,.35);overflow:hidden}
+.crop-modal-head{padding:16px 20px;border-bottom:1px solid var(--line)}
+.crop-modal-head h3{margin:0;font-family:var(--head);font-size:18px;font-weight:700}
+.crop-modal-head p{margin:4px 0 0;font-size:12.5px;color:var(--muted)}
+.crop-stage{height:320px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;touch-action:none}
+.crop-stage canvas{display:block;cursor:grab;border-radius:50%;box-shadow:0 0 0 2000px rgba(0,0,0,.72)}
+.crop-stage canvas:active{cursor:grabbing}
+.crop-stage canvas.hidden{display:none}
+.crop-empty{display:none;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.55);font-size:12.5px}
+.crop-empty.show{display:flex}
+.crop-controls{display:flex;align-items:center;gap:8px;padding:12px 20px;border-top:1px solid var(--line);flex-wrap:wrap}
+.crop-controls button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--panel-strong);cursor:pointer;font-size:15px;color:var(--text)}
+.crop-controls button:hover{border-color:var(--primary)}
+.crop-controls button:disabled{opacity:.4;cursor:not-allowed}
+.crop-controls .spacer{flex:1}
+.crop-controls button.upload{width:auto;padding:0 12px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.crop-actions{display:flex;gap:10px;padding:14px 20px 20px}
+.crop-actions button{flex:1;padding:11px;border-radius:999px;border:0;font-weight:800;font-size:13.5px;cursor:pointer}
+.crop-actions .cancel{background:var(--panel-strong);border:1px solid var(--line);color:var(--text)}
+.crop-actions .save{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+.crop-actions button:disabled{opacity:.6;cursor:not-allowed}
+
+/* ── Refund request modal + confirmation toast ── */
+.refund-overlay{display:none;position:fixed;inset:0;background:rgba(7,17,28,.62);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.refund-overlay.open{display:flex}
+.refund-modal{background:var(--panel-strong);border-radius:20px;width:100%;max-width:460px;max-height:88vh;overflow-y:auto;box-shadow:0 30px 90px rgba(0,0,0,.35)}
+.refund-head{padding:18px 22px 12px;border-bottom:1px solid var(--line)}
+.refund-head h3{margin:0;font-family:var(--head);font-size:19px;font-weight:700}
+.refund-head p{margin:5px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.refund-body{padding:16px 22px 4px}
+.refund-field{margin-bottom:14px}
+.refund-field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.refund-field .ro{padding:9px 11px;border-radius:9px;background:var(--soft);font-size:13px;color:var(--muted)}
+.refund-field input,.refund-field select,.refund-field textarea{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:var(--panel-strong);color:var(--text);font:inherit;font-size:13px}
+.refund-field textarea{min-height:78px;resize:vertical}
+.refund-field small.hint{display:block;margin-top:5px;color:var(--muted);font-size:11px;line-height:1.5}
+.refund-actions{display:flex;gap:10px;padding:14px 22px 20px}
+.refund-actions button{flex:1;padding:11px;border-radius:999px;border:0;font-weight:800;font-size:13.5px;cursor:pointer}
+.refund-actions .cancel{background:var(--panel-strong);border:1px solid var(--line);color:var(--text)}
+.refund-actions .submit{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+.refund-actions button:disabled{opacity:.6;cursor:not-allowed}
+.refund-error{display:none;margin:0 22px 12px;padding:9px 11px;border-radius:9px;background:rgba(178,58,72,.1);color:var(--danger);font-size:12.5px}
+.refund-error.show{display:block}
+
+.toast-overlay{display:none;position:fixed;inset:0;background:rgba(7,17,28,.5);z-index:10000;align-items:center;justify-content:center;padding:20px}
+.toast-overlay.open{display:flex}
+.toast-modal{background:var(--panel-strong);border-radius:20px;max-width:380px;width:100%;padding:26px 24px;text-align:center;box-shadow:0 30px 90px rgba(0,0,0,.35)}
+.toast-modal .icon{width:52px;height:52px;border-radius:50%;background:rgba(15,122,108,.12);color:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
+.toast-modal h3{margin:0 0 8px;font-family:var(--head);font-size:19px;font-weight:700}
+.toast-modal p{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.55}
+.toast-modal button{width:100%;padding:11px;border-radius:999px;border:0;font-weight:800;font-size:13.5px;cursor:pointer;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+.chat-shell{display:grid;grid-template-columns:270px 1fr;height:540px}
+.chat-list-pane{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.chat-list-head{padding:14px 14px 10px;border-bottom:1px solid var(--line)}
+.chat-list-head select{width:100%;margin-top:8px;padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel-strong);color:var(--text);font-size:12.5px}
+.chat-list{flex:1;overflow-y:auto}
+.chat-list-item{display:flex;gap:10px;align-items:center;padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s}
+.chat-list-item:hover{background:var(--soft)}
+.chat-list-item.active{background:var(--soft)}
+.chat-list-item .comment-avatar{width:38px;height:38px;font-size:13px;flex-shrink:0}
+.chat-list-item-info{min-width:0;flex:1}
+.chat-list-item-info b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-list-item-info span{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.chat-list-item-time{font-size:10px;color:var(--muted);flex-shrink:0;align-self:flex-start;margin-top:2px}
+.chat-list-empty{padding:24px 16px;text-align:center;color:var(--muted);font-size:13px}
+.chat-thread-pane{display:flex;flex-direction:column;min-height:0}
+.chat-thread-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
+.chat-thread-active{display:flex;flex-direction:column;min-height:0;height:100%}
+.chat-thread-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.chat-bubble-row{display:flex;flex-direction:column;max-width:72%}
+.chat-bubble-row.mine{align-self:flex-end;align-items:flex-end}
+.chat-bubble-row.theirs{align-self:flex-start;align-items:flex-start}
+.chat-bubble{padding:9px 13px;border-radius:16px;font-size:13.5px;line-height:1.5;word-break:break-word}
+.chat-bubble-row.mine .chat-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+.chat-bubble-row.theirs .chat-bubble{background:var(--panel-strong);color:var(--text);border:1px solid var(--line);border-bottom-left-radius:4px}
+.chat-bubble-time{font-size:10px;color:var(--muted);margin-top:3px;padding:0 4px}
+.chat-compose{border-top:1px solid var(--line);padding:10px 12px}
+@media(max-width:760px){.chat-shell{grid-template-columns:1fr;height:520px}.chat-list-pane{display:none}.chat-shell.showing-list .chat-list-pane{display:flex}.chat-shell.showing-list .chat-thread-pane{display:none}}
+.photo-frame-wrap{position:relative;width:82px;height:120px;margin:0 auto 0}
+.photo-frame-wrap .student-photo-frame{margin:0 auto;cursor:default;transition:box-shadow .2s ease}
+.photo-frame-wrap .student-photo-frame[data-has-photo="1"]{cursor:zoom-in}
+.photo-frame-wrap:hover .student-photo-frame{box-shadow:0 22px 46px rgba(15,23,42,.26)}
+.photo-hover-actions{position:absolute;left:0;right:0;top:82px;bottom:0;display:flex;align-items:flex-start;justify-content:center;padding-top:8px;gap:7px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+.photo-frame-wrap:hover .photo-hover-actions,.photo-frame-wrap:focus-within .photo-hover-actions{opacity:1;pointer-events:auto}
+.photo-action-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--primary);display:grid;place-items:center;cursor:pointer;padding:0;transition:background .18s ease,color .18s ease,transform .15s ease}
+.photo-action-btn:hover{background:var(--primary);color:#fff;transform:scale(1.08)}
+.photo-action-btn.remove{color:var(--danger);border-color:rgba(178,58,72,.3)}
+.photo-action-btn.remove:hover{background:var(--danger);color:#fff}
+.photo-lightbox{display:none;position:fixed;inset:0;background:rgba(7,17,28,.78);z-index:9998;align-items:center;justify-content:center;padding:24px}
+.photo-lightbox.open{display:flex}
+.photo-lightbox img{max-width:min(420px,86vw);max-height:80vh;border-radius:20px;box-shadow:0 30px 90px rgba(0,0,0,.45);border:4px solid rgba(255,255,255,.85)}
+.photo-lightbox-close{position:absolute;top:22px;right:26px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:18px;cursor:pointer}
+.photo-lightbox-close:hover{background:rgba(255,255,255,.26)}
+</style>
+<link rel="stylesheet" href="assets/odyssey-design-system.css" />
+<script defer src="assets/odyssey-scroll-reveal.js"></script>
+
+  <script src="js/observability.js" defer></script>
+</head>
+<body class="student-portal"><div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
+<div class="portal-topbar">
+  <a class="brand" href="index.html"><span class="brand-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></span><span><strong>Odyssey student</strong></span></a>
+  <button class="nav-burger" id="portalBurger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="portalSidebar"><span></span></button>
+</div>
+<div class="sidebar-scrim" id="portalScrim"></div>
+<div class="portal">
+  <aside class="sidebar" id="portalSidebar">
+    <div class="photo-frame-wrap" id="photoFrameWrap">
+      <div class="student-photo-frame" id="studentPhotoFrame" onclick="openPhotoLightbox()">OS</div>
+      <div class="photo-hover-actions">
+        <button type="button" class="photo-action-btn edit" title="Edit photo" onclick="event.stopPropagation();openEditPhotoModal();"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+        <button type="button" class="photo-action-btn remove" title="Remove photo" onclick="event.stopPropagation();removeProfilePhoto();"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button>
+      </div>
+    </div>
+    <a class="brand" href="index.html"><span class="brand-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></span><span><strong>Odyssey student</strong><small class="brand-id" id="studentSignedName">Signed in learner</small><small class="brand-id" id="studentIdBadge" style="display:none">Student ID: —</small></span></a>
+    <div data-i18n-switcher></div>
+    <a class="navbtn" href="index.html" style="margin-bottom:10px">🏡 <span>Home</span></a>
+    <div class="tools-label" data-i18n="portal_sidebar_label">Student tools</div>
+    <button class="navbtn active" data-target="dashboard">🏠 <span data-i18n="portal_dashboard">Dashboard</span></button>
+    <a class="navbtn" href="learnworld_catalog.html">🔎 <span data-i18n="portal_catalog">Course catalog</span></a>
+    <button class="navbtn" data-target="courses">🎓 <span data-i18n="portal_enrolled">Enrolled courses</span></button>
+    <button class="navbtn" data-target="cart">🛒 <span>Cart</span></button>
+    <button class="navbtn" data-target="billing">🧾 <span>Billing &amp; purchases</span></button>
+    <button class="navbtn" data-target="progress">📈 <span data-i18n="portal_progress">Course progression</span></button>
+    <button class="navbtn" data-target="certificates">🏅 <span>Certificates</span></button>
+    <button class="navbtn" data-target="messages">💬 <span data-i18n="portal_messages">Messages</span></button>
+    <button class="navbtn" data-target="exams">📝 <span data-i18n="portal_exams">Examination portal</span></button>
+    <button class="navbtn" data-target="notifications">🔔 <span data-i18n="portal_notifications">Notifications</span></button>
+    <button class="navbtn" data-target="homework">📚 <span data-i18n="portal_homework">Homework</span></button>
+    <button class="navbtn" data-target="settings">⚙️ <span data-i18n="portal_settings">Account settings</span></button>
+    <button class="navbtn" data-target="appearance">🎛️ <span data-i18n="portal_appearance">Appearance</span></button>
+    <button class="navbtn logout" onclick="logoutPortal()">🚪 <span data-i18n="portal_logout">Log out</span></button>
+  </aside>
+  <main class="main">
+    <div class="ambient-float" id="ambientFloat"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="theme-object-layer" id="themeObjectLayer"></div>
+    <section class="welcome">
+      <h1 data-i18n="portal_welcome">Welcome back to your learning journey</h1>
+      <p data-i18n="portal_welcome_sub">Everything you need to learn, practise, message your instructors, and track progress is here.</p>
+    </section>
+    <section class="quick-stats" id="summaryStats"></section>
+
+    <section id="dashboard" class="panel active">
+      <div class="grid">
+        <div class="card"><h2 data-i18n="portal_my_courses">My enrolled courses</h2><div id="courseList"></div></div>
+        <div class="list">
+          <div class="card"><h2 data-i18n="portal_notif_title">Notification Center</h2><div id="notifList"></div></div>
+          <div class="card"><h2 data-i18n="portal_homework_title">Homework board</h2><div id="homeworkList"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="catalog" class="panel">
+      <div class="card catalog-connect">
+        <div>
+          <h2>Connect with the course catalog</h2>
+          <p class="desc">Jump from your portal into Odyssey discovery with your interests pre-shaped around exams, countries, levels, and disciplines.</p>
+          <div class="split" style="margin:16px 0">
+            <div class="field"><label>Learning path</label><select id="catalogPath"><option value="">All fields</option><option value="Language Exam">Language exams</option><option value="Entrance Exam">Entrance exams</option><option value="University">University</option><option value="Vocational">Vocational skills</option></select></div>
+            <div class="field"><label>Focus country</label><input id="catalogCountry" placeholder="United States, India, Germany..." /></div>
+          </div>
+          <button class="btn" onclick="connectCatalog()">Open tailored catalog</button>
+          <a class="btn secondary" href="learnworld_catalog.html">Browse everything</a>
+        </div>
+        <div class="catalog-art" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section id="courses" class="panel"><div class="card"><h2 data-i18n="portal_my_courses">My enrolled courses</h2><div id="courseList2"></div></div></section>
+    <section id="cart" class="panel">
+      <div class="card">
+        <h2>Your cart</h2>
+        <p class="desc">Courses you're considering. Nothing here is purchased until you pay - buy items one at a time whenever you're ready, or pay for everything at once.</p>
+        <div class="field" style="max-width:360px">
+          <label>Promo code (optional, applies to the next single-item purchase)</label>
+          <div style="display:flex;gap:8px;align-items:stretch">
+            <input id="cartPromoCode" placeholder="e.g. WELCOME20" style="text-transform:uppercase">
+            <button type="button" class="btn secondary" onclick="applyPromoCode()">Apply</button>
+          </div>
+          <div id="promoStatus" class="desc" aria-live="polite" style="margin-top:6px"></div>
+        </div>
+        <div id="cartList" style="margin-top:10px"></div>
+        <div id="cartSummary" style="margin:14px 0;font-weight:800"></div>
+        <button class="btn" onclick="checkoutAllCart()">Checkout all (1 payment)</button>
+      </div>
+    </section>
+    <section id="billing" class="panel">
+      <div class="card">
+        <h2>Billing &amp; purchases</h2>
+        <p class="desc">Every real payment on your account, one row per transaction.</p>
+        <div class="split" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <div class="field"><label>From</label><input id="billingFrom" type="date"></div>
+          <div class="field"><label>To</label><input id="billingTo" type="date"></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+          <button class="btn secondary" onclick="renderBillingHistory()">Apply filter</button>
+          <button class="btn secondary" onclick="exportBillingExcel()">Export Excel</button>
+          <button class="btn secondary" onclick="exportBillingPDF()">Export PDF</button>
+        </div>
+        <div id="billingList"></div>
+      </div>
+    </section>
+    <section id="progress" class="panel"><div class="card"><h2 data-i18n="portal_progress">Course progression</h2><div id="progressList"></div></div></section>
+    <section id="certificates" class="panel"><div class="card"><h2>Certificates</h2><p class="desc">Download your verified Odyssey certificates as PDF files or share them with employers, institutions, and social networks.</p><div id="certificateList" style="margin-top:14px"></div></div></section>
+    <section id="messages" class="panel">
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="chat-shell">
+          <div class="chat-list-pane">
+            <div class="chat-list-head">
+              <h2 style="margin:0" data-i18n="portal_message_center">Messages</h2>
+              <select id="newChatTarget" onchange="startNewConversation(this.value)">
+                <option value="">+ New chat…</option>
+              </select>
+            </div>
+            <div id="chatList" class="chat-list"></div>
+          </div>
+          <div class="chat-thread-pane">
+            <div id="chatThreadEmpty" class="chat-thread-empty">Select a conversation, or start a new one, to begin chatting.</div>
+            <div id="chatThreadActive" class="chat-thread-active" style="display:none">
+              <div class="chat-thread-head">
+                <span class="comment-avatar" id="chatThreadAvatar" style="width:34px;height:34px;font-size:12px"></span>
+                <b id="chatThreadName"></b>
+              </div>
+              <div id="chatMessages" class="chat-messages"></div>
+              <div class="chat-compose">
+                <div id="chatEditorMount"></div>
+                <button class="btn" style="margin-top:8px" onclick="sendChatMessage()">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="exams" class="panel"><div class="card"><h2 data-i18n="portal_exam_title">Examination portal</h2><p class="desc" data-i18n="portal_exam_body">Enter a focused exam room with shuffled questions, answer tracking, review flags, timer controls, and exam integrity signals.</p><div id="purchasedExamList" style="margin-top:14px"></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><a class="btn secondary" href="tests_marketplace.html">Browse more exams</a><a class="btn secondary" href="exam_portal.html" data-i18n="portal_exam_button">Open demo exam</a></div></div></section>
+    <section id="notifications" class="panel"><div class="card"><h2 data-i18n="portal_notif_title">Notification Center</h2><div id="notifList2"></div></div></section>
+    <section id="homework" class="panel"><div class="card"><h2 data-i18n="portal_homework_title">Homework board</h2><div id="homeworkList2"></div></div></section>
+
+    <section id="settings" class="panel">
+      <div class="grid">
+        <div class="card">
+          <h2 data-i18n="portal_account_title">Account settings</h2>
+          <div class="field"><label>Student ID</label><div class="ro-value" id="profileStudentId" style="padding:9px 11px;border-radius:9px;background:var(--soft);font-size:13px;color:var(--muted)">—</div></div>
+          <div class="field"><label>Profile photo</label><input id="profilePhoto" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png"><small id="profilePhotoStatus">Upload a JPG or PNG image up to 2 MB.</small></div>
+
+
+          <div class="split"><div class="field"><label data-i18n="portal_full_name">Full name</label><input id="profileName"></div><div class="field"><label data-i18n="portal_email">Email address</label><input id="profileEmail"></div></div>
+          <div class="split"><div class="field"><label>Phone number</label><input id="profilePhone" placeholder="+1 555 0100"></div><div class="field"><label data-i18n="portal_city">City / Region</label><input id="profileCity"></div></div>
+          <div class="split"><div class="field"><label>Time zone</label><select id="profileTimezone"></select></div><div class="field"><label>Preferred study language</label><select id="profileStudyLang"><option>English</option><option>Arabic</option><option>Persian</option><option>French</option><option>Spanish</option></select></div></div>
+          <div class="field"><label>Learning goal</label><textarea id="profileGoal" placeholder="Prepare for IELTS, complete machine learning, improve math fundamentals..."></textarea></div>
+          <button class="btn" onclick="saveProfile()" data-i18n="portal_save_profile">Save profile</button>
+        </div>
+        <div class="list">
+          <div class="card"><h2>Security</h2><div class="field"><label>Password</label><input type="password" value="placeholder"></div><button class="btn secondary" onclick="alert('Password reset workflow will be connected to the backend.')">Change password</button></div>
+          <div class="card"><h2>Notifications & privacy</h2><div class="check-list"><label><input id="emailDigest" type="checkbox" checked> Weekly progress digest</label><label><input id="liveReminder" type="checkbox" checked> Live class reminders</label><label><input id="profilePrivate" type="checkbox"> Keep profile private</label><label><input id="ckAnalytics" type="checkbox"> Learning analytics cookies</label><label><input id="ckFunctional" type="checkbox" checked> Functional preference cookies</label></div><br><button class="btn secondary" onclick="saveCookies()" data-i18n="portal_save_cookies">Save cookie preferences</button></div>
+	          <div class="card"><h2>Billing & certificates</h2><div class="item"><b>Payment method</b>No card stored in this demo.</div><div class="item"><b>Certificates</b>2 certificates in progress.</div></div>
+	          <div class="card"><h2>Your data</h2><p class="desc">Download a machine-readable copy of your Odyssey account, learning, certificate, communication, and transaction records.</p><button class="btn secondary" onclick="OdysseyPrivacy.download()">Download my data</button><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><div id="privacyDeletionStatus" class="item">Checking deletion status...</div><div class="split" style="margin-top:12px"><button class="btn secondary" onclick="OdysseyPrivacy.requestDeletion('privacyDeletionStatus')">Request deletion</button><button class="btn secondary" onclick="OdysseyPrivacy.cancelDeletion('privacyDeletionStatus')">Cancel deletion</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="appearance" class="panel">
+      <div class="card">
+        <h2 data-i18n="portal_appearance_title">Appearance & themes</h2>
+        <div class="split"><button class="btn secondary mode-toggle" data-mode="light" onclick="setPortalMode('light')" data-i18n="portal_light_mode">Light mode</button><button class="btn secondary mode-toggle" data-mode="dark" onclick="setPortalMode('dark')" data-i18n="portal_dark_mode">Dark mode</button></div>
+        <br>
+        <h3 style="margin:0 0 4px;font-family:var(--head);font-size:16px">Pick your vibe</h3>
+        <p class="desc" style="margin:0 0 12px">Personalize your dashboard with a fun theme and floating decorations - just for you.</p>
+        <div class="theme-grid">
+          <div class="theme-card" data-scheme="voyager"><div class="theme-preview"></div><b>Voyager</b><p class="desc">Deep navy with sneakers, cars, and headphones drifting by.</p></div>
+          <div class="theme-card" data-scheme="blossom"><div class="theme-preview"></div><b>Blossom</b><p class="desc">Warm pink with hearts, butterflies, and blooms.</p></div>
+          <div class="theme-card" data-scheme="nebula"><div class="theme-preview"></div><b>Nebula</b><p class="desc">Deep space violet with planets, stars, and rockets.</p></div>
+          <div class="theme-card" data-scheme="meadow"><div class="theme-preview"></div><b>Meadow</b><p class="desc">Earthy green and gold with leaves and sunflowers.</p></div>
+        </div>
+      </div>
+    </section>
+    <div class="footer-note" data-i18n="portal_footer_note">Odyssey student portal - built for focused learning worldwide.</div>
+  </main>
+</div>
+<script src="js/i18n.js" defer></script>
+<script src="js/site-content.js" defer></script>
+<script src="assets/odyssey-portal-translations.js" defer></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+<script src="js/storage-client.js"></script>
+<script src="js/rich-editor.js"></script>
+<script src="js/privacy-client.js"></script>
+<script>
+const TOTAL_SESSIONS=5;
+function T(k){return window.OdysseyI18n?window.OdysseyI18n.t(k):k}
+function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch(e){return fallback}}
+function latinDigits(value){return String(value ?? '').replace(/[\u06F0-\u06F9]/g,d=>d.charCodeAt(0)-0x06F0).replace(/[\u0660-\u0669]/g,d=>d.charCodeAt(0)-0x0660)}
+function fmt(n){return latinDigits(Number(n||0).toLocaleString('en-US'))}
+function getProfile(){return readJSON('odyssey_student_profile',{})}
+
+// ---- Real data, fetched from Supabase every time the portal loads. Enrollment, purchases,
+// and certificates are no longer trusted from localStorage - that was the security hole. ----
+let CURRENT_PROFILE=null;
+let ENROLLMENTS=[];
+let CERTIFICATES=[];
+let PURCHASED_EXAMS=[];
+
+async function requireStudentSession(){
+  try{
+    if(!window.OdysseySupabase?.isConfigured?.()){
+      console.warn('Supabase is not configured - the portal cannot verify who you are.');
+      location.href='auth.html?mode=login&role=student&redirect=student_portal.html';
+      return null;
+    }
+    const session=await OdysseySupabase.session();
+    if(!session){location.href='auth.html?mode=login&role=student&redirect=student_portal.html';return null}
+    const profile=await OdysseySupabase.profile();
+    if(!profile){location.href='auth.html?mode=login&role=student&redirect=student_portal.html';return null}
+    if(profile.role==='instructor'||profile.role==='institution'){location.href='instructor_portal.html';return null}
+    if(profile.role==='admin'||profile.role==='support'){location.href='admin_dashboard.html';return null}
+    return profile;
+  }catch(error){
+    console.error('Could not verify session.',error);
+    location.href='auth.html?mode=login&role=student&redirect=student_portal.html';
+    return null;
+  }
+}
+
+async function fetchEnrollments(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('enrollments')
+    .select('id, status, progress_percent, sessions_watched, enrolled_at, course:course_id(id, title, description, field, level, certificate_enabled, instructor_id, instructor:instructor_id(full_name))')
+    .order('enrolled_at',{ascending:false});
+  if(error){console.error('Could not load enrollments.',error);return []}
+  return (data||[]).filter(e=>e.course).map(e=>({
+    enrollmentId:e.id,id:e.course.id,title:e.course.title,description:e.course.description,
+    field:e.course.field,level:e.course.level,emoji:'🎓',
+    instructor:e.course.instructor?.full_name||'Odyssey instructor',instructorId:e.course.instructor_id,
+    progress:e.progress_percent||0,watched:e.sessions_watched||0,
+    certEnabled:!!e.course.certificate_enabled,status:e.status,enrolledAt:e.enrolled_at
+  }))
+}
+
+async function fetchCertificates(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('certificates')
+    .select('id, verification_code, course_title, instructor_name, completed_at, status')
+    .eq('status','issued').order('completed_at',{ascending:false});
+  if(error){console.error('Could not load certificates.',error);return []}
+  return data||[]
+}
+
+async function fetchPurchasedExams(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('exams')
+    .select('id, title, subject, difficulty, exam_type, time_limit_minutes, price_cents, instructor:instructor_id(full_name), payments(status)')
+    .eq('status','published');
+  if(error){console.error('Could not load exams.',error);return []}
+  return (data||[])
+    .filter(e=>e.price_cents===0||(e.payments||[]).some(p=>p.status==='paid'))
+    .map(e=>({id:e.id,title:e.title,subject:e.subject,difficulty:e.difficulty,examType:e.exam_type,time:e.time_limit_minutes,instructor:e.instructor?.full_name||'Odyssey instructor',price:e.price_cents}))
+}
+
+
+function renderCourse(c,detail=false){
+  const progress=Math.round(c.progress||0);
+  const watched=Math.min(TOTAL_SESSIONS,c.watched||Math.round((progress/100)*TOTAL_SESSIONS));
+  const remaining=Math.max(0,TOTAL_SESSIONS-watched);
+  return `<div class="course" onclick="openCourse('${c.id}')"><div class="emoji">${c.emoji}</div><div><h3>${c.title}</h3><div class="meta"><span data-i18n="portal_professor">${T('portal_professor')}</span>: ${c.instructor}${c.level?' · '+c.level:''}</div><div class="desc">${c.description||''}</div><div class="progress-wrap"><div class="progress-label"><span>${T('portal_progress_label')}</span><span>${fmt(progress)}% ${T('portal_completed')}</span></div><div class="bar"><span style="width:${progress}%"></span></div></div><div class="session-row"><span class="session-pill">${fmt(watched)} sessions watched</span><span class="session-pill">${fmt(remaining)} sessions remaining</span>${detail?`<span class="session-pill">${fmt(TOTAL_SESSIONS)} total sessions</span>`:''}</div></div><div class="actions"><button class="btn" onclick="event.stopPropagation();openCourse('${c.id}')">${T('portal_open_course')}</button><button class="btn danger" onclick="event.stopPropagation();openRefundModal('${c.enrollmentId}')">Request refund</button></div></div>`
+}
+
+function renderStats(courses){
+  const watched=courses.reduce((sum,c)=>sum+Math.min(TOTAL_SESSIONS,c.watched||Math.round(((c.progress||0)/100)*TOTAL_SESSIONS)),0);
+  const remaining=courses.reduce((sum,c)=>sum+Math.max(0,TOTAL_SESSIONS-Math.min(TOTAL_SESSIONS,c.watched||Math.round(((c.progress||0)/100)*TOTAL_SESSIONS))),0);
+  summaryStats.innerHTML=`<div class="stat-card" data-reveal="rise" data-reveal-delay="0"><span>Enrolled</span><strong>${fmt(courses.length)}</strong></div><div class="stat-card" data-reveal="rise" data-reveal-delay="40"><span>Sessions watched</span><strong>${fmt(watched)}</strong></div><div class="stat-card" data-reveal="rise" data-reveal-delay="80"><span>Sessions remaining</span><strong>${fmt(remaining)}</strong></div><div class="stat-card" data-reveal="rise" data-reveal-delay="120"><span>Certificates</span><strong>${fmt(CERTIFICATES.length)}</strong></div>`
+  window.OdysseyReveal?.scan();
+}
+
+function certificateShareText(cert){return `I earned an Odyssey certificate for ${cert.course_title}. Verification code: ${cert.verification_code}`}
+
+function renderCertificates(){
+  if(!window.certificateList)return;
+  certificateList.innerHTML=CERTIFICATES.length?CERTIFICATES.map((cert,i)=>{
+    const shareText=encodeURIComponent(certificateShareText(cert));
+    return `<div class="cert-card" data-reveal="tilt" data-reveal-delay="${i*60}"><div class="cert-seal"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><div><h3>${cert.course_title}</h3><div class="meta">${cert.instructor_name||'Odyssey instructor'}</div><div class="desc">Verification code: <b>${cert.verification_code}</b>${cert.completed_at?' · Issued '+new Date(cert.completed_at).toLocaleDateString():''}</div><div class="share-row"><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/intent/tweet?text=${shareText}">X / Twitter</a><a href="mailto:?subject=Odyssey certificate&body=${shareText}">Email</a></div></div><div class="actions"><button class="btn secondary" id="certPdfBtn-${cert.id}" onclick="downloadCertificatePdf('${cert.id}', this)">📄 Download PDF</button><button class="btn secondary" onclick="shareCertificate('${cert.id}')">Share</button></div></div>`
+  }).join(''):'<div class="item"><b>No certificates yet</b>Certificates are issued automatically once you finish 100% of an eligible course, and are verified by Odyssey - not generated in your browser.</div>'
+  window.OdysseyReveal?.scan();
+}
+async function downloadCertificatePdf(certId, buttonEl){
+  const original = buttonEl.textContent;
+  buttonEl.disabled = true;
+  buttonEl.textContent = 'Generating…';
+  try{
+    const { downloadUrl } = await OdysseySupabase.generateCertificatePdf(certId);
+    window.open(downloadUrl, '_blank', 'noopener');
+  }catch(error){
+    alert('Could not generate certificate PDF: ' + (error?.message || error));
+  }finally{
+    buttonEl.disabled = false;
+    buttonEl.textContent = original;
+  }
+}
+
+function shareCertificate(certId){
+  const cert=CERTIFICATES.find(c=>String(c.id)===String(certId));if(!cert)return;
+  const text=certificateShareText(cert);
+  if(navigator.share){navigator.share({title:'Odyssey certificate',text}).catch(()=>{})}
+  else{navigator.clipboard?.writeText(text);alert('Certificate details copied.')}
+}
+
+function renderPurchasedExams(){
+  const el=document.getElementById('purchasedExamList');if(!el)return;
+  el.innerHTML=PURCHASED_EXAMS.length?PURCHASED_EXAMS.map(test=>`<div class="course"><div class="emoji">📝</div><div><h3>${test.title}</h3><div class="meta">${test.subject||test.examType||'Odyssey exam'} · ${test.difficulty||'Practice'} · ${fmt(test.time||45)} min</div><div class="session-row"><span class="session-pill">${test.price>0?'Purchased':'Free access'}</span><span class="session-pill">${test.instructor}</span></div></div><div class="actions"><button class="btn" onclick="takePurchasedExam('${test.id}')">Take exam</button></div></div>`).join(''):'<div class="item"><b>No purchased exams yet</b>Browse the Tests marketplace, buy or start a free exam, and it will appear here.</div>'
+}
+function takePurchasedExam(id){location.href='exam_portal.html?exam='+encodeURIComponent(id)}
+
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+let CHAT_CONVERSATIONS = [];
+let ACTIVE_CHAT_USER_ID = null;
+let chatEditor = null;
+
+async function fetchAllMyMessages(){
+  const sb = await OdysseySupabase.client();
+  const { data, error } = await sb.from('messages')
+    .select('id, sender_user_id, recipient_user_id, body, created_at, read_at')
+    .or(`sender_user_id.eq.${CURRENT_PROFILE.id},recipient_user_id.eq.${CURRENT_PROFILE.id}`)
+    .order('created_at', { ascending: true });
+  if(error){ console.error('Could not load messages.', error); return []; }
+  return data || [];
+}
+
+async function loadAvatarFor(userId){
+  try{
+    const sb = await OdysseySupabase.client();
+    const { data } = await sb.from('storage_objects')
+      .select('id').eq('owner_user_id', userId).eq('purpose','profile_image')
+      .eq('status','ready').eq('public_read', true)
+      .order('created_at',{ascending:false}).limit(1).maybeSingle();
+    if(data) return await OdysseyStorage.getViewUrl(data.id);
+  }catch(e){ /* fall back to initials */ }
+  return null;
+}
+
+function avatarHtml(name, url){
+  const initials = (name||'?').trim().split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase() || '?';
+  return url ? `<img src="${url}" alt="${escapeHtml(name)}">` : initials;
+}
+
+async function loadConversations(){
+  const allMessages = await fetchAllMyMessages();
+  const byPartner = {};
+  allMessages.forEach(m => {
+    const partnerId = m.sender_user_id === CURRENT_PROFILE.id ? m.recipient_user_id : m.sender_user_id;
+    if(!partnerId) return;
+    if(!byPartner[partnerId]) byPartner[partnerId] = [];
+    byPartner[partnerId].push(m);
+  });
+  const partnerIds = Object.keys(byPartner);
+  let profilesById = {};
+  if(partnerIds.length){
+    const sb = await OdysseySupabase.client();
+    const { data } = await sb.from('profiles').select('id, full_name, role, member_code').in('id', partnerIds);
+    (data||[]).forEach(p => { profilesById[p.id] = p; });
+  }
+  CHAT_CONVERSATIONS = await Promise.all(partnerIds.map(async pid => {
+    const msgs = byPartner[pid].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+    const last = msgs[msgs.length-1];
+    const profile = profilesById[pid] || { full_name: 'Odyssey user' };
+    const avatarUrl = await loadAvatarFor(pid);
+    return { partnerId: pid, name: profile.full_name || 'Odyssey user', role: profile.role, memberCode: profile.member_code||'', messages: msgs, lastMessage: last, avatarUrl };
+  }));
+  CHAT_CONVERSATIONS.sort((a,b)=>new Date(b.lastMessage.created_at)-new Date(a.lastMessage.created_at));
+  renderChatList();
+  await loadInstructorDirectory();
+}
+
+function timeShort(iso){
+  const d = new Date(iso);
+  const now = new Date();
+  if(d.toDateString() === now.toDateString()) return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  return d.toLocaleDateString([], {month:'short', day:'numeric'});
+}
+
+function renderChatList(){
+  const el = document.getElementById('chatList');
+  if(!el) return;
+  if(!CHAT_CONVERSATIONS.length){
+    el.innerHTML = '<div class="chat-list-empty">No conversations yet. Start one with "+ New chat" above.</div>';
+    return;
+  }
+  el.innerHTML = CHAT_CONVERSATIONS.map(c => `
+    <div class="chat-list-item${c.partnerId===ACTIVE_CHAT_USER_ID?' active':''}" onclick="openConversation('${c.partnerId}')">
+      <span class="comment-avatar">${avatarHtml(c.name, c.avatarUrl)}</span>
+      <div class="chat-list-item-info">
+        <b>${escapeHtml(c.name)}</b>
+        <span>${escapeHtml((c.lastMessage.body||'').replace(/<[^>]+>/g,'').slice(0,60))}</span>
+      </div>
+      <span class="chat-list-item-time">${timeShort(c.lastMessage.created_at)}</span>
+    </div>
+  `).join('');
+}
+
+function ensureChatEditor(){
+  if(chatEditor) return chatEditor;
+  chatEditor = OdysseyEditor.build(document.getElementById('chatEditorMount'), {
+    placeholder: 'Write a message…',
+    minHeight: '60px'
+  });
+  return chatEditor;
+}
+
+async function openConversation(partnerId){
+  ACTIVE_CHAT_USER_ID = partnerId;
+  renderChatList();
+  const convo = CHAT_CONVERSATIONS.find(c => c.partnerId === partnerId);
+  document.getElementById('chatThreadEmpty').style.display = 'none';
+  document.getElementById('chatThreadActive').style.display = 'flex';
+  document.getElementById('chatThreadAvatar').innerHTML = avatarHtml(convo?.name, convo?.avatarUrl);
+  document.getElementById('chatThreadName').textContent = convo?.name || 'Odyssey user';
+  ensureChatEditor();
+
+  const messagesEl = document.getElementById('chatMessages');
+  messagesEl.innerHTML = (convo?.messages||[]).map(m => {
+    const mine = m.sender_user_id === CURRENT_PROFILE.id;
+    return `<div class="chat-bubble-row ${mine?'mine':'theirs'}">
+      <div class="chat-bubble">${m.body||''}</div>
+      <div class="chat-bubble-time">${timeShort(m.created_at)}</div>
+    </div>`;
+  }).join('');
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  // Mark their messages as read now that the thread is open.
+  const unread = (convo?.messages||[]).filter(m => m.recipient_user_id === CURRENT_PROFILE.id && !m.read_at);
+  if(unread.length){
+    try{
+      const sb = await OdysseySupabase.client();
+      await sb.from('messages').update({ read_at: new Date().toISOString() }).in('id', unread.map(m=>m.id));
+    }catch(e){ /* non-critical */ }
+  }
+}
+
+async function sendChatMessage(){
+  if(!ACTIVE_CHAT_USER_ID){ alert('Choose a conversation first.'); return; }
+  const editor = ensureChatEditor();
+  if(editor.isEmpty()) return;
+  const body = editor.getHTML();
+  try{
+    const sb = await OdysseySupabase.client();
+    const { data, error } = await sb.from('messages').insert({
+      sender_user_id: CURRENT_PROFILE.id,
+      recipient_user_id: ACTIVE_CHAT_USER_ID,
+      subject: '(chat)',
+      body
+    }).select('id, sender_user_id, recipient_user_id, body, created_at, read_at').single();
+    if(error) throw error;
+    editor.clear();
+    const convo = CHAT_CONVERSATIONS.find(c => c.partnerId === ACTIVE_CHAT_USER_ID);
+    if(convo){ convo.messages.push(data); convo.lastMessage = data; }
+    CHAT_CONVERSATIONS.sort((a,b)=>new Date(b.lastMessage.created_at)-new Date(a.lastMessage.created_at));
+    renderChatList();
+    openConversation(ACTIVE_CHAT_USER_ID);
+  }catch(error){
+    alert('Could not send message: ' + (error?.message || error));
+  }
+}
+
+async function loadInstructorDirectory(){
+  const sel = document.getElementById('newChatTarget');
+  if(!sel) return;
+  try{
+    const sb = await OdysseySupabase.client();
+    const { data } = await sb.from('profiles').select('id, full_name, role, member_code')
+      .in('role', ['instructor','admin','support']).neq('id', CURRENT_PROFILE.id).order('full_name');
+    const existing = new Set(CHAT_CONVERSATIONS.map(c=>c.partnerId));
+    const options = (data||[]).filter(p => !existing.has(p.id));
+    sel.innerHTML = '<option value="">+ New chat…</option>' +
+      (options.length ? options.map(p=>`<option value="${p.id}">${escapeHtml(p.full_name)} (${p.role}${p.member_code?' · '+p.member_code:''})</option>`).join('')
+        : '<option value="" disabled>No instructors available yet</option>');
+  }catch(e){ console.warn('Could not load instructor directory', e); }
+}
+
+async function startNewConversation(partnerId){
+  if(!partnerId) return;
+  if(!CHAT_CONVERSATIONS.find(c=>c.partnerId===partnerId)){
+    const sb = await OdysseySupabase.client();
+    const { data: profile } = await sb.from('profiles').select('id, full_name, role, member_code').eq('id', partnerId).single();
+    const avatarUrl = await loadAvatarFor(partnerId);
+    CHAT_CONVERSATIONS.unshift({ partnerId, name: profile?.full_name || 'Odyssey user', role: profile?.role, memberCode: profile?.member_code||'', messages: [], lastMessage: { body: '', created_at: new Date().toISOString() }, avatarUrl });
+  }
+  document.getElementById('newChatTarget').value = '';
+  openConversation(partnerId);
+}
+
+function renderNotifications(notifs){
+  const html=notifs.length?notifs.map(n=>`<div class="item"><b>${n.title||'Notification'}</b>${n.body||''}</div>`).join(''):'<div class="item"><b>All caught up</b>No new notifications right now.</div>';
+  ['notifList','notifList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html})
+}
+
+// Homework isn't backed by a real table yet, so it's clearly labeled as sample content
+// rather than pretending to be real assignment data.
+function renderHomeworkSample(){
+  const hw=[T('portal_sample_homework_1'),T('portal_sample_homework_2'),T('portal_sample_homework_3')];
+  ['homeworkList','homeworkList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=hw.map((x,i)=>`<div class="item"><b>${T('portal_due')}: ${['Friday','Monday','Wednesday'][i]}</b>${x} <i>(sample - homework tracking isn't built yet)</i></div>`).join('')})
+}
+
+function openCourse(id){location.href='course_player.html?course='+encodeURIComponent(id)}
+
+let REFUND_ENROLLMENT_ID=null;
+
+function openRefundModal(enrollmentId){
+  const course=ENROLLMENTS.find(c=>c.enrollmentId===enrollmentId);
+  if(!course){alert('Could not find this enrollment.');return}
+  REFUND_ENROLLMENT_ID=enrollmentId;
+  document.getElementById('refundCourseName').textContent=course.title;
+  document.getElementById('refundEnrolledAt').textContent=course.enrolledAt?new Date(course.enrolledAt).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}):'Unknown';
+  document.getElementById('refundReason').value='';
+  document.getElementById('refundDestination').value='original';
+  document.getElementById('refundCardBrand').value='visa';
+  document.getElementById('refundAltLast4').value='';
+  document.getElementById('refundAltName').value='';
+  document.getElementById('refundAltCardFields').style.display='none';
+  hideRefundError();
+  document.getElementById('refundOverlay').classList.add('open');
+}
+function closeRefundModal(){document.getElementById('refundOverlay').classList.remove('open')}
+function onRefundDestinationChange(){
+  document.getElementById('refundAltCardFields').style.display=document.getElementById('refundDestination').value==='different'?'block':'none';
+}
+function hideRefundError(){const el=document.getElementById('refundError');el.classList.remove('show');el.textContent=''}
+function showRefundError(msg){const el=document.getElementById('refundError');el.textContent=msg;el.classList.add('show')}
+
+async function submitRefundRequest(){
+  hideRefundError();
+  const course=ENROLLMENTS.find(c=>c.enrollmentId===REFUND_ENROLLMENT_ID);
+  if(!course){showRefundError('Could not find this enrollment.');return}
+  const reason=document.getElementById('refundReason').value.trim();
+  if(!reason){showRefundError('Please add a short reason for your request.');return}
+  const destination=document.getElementById('refundDestination').value;
+  const cardBrand=document.getElementById('refundCardBrand').value;
+  let altLast4=null,altName=null;
+  if(destination==='different'){
+    altLast4=document.getElementById('refundAltLast4').value.trim();
+    altName=document.getElementById('refundAltName').value.trim();
+    if(!/^\d{4}$/.test(altLast4)){showRefundError('Enter exactly 4 digits for the card\'s last 4 numbers.');return}
+    if(!altName){showRefundError('Enter the name on the different card.');return}
+  }
+  const btn=document.getElementById('refundSubmitBtn');
+  btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    const sb=await OdysseySupabase.client();
+    const {error}=await sb.from('refund_requests').insert({
+      student_user_id:CURRENT_PROFILE.id,
+      enrollment_id:REFUND_ENROLLMENT_ID,
+      course_id:course.id,
+      course_progress_percent:course.progress||0,
+      reason,
+      refund_destination:destination,
+      card_brand:cardBrand,
+      alt_card_last4:destination==='different'?altLast4:null,
+      alt_cardholder_name:destination==='different'?altName:null
+    });
+    if(error)throw error;
+    closeRefundModal();
+    document.getElementById('refundToast').classList.add('open');
+  }catch(error){
+    const msg=(error?.message||'').includes('duplicate')||(error?.code==='23505')
+      ? 'You already have a pending refund request for this course.'
+      : (error?.message||'Could not submit your refund request. Please try again.');
+    showRefundError(msg);
+  }finally{
+    btn.disabled=false;btn.textContent='Submit request';
+  }
+}
+
+async function saveProfile(){
+  try{
+    const sb=await OdysseySupabase.client();
+    const updates={full_name:profileName.value,email:profileEmail.value,phone:profilePhone.value,city:profileCity.value,timezone:profileTimezone.value,preferred_language:profileStudyLang.value};
+    const {error}=await sb.from('profiles').update(updates).eq('id',CURRENT_PROFILE.id);
+    if(error)throw error;
+    await sb.from('student_profiles').upsert({user_id:CURRENT_PROFILE.id,learning_goal:profileGoal.value},{onConflict:'user_id'});
+    const p=getProfile();Object.assign(p,{name:profileName.value,email:profileEmail.value,city:profileCity.value,phone:profilePhone.value,timezone:profileTimezone.value,studyLang:profileStudyLang.value,goal:profileGoal.value});
+    localStorage.setItem('odyssey_student_profile',JSON.stringify(p));
+    alert(T('portal_profile_saved'))
+  }catch(error){alert('Could not save profile: '+(error?.message||error))}
+}
+
+function renderStudentPhoto(name, url){
+  const frame=document.getElementById('studentPhotoFrame');
+  if(!frame)return;
+  if(url){frame.innerHTML=`<img src="${url}" alt="${name} profile photo">`;frame.dataset.hasPhoto='1'}
+  else{frame.textContent=(name||'Odyssey Student').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'OS';frame.dataset.hasPhoto=''}
+}
+
+// The photo lives entirely server-side (storage_objects + a resolved view
+// URL) - nothing photo-related is written to localStorage. Earlier this
+// section kept a full base64 copy of the image in localStorage on every
+// load, which is exactly the kind of avoidable weight (large writes/reads,
+// slower JSON.stringify of the whole profile blob on every settings save)
+// that was making this section feel heavy.
+let CURRENT_PHOTO_URL = null;
+let CURRENT_PHOTO_OBJECT_ID = null;
+// The pristine, never-cropped upload - editing always starts from this, not
+// from the previously-exported square, so zooming back out after a save
+// isn't limited by pixels an earlier crop already threw away.
+let CURRENT_ORIGINAL_URL = null;
+let CURRENT_ORIGINAL_OBJECT_ID = null;
+
+async function loadOwnPhoto(){
+  // One-time cleanup: earlier versions of this page kept a full base64 copy
+  // of the photo (and a storage id) in localStorage. Purge any leftover
+  // blob now so returning users actually get the weight off their device,
+  // not just new sessions going forward.
+  const cached = getProfile();
+  if(cached && ('photo' in cached || 'photoStorageObjectId' in cached)){
+    delete cached.photo; delete cached.photoStorageObjectId;
+    localStorage.setItem('odyssey_student_profile', JSON.stringify(cached));
+  }
+  try{
+    const sb = await OdysseySupabase.client();
+    const { data } = await sb.from('storage_objects')
+      .select('id, purpose').eq('owner_user_id', CURRENT_PROFILE.id)
+      .in('purpose', ['profile_image','profile_image_original'])
+      .eq('status','ready').order('created_at',{ascending:false});
+    const display = (data||[]).find(o => o.purpose === 'profile_image');
+    const original = (data||[]).find(o => o.purpose === 'profile_image_original');
+    if(display){
+      CURRENT_PHOTO_OBJECT_ID = display.id;
+      CURRENT_PHOTO_URL = await OdysseyStorage.getViewUrl(display.id);
+    }
+    if(original){
+      CURRENT_ORIGINAL_OBJECT_ID = original.id;
+      CURRENT_ORIGINAL_URL = await OdysseyStorage.getViewUrl(original.id);
+    } else if(display){
+      // One-time server-side preservation for older accounts. This copies the
+      // current full-resolution object before the editor can ever overwrite it,
+      // so a saved zoom-in can always be zoomed back out later.
+      try{
+        const cloned=await OdysseyStorage.cloneObject(display.id,'profile_image_original',false);
+        CURRENT_ORIGINAL_OBJECT_ID=cloned.id;
+        CURRENT_ORIGINAL_URL=await OdysseyStorage.getViewUrl(cloned.id);
+      }catch(cloneError){
+        console.warn('Could not preserve the existing profile photo before editing.',cloneError);
+      }
+    }
+  }catch(e){ console.warn('Could not load profile photo', e); }
+  renderStudentPhoto(CURRENT_PROFILE?.full_name, CURRENT_PHOTO_URL);
+}
+
+function openPhotoLightbox(){
+  if(!CURRENT_PHOTO_URL) return; // nothing to zoom into if it's just initials
+  document.getElementById('photoLightboxImg').src = CURRENT_PHOTO_URL;
+  document.getElementById('photoLightbox').classList.add('open');
+}
+function closePhotoLightbox(event){
+  if(event) event.stopPropagation();
+  document.getElementById('photoLightbox').classList.remove('open');
+}
+
+async function removeProfilePhoto(){
+  if(!CURRENT_PHOTO_OBJECT_ID && !CURRENT_ORIGINAL_OBJECT_ID){ return; }
+  if(!confirm('Remove your profile photo?')) return;
+  if(CURRENT_PHOTO_OBJECT_ID){
+    try{ await OdysseyStorage.deleteObject(CURRENT_PHOTO_OBJECT_ID); }
+    catch(error){ console.warn('Could not delete stored photo:', error); }
+  }
+  if(CURRENT_ORIGINAL_OBJECT_ID){
+    try{ await OdysseyStorage.deleteObject(CURRENT_ORIGINAL_OBJECT_ID); }
+    catch(error){ console.warn('Could not delete stored original photo:', error); }
+  }
+  CURRENT_PHOTO_URL = null; CURRENT_PHOTO_OBJECT_ID = null;
+  CURRENT_ORIGINAL_URL = null; CURRENT_ORIGINAL_OBJECT_ID = null;
+  renderStudentPhoto(CURRENT_PROFILE?.full_name, null);
+}
+
+// Self-contained crop/zoom/rotate editor - no external library, no CDN, no
+// silent "editor failed to load, uploading raw photo instead" fallback that
+// could ever leave someone stuck with the plain browser file picker.
+//
+// The pencil icon opens this modal directly (not the OS file picker) with
+// whatever photo is already on the account loaded and ready to reframe;
+// "Upload new photo" inside the modal is what reaches for a different file.
+let cropOriginalFile = null;
+let cropImg = null;
+const CROP_BOX = 300;
+const cropState = { scale: 1, minScale: 1, maxScale: 4, rotation: 0, offsetX: 0, offsetY: 0 };
+let cropDrag = null;
+
+async function openEditPhotoModal(){
+  document.getElementById('cropOverlay').classList.add('open');
+  cropOriginalFile = null;
+  // Always obtain a fresh signed URL for the pristine original before editing.
+  // Signed download URLs expire, so reusing an old URL was one reason an
+  // existing photo could reopen incorrectly after it had been saved.
+  try{
+    let source = null;
+    if(CURRENT_ORIGINAL_OBJECT_ID){
+      source = await OdysseyStorage.getViewUrl(CURRENT_ORIGINAL_OBJECT_ID);
+      CURRENT_ORIGINAL_URL = source;
+    }else if(CURRENT_PHOTO_OBJECT_ID){
+      source = await OdysseyStorage.getViewUrl(CURRENT_PHOTO_OBJECT_ID);
+      CURRENT_PHOTO_URL = source;
+    }
+    if(source) await loadImageIntoCropper(source, true);
+    else showCropEmptyState();
+  }catch(error){
+    console.warn('Could not refresh the profile photo for editing.', error);
+    showCropEmptyState();
+    profilePhotoStatus.textContent = 'Could not load the saved photo for editing. Please try again.';
+  }
+}
+
+profilePhoto.addEventListener('change', event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const validTypes = ['image/jpeg', 'image/png'];
+  if (!validTypes.includes(file.type) || !/\.(jpe?g|png)$/i.test(file.name)) {
+    profilePhotoStatus.textContent = 'Please upload a JPG or PNG image only.';
+    profilePhoto.value = '';
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    profilePhotoStatus.textContent = 'Profile photo must be 2 MB or smaller.';
+    profilePhoto.value = '';
+    return;
+  }
+  cropOriginalFile = file;
+  const reader = new FileReader();
+  reader.onload = () => loadImageIntoCropper(reader.result, false);
+  reader.readAsDataURL(file);
+});
+
+function setCropControlsEnabled(enabled){
+  ['cropRotateLeft','cropRotateRight','cropZoomOut','cropZoomIn','cropResetBtn','cropSaveBtn'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.disabled=!enabled;
+  });
+}
+function showCropEmptyState(){
+  document.getElementById('cropCanvas').classList.add('hidden');
+  document.getElementById('cropEmpty').classList.add('show');
+  document.getElementById('cropModalHint').textContent='Upload a photo to start editing.';
+  setCropControlsEnabled(false);
+}
+
+// isRemote=true for the account's existing photo (already-hosted URL,
+// possibly cross-origin) vs false for a freshly chosen local file (data
+// URL, always same-origin-safe). Both end up as the same in-canvas editor.
+async function loadImageIntoCropper(src, isRemote){
+  cropState.scale = 1; cropState.rotation = 0; cropState.offsetX = 0; cropState.offsetY = 0;
+  cropImg = new Image();
+
+  let imageSource = src;
+  let temporaryObjectUrl = null;
+
+  if(isRemote){
+    // Convert the signed remote response into a local blob URL before drawing
+    // to canvas. This keeps the editor canvas origin-clean and prevents a
+    // previously saved crop from becoming non-editable because of storage CORS.
+    try{
+      const response = await fetch(src, { credentials: 'omit', cache: 'no-store' });
+      if(!response.ok) throw new Error(`Photo download failed (${response.status}).`);
+      const blob = await response.blob();
+      temporaryObjectUrl = URL.createObjectURL(blob);
+      imageSource = temporaryObjectUrl;
+    }catch(fetchError){
+      // A direct image load is retained as a compatibility fallback. If the
+      // storage host permits image display but not canvas reads, saveCroppedPhoto
+      // will fail safely rather than overwriting the original.
+      console.warn('Could not localize the saved photo before editing; using direct image fallback.', fetchError);
+      cropImg.crossOrigin = 'anonymous';
+    }
+  }
+
+  return await new Promise((resolve) => {
+    cropImg.onload = () => {
+      if(temporaryObjectUrl) URL.revokeObjectURL(temporaryObjectUrl);
+      document.getElementById('cropEmpty').classList.remove('show');
+      document.getElementById('cropCanvas').classList.remove('hidden');
+      document.getElementById('cropModalHint').textContent='Drag to reposition, scroll or pinch to zoom.';
+      setCropControlsEnabled(true);
+      cropDrawStage();
+      resolve(true);
+    };
+    cropImg.onerror = () => {
+      if(temporaryObjectUrl) URL.revokeObjectURL(temporaryObjectUrl);
+      cropImg = null;
+      profilePhotoStatus.textContent = 'That image could not be opened. Please try another photo.';
+      showCropEmptyState();
+      resolve(false);
+    };
+    cropImg.src = imageSource;
+  });
+}
+
+// Draws the image into a target context, centered at (0,0), covering a
+// boxSize×boxSize square at the given scale/rotation/pan - shared by the
+// live preview canvas and the final high-res export so they always match.
+function cropDrawInto(ctx, boxSize, offX, offY, scale, rotation){
+  const iw = cropImg.naturalWidth, ih = cropImg.naturalHeight;
+  if(!iw || !ih) return;
+  // At rotation 90/270 the image's width/height are effectively swapped for
+  // "cover" purposes, since the rotate happens around the drawing origin.
+  const rotated90 = ((Math.round(rotation / 90) % 2) + 2) % 2 === 1;
+  const coverW = rotated90 ? ih : iw, coverH = rotated90 ? iw : ih;
+  const baseScale = Math.max(boxSize / coverW, boxSize / coverH);
+  const drawW = iw * baseScale * scale, drawH = ih * baseScale * scale;
+  ctx.save();
+  ctx.clearRect(0, 0, boxSize, boxSize);
+  ctx.translate(boxSize / 2 + offX, boxSize / 2 + offY);
+  ctx.rotate(rotation * Math.PI / 180);
+  ctx.drawImage(cropImg, -drawW / 2, -drawH / 2, drawW, drawH);
+  ctx.restore();
+}
+
+function cropDrawStage(){
+  const canvas = document.getElementById('cropCanvas');
+  if(!canvas || !cropImg) return;
+  cropDrawInto(canvas.getContext('2d'), CROP_BOX, cropState.offsetX, cropState.offsetY, cropState.scale, cropState.rotation);
+}
+
+function cropClampOffsets(){
+  // Keep the image covering the box at all times so no empty edge ever
+  // appears no matter how far it's dragged.
+  const iw = cropImg.naturalWidth, ih = cropImg.naturalHeight;
+  const rotated90 = ((Math.round(cropState.rotation / 90) % 2) + 2) % 2 === 1;
+  const coverW = rotated90 ? ih : iw, coverH = rotated90 ? iw : ih;
+  const baseScale = Math.max(CROP_BOX / coverW, CROP_BOX / coverH);
+  const drawW = iw * baseScale * cropState.scale, drawH = ih * baseScale * cropState.scale;
+  const maxX = Math.max(0, (drawW - CROP_BOX) / 2);
+  const maxY = Math.max(0, (drawH - CROP_BOX) / 2);
+  cropState.offsetX = Math.max(-maxX, Math.min(maxX, cropState.offsetX));
+  cropState.offsetY = Math.max(-maxY, Math.min(maxY, cropState.offsetY));
+}
+
+(function setUpCropDragAndZoom(){
+  const canvas = document.getElementById('cropCanvas');
+  if(!canvas) return;
+  canvas.addEventListener('pointerdown', e => {
+    if(!cropImg) return;
+    cropDrag = { startX: e.clientX, startY: e.clientY, offX: cropState.offsetX, offY: cropState.offsetY };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if(!cropDrag) return;
+    cropState.offsetX = cropDrag.offX + (e.clientX - cropDrag.startX);
+    cropState.offsetY = cropDrag.offY + (e.clientY - cropDrag.startY);
+    cropClampOffsets();
+    cropDrawStage();
+  });
+  const endDrag = () => { cropDrag = null; };
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+  canvas.addEventListener('wheel', e => {
+    if(!cropImg) return;
+    e.preventDefault();
+    cropZoom(e.deltaY < 0 ? 0.08 : -0.08);
+  }, { passive: false });
+})();
+
+function closeCropModal(){
+  document.getElementById('cropOverlay').classList.remove('open');
+  cropImg = null;
+  profilePhoto.value = '';
+  cropOriginalFile = null;
+}
+
+function cropRotate(deg){
+  if(!cropImg) return;
+  cropState.rotation = (cropState.rotation + deg) % 360;
+  cropClampOffsets();
+  cropDrawStage();
+}
+function cropZoom(delta){
+  if(!cropImg) return;
+  cropState.scale = Math.max(cropState.minScale, Math.min(cropState.maxScale, cropState.scale + delta));
+  cropClampOffsets();
+  cropDrawStage();
+}
+function cropReset(){
+  if(!cropImg) return;
+  cropState.scale = 1; cropState.rotation = 0; cropState.offsetX = 0; cropState.offsetY = 0;
+  cropDrawStage();
+}
+
+async function saveCroppedPhoto(){
+  if (!cropImg) return;
+  const saveBtn = document.getElementById('cropSaveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving…';
+
+  const EXPORT_SIZE = 512;
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = EXPORT_SIZE; exportCanvas.height = EXPORT_SIZE;
+  const ratio = EXPORT_SIZE / CROP_BOX;
+  const outputType = cropOriginalFile && cropOriginalFile.type === 'image/png' ? 'image/png' : 'image/jpeg';
+  const outputName = cropOriginalFile ? cropOriginalFile.name : 'profile-photo.jpg';
+
+  let blob;
+  try{
+    cropDrawInto(exportCanvas.getContext('2d'), EXPORT_SIZE, cropState.offsetX * ratio, cropState.offsetY * ratio, cropState.scale, cropState.rotation);
+    blob = await new Promise((resolve, reject) => exportCanvas.toBlob(b => b ? resolve(b) : reject(new Error('empty export')), outputType, 0.92));
+  }catch(error){
+    // Most likely a CORS-tainted canvas from re-editing the existing hosted
+    // photo without the storage bucket sending the right CORS headers -
+    // the one case a from-scratch upload always avoids, since a freshly
+    // chosen local file is read as a same-origin data URL.
+    saveBtn.disabled = false; saveBtn.textContent = 'Save photo';
+    profilePhotoStatus.textContent = 'Could not process this photo directly - please use "Upload new photo" and try again.';
+    return;
+  }
+
+  const croppedFile = new File([blob], outputName, { type: outputType });
+  const previousDisplayId = CURRENT_PHOTO_OBJECT_ID;
+  const previousDisplayUrl = CURRENT_PHOTO_URL;
+  const previousOriginalId = CURRENT_ORIGINAL_OBJECT_ID;
+  const newOriginalFile = cropOriginalFile; // set only when "Upload new photo" was used this session
+  document.getElementById('cropOverlay').classList.remove('open');
+  // Keep cropImg alive until the pristine-source migration below has had a
+  // chance to capture it.
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Save photo';
+  profilePhoto.value = '';
+  cropOriginalFile = null;
+
+  profilePhotoStatus.textContent = 'Syncing to your account…';
+  try{
+    // Never replace the display photo until a pristine source is safely stored.
+    // This makes the edit operation reversible instead of destructively baking
+    // the zoom into the only copy.
+    if(newOriginalFile){
+      const originalObject = await OdysseyStorage.uploadFile(newOriginalFile, { purpose: 'profile_image_original', publicRead: false });
+      CURRENT_ORIGINAL_OBJECT_ID = originalObject.id;
+      CURRENT_ORIGINAL_URL = await OdysseyStorage.getViewUrl(originalObject.id);
+      if(previousOriginalId && previousOriginalId !== originalObject.id){
+        OdysseyStorage.deleteObject(previousOriginalId).catch(()=>{});
+      }
+    }else if(!CURRENT_ORIGINAL_OBJECT_ID){
+      // loadOwnPhoto normally creates this copy. Keep a hard safety stop here
+      // so a CORS/export failure can never turn a reversible edit into a
+      // destructive overwrite.
+      throw new Error('The original profile photo could not be preserved. Please reopen the editor or upload the photo again.');
+    }
+
+    const object = await OdysseyStorage.uploadFile(croppedFile, { purpose: 'profile_image', publicRead: !profilePrivate.checked });
+    CURRENT_PHOTO_OBJECT_ID = object.id;
+    const previewUrl = URL.createObjectURL(croppedFile);
+    CURRENT_PHOTO_URL = previewUrl;
+    renderStudentPhoto(CURRENT_PROFILE?.full_name, previewUrl);
+    if(previousDisplayId && previousDisplayId !== object.id){
+      OdysseyStorage.deleteObject(previousDisplayId).catch(()=>{});
+    }
+
+    profilePhotoStatus.textContent = 'Profile photo saved. You can reopen Edit and zoom back out to the full original.';
+  }catch(error){
+    CURRENT_PHOTO_URL = previousDisplayUrl;
+    CURRENT_PHOTO_OBJECT_ID = previousDisplayId;
+    renderStudentPhoto(CURRENT_PROFILE?.full_name, previousDisplayUrl);
+    profilePhotoStatus.textContent = 'Photo was not replaced: ' + (error?.message || 'Could not save the edited photo.');
+  }finally{
+    cropImg = null;
+  }
+}
+async function applyPrivacyPreferences(profile){
+  const cookiePrefs = profile?.cookie_preferences || {};
+  const notifPrefs = profile?.notification_preferences || {};
+  if('functional' in cookiePrefs) ckFunctional.checked = !!cookiePrefs.functional;
+  if('analytics' in cookiePrefs) ckAnalytics.checked = !!cookiePrefs.analytics;
+  if('email_digest' in notifPrefs) emailDigest.checked = !!notifPrefs.email_digest;
+  if('live_reminder' in notifPrefs) liveReminder.checked = !!notifPrefs.live_reminder;
+  try{
+    const sb = await OdysseySupabase.client();
+    const { data } = await sb.from('student_profiles').select('profile_visibility').eq('user_id', profile.id).maybeSingle();
+    profilePrivate.checked = data?.profile_visibility === 'private';
+  }catch(e){ /* leave default if this lookup fails */ }
+}
+
+function setCookie(name, value, days){
+  const expires = new Date(Date.now() + days*24*60*60*1000).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+}
+function clearCookie(name){
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+}
+async function saveCookies(){
+  const prefs = {
+    functional: ckFunctional.checked,
+    analytics: ckAnalytics.checked
+  };
+  const notifPrefs = {
+    email_digest: emailDigest.checked,
+    live_reminder: liveReminder.checked
+  };
+  try{
+    const sb = await OdysseySupabase.client();
+    const updates = {
+      cookie_preferences: prefs,
+      notification_preferences: notifPrefs
+    };
+    const { error } = await sb.from('profiles').update(updates).eq('id', CURRENT_PROFILE.id);
+    if(error) throw error;
+
+    // Only ever set/keep cookies the person actually consented to - and
+    // actively remove ones they just turned off, not just stop setting new ones.
+    if(prefs.functional){ setCookie('odyssey_pref_functional', '1', 365); }
+    else{ clearCookie('odyssey_pref_functional'); }
+    if(prefs.analytics){ setCookie('odyssey_pref_analytics', '1', 365); }
+    else{ clearCookie('odyssey_pref_analytics'); }
+
+    await sb.from('student_profiles').upsert(
+      { user_id: CURRENT_PROFILE.id, profile_visibility: profilePrivate.checked ? 'private' : 'public' },
+      { onConflict: 'user_id' }
+    );
+
+    alert('Cookie and notification preferences saved.');
+  }catch(error){
+    alert('Could not save your preferences: ' + (error?.message || error));
+  }
+}
+const THEME_OBJECT_ICONS={
+  voyager:['👟','🏎️','🎧','🎮','🏀'],
+  blossom:['💕','🦋','🌸','✨','🎀'],
+  nebula:['🪐','⭐','🚀','🌙','☄️'],
+  meadow:['🍃','🏔️','🌻','🦋','🌿']
+};
+function renderThemeObjects(scheme){
+  const layer=document.getElementById('themeObjectLayer');
+  if(!layer)return;
+  const icons=THEME_OBJECT_ICONS[scheme];
+  if(!icons){layer.innerHTML='';return}
+  const positions=[['8%','12%'],['82%','10%'],['14%','78%'],['76%','70%'],['46%','30%']];
+  layer.innerHTML=icons.map((icon,i)=>`<span style="left:${positions[i][0]};top:${positions[i][1]}">${icon}</span>`).join('');
+}
+function refreshAppearanceControls(){
+  document.querySelectorAll('.mode-toggle').forEach(btn=>btn.classList.toggle('active',btn.dataset.mode===document.documentElement.dataset.theme));
+  document.querySelectorAll('.theme-card').forEach(card=>card.classList.toggle('active',card.dataset.scheme===document.documentElement.dataset.scheme));
+  renderThemeObjects(document.documentElement.dataset.scheme);
+}
+function setPortalMode(mode){document.documentElement.dataset.theme=mode;document.body.dataset.theme=mode;localStorage.setItem('odyssey_portal_mode',mode);refreshAppearanceControls()}
+function connectCatalog(){const q=new URLSearchParams();if(catalogPath.value)q.set('field',catalogPath.value);if(catalogCountry.value)q.set('country',catalogCountry.value);location.href='learnworld_catalog.html'+(q.toString()?'?'+q.toString():'')}
+function populateTimezones(){
+  const sel = document.getElementById('profileTimezone');
+  if(!sel || sel.dataset.populated) return;
+  let zones;
+  try{ zones = Intl.supportedValuesOf('timeZone'); }
+  catch(e){ zones = ['UTC','America/New_York','America/Chicago','America/Los_Angeles','Europe/London','Europe/Berlin','Asia/Tehran','Asia/Dubai','Asia/Kolkata','Asia/Singapore','Asia/Tokyo','Australia/Sydney']; }
+  const now = new Date();
+  const rows = zones.map(tz=>{
+    let offset = '';
+    try{
+      const part = new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'shortOffset'}).formatToParts(now).find(p=>p.type==='timeZoneName');
+      offset = part ? part.value.replace('GMT','UTC') : '';
+    }catch(e){}
+    return {tz, offset};
+  }).sort((a,b)=>a.tz.localeCompare(b.tz));
+  sel.innerHTML = rows.map(r=>`<option value="${r.tz}">${r.tz.replace(/_/g,' ')}${r.offset?' ('+r.offset+')':''}</option>`).join('');
+  sel.dataset.populated = '1';
+}
+function applyStudentProfile(p){if(!p)return;profileName.value=p.name||p.full_name||'Odyssey Student';profileEmail.value=p.email||'student@example.com';profileCity.value=p.city||'';profilePhone.value=p.phone||'';populateTimezones();const savedTz=p.timezone;const detectedTz=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';profileTimezone.value=(savedTz&&[...profileTimezone.options].some(o=>o.value===savedTz))?savedTz:detectedTz;profileStudyLang.value=p.studyLang||p.preferred_language||'English';profileGoal.value=p.goal||p.learning_goal||'';if(window.studentSignedName)studentSignedName.textContent=p.name||p.full_name||p.email||'Signed in learner'}
+
+async function loadStudentId(){
+  try{
+    const sb=await OdysseySupabase.client();
+    const { data, error } = await sb.from('profiles').select('member_code').eq('id',CURRENT_PROFILE.id).maybeSingle();
+    if(error) throw error;
+    const code=String(data?.member_code||'').replace(/\D/g,'');
+    const badge=document.getElementById('studentIdBadge');
+    const field=document.getElementById('profileStudentId');
+    if(/^\d{8}$/.test(code)){
+      if(badge){badge.textContent='Student ID: '+code;badge.style.display='block'}
+      if(field){field.textContent=code}
+    }else{
+      if(badge)badge.style.display='none';
+      if(field)field.textContent='—';
+    }
+  }catch(error){
+    console.warn('Could not load 8-digit student ID', error);
+  }
+}
+async function logoutPortal(){try{if(window.OdysseySupabase?.isConfigured?.())await OdysseySupabase.signOut()}catch(error){}location.href='auth.html?mode=login'}
+document.querySelectorAll('.navbtn[data-target]').forEach(btn=>btn.addEventListener('click',async()=>{document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const target=btn.dataset.target;document.getElementById(target).classList.add('active');await loadPortalSection(target)}))
+document.querySelectorAll('.theme-card').forEach(card=>card.addEventListener('click',()=>{document.documentElement.dataset.scheme=card.dataset.scheme;document.body.dataset.scheme=card.dataset.scheme;localStorage.setItem('odyssey_portal_scheme',card.dataset.scheme);refreshAppearanceControls()}))
+
+const PORTAL_LOADERS={};
+async function loadPortalSection(section){
+  if(PORTAL_LOADERS[section]) return PORTAL_LOADERS[section];
+  PORTAL_LOADERS[section]=(async()=>{
+    if(section==='dashboard'){
+      if(!ENROLLMENTS.length) ENROLLMENTS=await fetchEnrollments();
+      renderStats(ENROLLMENTS);
+      const el=document.getElementById('courseList');
+      if(el)el.innerHTML=ENROLLMENTS.length?ENROLLMENTS.map(c=>renderCourse(c)).join(''):`<div class="item">${T('portal_empty_courses')}</div>`;
+      const notifs=await fetchNotifications(); renderNotifications(notifs); renderHomeworkSample();
+    } else if(section==='courses'||section==='progress'){
+      if(!ENROLLMENTS.length) ENROLLMENTS=await fetchEnrollments();
+      if(section==='courses'){
+        const el=document.getElementById('courseList2');
+        if(el)el.innerHTML=ENROLLMENTS.length?ENROLLMENTS.map(c=>renderCourse(c)).join(''):`<div class="item">${T('portal_empty_courses')}</div>`;
+      } else {
+        const progress=document.getElementById('progressList');
+        if(progress)progress.innerHTML=ENROLLMENTS.length?ENROLLMENTS.map(c=>renderCourse(c,true)).join(''):`<div class="item">${T('portal_empty_courses')}</div>`;
+      }
+    } else if(section==='certificates'){
+      CERTIFICATES=await fetchCertificates(); renderCertificates();
+    } else if(section==='exams'){
+      PURCHASED_EXAMS=await fetchPurchasedExams(); renderPurchasedExams();
+    } else if(section==='messages'){
+      await loadConversations();
+    } else if(section==='notifications'){
+      const notifs=await fetchNotifications(); renderNotifications(notifs);
+    } else if(section==='homework'){
+      renderHomeworkSample();
+    } else if(section==='cart'){
+      await renderCart();
+    } else if(section==='billing'){
+      await renderBillingHistory();
+    } else if(section==='settings'){
+      OdysseyPrivacy.refresh('privacyDeletionStatus');
+    }
+  })();
+  return PORTAL_LOADERS[section];
+}
+async function renderAll(){ await loadPortalSection('dashboard'); }
+
+// ---- Cart promo-code validation (merged from the alternate portal build). ----
+let APPLIED_PROMO=null;
+
+async function applyPromoCode(){
+  const input=document.getElementById('cartPromoCode');
+  const status=document.getElementById('promoStatus');
+  const code=(input?.value||'').trim().toUpperCase();
+  if(!status)return;
+  if(!code){
+    APPLIED_PROMO=null;
+    status.textContent='Enter a promo code first.';
+    status.style.color='var(--muted)';
+    return;
+  }
+  try{
+    const sb=await OdysseySupabase.client();
+    const {data,error}=await sb.from('promo_codes')
+      .select('code, percent_off, active, expires_at')
+      .ilike('code',code)
+      .maybeSingle();
+
+    if(error||!data||!data.active||(data.expires_at&&new Date(data.expires_at)<new Date())){
+      APPLIED_PROMO=null;
+      status.textContent='That code is invalid or expired.';
+      status.style.color='var(--error-fg,#ba2121)';
+      return;
+    }
+
+    APPLIED_PROMO=data;
+    input.value=data.code;
+    status.textContent=`${data.percent_off}% off applied to the next single-item purchase.`;
+    status.style.color='var(--good-fg,#116149)';
+  }catch(error){
+    APPLIED_PROMO=null;
+    status.textContent='Could not check that code right now.';
+    status.style.color='var(--muted)';
+  }
+}
+
+// ---- Cart: real cart_items table, RLS-scoped to the signed-in student. ----
+async function fetchCartItems(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('cart_items')
+    .select('id, added_at, course:course_id(id, title, price_cents, level, instructor:instructor_id(full_name))')
+    .order('added_at',{ascending:false});
+  if(error){console.error('Could not load cart.',error);return []}
+  return (data||[]).filter(c=>c.course);
+}
+async function renderCart(){
+  const el=document.getElementById('cartList');if(!el)return;
+  const items=await fetchCartItems();
+  el.innerHTML=items.length?items.map(i=>{
+    const free=!i.course.price_cents;
+    const buyBtn=free
+      ? `<button class="btn tiny" onclick="enrollFreeFromCart('${i.course.id}')">Enroll (free)</button>`
+      : `<button class="btn tiny" onclick="buyOneFromCart('${i.course.id}')">Buy now</button>`;
+    return `<div class="item"><b>${i.course.title}</b>${i.course.instructor?.full_name||'Odyssey instructor'} · ${i.course.level||'All levels'}<small>${free?'Free':fmtMoney(i.course.price_cents)}</small><div class="row-actions" style="display:flex;gap:6px;margin-top:6px">${buyBtn}<button class="btn tiny danger" onclick="removeFromCart('${i.id}')">Remove</button></div></div>`;
+  }).join(''):'<div class="item"><b>Your cart is empty</b>Add courses from the catalog to save them here.</div>';
+  const total=items.reduce((sum,i)=>sum+(i.course.price_cents||0),0);
+  const summaryEl=document.getElementById('cartSummary');
+  if(summaryEl)summaryEl.textContent=items.length?`${items.length} item${items.length===1?'':'s'} · Total if bought together ${fmtMoney(total)}`:'';
+}
+async function removeFromCart(cartItemId){
+  try{
+    const sb=await OdysseySupabase.client();
+    const {error}=await sb.from('cart_items').delete().eq('id',cartItemId);
+    if(error)throw error;
+    await renderCart();
+  }catch(error){alert('Could not remove item: '+(error?.message||error))}
+}
+async function removeFromCartByCourse(courseId){
+  try{
+    const sb=await OdysseySupabase.client();
+    await sb.from('cart_items').delete().eq('course_id',courseId);
+  }catch(error){/* best effort */}
+}
+async function buyOneFromCart(courseId){
+  try{
+    const session=await OdysseySupabase.session();
+    const promoCode=APPLIED_PROMO?.code || (document.getElementById('cartPromoCode')?.value||'').trim().toUpperCase() || undefined;
+    const response=await fetch('/api/create-checkout-session',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
+      body:JSON.stringify({courseId, promoCode}),
+    });
+    const result=await response.json();
+    if(!response.ok){
+      if(result.alreadyOwned){alert('You already own this course.');await removeFromCartByCourse(courseId);await renderCart();return}
+      alert(result.error||'Could not start checkout.');
+      return;
+    }
+    window.location.href=result.url;
+  }catch(error){alert('Could not start checkout: '+(error?.message||error))}
+}
+async function enrollFreeFromCart(courseId){
+  try{
+    await OdysseySupabase.enrollInCourse(courseId);
+    await removeFromCartByCourse(courseId);
+    await renderAll();
+    alert('Enrolled!');
+  }catch(error){alert('Could not enroll: '+(error?.message||error))}
+}
+async function checkoutAllCart(){
+  const items=await fetchCartItems();
+  if(!items.length){alert('Your cart is empty.');return}
+  const freeItems=items.filter(i=>!i.course.price_cents);
+  const paidItems=items.filter(i=>i.course.price_cents);
+  for(const i of freeItems){
+    try{ await OdysseySupabase.enrollInCourse(i.course.id); await removeFromCartByCourse(i.course.id); }
+    catch(error){ console.error('Could not enroll free item from cart', error); }
+  }
+  if(!paidItems.length){
+    await renderAll();
+    alert('Enrolled in your free course(s).');
+    return;
+  }
+  if(paidItems.length > 10){
+    alert('You can check out up to 10 paid courses at a time - remove a few items or buy some individually with "Buy now" first.');
+    return;
+  }
+  try{
+    const session=await OdysseySupabase.session();
+    const response=await fetch('/api/create-checkout-session',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
+      body:JSON.stringify({courseIds: paidItems.map(i=>i.course.id)}),
+    });
+    const result=await response.json();
+    if(!response.ok){alert(result.error||'Could not start checkout.');return}
+    if(result.skipped?.length){
+      const lines=result.skipped.map(s=>`- ${s.title||s.id}: ${s.reason}`).join('\n');
+      alert('Some items in your cart could not be included:\n'+lines+'\n\nContinuing to payment for the rest.');
+    }
+    window.location.href=result.url;
+  }catch(error){alert('Could not start checkout: '+(error?.message||error))}
+}
+
+// ---- Billing: real payments, date-filterable, exportable. ----
+let STUDENT_PAYMENTS=[];
+function fmtMoney(cents){return '$'+((cents||0)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+async function fetchStudentPayments(){
+  const sb=await OdysseySupabase.client();
+  const {data,error}=await sb.from('payments')
+    .select('id, amount_cents, status, provider, paid_at, created_at, course:course_id(title), exam:exam_id(title)')
+    .order('created_at',{ascending:false});
+  if(error){console.error('Could not load payments.',error);return []}
+  return data||[];
+}
+function currentBillingRows(){
+  const from=document.getElementById('billingFrom')?.value?new Date(document.getElementById('billingFrom').value):null;
+  const to=document.getElementById('billingTo')?.value?new Date(document.getElementById('billingTo').value+'T23:59:59'):null;
+  return STUDENT_PAYMENTS.filter(p=>{
+    const d=new Date(p.paid_at||p.created_at);
+    if(from&&d<from)return false;
+    if(to&&d>to)return false;
+    return true;
+  });
+}
+async function renderBillingHistory(){
+  const el=document.getElementById('billingList');if(!el)return;
+  if(!STUDENT_PAYMENTS.length)STUDENT_PAYMENTS=await fetchStudentPayments();
+  const rows=currentBillingRows();
+  el.innerHTML=rows.length?rows.map(p=>`<div class="item"><b>${new Date(p.paid_at||p.created_at).toLocaleDateString()} · ${p.status}</b>${p.course?.title||p.exam?.title||'Odyssey purchase'}<small>${fmtMoney(p.amount_cents)} · ${p.provider||'—'}</small></div>`).join(''):'<div class="item"><b>No purchases in this range</b>Try widening the date filter, or make your first purchase from the catalog.</div>';
+}
+async function ensureBillingExportLibraries(){
+  if(!window.XLSX) await loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js');
+  if(!window.jspdf) {
+    await loadScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js');
+    await loadScript('https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js');
+  }
+}
+function loadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('Failed to load export library'));document.head.appendChild(s)})}
+async function exportBillingExcel(){
+  try{await ensureBillingExportLibraries()}catch(e){alert('Export library could not be loaded — check your connection and try again.');return}
+  const rows=currentBillingRows();
+  if(!rows.length){alert('No rows to export for this date range.');return}
+  const aoa=[['Date','Item','Amount','Status','Provider'], ...rows.map(p=>[new Date(p.paid_at||p.created_at).toLocaleDateString(), p.course?.title||p.exam?.title||'Odyssey purchase', (p.amount_cents/100).toFixed(2), p.status, p.provider||''])];
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Billing');
+  XLSX.writeFile(wb,'odyssey-billing.xlsx');
+}
+async function exportBillingPDF(){
+  try{await ensureBillingExportLibraries()}catch(e){alert('Export library could not be loaded — check your connection and try again.');return}
+  const rows=currentBillingRows();
+  if(!rows.length){alert('No rows to export for this date range.');return}
+  const doc=new jspdf.jsPDF({orientation:'landscape'});
+  doc.setFontSize(14);doc.text('Odyssey - Billing & purchases',14,16);
+  doc.setFontSize(9);doc.text(new Date().toLocaleString(),14,22);
+  doc.autoTable({
+    head:[['Date','Item','Amount','Status','Provider']],
+    body:rows.map(p=>[new Date(p.paid_at||p.created_at).toLocaleDateString(), p.course?.title||p.exam?.title||'Odyssey purchase', fmtMoney(p.amount_cents), p.status, p.provider||'']),
+    startY:28, styles:{fontSize:8}, headStyles:{fillColor:[20,44,79]},
+  });
+  doc.save('odyssey-billing.pdf');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const sidebar=document.getElementById('portalSidebar');
+  const burger=document.getElementById('portalBurger');
+  const scrim=document.getElementById('portalScrim');
+  if(!sidebar||!burger)return;
+  function openDrawer(){
+    sidebar.classList.add('open');
+    scrim?.classList.add('open');
+    burger.classList.add('open');
+    burger.setAttribute('aria-expanded','true');
+    sidebar.classList.remove('waving');
+    void sidebar.offsetWidth;
+    sidebar.classList.add('waving');
+    document.body.style.overflow='hidden';
+  }
+  function closeDrawer(){
+    sidebar.classList.remove('open');
+    scrim?.classList.remove('open');
+    burger.classList.remove('open');
+    sidebar.classList.remove('waving');
+    burger.setAttribute('aria-expanded','false');
+    document.body.style.overflow='';
+  }
+  burger.addEventListener('click',()=>sidebar.classList.contains('open')?closeDrawer():openDrawer());
+  scrim?.addEventListener('click',closeDrawer);
+  sidebar.querySelectorAll('.navbtn').forEach(btn=>btn.addEventListener('click',()=>{if(window.innerWidth<=1000)closeDrawer()}));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+  window.addEventListener('resize',()=>{if(window.innerWidth>1000)closeDrawer()});
+});
+document.addEventListener('DOMContentLoaded',async()=>{
+  const mode=localStorage.getItem('odyssey_portal_mode')||'light';
+  const scheme=localStorage.getItem('odyssey_portal_scheme')||'';
+  document.documentElement.dataset.theme=mode;document.body.dataset.theme=mode;
+  document.documentElement.dataset.scheme=scheme;document.body.dataset.scheme=scheme;
+  refreshAppearanceControls();
+
+  CURRENT_PROFILE=await requireStudentSession();
+  if(!CURRENT_PROFILE)return;
+
+  applyStudentProfile({...getProfile(),...CURRENT_PROFILE,name:CURRENT_PROFILE.full_name,studyLang:CURRENT_PROFILE.preferred_language});
+  void loadOwnPhoto();
+  void loadStudentId();
+  void applyPrivacyPreferences(CURRENT_PROFILE);
+  await renderAll();
+  document.addEventListener('odyssey:languageChanged',renderAll)
+})
+</script>
+<script src="assets/odyssey-global-motion.js" defer></script>
+<script src="assets/odyssey-dashboard-refinement.js" defer></script>
+<script src="assets/odyssey-investor-final-polish.js" defer></script>
+<script src="assets/odyssey-language-switcher-fix.js" defer></script>
+
+<!-- Photo crop/lightbox overlays: intentionally OUTSIDE any .panel section so
+     they still work no matter which dashboard tab is active. They previously
+     lived inside the hidden Settings panel and were invisible everywhere else. -->
+  <div class="crop-overlay" id="cropOverlay">
+    <div class="crop-modal">
+      <div class="crop-modal-head">
+        <h3 id="cropModalTitle">Edit profile photo</h3>
+        <p id="cropModalHint">Drag to reposition, scroll or pinch to zoom.</p>
+      </div>
+      <div class="crop-stage" id="cropStage">
+        <canvas id="cropCanvas" width="300" height="300"></canvas>
+        <div class="crop-empty" id="cropEmpty">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"></path><circle cx="12" cy="13" r="3.4"></circle></svg>
+          <span>No photo yet</span>
+        </div>
+      </div>
+      <div class="crop-controls">
+        <button type="button" class="upload" id="cropUploadBtn" title="Upload a new photo" onclick="event.stopPropagation();profilePhoto.click();">⤒ Upload new photo</button>
+        <span class="spacer"></span>
+        <button type="button" id="cropRotateLeft" title="Rotate left" onclick="cropRotate(-90)">↺</button>
+        <button type="button" id="cropRotateRight" title="Rotate right" onclick="cropRotate(90)">↻</button>
+        <button type="button" id="cropZoomOut" title="Zoom out" onclick="cropZoom(-0.1)">−</button>
+        <button type="button" id="cropZoomIn" title="Zoom in" onclick="cropZoom(0.1)">+</button>
+        <button type="button" id="cropResetBtn" title="Reset" onclick="cropReset()">⟲</button>
+      </div>
+      <div class="crop-actions">
+        <button type="button" class="cancel" onclick="closeCropModal()">Cancel</button>
+        <button type="button" class="save" id="cropSaveBtn" onclick="saveCroppedPhoto()">Save photo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="photo-lightbox" id="photoLightbox" onclick="closePhotoLightbox(event)">
+    <button type="button" class="photo-lightbox-close" onclick="closePhotoLightbox(event)">✕</button>
+    <img id="photoLightboxImg" alt="Profile photo, full size">
+  </div>
+
+  <div class="refund-overlay" id="refundOverlay" onclick="if(event.target===this)closeRefundModal()">
+    <div class="refund-modal">
+      <div class="refund-head">
+        <h3>Request a refund</h3>
+        <p>Tell us a bit about your request. Our team reviews every refund request individually.</p>
+      </div>
+      <div class="refund-error" id="refundError"></div>
+      <div class="refund-body">
+        <div class="refund-field"><label>Course</label><div class="ro" id="refundCourseName"></div></div>
+        <div class="refund-field"><label>Date of enrollment</label><div class="ro" id="refundEnrolledAt"></div></div>
+        <div class="refund-field">
+          <label for="refundReason">Reason for your refund request</label>
+          <textarea id="refundReason" placeholder="A short message about why you're requesting a refund…" maxlength="800"></textarea>
+        </div>
+        <div class="refund-field">
+          <label for="refundDestination">Preferred refund method</label>
+          <select id="refundDestination" onchange="onRefundDestinationChange()">
+            <option value="original">Return to the card I originally paid with</option>
+            <option value="different">Return to a different card</option>
+          </select>
+        </div>
+        <div class="refund-field">
+          <label for="refundCardBrand">Card type</label>
+          <select id="refundCardBrand">
+            <option value="visa">Visa</option>
+            <option value="mastercard">Mastercard</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div id="refundAltCardFields" style="display:none">
+          <div class="refund-field">
+            <label for="refundAltLast4">Last 4 digits of the different card</label>
+            <input id="refundAltLast4" inputmode="numeric" maxlength="4" placeholder="1234">
+            <small class="hint">For your security we only ever ask for the last 4 digits — never a full card number. Refunds to a different card need manual verification by our team before they're processed.</small>
+          </div>
+          <div class="refund-field">
+            <label for="refundAltName">Name on that card</label>
+            <input id="refundAltName" placeholder="Full name as it appears on the card">
+          </div>
+        </div>
+      </div>
+      <div class="refund-actions">
+        <button type="button" class="cancel" onclick="closeRefundModal()">Cancel</button>
+        <button type="button" class="submit" id="refundSubmitBtn" onclick="submitRefundRequest()">Submit request</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-overlay" id="refundToast">
+    <div class="toast-modal">
+      <div class="icon">✓</div>
+      <h3>Request submitted</h3>
+      <p>Your refund request is in. Our team will review it and get back to you shortly — no need to submit it again.</p>
+      <button type="button" onclick="document.getElementById('refundToast').classList.remove('open')">Got it</button>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title data-i18n="contact_title_attr_odyssey_contact_us">Odyssey — Contact Us</title>
+<meta name="description" content="Questions about courses, billing, or becoming an instructor? Reach the Odyssey team — we usually respond within 24 hours."/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://odyssey-weld-five.vercel.app/contact.html"/>
+<meta name="theme-color" content="#142C4F"/>
+<link rel="icon" href="assets/odyssey-logo-mark.jpg"/>
+<link rel="apple-touch-icon" href="assets/odyssey-logo-mark.jpg"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Odyssey"/>
+<meta property="og:title" content="Contact Odyssey — Get in Touch"/>
+<meta property="og:description" content="Questions about courses, billing, or becoming an instructor? Reach the Odyssey team — we usually respond within 24 hours."/>
+<meta property="og:url" content="https://odyssey-weld-five.vercel.app/contact.html"/>
+<meta property="og:image" content="https://odyssey-weld-five.vercel.app/assets/odyssey-og-image.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Contact Odyssey — Get in Touch"/>
+<meta name="twitter:description" content="Questions about courses, billing, or becoming an instructor? Reach the Odyssey team — we usually respond within 24 hours."/>
+<meta name="twitter:image" content="https://odyssey-weld-five.vercel.app/assets/odyssey-og-image.jpg"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   ODYSSEY SITE THEME — shared by every page outside the landing/
+   catalog build. One file, no !important, no per-page duplication.
+   Palette matches index-redesigned.html (navy/gold/teal/clay/moss).
+═══════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#142C4F;--navy2:#0B1930;--navy3:#2A4A78;
+  --gold:#C08A3E;--gold-text:#8a5a1f;--gold2:#E7C88A;--gold-pale:#F3E9D3;
+  --teal:#0F7A6C;--teal2:#5AC4B0;--moss:#2E7D5B;--moss2:#7FBFA0;
+  --clay:#A6672B;--amber:#E7C88A;--pink:#B23A6B;--pink2:#D9A9BE;
+  --cream:#F6F4EF;--white:#ffffff;
+  --ink:#141C2B;--text:#141C2B;--muted:#64708A;--muted2:#5c6578;
+  --border:#e3dcce;
+  --radius:16px;--radius-sm:10px;--radius-lg:20px;--radius-pill:999px;
+  --ff-head:"Newsreader",Georgia,serif;--ff-body:Manrope,system-ui,sans-serif;
+  --shadow:0 8px 28px rgba(20,44,79,.1);--shadow-md:0 20px 50px rgba(20,44,79,.14);
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-body);background:var(--cream);color:var(--ink);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;width:calc(100% - 32px);max-width:1200px;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-radius:var(--radius-pill);border:1px solid rgba(20,44,79,.14);box-shadow:0 8px 32px rgba(20,44,79,.12)}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
+.nav-logo-mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;font-size:12px;box-shadow:0 4px 12px rgba(20,44,79,.4);overflow:hidden}
+.nav-logo-text{font-family:var(--ff-head);font-size:17px;font-weight:900;color:var(--ink)}
+.nav-logo-text span{color:var(--navy)}
+.nav-links{display:flex;align-items:center;gap:1px;flex:1;min-width:0;justify-content:center}
+.nav-links a{padding:6px 11px;border-radius:var(--radius-pill);font-size:12.5px;font-weight:600;color:var(--muted);text-decoration:none;transition:background .2s,color .2s;white-space:nowrap}
+.nav-links a:hover{background:var(--cream);color:var(--navy)}
+.nav-links a.active{background:rgba(20,44,79,.08);color:var(--navy)}
+.nav-cta{padding:7px 16px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-radius:var(--radius-pill);font-size:12.5px;font-weight:700;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 14px rgba(20,44,79,.35);white-space:nowrap;flex-shrink:0}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(20,44,79,.45)}
+
+/* ── MOBILE NAV: upgraded animated hamburger + sliding drawer ── */
+.nav-burger{display:none;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(20,44,79,.16);background:#fff;cursor:pointer;flex-shrink:0;position:relative;align-items:center;justify-content:center;transition:background .35s cubic-bezier(.65,0,.35,1),border-color .35s cubic-bezier(.65,0,.35,1)}
+.nav-burger span,.nav-burger span::before,.nav-burger span::after{content:"";position:absolute;top:50%;left:50%;width:16px;height:2px;margin:-1px 0 0 -8px;background:var(--navy);border-radius:2px;transition:transform .38s cubic-bezier(.65,0,.35,1),opacity .25s ease,background .3s ease}
+.nav-burger span::before{transform:translateY(-6px)}
+.nav-burger span::after{transform:translateY(6px)}
+.nav-burger.open{background:var(--navy);border-color:var(--navy)}
+.nav-burger.open span{background:transparent}
+.nav-burger.open span::before,.nav-burger.open span::after{background:#fff}
+.nav-burger.open span::before{transform:translateY(0) rotate(45deg)}
+.nav-burger.open span::after{transform:translateY(0) rotate(-45deg)}
+.nav-mobile-panel{position:fixed;top:0;right:0;height:100vh;height:100dvh;width:min(320px,84vw);background:#fff;border-left:1px solid rgba(20,44,79,.14);box-shadow:-20px 0 50px rgba(20,44,79,.22);padding:88px 16px 24px;padding-bottom:max(24px,env(safe-area-inset-bottom));z-index:199;display:flex;flex-direction:column;gap:4px;overflow-y:auto;transform:translateX(100%);transition:transform .45s cubic-bezier(.65,0,.35,1)}
+.nav-mobile-panel.open{transform:translateX(0)}
+.nav-mobile-scrim{position:fixed;inset:0;background:rgba(11,25,48,.4);z-index:198;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s linear .4s;backdrop-filter:blur(2px)}
+.nav-mobile-scrim.open{opacity:1;visibility:visible;transition:opacity .4s ease,visibility 0s linear 0s}
+.nav-mobile-panel a{padding:14px 18px;border-radius:12px;font-family:var(--ff-head);font-size:17px;font-weight:600;letter-spacing:.01em;color:var(--ink);text-decoration:none;transition:background .2s,color .2s,transform .2s}
+.nav-mobile-panel a:hover,.nav-mobile-panel a.active{background:var(--cream);color:var(--navy);transform:translateX(-3px)}
+.nav-mobile-panel .nav-cta,.nav-mobile-panel .nav-login{text-align:center;justify-content:center;margin-top:4px;display:flex;font-family:var(--ff-body);font-size:14.5px}
+.nav-mobile-panel .nav-login{border:2px solid rgba(20,44,79,.16)}
+@media(prefers-reduced-motion:reduce){.nav-mobile-panel,.nav-mobile-scrim{transition:none!important}}
+@media(max-width:900px){.nav-burger{display:flex}}
+
+/* ── DECORATIVE DRIFT / BLOB SYSTEM (shared with landing page) ── */
+.blob{position:absolute;border-radius:50%;filter:blur(75px);opacity:.32;pointer-events:none;animation:blobFloat 9s ease-in-out infinite;z-index:0}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(28px,-22px) scale(1.06)}66%{transform:translate(-20px,16px) scale(.96)}}
+.drift{position:absolute;pointer-events:none;z-index:0;border-radius:50%;filter:blur(50px) hue-rotate(0deg);opacity:.5;animation:drift 13s ease-in-out infinite,hueDrift 16s linear infinite}
+.drift.ring{border-radius:50%;filter:none;background:none;border:2px solid;opacity:.28;animation:driftRing 17s ease-in-out infinite}
+.drift.dot{filter:none;opacity:.6;animation:driftDot 8s ease-in-out infinite}
+.drift.square{border-radius:9px;filter:none;opacity:.22;animation:driftSquare 16s ease-in-out infinite}
+.drift.tri{border-radius:0;filter:none;opacity:.2;clip-path:polygon(50% 0%,0% 100%,100% 100%);animation:driftTri 19s ease-in-out infinite}
+.drift.hex{border-radius:0;filter:none;opacity:.2;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);animation:driftSquare 21s ease-in-out infinite}
+.drift.icon{border-radius:0;filter:none;background:none!important;opacity:.48;animation:driftIcon 15s ease-in-out infinite}
+.drift.icon svg{width:100%;height:100%;display:block}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-32px) scale(1.12)}66%{transform:translate(-26px,22px) scale(.92)}}
+@keyframes hueDrift{0%{filter:blur(50px) hue-rotate(0deg)}50%{filter:blur(50px) hue-rotate(30deg)}100%{filter:blur(50px) hue-rotate(0deg)}}
+@keyframes driftRing{0%,100%{transform:translate(0,0) rotate(0deg) scale(1)}50%{transform:translate(-28px,24px) rotate(22deg) scale(1.1)}}
+@keyframes driftDot{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,-20px)}}
+@keyframes driftSquare{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-24px,22px) rotate(32deg)}}
+@keyframes driftTri{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(20px,18px) rotate(-26deg)}}
+@keyframes driftIcon{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(14px,-20px) rotate(8deg)}}
+
+/* ── PAGE HERO (subpages) ── */
+.page-hero{padding:132px 24px 64px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(160deg,#F6F4EF 0%,#F3EEE3 55%,#F6F4EF 100%)}
+.page-hero-inner,.hero-inner{position:relative;z-index:2;max-width:700px;margin:0 auto}
+.page-tag{display:inline-flex;align-items:center;gap:7px;padding:7px 18px;border-radius:var(--radius-pill);background:#fff;border:1.5px solid rgba(20,44,79,.16);color:var(--navy);font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:18px;box-shadow:0 4px 14px rgba(20,44,79,.08)}
+.page-hero h1{font-family:var(--ff-head);font-size:clamp(32px,5.4vw,58px);font-weight:900;line-height:1.08;letter-spacing:-1px;margin-bottom:16px;color:var(--ink)}
+.grad,.grad-text{background:linear-gradient(90deg,var(--navy),var(--gold),var(--clay));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.page-hero p{font-size:15.5px;color:var(--muted);font-weight:500;line-height:1.75;max-width:580px;margin:0 auto}
+
+/* ── PROSE / CONTENT PAGES (accreditations, etc.) ── */
+.prose-page{max-width:800px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:1}
+.prose-page h2{font-family:var(--ff-head);font-size:22px;font-weight:900;color:var(--ink);margin:40px 0 14px;padding-top:8px;border-top:2px solid rgba(20,44,79,.08)}
+.prose-page h2:first-child{margin-top:0;border-top:none}
+.prose-page h3{font-family:var(--ff-head);font-size:16px;font-weight:800;color:var(--ink);margin:20px 0 8px}
+.prose-page p{font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:14px;font-weight:500}
+.prose-page ul{padding-left:20px;margin-bottom:14px}
+.prose-page li{font-size:14px;color:var(--muted);line-height:1.9;font-weight:500;margin-bottom:6px}
+.prose-page a{color:var(--navy);text-decoration:none;font-weight:700}
+.prose-page a:hover{text-decoration:underline}
+.prose-page .highlight-box{background:linear-gradient(135deg,rgba(20,44,79,.05),rgba(192,138,62,.06));border:2px solid rgba(20,44,79,.13);border-radius:var(--radius-sm);padding:20px 24px;margin:20px 0}
+.prose-page .highlight-box p{margin:0;color:var(--ink);font-weight:600}
+.prose-page .big-stat{font-family:var(--ff-head);font-size:44px;font-weight:900;background:linear-gradient(90deg,var(--navy),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:4px}
+.stat-cards{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.stat-card{padding:20px 28px;background:#fff;border-radius:16px;border:2px solid rgba(20,44,79,.1);text-align:center;min-width:160px;box-shadow:var(--shadow)}
+.stat-card .ic{font-size:34px;margin-bottom:8px}
+.stat-card .t{font-family:var(--ff-head);font-size:15px;font-weight:800;color:var(--ink)}
+.stat-card .s{font-size:12px;color:var(--muted);font-weight:500}
+
+/* ── BUTTONS (shared) ── */
+.btn-primary,.cta-btn-white{padding:14px 30px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-radius:var(--radius-pill);font-size:14.5px;font-weight:800;text-decoration:none;border:none;cursor:pointer;font-family:var(--ff-body);box-shadow:0 8px 22px rgba(20,44,79,.32);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover,.cta-btn-white:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,44,79,.4)}
+.btn-secondary,.cta-btn-outline{padding:14px 30px;background:#fff;color:var(--navy);border-radius:var(--radius-pill);font-size:14.5px;font-weight:800;text-decoration:none;border:2px solid rgba(20,44,79,.22);cursor:pointer;font-family:var(--ff-body);transition:transform .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover,.cta-btn-outline:hover{border-color:var(--navy);transform:translateY(-2px)}
+.btn,.form-submit,.cta-btn-white{cursor:pointer}
+
+/* ── FORMS ── */
+.form-input,.form-select,.form-textarea,input,select,textarea{width:100%;padding:12px 15px;border:2px solid rgba(20,44,79,.12);border-radius:var(--radius-sm);font-family:var(--ff-body);font-size:13.5px;color:var(--ink);background:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;font-weight:500}
+.form-input:focus,.form-select:focus,.form-textarea:focus,input:focus,select:focus,textarea:focus{border-color:var(--navy);box-shadow:0 0 0 4px rgba(20,44,79,.08);background:#fff}
+.form-textarea,textarea{resize:vertical;min-height:120px}
+.inq-pill{padding:8px 16px;border-radius:var(--radius-pill);border:2px solid rgba(20,44,79,.15);background:var(--cream);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--ff-body)}
+.inq-pill:hover{border-color:var(--navy);color:var(--navy);background:#fff}
+.inq-pill.selected{background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(20,44,79,.3)}
+
+/* ── CARDS ── */
+.info-card,.val-card,.team-card{background:#fff;border-radius:var(--radius);padding:26px;border:2px solid rgba(20,44,79,.08);transition:transform .2s,box-shadow .2s,border-color .2s}
+.info-card:hover,.val-card:hover{transform:translateY(-4px);border-color:rgba(20,44,79,.2);box-shadow:var(--shadow-md)}
+.info-icon,.val-emoji{font-size:28px;margin-bottom:12px;display:block}
+.info-label{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.info-value{font-family:var(--ff-head);font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.info-value a{color:var(--navy);text-decoration:none}
+.info-value a:hover{text-decoration:underline}
+.info-sub{font-size:13px;color:var(--muted);font-weight:500}
+.val-title{font-family:var(--ff-head);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.val-desc{font-size:13px;color:var(--muted);line-height:1.8;font-weight:500}
+
+/* ── FAQ ACCORDION ── */
+.faq-item{background:#fff;border:2px solid rgba(20,44,79,.08);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden;transition:border-color .2s}
+.faq-item:hover{border-color:rgba(20,44,79,.18)}
+.faq-item.open{border-color:rgba(20,44,79,.28);box-shadow:var(--shadow)}
+.faq-q{padding:18px 22px;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none;font-family:var(--ff-head)}
+.faq-arrow{font-size:16px;transition:transform .3s;color:var(--navy);flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;font-size:13.5px;color:var(--muted);font-weight:500;line-height:1.8;padding:0 22px}
+.faq-item.open .faq-a{max-height:420px;padding:0 22px 18px}
+.faq-a a{color:var(--navy);text-decoration:none;font-weight:700}
+.faq-a a:hover{text-decoration:underline}
+
+/* ── DARK SECTION (team, FAQ strip, CTA-adjacent) ── */
+.dark-section{padding:80px 24px;background:linear-gradient(160deg,#0E1D36 0%,#142C4F 55%,#0B1930 100%);position:relative;overflow:hidden}
+.dark-section h2{color:#fff}
+.dark-section .sub{color:rgba(255,255,255,.55)}
+.dark-empty{max-width:760px;margin:0 auto;padding:44px 28px;border:1px dashed rgba(255,255,255,.28);border-radius:26px;text-align:center;background:rgba(255,255,255,.05);position:relative;z-index:1}
+.dark-empty b{display:block;color:#fff;font-family:var(--ff-head);font-size:26px;margin-bottom:10px}
+.dark-empty p{color:rgba(255,255,255,.6);font-size:14px;line-height:1.8}
+
+/* ── CTA GRADIENT SECTION ── */
+.page-cta{padding:80px 24px;background:linear-gradient(135deg,var(--navy) 0%,var(--teal) 40%,var(--clay) 74%,var(--gold) 100%);text-align:center;position:relative;overflow:hidden}
+.page-cta h2{font-family:var(--ff-head);font-size:clamp(26px,4.6vw,48px);font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:14px;position:relative;z-index:1}
+.page-cta p{font-size:15px;color:rgba(255,255,255,.78);font-weight:500;margin-bottom:32px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+
+/* ── FOOTER ── */
+footer{background:#0f0520;padding:44px 24px 30px;text-align:center}
+.footer-logo-wrap{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;margin-bottom:14px}
+.footer-logo-mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;font-size:12px;overflow:hidden}
+.footer-logo-text{font-family:var(--ff-head);font-size:16px;font-weight:900;color:#fff}
+.footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s;font-weight:500}
+.footer-links a:hover{color:#fff}
+footer p{font-size:11px;color:rgba(255,255,255,.18);font-weight:500}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── i18n LANGUAGE-SWITCHER DROPDOWN SAFETY (kept from prior fix, centralized once) ── */
+.i18n-switcher,.i18n-dropdown{z-index:1000}
+nav .i18n-dropdown{position:absolute;top:calc(100% + 8px);max-height:min(420px,70vh);overflow:auto}
+footer .i18n-dropdown{position:absolute;bottom:calc(100% + 8px);top:auto;max-height:min(420px,70vh);overflow:auto}
+
+/* ── RESPONSIVE (900px tablet / 640px mobile, per site standard) ── */
+@media(max-width:900px){
+  nav{width:calc(100% - 24px);padding:8px 14px}
+  .nav-links{display:none}
+  .page-hero{padding:118px 20px 52px}
+}
+@media(max-width:640px){
+  nav{width:calc(100% - 16px);padding:7px 10px}
+  .nav-logo-text{font-size:15px}
+  .nav-cta{padding:7px 12px;font-size:11.5px}
+  .page-hero{padding:104px 16px 44px}
+  .prose-page{padding:44px 16px 70px}
+  .cta-btns{flex-direction:column;align-items:stretch}
+}
+
+
+/* ── ACCESSIBILITY: visible keyboard focus ── */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #1d4ed8;outline-offset:2px;border-radius:4px}
+.skip-link{position:absolute;top:-100px;left:12px;background:#142C4F;color:#fff;padding:10px 18px;border-radius:8px;font-weight:800;font-size:13px;z-index:9999;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:12px}
+</style>
+<style>
+.contact-main{max-width:1040px;margin:0 auto;padding:60px 24px 100px;display:grid;grid-template-columns:1fr 1.6fr;gap:36px;align-items:start;position:relative;z-index:1}
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.hours-item{font-size:12px;color:var(--muted);font-weight:500}
+.hours-item strong{display:block;color:var(--ink);font-weight:700;margin-bottom:2px}
+.social-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.social-btn{padding:8px 14px;border-radius:999px;font-size:11.5px;font-weight:700;text-decoration:none;transition:transform .2s;border:2px solid transparent}
+.social-btn:hover{transform:translateY(-2px)}
+.sb-tw{background:rgba(29,161,242,.1);color:#1da1f2;border-color:rgba(29,161,242,.2)}
+.sb-in{background:rgba(10,102,194,.1);color:#0a66c2;border-color:rgba(10,102,194,.2)}
+.sb-ig{background:rgba(228,64,95,.1);color:#e4405f;border-color:rgba(228,64,95,.2)}
+.contact-form-wrap{background:#fff;border-radius:var(--radius);padding:38px 34px;border:2px solid rgba(20,44,79,.1);box-shadow:0 12px 40px rgba(20,44,79,.08)}
+.form-title{font-family:var(--ff-head);font-size:21px;font-weight:900;color:var(--ink);margin-bottom:6px}
+.form-sub{font-size:13.5px;color:var(--muted);font-weight:500;margin-bottom:26px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{margin-bottom:20px}
+.form-group.full{grid-column:1/-1}
+label{display:block;font-size:11.5px;font-weight:800;color:var(--ink);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px}
+label span{color:var(--clay);margin-left:2px}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364708A' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer}
+.inquiry-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.file-drop{border:2px dashed rgba(20,44,79,.2);border-radius:var(--radius-sm);padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--cream)}
+.file-drop:hover{border-color:var(--navy);background:rgba(20,44,79,.03)}
+.file-drop p{font-size:13px;color:var(--muted);font-weight:500}
+.file-drop strong{color:var(--navy)}
+.file-drop.dragover{border-color:var(--navy);background:rgba(20,44,79,.06);transform:translateY(-1px)}
+.file-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:7px;padding:8px 10px;border:1px solid rgba(20,44,79,.10);border-radius:8px;background:#fff;font-size:12px;color:var(--navy);font-weight:600}
+.file-remove{border:0;background:transparent;color:var(--clay);font-weight:800;cursor:pointer;padding:2px 5px}
+.form-submit{width:100%;padding:15px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--ff-body);transition:transform .2s,box-shadow .2s;box-shadow:0 8px 22px rgba(20,44,79,.32);margin-top:6px}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,44,79,.4)}
+.form-note{text-align:center;font-size:11.5px;color:var(--muted);margin-top:12px;font-weight:500}
+.success-msg{display:none;text-align:center;padding:44px 24px}
+.success-msg.show{display:block}
+.success-icon{font-size:60px;margin-bottom:16px}
+.success-msg h2{font-family:var(--ff-head);font-size:22px;font-weight:900;color:var(--ink);margin-bottom:8px}
+.success-msg p{font-size:13.5px;color:var(--muted);font-weight:500}
+.faq-strip{background:linear-gradient(160deg,#0E1D36 0%,#142C4F 55%,#0B1930 100%);padding:70px 24px;position:relative;overflow:hidden}
+.faq-inner{max-width:800px;margin:0 auto;position:relative;z-index:1}
+.faq-title{font-family:var(--ff-head);font-size:clamp(22px,3.6vw,36px);font-weight:900;color:#fff;text-align:center;margin-bottom:8px}
+.faq-sub{text-align:center;font-size:14px;color:rgba(255,255,255,.5);font-weight:500;margin-bottom:44px}
+.faq-strip .faq-item{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+.faq-strip .faq-q{color:#fff}
+.faq-strip .faq-a{color:rgba(255,255,255,.6)}
+.faq-strip .faq-arrow{color:var(--gold2)}
+@media(max-width:900px){.contact-main{grid-template-columns:1fr}}
+@media(max-width:640px){.form-row{grid-template-columns:1fr}.contact-form-wrap{padding:26px 20px}}
+</style>
+<style>
+/* ── CONTACT MESSAGE EDITOR: self-contained fallback UI ── */
+#fmessageEditor{width:100%;border:2px solid rgba(20,44,79,.12);border-radius:10px;background:#F6F4EF;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+#fmessageEditor:focus-within{border-color:var(--navy);box-shadow:0 0 0 4px rgba(20,44,79,.08);background:#fff}
+
+/* Microsoft Word-inspired message editor */
+#fmessageEditor{border:1px solid #bfc5ce;border-radius:8px;background:#fff;box-shadow:0 2px 7px rgba(20,44,79,.08);overflow:hidden}
+#fmessageEditor .message-editor-toolbar{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:7px 9px;background:#f3f4f6;border-bottom:1px solid #d3d7dd}
+#fmessageEditor .message-editor-group{display:flex;align-items:center;gap:3px;padding-right:7px;margin-right:3px;border-right:1px solid #d1d5db}
+#fmessageEditor .message-editor-group:last-child{border-right:0}
+#fmessageEditor .message-editor-btn{height:31px;min-width:31px;width:auto;padding:0 8px;border:1px solid transparent;border-radius:4px;background:transparent;color:#252a31;font-family:var(--ff-body);font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s}
+#fmessageEditor .message-editor-btn:hover,#fmessageEditor .message-editor-btn.active{background:#e1e5eb;border-color:#c6cbd3}
+#fmessageEditor .message-editor-select{height:31px;border:1px solid #c7ccd4;border-radius:4px;background:#fff;color:#252a31;font:600 12px var(--ff-body);padding:0 24px 0 8px;cursor:pointer}
+#fmessageEditor .font-family{min-width:112px}.font-size{min-width:68px}
+#fmessageEditor .message-editor-color{width:31px;height:31px;padding:3px;border:1px solid transparent;border-radius:4px;background:transparent;cursor:pointer;display:inline-flex}
+#fmessageEditor .message-editor-color input{width:25px!important;height:25px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;cursor:pointer}
+#fmessageEditor .message-editor-body{min-height:190px;padding:16px 18px;outline:none;color:var(--ink);font-family:Manrope,system-ui,sans-serif;font-size:14px;line-height:1.75;font-weight:500;background:#fff;overflow:auto}
+#fmessageEditor .message-editor-body:focus{box-shadow:inset 0 0 0 2px rgba(29,78,216,.10)}
+#fmessageEditor .message-editor-body:empty:before{content:attr(data-placeholder);color:#9299a5;pointer-events:none}
+#fmessageEditor .message-editor-body[dir=rtl]{text-align:right}
+#fmessageEditor .message-editor-body ul,#fmessageEditor .message-editor-body ol{margin:7px 0 10px;padding-left:28px}
+#fmessageEditor .message-editor-body[dir=rtl] ul,#fmessageEditor .message-editor-body[dir=rtl] ol{padding-left:0;padding-right:28px}
+#fmessageEditor .message-editor-body a{color:#1d4ed8;text-decoration:underline}
+@media(max-width:640px){#fmessageEditor .message-editor-toolbar{padding:6px;gap:2px}#fmessageEditor .message-editor-group{padding-right:4px;margin-right:1px}#fmessageEditor .message-editor-btn{min-width:29px;padding:0 6px}#fmessageEditor .font-family{min-width:95px}}
+</style>
+<script defer="" src="js/i18n.js"></script>
+<script defer src="js/site-content.js"></script>
+<script defer src="assets/odyssey-portal-translations.js"></script>
+<script defer src="assets/odyssey-translation-completion.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<nav>
+<a class="nav-logo" href="index.html">
+<div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="34" height="34" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div>
+<span class="nav-logo-text"><span>Odyssey</span></span>
+</a>
+<div class="nav-links">
+<a href="index.html"><span data-i18n="nav_home">Home</span></a>
+<a href="learnworld_catalog.html"><span data-i18n="nav_courses">Courses</span></a>
+<a href="about.html"><span data-i18n="nav_about">About</span></a>
+<a class="active" href="contact.html"><span data-i18n="nav_contact">Contact</span></a>
+</div>
+<span data-i18n-switcher=""></span>
+<a class="nav-cta" data-i18n="contact_browse_courses" href="learnworld_catalog.html">Browse courses →</a>
+<button class="nav-burger" type="button" aria-label="Open menu" aria-controls="mobile-navigation" aria-expanded="false"><span></span></button>
+</nav>
+<div class="nav-mobile-scrim" aria-hidden="true"></div>
+<div class="nav-mobile-panel" id="mobile-navigation" aria-hidden="true">
+<a href="index.html"><span data-i18n="nav_home">Home</span></a>
+<a href="learnworld_catalog.html"><span data-i18n="nav_courses">Courses</span></a>
+<a href="about.html"><span data-i18n="nav_about">About</span></a>
+<a class="active" href="contact.html"><span data-i18n="nav_contact">Contact</span></a>
+<a class="nav-cta" data-i18n="contact_browse_courses" href="learnworld_catalog.html">Browse courses →</a></div>
+
+<div class="page-hero" id="main-content" tabindex="-1">
+<div class="blob" style="width:380px;height:380px;background:var(--navy2);top:-100px;left:-80px" aria-hidden="true"></div>
+<div class="blob" style="width:280px;height:280px;background:var(--gold2);top:0;right:-60px;animation-delay:-3s" aria-hidden="true"></div>
+<div class="drift dot" style="width:5px;height:5px;background:var(--teal);top:60%;left:16%" aria-hidden="true"></div>
+<div class="hero-inner">
+<div class="page-tag" data-i18n="contact_tag">💬 Get in touch</div>
+<h1 data-i18n="contact_title">We’d love to hear from you 👋</h1>
+<p data-i18n="contact_sub">Got a question, a problem, or just want to say hi? Our team usually responds within 24 hours.</p>
+</div>
+</div>
+<div class="contact-main">
+<div class="drift" style="width:190px;height:190px;background:var(--gold2);opacity:.26;top:2%;right:-60px" aria-hidden="true"></div>
+<div class="drift" style="width:160px;height:160px;background:var(--teal2);opacity:.24;top:60%;left:-70px;animation-delay:-4s" aria-hidden="true"></div>
+<div class="drift dot" style="width:6px;height:6px;background:var(--teal);top:10%;left:6%" aria-hidden="true"></div>
+<div class="drift dot" style="width:5px;height:5px;background:var(--gold);top:36%;right:4%;animation-delay:-3s" aria-hidden="true"></div>
+<div class="drift dot" style="width:6px;height:6px;background:var(--clay);top:70%;left:2%;animation-delay:-5s" aria-hidden="true"></div>
+<div class="drift square" style="width:15px;height:15px;background:var(--navy);top:20%;right:10%;animation-delay:-2s" aria-hidden="true"></div>
+<div class="drift tri" style="width:16px;height:16px;background:var(--teal);top:50%;right:6%;animation-delay:-6s" aria-hidden="true"></div>
+<div class="drift icon" style="width:20px;height:20px;top:6%;left:1%;color:var(--gold-text,var(--gold));animation-delay:-1s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5c2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0V5Z"/><path d="M20 5c-2-1.3-5-1.3-8 0v14c3-1.3 6-1.3 8 0V5Z"/></svg></div>
+<div class="drift icon" style="width:19px;height:19px;top:44%;left:0;color:var(--clay);animation-delay:-4s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M17 3l4 4L9 19l-5 1 1-5L17 3Z"/><path d="M14 6l4 4"/></svg></div>
+<div class="drift icon" style="width:20px;height:20px;top:78%;right:4%;color:var(--gold-text,var(--gold));animation-delay:-5s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 10l-5.2 4.3L17.4 21 12 17.3 6.6 21l1.6-6.7L3 10l6.4-1.4L12 2Z"/></svg></div>
+<div class="contact-info">
+<div class="info-card">
+<div class="info-icon" data-i18n="contact_text">📧</div>
+<div class="info-label" data-i18n="contact_email_us">Email us</div>
+<div class="info-value"><a href="mailto:hello@odyssey.learn">hello@odyssey.learn</a></div>
+<div class="info-sub" data-i18n="contact_for_general_enquiries_partnerships">For general enquiries &amp; partnerships</div>
+<div style="margin-top:6px"><div class="info-value"><a href="mailto:support@odyssey.learn">support@odyssey.learn</a></div>
+<div class="info-sub" data-i18n="contact_for_technical_support_billing">For technical support &amp; billing</div></div>
+</div>
+<div class="info-card">
+<div class="info-icon" data-i18n="contact_text_2">⏰</div>
+<div class="info-label" data-i18n="contact_support_hours">Support hours</div>
+<div class="hours-grid">
+<div class="hours-item"><strong data-i18n="contact_mon_fri">Mon – Fri</strong><span data-i18n="contact_08_00_22_00_utc">08:00 – 22:00 UTC</span></div>
+<div class="hours-item"><strong data-i18n="contact_sat_sun">Sat – Sun</strong><span data-i18n="contact_10_00_18_00_utc">10:00 – 18:00 UTC</span></div>
+<div class="hours-item"><strong data-i18n="contact_response_time">Response time</strong><span data-i18n="contact_within_24_hours">Within 24 hours</span></div>
+<div class="hours-item"><strong data-i18n="contact_live_chat">Live chat</strong><span data-i18n="contact_mon_fri_only">Mon – Fri only</span></div>
+</div>
+</div>
+<div class="info-card">
+<div class="info-icon" data-i18n="contact_text_3">🌐</div>
+<div class="info-label" data-i18n="contact_follow_us">Follow us</div>
+<div class="info-sub" data-i18n="contact_stay_updated_with_new_courses_features_learning_" style="margin-bottom:10px">Stay updated with new courses, features &amp; learning tips</div>
+<div class="social-row">
+<a class="social-btn sb-tw" data-i18n="contact_twitter" href="#">𝕏 Twitter</a>
+<a class="social-btn sb-in" data-i18n="contact_in_linkedin" href="#">in LinkedIn</a>
+<a class="social-btn sb-ig" data-i18n="contact_instagram" href="#">📸 Instagram</a>
+</div>
+</div>
+<div class="info-card" style="background:linear-gradient(135deg,rgba(20,44,79,.04),rgba(192,138,62,.05));border:2px solid rgba(20,44,79,.12)">
+<div class="info-icon" data-i18n="contact_text_4">🌐</div>
+<div class="info-label" data-i18n="contact_headquarters">Operating model</div>
+<div class="info-value">Odyssey</div>
+<div class="info-sub"><span data-i18n="contact_global_hq_remote_first_organisation">Remote-first learning platform</span><br/><span data-i18n="contact_registered_in_the_united_kingdom">Official registration details will be added before launch.</span></div>
+</div>
+</div>
+<div class="contact-form-wrap" id="formWrap">
+<div class="form-title" data-i18n="contact_send_us_a_message">Send us a message ✉️</div>
+<div class="form-sub" data-i18n="contact_fill_in_the_form_below_and_our_team_will_get_bac">Fill in the form below and our team will get back to you shortly.</div>
+<div class="form-row">
+<div class="form-group">
+<label for="fname"><span data-i18n="contact_first_name">First name </span><span>*</span></label>
+<input class="form-input" data-i18n-placeholder="ph_contact_first_name" id="fname" placeholder="e.g. Amara" type="text"/>
+</div>
+<div class="form-group">
+<label for="lname"><span data-i18n="contact_last_name">Last name </span><span>*</span></label>
+<input class="form-input" data-i18n-placeholder="ph_contact_last_name" id="lname" placeholder="e.g. Diallo" type="text"/>
+</div>
+</div>
+<div class="form-group">
+<label for="femail"><span data-i18n="contact_email_address">Email address </span><span>*</span></label>
+<input class="form-input" data-i18n-placeholder="ph_email" id="femail" placeholder="you@example.com" type="email"/>
+</div>
+<div class="form-group">
+<label for="fcountry" data-i18n="contact_country">Country</label>
+<select class="form-select" id="fcountry">
+<option data-i18n="contact_select_your_country" value="">— Select your country —</option>
+<option data-i18n="contact_nigeria">Nigeria</option><option data-i18n="contact_india">India</option><option data-i18n="contact_united_kingdom">United Kingdom</option>
+<option data-i18n="contact_united_states">United States</option><option data-i18n="contact_france">France</option><option data-i18n="contact_germany">Germany</option>
+<option data-i18n="contact_brazil">Brazil</option><option data-i18n="contact_china">China</option><option data-i18n="contact_japan">Japan</option>
+<option data-i18n="contact_south_africa">South Africa</option><option data-i18n="contact_kenya">Kenya</option><option data-i18n="contact_saudi_arabia">Saudi Arabia</option>
+<option data-i18n="contact_egypt">Egypt</option><option data-i18n="contact_mexico">Mexico</option><option data-i18n="contact_south_korea">South Korea</option>
+<option data-i18n="contact_other">Other</option>
+</select>
+</div>
+<div class="form-group">
+<label><span data-i18n="contact_type_of_inquiry">Type of inquiry </span><span>*</span></label>
+<div class="inquiry-pills" id="inquiryPills" role="group" aria-label="Type of inquiry">
+<button class="inq-pill" data-i18n="contact_general_question" data-val="General question">❓ General question</button>
+<button class="inq-pill" data-i18n="contact_technical_support" data-val="Technical support">🔧 Technical support</button>
+<button class="inq-pill" data-i18n="contact_billing_payments" data-val="Billing &amp; payments">💳 Billing &amp; payments</button>
+<button class="inq-pill" data-i18n="contact_instructor_support" data-val="Instructor support">🧑‍🏫 Instructor support</button>
+<button class="inq-pill" data-i18n="contact_report_an_issue" data-val="Report an issue">🚨 Report an issue</button>
+<button class="inq-pill" data-i18n="contact_partnership" data-val="Partnership">🤝 Partnership</button>
+<button class="inq-pill" data-i18n="contact_press_media" data-val="Press &amp; media">📰 Press &amp; media</button>
+<button class="inq-pill" data-i18n="contact_other_2" data-val="Other">💬 Other</button>
+</div>
+<input id="finquiry" type="hidden"/>
+</div>
+<div class="form-group">
+<label for="fsubject"><span data-i18n="contact_subject">Subject </span><span>*</span></label>
+<input class="form-input" data-i18n-placeholder="ph_contact_subject" id="fsubject" placeholder="Brief summary of your enquiry" type="text"/>
+</div>
+<div class="form-group">
+<label for="fmessage"><span data-i18n="contact_your_message">Your message </span><span>*</span></label>
+<div id="fmessageEditor" role="application" aria-label="Message editor">
+  <div class="message-editor-toolbar" role="toolbar" aria-label="Message formatting">
+    <div class="message-editor-group">
+      <button type="button" class="message-editor-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+      <button type="button" class="message-editor-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+      <button type="button" class="message-editor-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+    </div>
+    <div class="message-editor-group">
+      <select class="message-editor-select font-family" data-cmd="fontName" title="Font">
+        <option value="">Font</option><option value="Manrope">Manrope</option>
+        <option value="Arial">Arial</option><option value="Calibri">Calibri</option>
+        <option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option>
+        <option value="Verdana">Verdana</option>
+      </select>
+      <select class="message-editor-select font-size" data-cmd="fontSize" title="Font size">
+        <option value="">Size</option><option value="1">8</option><option value="2">10</option>
+        <option value="3">12</option><option value="4">14</option><option value="5">18</option>
+        <option value="6">24</option><option value="7">32</option>
+      </select>
+    </div>
+    <div class="message-editor-group">
+      <label class="message-editor-color" title="Text colour">
+        <input type="color" value="#142C4F" aria-label="Text colour">
+      </label>
+      <button type="button" class="message-editor-btn" data-cmd="justifyLeft" title="Align left">≡</button>
+      <button type="button" class="message-editor-btn" data-cmd="justifyCenter" title="Centre">≡</button>
+      <button type="button" class="message-editor-btn" data-cmd="justifyRight" title="Align right">≡</button>
+    </div>
+    <div class="message-editor-group">
+      <button type="button" class="message-editor-btn" data-cmd="insertUnorderedList" title="Bulleted list">• List</button>
+      <button type="button" class="message-editor-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+    </div>
+    <div class="message-editor-group">
+      <button type="button" class="message-editor-btn" data-cmd="outdent" title="Decrease indent">⇤</button>
+      <button type="button" class="message-editor-btn" data-cmd="indent" title="Increase indent">⇥</button>
+    </div>
+    <div class="message-editor-group">
+      <button type="button" class="message-editor-btn" data-dir="ltr" title="Left-to-right">LTR</button>
+      <button type="button" class="message-editor-btn" data-dir="rtl" title="Right-to-left">RTL</button>
+    </div>
+    <div class="message-editor-group">
+      <button type="button" class="message-editor-btn" data-cmd="removeFormat" title="Clear formatting">Tx</button>
+      <button type="button" class="message-editor-btn" data-link title="Insert link">🔗</button>
+    </div>
+  </div>
+  <div class="message-editor-body" contenteditable="true" role="textbox" aria-multiline="true"
+       data-placeholder="Write your message here…"></div>
+</div>
+<textarea id="fmessage" name="message" style="display:none" required></textarea>
+</div>
+<div class="form-group">
+<label><span data-i18n="contact_attach_a_file">Attach a file </span><small data-i18n="contact_optional_screenshots_docs" style="text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)">(optional — screenshots, docs)</small></label>
+<div class="file-drop" id="fileDrop" role="button" tabindex="0" aria-label="Attach a file, optional">
+<p><span>📎 </span><strong>Click to upload</strong><span> or drag &amp; drop</span><br/><span style="font-size:11px;color:#999">PNG, JPG, PDF · max 4MB</span></p>
+<input accept=".png,.jpg,.jpeg,.pdf" id="fileInput" style="display:none" type="file"/>
+</div>
+<div id="fileMeta" class="file-meta" hidden><span id="fileName"></span><button type="button" class="file-remove" id="fileRemove">Remove</button></div>
+</div>
+<button class="form-submit" data-i18n="contact_send_message" onclick="submitForm()">Send message 🚀</button>
+<p class="form-note" data-i18n="contact_we_never_share_your_data_response_within_24_hour">🔒 We never share your data. Response within 24 hours.</p>
+</div>
+<div class="success-msg" id="successMsg">
+<div class="success-icon" data-i18n="contact_text_6">🎉</div>
+<h2 data-i18n="contact_message_sent_we_ll_be_in_touch_soon">Message sent! We'll be in touch soon.</h2>
+<p data-i18n="contact_our_team_usually_responds_within_24_hours_check_">Our team usually responds within 24 hours. Check your inbox — including spam just in case!</p>
+<button class="btn-primary" data-i18n="contact_send_another_message" onclick="resetForm()" style="margin-top:24px">Send another message</button>
+</div>
+</div>
+<div class="faq-strip">
+<div class="drift dot" style="width:5px;height:5px;background:#fff;top:20%;left:14%" aria-hidden="true"></div>
+<div class="drift dot" style="width:4px;height:4px;background:var(--gold2);top:60%;right:10%;animation-delay:-3s" aria-hidden="true"></div>
+<div class="drift dot" style="width:6px;height:6px;background:#fff;top:80%;left:30%;animation-delay:-5s" aria-hidden="true"></div>
+<div class="drift" style="width:180px;height:180px;background:var(--gold);opacity:.14;top:-40px;right:-40px" aria-hidden="true"></div>
+<div class="drift tri" style="width:14px;height:14px;background:#fff;top:40%;right:20%;animation-delay:-4s" aria-hidden="true"></div>
+<div class="faq-inner">
+<div class="faq-title" data-i18n="contact_quick_answers">Quick answers 💡</div>
+<div class="faq-sub" data-i18n="contact_before_you_write_your_answer_might_already_be_he">Before you write — your answer might already be here!</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="contact_how_do_i_reset_my_password">How do I reset my password? </span><span class="faq-arrow">⌄</span></div>
+<div class="faq-a" data-i18n="contact_go_to_the_login_page_and_click_forgot_password_e">Go to the login page and click "Forgot password". Enter your email and we'll send you a reset link within a few minutes. Check your spam folder if it doesn't arrive!</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="contact_can_i_get_a_refund_for_a_course">Can I get a refund for a course? </span><span class="faq-arrow">⌄</span></div>
+<div class="faq-a" data-i18n="contact_yes_we_offer_a_30_day_money_back_guarantee_on_al">Yes! We offer a 30-day money-back guarantee on all paid courses, no questions asked. Just contact our support team with your order details and we'll process it right away.</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="contact_how_do_i_become_an_instructor_on_odyssey">How do I become an instructor on Odyssey? </span><span class="faq-arrow">⌄</span></div>
+<div class="faq-a" data-i18n="contact_click_start_teaching_on_the_homepage_complete_yo">Click "Start teaching" on the homepage, complete your instructor profile, and submit your first course for review. Our team reviews all submissions within 5 business days.</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="contact_do_courses_work_offline">Do courses work offline? </span><span class="faq-arrow">⌄</span></div>
+<div class="faq-a" data-i18n="contact_yes_download_any_course_content_through_our_mobi">Yes! Download any course content through our mobile app for offline access. This is great for learners with slow or limited internet connections — a key part of our global mission.</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="contact_is_odyssey_free_to_use">Is Odyssey free to use? </span><span class="faq-arrow">⌄</span></div>
+<div class="faq-a" data-i18n="contact_browsing_and_creating_a_student_account_is_compl">Browsing and creating a student account is completely free. Individual courses are priced by their instructors — many are free, and paid courses are affordable with local currency pricing.</div>
+</div>
+</div>
+</div>
+<footer>
+<a class="footer-logo-wrap" href="index.html">
+<div class="footer-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="34" height="34" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div>
+<span class="footer-logo-text">Odyssey</span>
+</a>
+<p><span data-i18n="footer_rights">© 2026 Odyssey · Demo preview · Made with ❤️ for learners everywhere 🌍</span></p>
+</footer>
+<script>
+(() => {
+  const root = document.getElementById('fmessageEditor');
+  const editor = root?.querySelector('.message-editor-body');
+  const hidden = document.getElementById('fmessage');
+  if (!root || !editor) return;
+
+  const sync = () => { if (hidden) hidden.value = editor.innerHTML.trim(); };
+  const run = (cmd, value = null) => {
+    editor.focus();
+    document.execCommand(cmd, false, value);
+    sync();
+    update();
+  };
+
+  root.querySelectorAll('button[data-cmd]').forEach(btn => {
+    btn.addEventListener('mousedown', e => e.preventDefault());
+    btn.addEventListener('click', () => run(btn.dataset.cmd));
+  });
+
+  root.querySelectorAll('select[data-cmd]').forEach(select => {
+    select.addEventListener('change', e => {
+      if (e.target.value) run(e.target.dataset.cmd, e.target.value);
+      e.target.value = '';
+    });
+  });
+
+  root.querySelector('input[type="color"]')?.addEventListener('input', e => run('foreColor', e.target.value));
+
+  root.querySelector('[data-dir="ltr"]')?.addEventListener('click', () => {
+    editor.dir = 'ltr'; editor.style.textAlign = 'left'; editor.focus(); sync();
+  });
+  root.querySelector('[data-dir="rtl"]')?.addEventListener('click', () => {
+    editor.dir = 'rtl'; editor.style.textAlign = 'right'; editor.focus(); sync();
+  });
+
+  root.querySelector('[data-link]')?.addEventListener('click', () => {
+    editor.focus();
+    const url = prompt('Enter URL');
+    if (url) run('createLink', url);
+  });
+
+  editor.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.shiftKey) return;
+    const sel = window.getSelection();
+    if (!sel?.rangeCount) return;
+    let node = sel.anchorNode;
+    if (node?.nodeType === Node.TEXT_NODE) node = node.parentElement;
+    const li = node?.closest?.('li');
+    if (!li || !editor.contains(li)) return;
+
+    e.preventDefault();
+    const list = li.parentElement;
+
+    if (!li.textContent.trim()) {
+      const block = document.createElement('div');
+      block.innerHTML = '<br>';
+      list.parentNode.insertBefore(block, list.nextSibling);
+      li.remove();
+      if (!list.children.length) list.remove();
+      const range = document.createRange();
+      range.setStart(block, 0); range.collapse(true);
+      sel.removeAllRanges(); sel.addRange(range);
+    } else {
+      const next = document.createElement('li');
+      next.innerHTML = '<br>';
+      list.insertBefore(next, li.nextSibling);
+      const range = document.createRange();
+      range.setStart(next, 0); range.collapse(true);
+      sel.removeAllRanges(); sel.addRange(range);
+    }
+    sync();
+  });
+
+  editor.addEventListener('input', sync);
+  editor.addEventListener('keyup', update);
+  editor.addEventListener('mouseup', update);
+  editor.closest('form')?.addEventListener('submit', sync, true);
+
+  function update() {
+    root.querySelectorAll('button[data-cmd]').forEach(btn => {
+      try { btn.classList.toggle('active', document.queryCommandState(btn.dataset.cmd)); }
+      catch (_) {}
+    });
+  }
+  sync();
+})();
+</script>
+<script defer>
+// Shared mobile nav: toggles the hamburger + dropdown panel used on every
+// page. Panel position is computed from the real nav element on each open/
+// resize, instead of a fixed pixel guess, so it stays aligned no matter
+// how the nav's height changes across breakpoints.
+document.addEventListener('DOMContentLoaded', function(){
+  const burger = document.querySelector('.nav-burger');
+  const panel = document.querySelector('.nav-mobile-panel');
+  const scrim = document.querySelector('.nav-mobile-scrim');
+  if(!burger || !panel) return;
+
+  let previousFocus = null;
+  function open(){
+    previousFocus = document.activeElement;
+    burger.classList.add('open');
+    panel.classList.add('open');
+    scrim?.classList.add('open');
+    burger.setAttribute('aria-label','Close menu');
+    burger.setAttribute('aria-expanded','true');
+    panel.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    const firstLink = panel.querySelector('a');
+    firstLink?.focus();
+  }
+  function close(){
+    burger.classList.remove('open');
+    panel.classList.remove('open');
+    scrim?.classList.remove('open');
+    burger.setAttribute('aria-label','Open menu');
+    burger.setAttribute('aria-expanded','false');
+    panel.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+    if(previousFocus && typeof previousFocus.focus === 'function') previousFocus.focus();
+  }
+  function toggle(){ if(panel.classList.contains('open')) close(); else open(); }
+
+  burger.addEventListener('click', function(e){ e.stopPropagation(); toggle(); });
+  panel.addEventListener('click', function(e){ e.stopPropagation(); });
+  scrim?.addEventListener('click', close);
+  panel.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('click', function(e){
+    if(panel.classList.contains('open') && !panel.contains(e.target) && e.target !== burger) close();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && panel.classList.contains('open')) close();
+  });
+  window.addEventListener('resize', function(){ if(window.innerWidth > 900) close(); });
+});
+</script>
+</body>
+</html>

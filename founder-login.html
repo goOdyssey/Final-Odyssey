@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Founder sign-in | Odyssey</title>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/security-guard.js"></script>
+<script src="js/mfa.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#f6f4ef;color:#172033;font:14px system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:#142c4f;color:#fff;padding:14px 28px}header b{font-size:18px}header span{color:#e7c88a}
+main{max-width:460px;margin:55px auto;padding:0 16px}.card{background:#fff;border:1px solid #dfe3ea;border-radius:16px;box-shadow:0 12px 35px rgba(20,44,79,.1);padding:28px}
+h1{font-size:23px;margin:0 0 8px}.muted{color:#64708a;line-height:1.55}label{display:block;font-weight:700;margin:18px 0 7px}
+input{width:100%;padding:12px;border:1px solid #cfd5df;border-radius:9px;font:inherit}button{width:100%;margin-top:18px;padding:12px;border:0;border-radius:9px;background:#142c4f;color:#fff;font-weight:700;cursor:pointer}button:disabled{opacity:.55}
+.notice{margin-top:15px;padding:10px 12px;border-radius:9px;background:#f3f5f8;color:#64708a}.bad{background:#ffefef;color:#a62d2d}.good{background:#e8f6ee;color:#176b50}
+.foot{max-width:460px;margin:14px auto 0;text-align:center;font-size:11.5px;color:#888;line-height:1.7}.foot a{color:#888;text-decoration:underline}
+</style>
+  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<header><b>Odyssey <span>administration</span></b></header>
+<main>
+<section class="card">
+<h1>Founder sign-in</h1>
+<p class="muted">Enter the founder account credentials.</p>
+<label for="email">Email address</label><input id="email" type="email" autocomplete="username">
+<label for="password">Password</label><input id="password" type="password" autocomplete="current-password">
+<button id="loginBtn">Log in</button>
+<div id="notice" class="notice" style="display:none"></div>
+</section>
+</main>
+<div class="foot">
+  Not the founder? <a href="admin-login.html">Admin sign-in</a><br>
+  Access is restricted and every sign-in is logged.
+</div>
+
+<script>
+(() => {
+  const $=id=>document.getElementById(id), nextUrl="founder-dashboard.html";
+  const notice=$("notice"), loginBtn=$("loginBtn");
+  const show=(text,good=false)=>{notice.textContent=text;notice.className="notice "+(good?"good":"bad");notice.style.display="block"};
+
+  loginBtn.onclick=async()=>{
+    const email=$("email").value.trim().toLowerCase(), password=$("password").value;
+    if(!email||!password)return show("Enter your email and password.");
+    if(!window.OdysseySupabase?.isConfigured?.())return show("Supabase is not configured yet.");
+    if(!window.OdysseyMFA)return show("This page needs js/mfa.js, which was not found.");
+
+    loginBtn.disabled=true; loginBtn.textContent="Signing in…";
+    try{
+      const guard=await OdysseySecurity.check(email,"founder_login");
+      if(!guard.allowed){show(guard.message);return}
+
+      const result=await OdysseySupabase.signIn(email,password);
+      const role=result?.profile?.role;
+
+      if(role!=="superuser"){
+        // Don't leave a session behind, and don't hint at whether the
+        // account exists or just isn't the founder.
+        await OdysseySupabase.signOut();
+        OdysseySecurity.record(email,"failure");
+        throw new Error("Invalid founder credentials.");
+      }
+      OdysseySecurity.record(email,"success");
+
+      const factor=await OdysseyMFA.verifiedTotpFactor();
+      if(!factor){
+        show("Signed in. Two-factor setup required…","good");
+        setTimeout(()=>{location.href="mfa-setup.html?next="+encodeURIComponent(nextUrl)},300);
+        return;
+      }
+      const level=await OdysseyMFA.assurance();
+      if(level.currentLevel!=="aal2"){
+        show("Signed in. Verifying two-factor code…","good");
+        setTimeout(()=>{location.href="mfa-verify.html?next="+encodeURIComponent(nextUrl)},300);
+        return;
+      }
+      location.href=nextUrl;
+    }catch(e){
+      OdysseySecurity.record(email,"failure");
+      show(e?.message||"Invalid founder credentials.");
+    }finally{
+      loginBtn.disabled=false; loginBtn.textContent="Log in";
+    }
+  };
+})();
+</script>
+</body>
+</html>

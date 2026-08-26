@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Set up founder MFA | Odyssey</title>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/mfa.js"></script>
+<style>
+:root{--navy:#142c4f;--blue:#2a4a78;--gold:#c08a3e;--ink:#172033;--muted:#64708a;--bg:#f6f4ef;--line:#dfe3ea;--good:#176b50;--bad:#a62d2d}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 0,rgba(20,44,79,.08),transparent 30%),var(--bg);font:14px system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+.header{background:linear-gradient(120deg,var(--navy),var(--blue));color:#fff;padding:14px 28px}.brand{font-weight:700;font-size:18px}.brand span{color:#e7c88a}
+.wrap{max-width:920px;margin:0 auto;padding:42px 20px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 35px rgba(20,44,79,.10);overflow:hidden}.top{padding:28px 30px 18px;border-bottom:1px solid var(--line)}h1{margin:0 0 8px;font-size:25px}p{line-height:1.6}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:minmax(280px,390px) 1fr;gap:32px;padding:30px}.qrbox{border:1px solid var(--line);border-radius:16px;padding:22px;text-align:center;background:#fafafa}.qrbox img{display:block;width:280px;height:280px;max-width:100%;margin:auto;background:#fff;border:12px solid #fff;border-radius:8px}.status{margin:12px 0;padding:10px 12px;border-radius:9px;background:#f3f5f8;color:var(--muted);font-size:13px}.status.good{background:#e8f6ee;color:var(--good)}.status.bad{background:#ffefef;color:var(--bad)}label{display:block;font-weight:700;margin:0 0 7px}.code{font-size:25px;letter-spacing:.28em;text-align:center;font-weight:700}.btn{width:100%;border:0;border-radius:10px;background:var(--navy);color:#fff;padding:12px 14px;font-weight:700;cursor:pointer}.btn:disabled{opacity:.55;cursor:not-allowed}.field{margin:18px 0}input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit}.secret{display:flex;gap:8px}.secret input{font-family:ui-monospace,monospace;font-size:12px}.smallbtn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:0 12px;cursor:pointer}.instructions li{margin:10px 0;line-height:1.5}.warning{font-size:12px;color:#7a4a00;background:#fff7e5;border:1px solid #ecd7a7;border-radius:10px;padding:11px}.hide{display:none}@media(max-width:720px){.grid{grid-template-columns:1fr;padding:20px}.top{padding:22px 20px}.wrap{padding:20px 12px}}
+</style>
+  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<header class="header"><div class="brand">Odyssey <span>administration</span></div></header>
+<main class="wrap"><section class="card">
+<div class="top"><h1>Set up founder MFA</h1><p class="muted">Scan this live Odyssey QR code with your authenticator (a phone app, a browser extension like Bitwarden or 1Password, or a hardware security key manager). It will then generate a new 6-digit code every time period for founder sign-in.</p></div>
+<div class="grid">
+<div class="qrbox"><div id="qrState" class="status">Creating a new secure TOTP QR code…</div><img id="qr" class="hide" alt="Odyssey MFA setup QR code"></div>
+<div>
+<ol class="instructions"><li>Open your TOTP authenticator (app, browser extension, or password manager).</li><li>Choose <b>Add account</b> or <b>Scan QR code</b>.</li><li>Scan the QR code shown on this Odyssey page, or use the manual setup key below if you can't scan it.</li><li>Your authenticator will show a rotating <b>6-digit code</b>.</li><li>Enter that code below to activate MFA.</li></ol>
+<div class="field"><label for="code">6-digit authenticator code</label><input id="code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000"></div>
+<button id="verify" class="btn" disabled>Verify and activate MFA</button>
+<div id="message" class="status hide"></div>
+<div class="field"><label>Manual setup key</label><div class="secret"><input id="secret" readonly><button class="smallbtn" id="copy" type="button">Copy</button></div></div>
+<div class="warning">Treat the QR code and setup key like a password. Only scan it with the authenticator you trust. Odyssey does not need you to send the secret to another website. This QR is shown once, for this enrollment only — it will not be shown again after you verify.</div>
+</div></div></section></main>
+<script>
+(function(){
+ const qr=document.getElementById('qr'),qrState=document.getElementById('qrState'),code=document.getElementById('code'),verify=document.getElementById('verify'),message=document.getElementById('message'),secret=document.getElementById('secret'),copy=document.getElementById('copy');
+ const next=new URLSearchParams(location.search).get('next')||'founder-dashboard.html'; let factorId='';
+ function msg(text,type){message.textContent=text;message.className='status '+type;}
+ function renderQr(src){
+  // Supabase returns totp.qr_code as raw <svg>...</svg> markup, not an image
+  // URL, so it has to be wrapped in a blob URL before an <img> can show it.
+  if(!src) throw new Error('Odyssey did not return a QR code.');
+  if(/^\s*<svg[\s>]/i.test(src)) qr.src=URL.createObjectURL(new Blob([src],{type:'image/svg+xml'}));
+  else qr.src=src;
+ }
+ async function init(){
+  try{
+   const existing=await OdysseyMFA.verifiedTotpFactor();
+   if(existing){location.replace(next);return;}
+   const data=await OdysseyMFA.enroll(); factorId=data.id;
+   renderQr(data.totp?.qr_code);
+   qr.classList.remove('hide'); qrState.textContent='Live QR code ready — scan it now.'; qrState.className='status good';
+   secret.value=data.totp.secret||''; verify.disabled=false; code.focus();
+  }catch(e){qrState.textContent=e.message||'Could not create the MFA QR code.';qrState.className='status bad';}
+ }
+ code.addEventListener('input',()=>{code.value=code.value.replace(/\D/g,'').slice(0,6);});
+ verify.addEventListener('click',async()=>{
+  if(code.value.length!==6||!factorId)return; verify.disabled=true;verify.textContent='Verifying…';
+  try{await OdysseyMFA.verify(factorId,code.value);msg('MFA activated successfully. Opening the founder dashboard…','good');setTimeout(()=>location.replace(next),500);}
+  catch(e){msg(e.message||'That code was not accepted. Wait for the next code and try again.','bad');verify.disabled=false;verify.textContent='Verify and activate MFA';code.select();}
+ });
+ copy.addEventListener('click',async()=>{if(!secret.value)return;try{await navigator.clipboard.writeText(secret.value);copy.textContent='Copied';setTimeout(()=>copy.textContent='Copy',1200)}catch(e){secret.select();document.execCommand('copy');copy.textContent='Copied';}});
+ init();
+})();
+</script>
+</body></html>

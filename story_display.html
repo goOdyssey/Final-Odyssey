@@ -1,0 +1,128 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<script src="js/i18n.js" defer></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<title>Odyssey student stories</title>
+<style>
+:root{--navy:#142C4F;--navy2:#2A4A78;--gold:#C08A3E;--gold2:#E7C88A;--teal:#0F7A6C;--teal2:#5AC4B0;--ink:#141C2B;--muted:#64708A;--line:rgba(20,44,79,.14);--head:Newsreader,Georgia,serif;--body:Manrope,system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--body);color:var(--ink);background:radial-gradient(circle at 8% 10%,rgba(20,44,79,.16),transparent 28%),radial-gradient(circle at 90% 5%,rgba(192,138,62,.14),transparent 26%),linear-gradient(135deg,#F8F6F1,#F3E9D3 48%,#EFEDE6);overflow-x:hidden}
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 24px;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--head);font-size:22px;font-weight:800}
+.brand img{width:38px;height:38px;border-radius:13px;object-fit:contain;background:#071c2b;padding:4px}
+.navlinks{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.navlinks a{color:var(--muted);font-weight:800;font-size:13px;text-decoration:none}
+.navlinks a:hover{color:var(--navy)}
+
+.hero{position:relative;padding:70px 22px 46px;text-align:center;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.32;pointer-events:none;animation:blobFloat 8s ease-in-out infinite;z-index:0}
+.blob1{width:380px;height:380px;background:var(--navy2);top:-120px;left:-80px}
+.blob2{width:320px;height:320px;background:var(--gold2);top:20px;right:-70px;animation-delay:-3s}
+.blob3{width:280px;height:280px;background:var(--teal2);bottom:-100px;left:24%;animation-delay:-5s}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,15px) scale(.97)}}
+.hero-inner{position:relative;z-index:1}
+.tag{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid rgba(20,44,79,.18);border-radius:999px;background:rgba(255,255,255,.68);color:var(--navy);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.hero h1{font-family:var(--head);font-size:clamp(36px,5.5vw,64px);line-height:1.05;margin:18px auto 14px;max-width:820px}
+.hero p{max-width:640px;margin:0 auto 22px;color:var(--muted);line-height:1.7;font-weight:600}
+
+.wrap{width:min(1180px,calc(100% - 32px));margin:0 auto 80px}
+.story-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:20px}
+.story-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;box-shadow:0 10px 26px rgba(20,44,79,.06);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease}
+.story-card:hover{transform:translateY(-6px);box-shadow:0 30px 60px rgba(20,44,79,.16)}
+.story-photo{height:170px;position:relative;display:flex;align-items:center;justify-content:center;font-size:54px;overflow:hidden}
+.story-photo img{width:100%;height:100%;object-fit:cover}
+.story-photo .theme-badge{position:absolute;top:10px;right:10px;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:800;background:rgba(255,255,255,.9);color:var(--navy)}
+.story-body{padding:16px}
+.story-name{font-family:var(--head);font-size:17px;font-weight:700;margin:0 0 3px}
+.story-loc{color:var(--muted);font-size:12px;font-weight:700;margin-bottom:8px}
+.story-snippet{color:var(--muted);font-size:13px;line-height:1.5}
+.story-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.story-chip{background:rgba(20,44,79,.06);color:var(--navy);font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px}
+
+.empty-state,.loading-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.cta-band{text-align:center;margin-top:50px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:0;border-radius:14px;padding:12px 20px;background:linear-gradient(135deg,var(--navy),var(--gold));color:white;font-weight:900;text-decoration:none;cursor:pointer;box-shadow:0 14px 34px rgba(20,44,79,.22)}
+footer{background:#0B1930;color:white;text-align:center;padding:36px 20px}
+.footer-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:14px 0}
+.footer-links a{color:rgba(255,255,255,.58);text-decoration:none;font-weight:750;font-size:13px}
+@media(max-width:900px){.navlinks{justify-content:flex-end}}
+</style>  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<nav><a class="brand" href="index.html"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo"><span>Odyssey</span></a><div class="navlinks"><a href="index.html">Home</a><a href="share-story.html">Share your story</a><span data-i18n-switcher></span></div></nav>
+
+<section class="hero"><div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div>
+  <div class="hero-inner">
+    <span class="tag">Real learners, real stories</span>
+    <h1>Stories from the Odyssey community.</h1>
+    <p>See how students around the world used Odyssey to study, prepare, and keep going — in their own words.</p>
+    <a class="btn" href="share-story.html">Share your story</a>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="loading-state" id="loadingState">Loading stories…</div>
+  <div class="story-grid" id="storyGrid" style="display:none"></div>
+</main>
+
+<footer><strong>Odyssey</strong><div class="footer-links"><a href="story_display.html">Stories</a><a href="share-story.html">Share your story</a><a href="index.html">Home</a></div><p>© 2026 Odyssey · Demo preview</p></footer>
+
+<script>
+const THEME_LABELS = { sky_voyager: '🚀 Sky Voyager', blossom_dream: '🌸 Blossom Dream', jungle_quest: '🌴 Jungle Quest', galaxy_sparkle: '🌙 Galaxy Sparkle' };
+const THEME_EMOJI = { sky_voyager: '🚀', blossom_dream: '🌸', jungle_quest: '🌴', galaxy_sparkle: '🌙' };
+
+function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function snippet(text, len){ text = String(text||''); return text.length > len ? text.slice(0,len).trim()+'…' : text; }
+
+async function init(){
+  const grid = document.getElementById('storyGrid');
+  const loading = document.getElementById('loadingState');
+
+  if(!window.OdysseySupabase || !OdysseySupabase.isConfigured()){
+    loading.textContent = 'This deployment is not connected to Supabase yet.';
+    return;
+  }
+
+  try {
+    const sb = await OdysseySupabase.client();
+    const { data: stories, error } = await sb.from('stories').select('*').eq('status','published').order('created_at', { ascending: false });
+    if(error) throw error;
+
+    loading.style.display = 'none';
+    grid.style.display = 'grid';
+
+    if(!stories.length){
+      grid.style.display='none';
+      loading.style.display='block';
+      loading.innerHTML = 'No stories yet — <a href="share-story.html">be the first to share yours</a>.';
+      return;
+    }
+
+    grid.innerHTML = stories.map(s => {
+      const theme = s.theme || 'sky_voyager';
+      const photoInner = s.photo_url ? `<img src="${escapeHtml(s.photo_url)}" alt="">` : (THEME_EMOJI[theme]||'✨');
+      return `<a class="story-card" href="story_view.html?id=${encodeURIComponent(s.id)}">
+        <div class="story-photo">${photoInner}<span class="theme-badge">${THEME_LABELS[theme]||'✨ Story'}</span></div>
+        <div class="story-body">
+          <div class="story-name">${escapeHtml(s.name)}</div>
+          <div class="story-loc">${escapeHtml(s.city||'')}${s.city&&s.country?', ':''}${escapeHtml(s.country||'')}</div>
+          <div class="story-snippet">${escapeHtml(snippet(s.message, 110))}</div>
+          <div class="story-chips">
+            ${s.field ? `<span class="story-chip">${escapeHtml(s.field)}</span>` : ''}
+            ${s.subject ? `<span class="story-chip">${escapeHtml(s.subject)}</span>` : ''}
+          </div>
+        </div>
+      </a>`;
+    }).join('');
+  } catch(err) {
+    console.error(err);
+    loading.textContent = 'Could not load stories right now.';
+  }
+}
+init();
+</script>
+</body></html>

@@ -1,0 +1,10 @@
+{
+  "name": "odyssey-api",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Serverless functions for Odyssey (Stripe checkout + webhook). If your repo already has a package.json, merge these two dependencies into it instead of replacing the file.",
+  "dependencies": {
+    "stripe": "^16.12.0",
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}

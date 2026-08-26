@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Two-factor verification | Odyssey</title>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/mfa.js"></script>
+<style>
+:root{--navy:#142c4f;--blue:#2a4a78;--gold:#c08a3e;--ink:#172033;--muted:#64708a;--bg:#f6f4ef;--line:#dfe3ea;--good:#176b50;--bad:#a62d2d}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 0,rgba(20,44,79,.08),transparent 30%),var(--bg);font:14px system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+.header{background:linear-gradient(120deg,var(--navy),var(--blue));color:#fff;padding:14px 28px}.brand{font-weight:700;font-size:18px}.brand span{color:#e7c88a}
+main{max-width:420px;margin:70px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 35px rgba(20,44,79,.10);padding:28px}
+h1{font-size:22px;margin:0 0 8px}p.muted{color:var(--muted);line-height:1.55;margin:0 0 20px}
+label{display:block;font-weight:700;margin:0 0 7px}
+.code{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:25px;letter-spacing:.28em;text-align:center;font-weight:700}
+.btn{width:100%;margin-top:18px;padding:12px;border:0;border-radius:10px;background:var(--navy);color:#fff;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.status{margin-top:15px;padding:10px 12px;border-radius:9px;background:#f3f5f8;color:var(--muted);display:none}
+.status.show{display:block}.status.bad{background:#ffefef;color:var(--bad)}.status.good{background:#e8f6ee;color:var(--good)}
+.foot{max-width:420px;margin:14px auto 0;text-align:center;font-size:11.5px;color:#888;line-height:1.7}
+.foot a{color:#888;text-decoration:underline;background:none;border:0;cursor:pointer;font:inherit}
+</style>
+  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<header class="header"><div class="brand">Odyssey <span>administration</span></div></header>
+<main>
+<section class="card">
+<h1>Enter your 6-digit code</h1>
+<p class="muted">Open the authenticator you set up earlier (app, browser extension, or password manager) and enter the current code for your Odyssey account.</p>
+<label for="code">Authenticator code</label>
+<input id="code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000">
+<button id="verify" class="btn" disabled>Verify</button>
+<div id="status" class="status"></div>
+</section>
+</main>
+<div class="foot"><button id="signOut" type="button">Sign out and use a different account</button></div>
+
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ const code=$('code'), verifyBtn=$('verify'), status=$('status');
+ const params=new URLSearchParams(location.search);
+ const next=params.get('next')||'admin_dashboard.html';
+ // Whichever login page sent the user here is also where "start over"
+ // and "no factor enrolled" should send them back to.
+ const loginPage=params.get('login')||(next.indexOf('founder')===0?'founder-login.html':'admin-login.html');
+ let factorId='';
+
+ function show(text,type){status.textContent=text;status.className='status show '+(type||'');}
+
+ async function init(){
+  try{
+   const session=await OdysseySupabase.session();
+   if(!session){location.replace(loginPage);return;}
+
+   const level=await OdysseyMFA.assurance();
+   if(level.currentLevel==='aal2'){location.replace(next);return;}
+
+   const factor=await OdysseyMFA.verifiedTotpFactor();
+   if(!factor){
+    // Nothing to challenge against - this account still needs to enroll,
+    // not verify. Send it through setup instead of leaving a dead end here.
+    location.replace('mfa-setup.html?next='+encodeURIComponent(next));
+    return;
+   }
+   factorId=factor.id;
+   code.focus();
+  }catch(e){
+   show(e.message||'Could not start verification. Please sign in again.','bad');
+  }
+ }
+
+ code.addEventListener('input',()=>{
+  code.value=code.value.replace(/\D/g,'').slice(0,6);
+  verifyBtn.disabled=code.value.length!==6;
+ });
+
+ verifyBtn.addEventListener('click',async()=>{
+  if(code.value.length!==6||!factorId)return;
+  verifyBtn.disabled=true; verifyBtn.textContent='Verifying…';
+  try{
+   await OdysseyMFA.verify(factorId,code.value);
+   show('Verified. Opening your dashboard…','good');
+   setTimeout(()=>location.replace(next),400);
+  }catch(e){
+   show(e.message||'That code was not accepted. Wait for the next code and try again.','bad');
+   verifyBtn.disabled=false; verifyBtn.textContent='Verify';
+   code.value=''; code.focus();
+  }
+ });
+
+ $('signOut').addEventListener('click',async()=>{
+  try{await OdysseySupabase.signOut();}catch(e){}
+  location.replace(loginPage);
+ });
+
+ init();
+})();
+</script>
+</body></html>

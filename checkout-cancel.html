@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odyssey - Checkout cancelled</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/odyssey-design-system.css" />
+<script defer src="assets/odyssey-scroll-reveal.js"></script>
+<style>
+:root{--bg:#F6F4EF;--ink:#141C2B;--muted:#64708A;--navy:#142C4F;--teal:#0F7A6C;--gold:#C08A3E;--line:rgba(20,28,43,.12)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--ink);padding:24px}
+.card{max-width:440px;width:100%;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 70px rgba(15,23,42,.12);padding:40px 32px;text-align:center}
+.badge{width:64px;height:64px;border-radius:999px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px;background:rgba(100,112,138,.14);color:var(--muted)}
+h1{font-family:Newsreader,Georgia,serif;font-size:24px;margin:0 0 10px}
+p{color:var(--muted);line-height:1.6;margin:0 0 22px;font-size:14.5px}
+.btn{display:inline-block;padding:13px 26px;border-radius:999px;background:linear-gradient(135deg,var(--navy),var(--teal));color:#fff;font-weight:800;text-decoration:none;font-size:14px;margin:0 6px}
+.btn.secondary{background:#fff;color:var(--navy);border:1px solid var(--line)}
+</style>
+  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
+<div class="card" data-reveal="rise">
+  <div class="badge">↩</div>
+  <h1>Checkout cancelled</h1>
+  <p>No payment was made and nothing was charged. You can pick up right where you left off whenever you're ready.</p>
+  <a class="btn secondary" href="learnworld_catalog.html">Back to courses</a>
+  <a class="btn" href="student_portal.html">My portal</a>
+</div>
+</body>
+</html>
