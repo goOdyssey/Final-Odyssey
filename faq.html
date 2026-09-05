@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title data-i18n="faq_title_attr_odyssey_help_centre_faqs">Odyssey — Help Centre &amp; FAQs</title>
+<meta name="description" content="Answers for students, instructors, and institutions: enrolment, certificates, refunds, payouts, and how Odyssey works."/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://odyssey-weld-five.vercel.app/faq.html"/>
+<meta name="theme-color" content="#142C4F"/>
+<link rel="icon" href="assets/odyssey-logo-mark.jpg"/>
+<link rel="apple-touch-icon" href="assets/odyssey-logo-mark.jpg"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Odyssey"/>
+<meta property="og:title" content="Odyssey — Help Centre & FAQs"/>
+<meta property="og:description" content="Answers for students, instructors, and institutions: enrolment, certificates, refunds, payouts, and how Odyssey works."/>
+<meta property="og:url" content="https://odyssey-weld-five.vercel.app/faq.html"/>
+<meta property="og:image" content="https://odyssey-weld-five.vercel.app/assets/odyssey-og-image.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Odyssey — Help Centre & FAQs"/>
+<meta name="twitter:description" content="Answers for students, instructors, and institutions: enrolment, certificates, refunds, payouts, and how Odyssey works."/>
+<meta name="twitter:image" content="https://odyssey-weld-five.vercel.app/assets/odyssey-og-image.jpg"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   ODYSSEY SITE THEME — shared by every page outside the landing/
+   catalog build. One file, no !important, no per-page duplication.
+   Palette matches index-redesigned.html (navy/gold/teal/clay/moss).
+═══════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#142C4F;--navy2:#0B1930;--navy3:#2A4A78;
+  --gold:#C08A3E;--gold-text:#8a5a1f;--gold2:#E7C88A;--gold-pale:#F3E9D3;
+  --teal:#0F7A6C;--teal2:#5AC4B0;--moss:#2E7D5B;--moss2:#7FBFA0;
+  --clay:#A6672B;--amber:#E7C88A;--pink:#B23A6B;--pink2:#D9A9BE;
+  --cream:#F6F4EF;--white:#ffffff;
+  --ink:#141C2B;--text:#141C2B;--muted:#64708A;--muted2:#5c6578;
+  --border:#e3dcce;
+  --radius:16px;--radius-sm:10px;--radius-lg:20px;--radius-pill:999px;
+  --ff-head:"Newsreader",Georgia,serif;--ff-body:Manrope,system-ui,sans-serif;
+  --shadow:0 8px 28px rgba(20,44,79,.1);--shadow-md:0 20px 50px rgba(20,44,79,.14);
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-body);background:var(--cream);color:var(--ink);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;width:calc(100% - 32px);max-width:1200px;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-radius:var(--radius-pill);border:1px solid rgba(20,44,79,.14);box-shadow:0 8px 32px rgba(20,44,79,.12)}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
+.nav-logo-mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;font-size:12px;box-shadow:0 4px 12px rgba(20,44,79,.4);overflow:hidden}
+.nav-logo-text{font-family:var(--ff-head);font-size:17px;font-weight:900;color:var(--ink)}
+.nav-logo-text span{color:var(--navy)}
+.nav-links{display:flex;align-items:center;gap:1px;flex:1;min-width:0;justify-content:center}
+.nav-links a{padding:6px 11px;border-radius:var(--radius-pill);font-size:12.5px;font-weight:600;color:var(--muted);text-decoration:none;transition:background .2s,color .2s;white-space:nowrap}
+.nav-links a:hover{background:var(--cream);color:var(--navy)}
+.nav-links a.active{background:rgba(20,44,79,.08);color:var(--navy)}
+.nav-cta{padding:7px 16px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-radius:var(--radius-pill);font-size:12.5px;font-weight:700;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 14px rgba(20,44,79,.35);white-space:nowrap;flex-shrink:0}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(20,44,79,.45)}
+
+/* ── MOBILE NAV: hamburger + dropdown panel ── */
+.nav-burger{display:none;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(20,44,79,.16);background:#fff;cursor:pointer;flex-shrink:0;position:relative;align-items:center;justify-content:center;transition:background .35s cubic-bezier(.65,0,.35,1),border-color .35s cubic-bezier(.65,0,.35,1)}
+.nav-burger span,.nav-burger span::before,.nav-burger span::after{content:"";position:absolute;top:50%;left:50%;width:16px;height:2px;margin:-1px 0 0 -8px;background:var(--navy);border-radius:2px;transition:transform .38s cubic-bezier(.65,0,.35,1),opacity .25s ease,background .3s ease}
+.nav-burger span::before{transform:translateY(-6px)}
+.nav-burger span::after{transform:translateY(6px)}
+.nav-burger.open{background:var(--navy);border-color:var(--navy)}
+.nav-burger.open span{background:transparent}
+.nav-burger.open span::before,.nav-burger.open span::after{background:#fff}
+.nav-burger.open span::before{transform:translateY(0) rotate(45deg)}
+.nav-burger.open span::after{transform:translateY(0) rotate(-45deg)}
+.nav-mobile-panel{position:fixed;top:0;right:0;height:100vh;width:min(320px,84vw);background:#fff;border-left:1px solid rgba(20,44,79,.14);box-shadow:-20px 0 50px rgba(20,44,79,.22);padding:88px 16px 24px;z-index:199;display:flex;flex-direction:column;gap:4px;overflow-y:auto;transform:translateX(100%);transition:transform .45s cubic-bezier(.65,0,.35,1)}
+.nav-mobile-panel.open{transform:translateX(0)}
+.nav-mobile-scrim{position:fixed;inset:0;background:rgba(11,25,48,.4);z-index:198;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s linear .4s;backdrop-filter:blur(2px)}
+.nav-mobile-scrim.open{opacity:1;visibility:visible;transition:opacity .4s ease,visibility 0s linear 0s}
+.nav-mobile-panel a{padding:14px 18px;border-radius:12px;font-family:var(--ff-head);font-size:17px;font-weight:600;letter-spacing:.01em;color:var(--ink);text-decoration:none;transition:background .2s,color .2s,transform .2s}
+.nav-mobile-panel a:hover,.nav-mobile-panel a.active{background:var(--cream);color:var(--navy);transform:translateX(-3px)}
+.nav-mobile-panel .nav-cta,.nav-mobile-panel .nav-login{text-align:center;justify-content:center;margin-top:4px;display:flex;font-family:var(--ff-body);font-size:14.5px}
+.nav-mobile-panel .nav-login{border:2px solid rgba(20,44,79,.16)}
+@media(prefers-reduced-motion:reduce){.nav-mobile-panel,.nav-mobile-scrim{transition:none!important}}
+@media(max-width:900px){.nav-burger{display:flex}}
+
+/* ── DECORATIVE DRIFT / BLOB SYSTEM (shared with landing page) ── */
+.blob{position:absolute;border-radius:50%;filter:blur(75px);opacity:.32;pointer-events:none;animation:blobFloat 9s ease-in-out infinite;z-index:0}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(28px,-22px) scale(1.06)}66%{transform:translate(-20px,16px) scale(.96)}}
+.drift{position:absolute;pointer-events:none;z-index:0;border-radius:50%;filter:blur(50px) hue-rotate(0deg);opacity:.5;animation:drift 13s ease-in-out infinite,hueDrift 16s linear infinite}
+.drift.ring{border-radius:50%;filter:none;background:none;border:2px solid;opacity:.28;animation:driftRing 17s ease-in-out infinite}
+.drift.dot{filter:none;opacity:.6;animation:driftDot 8s ease-in-out infinite}
+.drift.square{border-radius:9px;filter:none;opacity:.22;animation:driftSquare 16s ease-in-out infinite}
+.drift.tri{border-radius:0;filter:none;opacity:.2;clip-path:polygon(50% 0%,0% 100%,100% 100%);animation:driftTri 19s ease-in-out infinite}
+.drift.hex{border-radius:0;filter:none;opacity:.2;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);animation:driftSquare 21s ease-in-out infinite}
+.drift.icon{border-radius:0;filter:none;background:none!important;opacity:.48;animation:driftIcon 15s ease-in-out infinite}
+.drift.icon svg{width:100%;height:100%;display:block}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-32px) scale(1.12)}66%{transform:translate(-26px,22px) scale(.92)}}
+@keyframes hueDrift{0%{filter:blur(50px) hue-rotate(0deg)}50%{filter:blur(50px) hue-rotate(30deg)}100%{filter:blur(50px) hue-rotate(0deg)}}
+@keyframes driftRing{0%,100%{transform:translate(0,0) rotate(0deg) scale(1)}50%{transform:translate(-28px,24px) rotate(22deg) scale(1.1)}}
+@keyframes driftDot{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,-20px)}}
+@keyframes driftSquare{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-24px,22px) rotate(32deg)}}
+@keyframes driftTri{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(20px,18px) rotate(-26deg)}}
+@keyframes driftIcon{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(14px,-20px) rotate(8deg)}}
+
+/* ── PAGE HERO (subpages) ── */
+.page-hero{padding:132px 24px 64px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(160deg,#F6F4EF 0%,#F3EEE3 55%,#F6F4EF 100%)}
+.page-hero-inner,.hero-inner{position:relative;z-index:2;max-width:700px;margin:0 auto}
+.page-tag{display:inline-flex;align-items:center;gap:7px;padding:7px 18px;border-radius:var(--radius-pill);background:#fff;border:1.5px solid rgba(20,44,79,.16);color:var(--navy);font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:18px;box-shadow:0 4px 14px rgba(20,44,79,.08)}
+.page-hero h1{font-family:var(--ff-head);font-size:clamp(32px,5.4vw,58px);font-weight:900;line-height:1.08;letter-spacing:-1px;margin-bottom:16px;color:var(--ink)}
+.grad,.grad-text{background:linear-gradient(90deg,var(--navy),var(--gold),var(--clay));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.page-hero p{font-size:15.5px;color:var(--muted);font-weight:500;line-height:1.75;max-width:580px;margin:0 auto}
+
+/* ── PROSE / CONTENT PAGES (accreditations, etc.) ── */
+.prose-page{max-width:800px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:1}
+.prose-page h2{font-family:var(--ff-head);font-size:22px;font-weight:900;color:var(--ink);margin:40px 0 14px;padding-top:8px;border-top:2px solid rgba(20,44,79,.08)}
+.prose-page h2:first-child{margin-top:0;border-top:none}
+.prose-page h3{font-family:var(--ff-head);font-size:16px;font-weight:800;color:var(--ink);margin:20px 0 8px}
+.prose-page p{font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:14px;font-weight:500}
+.prose-page ul{padding-left:20px;margin-bottom:14px}
+.prose-page li{font-size:14px;color:var(--muted);line-height:1.9;font-weight:500;margin-bottom:6px}
+.prose-page a{color:var(--navy);text-decoration:none;font-weight:700}
+.prose-page a:hover{text-decoration:underline}
+.prose-page .highlight-box{background:linear-gradient(135deg,rgba(20,44,79,.05),rgba(192,138,62,.06));border:2px solid rgba(20,44,79,.13);border-radius:var(--radius-sm);padding:20px 24px;margin:20px 0}
+.prose-page .highlight-box p{margin:0;color:var(--ink);font-weight:600}
+.prose-page .big-stat{font-family:var(--ff-head);font-size:44px;font-weight:900;background:linear-gradient(90deg,var(--navy),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:4px}
+.stat-cards{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.stat-card{padding:20px 28px;background:#fff;border-radius:16px;border:2px solid rgba(20,44,79,.1);text-align:center;min-width:160px;box-shadow:var(--shadow)}
+.stat-card .ic{font-size:34px;margin-bottom:8px}
+.stat-card .t{font-family:var(--ff-head);font-size:15px;font-weight:800;color:var(--ink)}
+.stat-card .s{font-size:12px;color:var(--muted);font-weight:500}
+
+/* ── BUTTONS (shared) ── */
+.btn-primary,.cta-btn-white{padding:14px 30px;background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-radius:var(--radius-pill);font-size:14.5px;font-weight:800;text-decoration:none;border:none;cursor:pointer;font-family:var(--ff-body);box-shadow:0 8px 22px rgba(20,44,79,.32);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover,.cta-btn-white:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,44,79,.4)}
+.btn-secondary,.cta-btn-outline{padding:14px 30px;background:#fff;color:var(--navy);border-radius:var(--radius-pill);font-size:14.5px;font-weight:800;text-decoration:none;border:2px solid rgba(20,44,79,.22);cursor:pointer;font-family:var(--ff-body);transition:transform .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover,.cta-btn-outline:hover{border-color:var(--navy);transform:translateY(-2px)}
+.btn,.form-submit,.cta-btn-white{cursor:pointer}
+
+/* ── FORMS ── */
+.form-input,.form-select,.form-textarea,input,select,textarea{width:100%;padding:12px 15px;border:2px solid rgba(20,44,79,.12);border-radius:var(--radius-sm);font-family:var(--ff-body);font-size:13.5px;color:var(--ink);background:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;font-weight:500}
+.form-input:focus,.form-select:focus,.form-textarea:focus,input:focus,select:focus,textarea:focus{border-color:var(--navy);box-shadow:0 0 0 4px rgba(20,44,79,.08);background:#fff}
+.form-textarea,textarea{resize:vertical;min-height:120px}
+.inq-pill{padding:8px 16px;border-radius:var(--radius-pill);border:2px solid rgba(20,44,79,.15);background:var(--cream);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--ff-body)}
+.inq-pill:hover{border-color:var(--navy);color:var(--navy);background:#fff}
+.inq-pill.selected{background:linear-gradient(135deg,var(--navy),var(--gold));color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(20,44,79,.3)}
+
+/* ── CARDS ── */
+.info-card,.val-card,.team-card{background:#fff;border-radius:var(--radius);padding:26px;border:2px solid rgba(20,44,79,.08);transition:transform .2s,box-shadow .2s,border-color .2s}
+.info-card:hover,.val-card:hover{transform:translateY(-4px);border-color:rgba(20,44,79,.2);box-shadow:var(--shadow-md)}
+.info-icon,.val-emoji{font-size:28px;margin-bottom:12px;display:block}
+.info-label{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.info-value{font-family:var(--ff-head);font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.info-value a{color:var(--navy);text-decoration:none}
+.info-value a:hover{text-decoration:underline}
+.info-sub{font-size:13px;color:var(--muted);font-weight:500}
+.val-title{font-family:var(--ff-head);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.val-desc{font-size:13px;color:var(--muted);line-height:1.8;font-weight:500}
+
+/* ── FAQ ACCORDION ── */
+.faq-item{background:#fff;border:2px solid rgba(20,44,79,.08);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden;transition:border-color .2s}
+.faq-item:hover{border-color:rgba(20,44,79,.18)}
+.faq-item.open{border-color:rgba(20,44,79,.28);box-shadow:var(--shadow)}
+.faq-q{padding:18px 22px;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none;font-family:var(--ff-head)}
+.faq-arrow{font-size:16px;transition:transform .3s;color:var(--navy);flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;font-size:13.5px;color:var(--muted);font-weight:500;line-height:1.8;padding:0 22px}
+.faq-item.open .faq-a{max-height:420px;padding:0 22px 18px}
+.faq-a a{color:var(--navy);text-decoration:none;font-weight:700}
+.faq-a a:hover{text-decoration:underline}
+
+/* ── DARK SECTION (team, FAQ strip, CTA-adjacent) ── */
+.dark-section{padding:80px 24px;background:linear-gradient(160deg,#0E1D36 0%,#142C4F 55%,#0B1930 100%);position:relative;overflow:hidden}
+.dark-section h2{color:#fff}
+.dark-section .sub{color:rgba(255,255,255,.55)}
+.dark-empty{max-width:760px;margin:0 auto;padding:44px 28px;border:1px dashed rgba(255,255,255,.28);border-radius:26px;text-align:center;background:rgba(255,255,255,.05);position:relative;z-index:1}
+.dark-empty b{display:block;color:#fff;font-family:var(--ff-head);font-size:26px;margin-bottom:10px}
+.dark-empty p{color:rgba(255,255,255,.6);font-size:14px;line-height:1.8}
+
+/* ── CTA GRADIENT SECTION ── */
+.page-cta{padding:80px 24px;background:linear-gradient(135deg,var(--navy) 0%,var(--teal) 40%,var(--clay) 74%,var(--gold) 100%);text-align:center;position:relative;overflow:hidden}
+.page-cta h2{font-family:var(--ff-head);font-size:clamp(26px,4.6vw,48px);font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:14px;position:relative;z-index:1}
+.page-cta p{font-size:15px;color:rgba(255,255,255,.78);font-weight:500;margin-bottom:32px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+
+/* ── FOOTER ── */
+footer{background:#0f0520;padding:44px 24px 30px;text-align:center}
+.footer-logo-wrap{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;margin-bottom:14px}
+.footer-logo-mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff-head);font-weight:900;color:#fff;font-size:12px;overflow:hidden}
+.footer-logo-text{font-family:var(--ff-head);font-size:16px;font-weight:900;color:#fff}
+.footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s;font-weight:500}
+.footer-links a:hover{color:#fff}
+footer p{font-size:11px;color:rgba(255,255,255,.18);font-weight:500}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── i18n LANGUAGE-SWITCHER DROPDOWN SAFETY (kept from prior fix, centralized once) ── */
+.i18n-switcher,.i18n-dropdown{z-index:1000}
+nav .i18n-dropdown{position:absolute;top:calc(100% + 8px);max-height:min(420px,70vh);overflow:auto}
+footer .i18n-dropdown{position:absolute;bottom:calc(100% + 8px);top:auto;max-height:min(420px,70vh);overflow:auto}
+
+/* ── RESPONSIVE (900px tablet / 640px mobile, per site standard) ── */
+@media(max-width:900px){
+  nav{width:calc(100% - 24px);padding:8px 14px}
+  .nav-links{display:none}
+  .page-hero{padding:118px 20px 52px}
+}
+@media(max-width:640px){
+  nav{width:calc(100% - 16px);padding:7px 10px}
+  .nav-logo-text{font-size:15px}
+  .nav-cta{padding:7px 12px;font-size:11.5px}
+  .page-hero{padding:104px 16px 44px}
+  .prose-page{padding:44px 16px 70px}
+  .cta-btns{flex-direction:column;align-items:stretch}
+}
+
+
+/* ── ACCESSIBILITY: visible keyboard focus ── */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #1d4ed8;outline-offset:2px;border-radius:4px}
+.skip-link{position:absolute;top:-100px;left:12px;background:#142C4F;color:#fff;padding:10px 18px;border-radius:8px;font-weight:800;font-size:13px;z-index:9999;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:12px}
+</style>
+<style>
+/* Page-specific only */
+.faq-search-wrap{max-width:520px;margin:26px auto 0;position:relative}
+.faq-search{padding-left:46px;border-radius:var(--radius-pill);box-shadow:0 4px 20px rgba(20,44,79,.08)}
+.faq-search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--muted);pointer-events:none}
+.faq-main{max-width:800px;margin:0 auto;padding:56px 24px 100px;position:relative;z-index:1}
+.faq-section{margin-bottom:48px}
+.faq-section-title{font-family:var(--ff-head);font-size:18px;font-weight:900;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:2px solid rgba(20,44,79,.08)}
+.still-help{background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:var(--radius);padding:38px;text-align:center;color:#fff;margin-top:44px}
+.still-help h2{font-family:var(--ff-head);font-size:21px;font-weight:900;margin-bottom:8px}
+.still-help p{font-size:13.5px;opacity:.85;margin-bottom:18px;font-weight:500}
+.still-help a{display:inline-block;padding:12px 26px;background:#fff;color:var(--navy);border-radius:var(--radius-pill);font-size:13.5px;font-weight:800;text-decoration:none;transition:transform .2s}
+.still-help a:hover{transform:scale(1.04)}
+</style>
+<script defer="" src="js/i18n.js"></script>
+  <script src="js/observability.js" defer></script>
+</head><body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<nav>
+<a class="nav-logo" href="index.html"><div class="nav-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="34" height="34" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="nav-logo-text"><span>Odyssey</span></span></a>
+<div class="nav-links"><a href="index.html"><span data-i18n="nav_home">Home</span></a><a href="learnworld_catalog.html"><span data-i18n="nav_courses">Courses</span></a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a href="stories.html"><span data-i18n="footer_stories">Stories</span></a></div>
+<span data-i18n-switcher=""></span>
+<a class="nav-cta" data-i18n="faq_browse_courses" href="learnworld_catalog.html">Browse courses →</a>
+<button class="nav-burger" aria-label="Open menu" aria-expanded="false"><span></span></button>
+</nav>
+<div class="nav-mobile-scrim"></div>
+<div class="nav-mobile-panel" id="mobile-navigation" aria-hidden="true"><a href="index.html"><span data-i18n="nav_home">Home</span></a><a href="learnworld_catalog.html"><span data-i18n="nav_courses">Courses</span></a><a href="about.html"><span data-i18n="nav_about">About</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a><a href="stories.html"><span data-i18n="footer_stories">Stories</span></a><a class="nav-cta" data-i18n="faq_browse_courses" href="learnworld_catalog.html">Browse courses →</a></div>
+
+<div class="page-hero" id="main-content" tabindex="-1">
+<div class="blob" style="width:380px;height:380px;background:var(--navy2);top:-90px;left:-90px" aria-hidden="true"></div>
+<div class="blob" style="width:300px;height:300px;background:var(--gold2);top:60px;right:-60px;animation-delay:-3s" aria-hidden="true"></div>
+<div class="drift dot" style="width:6px;height:6px;background:var(--teal);top:20%;left:20%" aria-hidden="true"></div>
+<div class="drift dot" style="width:5px;height:5px;background:var(--gold);top:65%;right:14%;animation-delay:-4s" aria-hidden="true"></div>
+<div class="hero-inner">
+<div class="page-tag" data-i18n="faq_tag">💡 Help Centre</div>
+<h1 data-i18n="faq_title">Frequently Asked Questions</h1>
+<p data-i18n="faq_sub">Everything you need to know about Odyssey — for students, instructors, and institutions.</p>
+<div class="faq-search-wrap">
+<span class="faq-search-icon">🔍</span>
+<input class="form-input faq-search" data-i18n-placeholder="ph_faq_search" oninput="filterFaqs(this.value)" placeholder="Search questions…" type="text"/>
+</div>
+</div>
+</div>
+<div class="faq-main">
+<div class="drift" style="width:200px;height:200px;background:var(--gold2);opacity:.28;top:6%;right:-60px" aria-hidden="true"></div>
+<div class="drift" style="width:170px;height:170px;background:var(--teal2);opacity:.24;top:48%;left:-70px;animation-delay:-5s" aria-hidden="true"></div>
+<div class="drift" style="width:160px;height:160px;background:var(--gold2);opacity:.22;top:82%;right:-50px;animation-delay:-3s" aria-hidden="true"></div>
+<div class="drift dot" style="width:6px;height:6px;background:var(--teal);top:14%;left:8%" aria-hidden="true"></div>
+<div class="drift dot" style="width:5px;height:5px;background:var(--gold);top:30%;right:6%;animation-delay:-4s" aria-hidden="true"></div>
+<div class="drift dot" style="width:6px;height:6px;background:var(--navy);top:58%;left:4%;animation-delay:-2s" aria-hidden="true"></div>
+<div class="drift dot" style="width:5px;height:5px;background:var(--clay);top:74%;right:10%;animation-delay:-6s" aria-hidden="true"></div>
+<div class="drift dot" style="width:4px;height:4px;background:var(--teal);top:92%;left:12%;animation-delay:-1s" aria-hidden="true"></div>
+<div class="drift square" style="width:16px;height:16px;background:var(--teal);top:22%;right:14%;animation-delay:-3s" aria-hidden="true"></div>
+<div class="drift square" style="width:14px;height:14px;background:var(--gold);top:66%;left:6%;animation-delay:-5s" aria-hidden="true"></div>
+<div class="drift tri" style="width:15px;height:15px;background:var(--navy);top:40%;right:4%;animation-delay:-4s" aria-hidden="true"></div>
+<div class="drift icon" style="width:22px;height:22px;top:10%;left:2%;color:var(--gold-text,var(--gold));animation-delay:-2s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5c2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0V5Z"/><path d="M20 5c-2-1.3-5-1.3-8 0v14c3-1.3 6-1.3 8 0V5Z"/></svg></div>
+<div class="drift icon" style="width:20px;height:20px;top:36%;left:1%;color:var(--clay);animation-delay:-6s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M17 3l4 4L9 19l-5 1 1-5L17 3Z"/><path d="M14 6l4 4"/></svg></div>
+<div class="drift icon" style="width:19px;height:19px;top:52%;right:2%;color:var(--teal);animation-delay:-1s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 10l-5.2 4.3L17.4 21 12 17.3 6.6 21l1.6-6.7L3 10l6.4-1.4L12 2Z"/></svg></div>
+<div class="drift icon" style="width:20px;height:20px;top:86%;right:2%;color:var(--gold-text,var(--gold));animation-delay:-4s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 10l-5.2 4.3L17.4 21 12 17.3 6.6 21l1.6-6.7L3 10l6.4-1.4L12 2Z"/></svg></div>
+<div class="faq-section" id="section-students">
+<div class="faq-section-title" data-i18n="faq_students_title">🎒 For Students</div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_free">Is Odyssey free to use?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_free">Creating a student account and browsing all 840,000+ courses is completely free. Individual courses are priced by their instructors — many are offered at no cost, and paid courses use local-currency pricing to stay affordable wherever you are.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_enrol">How do I enrol in a course?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_enrol">Click any course card in the <a data-i18n="auto_faq_catalogue_a6f272c8" href="learnworld_catalog.html">catalogue</a>, then click "Enrol now." For free courses, access is instant. For paid courses, you'll be taken to our secure checkout — we accept credit/debit cards, PayPal, and local payment methods in 80+ countries.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_offline">Can I download courses for offline viewing?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_offline">Yes! Our mobile app (iOS and Android) lets you download any course for offline access. This is especially important for learners in areas with limited connectivity — we compress videos for low-bandwidth download too.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_cert">How do I get my certificate after completing a course?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_cert">Once you complete all lessons and pass the final assessment (where required), a verified digital certificate is automatically issued to your profile. You can download it as a PDF, share it on LinkedIn, or have the institution verify it directly via our <a data-i18n="auto_faq_accreditations_portal_13ba48d7" href="accreditations.html">Accreditations portal</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_satisfied">Can I get a refund if I'm not satisfied?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_satisfied">Absolutely. We offer a 30-day money-back guarantee on all paid courses, no questions asked. Contact our <a data-i18n="auto_faq_support_team_1ddd6672" href="contact.html">support team</a> with your order details and we'll process the refund within 5 business days. See our full <a data-i18n="auto_faq_refund_policy_b3966088" href="terms.html#refund">Refund Policy</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_password">How do I reset my password?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_password">Go to the login page and click "Forgot password." Enter your email address and we'll send a reset link within a few minutes. If it doesn't arrive, check your spam folder or contact <a data-i18n="auto_faq_support_434990c8" href="contact.html">support</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_language">Are courses available in my language?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_language">Odyssey hosts courses in over 60 languages, including Arabic, Hindi, Swahili, Mandarin, Persian (Farsi), Portuguese, Spanish, French, German, Japanese, and many more. Use the Language filter in the <a data-i18n="auto_faq_catalogue_a6f272c8" href="learnworld_catalog.html">catalogue</a> to find courses in your language.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_devices">What devices can I use Odyssey on?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_devices">Odyssey works on any modern browser (Chrome, Firefox, Safari, Edge) on desktop, tablet, or mobile. Our native app for iOS and Android offers the full experience including offline downloads, push notifications, and live class support.</div></div>
+</div>
+<div class="faq-section" id="section-instructor">
+<div class="faq-section-title" data-i18n="faq_instructors_title">🧑‍🏫 For Instructors</div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_become">How do I become an instructor on Odyssey?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_become">Click "Start teaching" on the homepage or <a data-i18n="auto_faq_apply_here_fa225ccc" href="contact.html">apply here</a>. Complete your instructor profile, verify your identity, and submit your first course for review. Our team typically reviews submissions within 5 business days and provides feedback if changes are needed.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_earn">How much do instructors earn on Odyssey?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_earn">Instructors keep 70% of the net revenue from every course sale. You set your own price, and earnings are paid monthly in your local currency via bank transfer, PayPal, or Stripe. See our full <a data-i18n="auto_faq_earnings_payouts_c504c7cc" href="earnings.html">Earnings &amp; Payouts</a> page for details.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_quality">What quality standards do courses need to meet?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_quality">Courses must have clear learning objectives, well-structured content, and at minimum 360p video quality. We do not require professional studio production — authenticity and subject expertise matter far more. Our team provides a full quality checklist when you apply.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_teach_lang">Can I teach in my own language?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_teach_lang">Yes, absolutely. You can create courses in any language. Odyssey actively encourages courses in local and regional languages — a Yoruba-language JAMB prep course, for example, reaches students that English-only content can never serve.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_provide_cert">Do I need to provide certificates to students?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_provide_cert">Odyssey automatically generates verified certificates for students who complete your course. You can also apply to have your courses recognised by our academic accreditation partners. See the <a data-i18n="auto_faq_accreditations_7d9aa7ab" href="accreditations.html">Accreditations</a> page for details.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_live">Can I offer live classes?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_live">Yes. Instructors can schedule live class sessions directly through the Odyssey platform, with integrated video conferencing, screen sharing, interactive whiteboards, and recorded replays for students who can't attend live.</div></div>
+</div>
+<div class="faq-section" id="section-institutions">
+<div class="faq-section-title" data-i18n="faq_institutions_title">🏫 For Institutions</div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_institutions_use">Can schools and universities use Odyssey?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_institutions_use">Yes. We offer institutional white-label plans for schools, universities, tutoring centres, and government agencies. Your institution can host its own branded catalogue within the Odyssey platform, with custom domains, bulk enrolment, and analytics dashboards. <a data-i18n="auto_faq_contact_us_02d4482d" href="contact.html">Contact us</a> to discuss.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_data_laws">Does Odyssey comply with GDPR and student data laws?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_data_laws">Yes. Odyssey is fully GDPR-compliant for European users, COPPA-compliant for learners under 13, and adheres to local data protection laws in all 190+ countries we operate in. We never sell student data or share it with advertisers. See our <a data-i18n="auto_faq_privacy_policy_fa2ead69" href="privacy.html">Privacy Policy</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_university_recognition">Are certificates from Odyssey recognised by universities?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n-html="faq_a_university_recognition">Many Odyssey courses are taught by affiliated university faculty and carry institutional recognition. For formal accreditation, see our <a data-i18n="auto_faq_accreditations_page_b60053e7" href="accreditations.html">Accreditations page</a> which lists partner institutions, exam boards, and professional bodies that recognise Odyssey completion certificates.</div></div>
+</div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_refund">What is the refund policy?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n="faq_a_refund">You may request a full refund within 14 days of enrollment, provided you have completed less than 20% of the course content. After 14 days (but within 30 days), if you have completed less than 50% of the course, you will receive a 60% refund of the amount paid. After 30 days or beyond 50% completion, no refund is issued.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_cert_fail">What happens if I fail the certificate exam?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n="faq_a_cert_fail">If you score below the instructor's passing threshold, you will not qualify for the certificate. You cannot retake the exam in isolation — you must re-enroll in the full course by paying 30% of the original course price.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_q_and_a">Can I ask the instructor questions directly?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n="faq_a_q_and_a">Some instructors offer a direct Q&amp;A service, either for free or at an additional fee set entirely by them. Odyssey takes no commission on Q&amp;A fees.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq_q_cert_price">Is the certificate included in the course price?</span> <span class="faq-arrow">⌄</span></div><div class="faq-a" data-i18n="faq_a_cert_price">Yes — always. If a course offers a certificate, the cost must be included in the enrollment fee. Instructors are never permitted to charge extra for the certificate.</div></div>
+<div class="still-help">
+<h2 data-i18n="faq_help_title">Still have a question? 👋</h2>
+<p data-i18n="faq_help_body">Our team usually responds within 24 hours — and we're genuinely friendly.</p>
+<a data-i18n="faq_help_cta" href="contact.html">Contact support →</a>
+</div>
+</div>
+<footer>
+<a class="footer-logo-wrap" href="index.html"><div class="footer-logo-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" width="34" height="34" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></div><span class="footer-logo-text">Odyssey</span></a>
+<div class="footer-links">
+<a href="faq.html"><span data-i18n="footer_faq">FAQs</span></a><a href="terms.html"><span data-i18n="footer_terms">Terms</span></a><a href="privacy.html"><span data-i18n="footer_privacy">Privacy</span></a>
+<a href="earnings.html"><span data-i18n="footer_earnings">Earnings</span></a><a href="subscription.html"><span data-i18n="footer_subscriptions">Subscriptions</span></a><a href="accreditations.html"><span data-i18n="footer_accred">Accreditations</span></a><a href="contact.html"><span data-i18n="nav_contact">Contact</span></a>
+</div>
+<p><span data-i18n="footer_rights">© 2026 Odyssey · Demo preview</span></p>
+</footer>
+<script>
+(() => {
+  const items = [...document.querySelectorAll('.faq-item')];
+
+  window.toggleFaq = el => {
+    const item = el.closest('.faq-item');
+    if (!item) return;
+    const open = item.classList.contains('open');
+    items.forEach(i => i.classList.remove('open'));
+    if (!open) item.classList.add('open');
+  };
+
+  window.filterFaqs = query => {
+    const q = query.trim().toLowerCase();
+    items.forEach(item => {
+      item.style.display = !q || item.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  };
+})();
+</script>
+<script defer>
+(() => {
+  const nav = document.querySelector('nav');
+  const burger = document.querySelector('.nav-burger');
+  const panel = document.querySelector('.nav-mobile-panel');
+  const scrim = document.querySelector('.nav-mobile-scrim');
+  if (!nav || !burger || !panel) return;
+
+  burger.setAttribute('aria-controls', 'mobile-navigation');
+  panel.id = 'mobile-navigation';
+  panel.setAttribute('aria-hidden', 'true');
+
+  const position = () => {
+    const r = nav.getBoundingClientRect();
+    panel.style.top = Math.round(r.bottom + 8) + 'px';
+  };
+
+  const close = () => {
+    burger.classList.remove('open');
+    panel.classList.remove('open');
+    scrim?.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-label', 'Open menu');
+    panel.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  const open = () => {
+    position();
+    burger.classList.add('open');
+    panel.classList.add('open');
+    scrim?.classList.add('open');
+    burger.setAttribute('aria-expanded', 'true');
+    burger.setAttribute('aria-label', 'Close menu');
+    panel.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  };
+
+  burger.addEventListener('click', e => {
+    e.stopPropagation();
+    panel.classList.contains('open') ? close() : open();
+  });
+  scrim?.addEventListener('click', close);
+  panel.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') close();
+  });
+  document.addEventListener('click', e => {
+    if (panel.classList.contains('open') &&
+        !panel.contains(e.target) && !burger.contains(e.target)) close();
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) close();
+    else if (panel.classList.contains('open')) position();
+  });
+
+  close();
+})();
+</script>
+</body></html>

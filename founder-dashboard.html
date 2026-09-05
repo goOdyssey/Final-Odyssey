@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Select user to change | Odyssey administration</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/mfa.js"></script>
+<style>
+:root{
+  --primary:#142C4F;--secondary:#142C4F;--accent:#C08A3E;--primary-fg:#fff;
+  --body-fg:#141C2B;--body-bg:#F6F4EF;--body-quiet-color:#64708A;--body-loud-color:#141C2B;
+  --header-color:#F3E9D3;--header-bg:linear-gradient(120deg,#142C4F,#2A4A78);--header-link-color:#fff;
+  --breadcrumbs-fg:#E7C88A;--breadcrumbs-link-fg:#fff;--breadcrumbs-bg:#2A4A78;
+  --link-fg:#0F7A6C;--link-hover-color:#142C4F;--link-selected-fg:#C08A3E;
+  --hairline-color:rgba(20,44,79,.12);--border-color:rgba(20,44,79,.16);
+  --darkened-bg:#F8F6F1;--selected-bg:#F0EAD8;--selected-row:#FCF3DE;
+  --button-fg:#fff;--button-bg:#142C4F;--button-hover-bg:#0e2038;
+  --close-button-bg:#64708A;--close-button-hover-bg:#4d5872;
+  --delete-button-bg:#B23A6B;--delete-button-hover-bg:#94305a;
+  --head:"Newsreader",Georgia,serif;
+  --font:Manrope,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);font-size:12px;color:var(--body-fg);background:radial-gradient(circle at 8% 10%,rgba(20,44,79,.08),transparent 28%),radial-gradient(circle at 90% 5%,rgba(192,138,62,.10),transparent 26%),#F6F4EF}
+a{color:var(--link-fg);text-decoration:none;font-weight:600}
+a:hover{color:var(--link-hover-color)}
+button,input,select{font-family:inherit;font-size:inherit}
+.gate{display:flex;min-height:100vh;align-items:center;justify-content:center;color:var(--body-quiet-color);font-weight:600;text-align:center;padding:20px;font-size:13px}
+#header{background:var(--header-bg);color:var(--header-color);display:flex;align-items:center;justify-content:space-between;padding:12px 32px;overflow:hidden;box-shadow:0 6px 20px rgba(20,44,79,.18)}
+#branding h1{font-family:var(--head);font-size:19px;margin:0;font-weight:600;color:var(--header-color)}
+#branding h1 a{color:var(--header-color)}
+#branding h1 .accent{color:var(--accent);font-weight:700}
+#user-tools{font-size:12px;color:var(--header-color)}
+#user-tools a{color:var(--header-link-color);border-bottom:1px solid rgba(255,255,255,.35)}
+#user-tools a:hover{color:var(--accent)}
+#user-tools strong{font-weight:700}
+.breadcrumbs{background:var(--breadcrumbs-bg);color:var(--breadcrumbs-fg);padding:8px 32px;font-size:11.5px}
+.breadcrumbs a{color:var(--breadcrumbs-link-fg)}
+.breadcrumbs a:hover{color:var(--accent)}
+#container{padding:0 32px 36px}
+#content{display:flex;gap:0;align-items:flex-start;margin-top:18px}
+#content-main{flex:1;min-width:0}
+#content-related{width:260px;margin-left:26px;flex-shrink:0}
+.o-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:10px}
+h1.o-h1{font-family:var(--head);font-size:22px;font-weight:600;color:var(--body-loud-color);margin:0}
+.o-refresh{background:var(--close-button-bg);color:#fff;border:0;border-radius:9px;padding:8px 14px;font-size:11.5px;font-weight:700;cursor:pointer}
+.o-refresh:hover{background:var(--close-button-hover-bg)}
+#toolbar{margin-bottom:13px;display:flex;gap:8px}
+#toolbar input[type=text]{border:1px solid var(--border-color);border-radius:10px;padding:8px 10px;font-size:12px;width:280px;max-width:60vw;background:#fff}
+#toolbar button{background:var(--secondary);color:#fff;border:0;border-radius:9px;padding:8px 15px;font-size:12px;cursor:pointer;font-weight:700}
+#toolbar button:hover{background:var(--button-hover-bg)}
+.o-actions{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border:1px solid var(--hairline-color);border-radius:12px;padding:9px 11px}
+.o-actions select{padding:6px 7px;border:1px solid var(--border-color);border-radius:8px;background:#fff}
+.o-actions button{background:var(--button-bg);color:var(--button-fg);border:0;border-radius:8px;padding:7px 14px;font-size:11.5px;font-weight:700;cursor:pointer}
+.o-actions button:hover{background:var(--button-hover-bg)}
+.o-actions .o-selected-count{font-size:11.5px;color:var(--body-quiet-color);margin-left:auto}
+#result_list{width:100%;border-collapse:collapse;margin-top:0;font-size:12px;background:rgba(255,255,255,.55);border-radius:14px;overflow:hidden}
+#result_list thead th{background:rgba(20,44,79,.05);text-align:left;padding:9px 10px;border-bottom:1px solid var(--border-color);font-weight:800;color:var(--body-fg);white-space:nowrap;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+#result_list thead th.o-check{width:22px}
+#result_list tbody td{padding:9px 10px;border-bottom:1px solid var(--hairline-color);vertical-align:middle}
+#result_list tbody tr:nth-child(even){background:rgba(20,44,79,.025)}
+#result_list tbody tr.selected{background:var(--selected-row)}
+#result_list tbody tr:hover{background:var(--selected-bg)}
+#result_list .field-email a{font-weight:700;color:var(--body-fg)}
+.o-you{font-size:9.5px;font-weight:800;color:var(--secondary);background:var(--accent);border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+.o-badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:800;color:#fff;text-transform:capitalize}
+.o-badge.student{background:#0F7A6C}
+.o-badge.instructor{background:#142C4F}
+.o-badge.institution{background:#A6672B}
+.o-badge.support{background:#2A4A78}
+.o-badge.admin{background:#142C4F}
+.o-badge.superuser{background:#C08A3E}
+.o-badge.active{background:#2E7D5B}
+.o-badge.pending{background:#A6672B}
+.o-badge.suspended,.o-badge.deleted{background:var(--delete-button-bg)}
+.o-role-select{padding:5px 7px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:11.5px}
+.paginator{padding:10px 0 0;color:var(--body-quiet-color);font-size:11.5px}
+.module{border:1px solid var(--hairline-color);border-radius:14px;margin-bottom:16px;background:rgba(255,255,255,.7);overflow:hidden}
+.module h2{background:var(--secondary);color:#fff;font-size:11.5px;font-weight:700;padding:9px 12px;margin:0}
+.module .module-body{padding:0}
+.o-filter-group{border-bottom:1px solid var(--hairline-color)}
+.o-filter-group:last-child{border-bottom:0}
+.o-filter-group h3{font-size:11px;font-weight:800;color:var(--body-fg);margin:0;padding:10px 12px 4px;text-transform:uppercase;letter-spacing:.04em}
+.o-filter-group ul{list-style:none;margin:0;padding:0 12px 10px}
+.o-filter-group li{padding:2px 0}
+.o-filter-group a{display:block;padding:2px 0;color:var(--link-fg);font-size:12px}
+.o-filter-group a.selected{color:var(--body-loud-color);font-weight:800}
+.o-filter-group a:hover{color:var(--link-hover-color)}
+.kpi-module .module-body{padding:11px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.kpi{background:rgba(255,255,255,.8);border:1px solid var(--hairline-color);border-radius:11px;padding:8px 10px}
+.kpi .n{font-family:var(--head);font-size:19px;font-weight:600;color:var(--body-loud-color);display:block}
+.kpi .l{font-size:10px;color:var(--body-quiet-color);text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+.empty-row td{text-align:center;color:var(--body-quiet-color);padding:22px !important}
+
+/* ── Django-style app index (home) ── */
+.o-view{display:none}
+.o-view.active{display:block}
+.app-list .module{margin-bottom:16px}
+.app-list .module h2{display:flex;align-items:center;gap:8px}
+.model-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--hairline-color);font-size:12.5px}
+.model-row:last-child{border-bottom:0}
+.model-row a.model-name{font-weight:700;color:var(--body-fg)}
+.model-row a.model-name:hover{color:var(--link-fg)}
+.model-row .model-links{display:flex;gap:10px;font-size:11.5px}
+.model-row .model-links a{color:var(--link-fg)}
+.recent-actions .module-body{padding:10px 12px}
+.recent-actions li{list-style:none;padding:6px 0;border-bottom:1px solid var(--hairline-color);font-size:11.5px}
+.recent-actions li:last-child{border-bottom:0}
+.recent-actions small{display:block;color:var(--body-quiet-color);margin-top:2px}
+.nav-crumb-link{cursor:pointer}
+
+/* ── generic changelist (Comments, Site Content) reuse same table styles as #result_list ── */
+.o-changelist table{width:100%;border-collapse:collapse;font-size:12px;background:rgba(255,255,255,.55);border-radius:14px;overflow:hidden}
+.o-changelist thead th{background:rgba(20,44,79,.05);text-align:left;padding:9px 10px;border-bottom:1px solid var(--border-color);font-weight:800;color:var(--body-fg);font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+.o-changelist tbody td{padding:9px 10px;border-bottom:1px solid var(--hairline-color);vertical-align:top}
+.o-changelist tbody tr:nth-child(even){background:rgba(20,44,79,.025)}
+.o-changelist tbody tr:hover{background:var(--selected-bg)}
+.o-inline-btn{background:var(--button-bg);color:#fff;border:0;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-right:4px}
+.o-inline-btn:hover{background:var(--button-hover-bg)}
+.o-inline-btn.danger{background:var(--delete-button-bg)}
+.o-inline-btn.danger:hover{background:var(--delete-button-hover-bg)}
+.o-add-form{background:rgba(255,255,255,.7);border:1px solid var(--hairline-color);border-radius:14px;padding:14px;margin-bottom:16px;display:grid;gap:10px;grid-template-columns:1fr 1fr;align-items:end}
+.o-add-form .full{grid-column:1/-1}
+.o-add-form label{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--body-quiet-color);margin-bottom:5px}
+.o-add-form input,.o-add-form textarea{width:100%;border:1px solid var(--border-color);border-radius:9px;padding:8px 10px;font:inherit;font-size:12px;background:#fff}
+.o-add-form textarea{min-height:60px;resize:vertical}
+.o-add-form button{background:var(--button-bg);color:#fff;border:0;border-radius:9px;padding:9px 16px;font-weight:700;font-size:12px;cursor:pointer;justify-self:start}
+
+/* ── profile detail drawer (View profile) ── */
+.pf-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:flex-end;background:rgba(20,44,79,.42);backdrop-filter:blur(6px);z-index:80}
+.pf-overlay.open{display:flex}
+.pf-drawer{width:min(720px,calc(100vw - 24px));height:calc(100vh - 24px);overflow:auto;margin:12px;border:1px solid var(--hairline-color);border-radius:18px;background:#fff;box-shadow:0 24px 70px rgba(20,44,79,.28);padding:18px}
+.pf-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.pf-head h2{margin:0;font-family:var(--head);font-size:21px;font-weight:600}
+.pf-close{border:0;background:rgba(20,44,79,.08);border-radius:8px;width:30px;height:30px;font-size:15px;cursor:pointer;color:var(--body-fg)}
+.pf-section{border:1px solid var(--hairline-color);border-radius:12px;padding:11px;margin-bottom:10px;background:rgba(20,44,79,.02)}
+.pf-section h3{margin:0 0 8px;font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--body-quiet-color)}
+.pf-item{border:1px solid var(--hairline-color);border-radius:9px;padding:8px 10px;background:#fff;font-size:12px;margin-bottom:6px}
+.pf-item:last-child{margin-bottom:0}
+.pf-item b{display:block}
+.pf-item small{display:block;color:var(--body-quiet-color);margin-top:2px;line-height:1.4}
+@media(max-width:720px){.pf-overlay{align-items:flex-end}.pf-drawer{height:88vh;width:100vw;margin:0;border-radius:18px 18px 0 0}}
+</style>
+  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<div class="gate" id="gate">Checking your founder session...</div>
+<div id="shell" style="display:none">
+  <div id="header">
+    <div id="branding"><h1><a href="founder-dashboard.html">Odyssey <span class="accent">administration</span></a></h1></div>
+    <div id="user-tools">Welcome, <strong id="whoName">Founder</strong>. <a href="admin_dashboard.html">Admin dashboard</a> / <a href="#" onclick="signOutFounder();return false;">Log out</a></div>
+  </div>
+  <div class="breadcrumbs" id="breadcrumbs"><span class="nav-crumb-link" onclick="showView('home')">Home</span></div>
+  <div id="container">
+
+    <!-- HOME: Django-style app index -->
+    <div class="o-view active" id="view-home">
+      <div class="o-title-row"><h1 class="o-h1">Site administration</h1></div>
+      <div id="content">
+        <div id="content-main" class="app-list">
+          <div class="module">
+            <h2>Authentication and Authorization</h2>
+            <div class="module-body">
+              <div class="model-row"><a class="model-name" onclick="showView('users')">Users</a><div class="model-links"><a onclick="showView('users')">Change</a></div></div>
+            </div>
+          </div>
+          <div class="module">
+            <h2>Content Moderation</h2>
+            <div class="module-body">
+              <div class="model-row"><a class="model-name" onclick="showView('comments')">Comments</a><div class="model-links"><a onclick="showView('comments')">Change</a></div></div>
+              <div class="model-row"><a class="model-name" onclick="showView('comments')">Banned identities</a><div class="model-links"><a onclick="showView('comments')">Change</a></div></div>
+            </div>
+          </div>
+          <div class="module">
+            <h2>Site Content</h2>
+            <div class="module-body">
+              <div class="model-row"><a class="model-name" onclick="showView('sitecontent')">Text overrides</a><div class="model-links"><a onclick="showView('sitecontent')">Add</a> <a onclick="showView('sitecontent')">Change</a></div></div>
+            </div>
+          </div>
+          <div class="module">
+            <h2>Security</h2>
+            <div class="module-body">
+              <div class="model-row"><a class="model-name" onclick="showView('security')">Two-factor authentication</a><div class="model-links"><a onclick="showView('security')">Manage</a></div></div>
+            </div>
+          </div>
+          <div class="module">
+            <h2>Operations</h2>
+            <div class="module-body">
+              <div class="model-row"><span class="model-name" style="color:var(--body-quiet-color);cursor:default">Command center (courses, payments, certificates…)</span><div class="model-links"><a href="admin_dashboard.html">Open →</a></div></div>
+            </div>
+          </div>
+        </div>
+        <div id="content-related">
+          <div class="module recent-actions">
+            <h2>Recent actions</h2>
+            <div class="module-body"><ul id="recentActionsList"><li style="color:var(--body-quiet-color)">No actions yet this session.</li></ul></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="o-view" id="view-users">
+    <div class="o-title-row"><h1 class="o-h1">Select user to change</h1><button class="o-refresh" onclick="loadUsers()">↻ Refresh</button></div>
+    <div id="content">
+      <div id="content-main">
+        <div id="toolbar">
+          <input type="text" id="search" placeholder="Search by name or email…" oninput="renderTable()">
+          <button type="button" onclick="document.getElementById('search').value='';renderTable()">Clear</button>
+        </div>
+        <div class="o-actions">
+          <select id="bulkAction">
+            <option value="">--------- Set role to ---------</option>
+            <option value="student">Student</option>
+            <option value="instructor">Instructor</option>
+            <option value="institution">Institution</option>
+            <option value="support">Support</option>
+            <option value="admin">Admin</option>
+            <option value="superuser">Superuser</option>
+          </select>
+          <button type="button" onclick="applyBulkAction()">Go</button>
+          <span class="o-selected-count" id="selectedCount">0 of 0 selected</span>
+        </div>
+        <table id="result_list">
+          <thead><tr>
+            <th class="o-check"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th>
+            <th>EMAIL</th><th>FULL NAME</th><th>ROLE</th><th>STATUS</th><th>COUNTRY</th><th>DATE JOINED</th><th>CHANGE ROLE</th><th>ACTIONS
+          </tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+        <p class="paginator" id="paginatorText">0 users</p>
+      </div>
+      <div id="content-related">
+        <div class="module">
+          <h2>Filter</h2>
+          <div class="module-body">
+            <div class="o-filter-group"><h3>By role</h3><ul id="roleFilterList"></ul></div>
+            <div class="o-filter-group"><h3>By status</h3><ul id="statusFilterList"></ul></div>
+          </div>
+        </div>
+        <div class="module kpi-module"><h2>Summary</h2><div class="module-body" id="kpiGrid"></div></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- COMMENTS + BANNED IDENTITIES -->
+    <div class="o-view" id="view-comments">
+      <div class="o-title-row"><h1 class="o-h1">Comment moderation</h1><button class="o-refresh" onclick="loadComments()">↻ Refresh</button></div>
+      <div id="toolbar">
+        <input type="text" id="commentSearchF" placeholder="Search author or comment text…" oninput="renderCommentsF()">
+        <button type="button" onclick="document.getElementById('commentSearchF').value='';renderCommentsF()">Clear</button>
+      </div>
+      <div class="o-changelist" style="margin-bottom:24px">
+        <table>
+          <thead><tr><th>Author</th><th>Comment</th><th>On</th><th>Posted</th><th>Moderation</th></tr></thead>
+          <tbody id="commentsBodyF"></tbody>
+        </table>
+      </div>
+      <div class="o-title-row"><h1 class="o-h1" style="font-size:17px">Banned identities</h1></div>
+      <div class="o-changelist">
+        <table>
+          <thead><tr><th>Name (last known)</th><th>Identity key</th><th>Reason</th><th>Banned</th><th></th></tr></thead>
+          <tbody id="bannedBodyF"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SITE CONTENT -->
+    <div class="o-view" id="view-sitecontent">
+      <div class="o-title-row"><h1 class="o-h1">Site content — text overrides</h1><button class="o-refresh" onclick="loadSiteContent()">↻ Refresh</button></div>
+      <p style="color:var(--body-quiet-color);font-size:12px;margin:-6px 0 14px">
+        Every override here replaces the matching <code>data-i18n</code> element's text the next time that page loads (via <code>assets/odyssey-content-loader.js</code>). Find a key by viewing a page's source — every meaningful piece of copy on the site carries one.
+      </p>
+      <div class="o-add-form">
+        <div><label>Content key</label><input id="ovKey" placeholder="e.g. hero_title, nav_home, faq_q_free"></div>
+        <div><label>Page (for your reference)</label><input id="ovPage" placeholder="e.g. index.html"></div>
+        <div class="full"><label>New text</label><textarea id="ovText" placeholder="The replacement text to show"></textarea></div>
+        <button type="button" onclick="saveOverride()">Save override</button>
+      </div>
+      <div id="toolbar">
+        <input type="text" id="contentSearchF" placeholder="Search key, page, or text…" oninput="renderSiteContentF()">
+      </div>
+      <div class="o-changelist">
+        <table>
+          <thead><tr><th>Key</th><th>Page</th><th>Override text</th><th>Updated</th><th></th></tr></thead>
+          <tbody id="contentBodyF"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="o-view" id="view-security">
+      <div class="o-title-row"><h1 class="o-h1">Founder security</h1></div>
+      <div class="o-changelist" style="padding:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+          <div>
+            <p style="margin:0 0 4px;font-weight:700;font-size:13px">Two-factor authentication</p>
+            <p style="margin:0;color:var(--body-quiet-color);font-size:12px;max-width:480px">Resetting shows a new QR code below, right now, for you to scan. Your current authenticator entry stops working the moment you confirm the new one.</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span id="mfaStatusPillF" class="o-badge pending">Checking…</span>
+            <button class="o-inline-btn" id="mfaResetBtnF" onclick="resetFounderMfa()">Reset MFA</button>
+          </div>
+        </div>
+        <div id="mfaResetPanelF" style="display:none;margin-top:18px;padding-top:18px;border-top:1px solid var(--hairline-color);text-align:center">
+          <img id="mfaResetQrF" alt="New MFA QR code" style="width:220px;height:220px;background:#fff;border:1px solid var(--hairline-color);border-radius:8px">
+          <p style="font-size:12px;color:var(--body-quiet-color);margin:10px 0">Scan with your authenticator, then enter the 6-digit code to confirm.</p>
+          <input id="mfaResetCodeF" inputmode="numeric" maxlength="6" placeholder="000000" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)" style="max-width:160px;text-align:center;letter-spacing:.25em;font-size:18px;padding:8px;border:1px solid var(--border-color);border-radius:9px;font:inherit">
+          <button class="o-inline-btn" style="margin-left:8px" onclick="confirmFounderMfaReset()">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="pf-overlay" id="pfOverlay" onclick="if(event.target===this)closeProfile()">
+  <div class="pf-drawer">
+    <div class="pf-head"><h2 id="pfTitle">Profile</h2><button class="pf-close" onclick="closeProfile()">✕</button></div>
+    <div id="pfBody"></div>
+  </div>
+</div>
+<script>
+const ROLES = ['student','instructor','institution','support','admin','superuser'];
+const STATUSES = ['active','pending','suspended','deleted'];
+let ME = null;
+let USERS = [];
+let activeRoleFilter = '';
+let activeStatusFilter = '';
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function fmtDate(d){return d?new Date(d).toLocaleDateString():'—'}
+function badge(v){return `<span class="o-badge ${esc(v)}">${esc(v||'—')}</span>`}
+
+async function requireFounderSession(){
+  const gate = document.getElementById('gate');
+  try{
+    if(!window.OdysseySupabase?.isConfigured?.()){
+      gate.textContent = 'Supabase is not configured. Add your project keys in js/supabase-config.js.';
+      return null;
+    }
+    const session = await OdysseySupabase.session();
+    if(!session){ location.href = 'founder-login.html'; return null; }
+    const profile = await OdysseySupabase.profile();
+    if(!profile || profile.role !== 'superuser'){
+      gate.textContent = "This dashboard is for the Odyssey founder account only. Redirecting...";
+      setTimeout(()=>{ location.href = profile && ['admin','support'].includes(profile.role) ? 'admin_dashboard.html' : 'student_portal.html'; }, 1200);
+      return null;
+    }
+    const aal = await OdysseyMFA.assurance().catch(()=>null);
+    if(!aal || aal.currentLevel !== 'aal2'){
+      location.href = 'mfa-verify.html?next=' + encodeURIComponent('founder-dashboard.html');
+      return null;
+    }
+    return profile;
+  }catch(error){
+    gate.textContent = 'Could not verify your session: ' + (error?.message || error);
+    return null;
+  }
+}
+
+async function signOutFounder(){
+  try{ await OdysseySupabase.signOut(); }catch(e){}
+  location.href = 'founder-login.html';
+}
+
+async function loadUsers(){
+  try{
+    USERS = await OdysseySupabase.founderListUsers();
+    renderFilters();
+    renderKpis();
+    renderTable();
+    healExpiredStalls(USERS);
+  }catch(error){
+    alert('Could not load users: ' + (error?.message || error));
+  }
+}
+
+function banInfoLine(u){
+  if(u.status !== 'suspended' || !u.ban_type) return '';
+  if(u.ban_type === 'permanent') return `<br><small style="color:var(--bad)">Banned${u.ban_reason?': '+esc(u.ban_reason):''}</small>`;
+  if(u.ban_type === 'temporary' && u.stalled_until) return `<br><small style="color:var(--warn)">Stalled until ${new Date(u.stalled_until).toLocaleString()}${u.ban_reason?' · '+esc(u.ban_reason):''}</small>`;
+  return '';
+}
+
+function userActions(u){
+  const isMe = ME && u.id === ME.id;
+  const viewBtn = (u.role === 'student' || u.role === 'instructor' || u.role === 'institution')
+    ? `<button class="o-inline-btn" onclick="viewProfile('${u.id}','${u.role}')">View profile</button>`
+    : '';
+  if(isMe || u.role === 'superuser') return viewBtn; // founders can't ban/stall themselves or each other here
+  const banStallBtns = u.status === 'suspended'
+    ? `<button class="o-inline-btn" onclick="reactivateUser('${u.id}')">Reactivate</button>`
+    : `<button class="o-inline-btn" onclick="stallUser('${u.id}','${esc(u.full_name).replace(/'/g,"\\'")}')">Stall</button>
+       <button class="o-inline-btn danger" onclick="banUser('${u.id}','${esc(u.full_name).replace(/'/g,"\\'")}')">Ban</button>`;
+  return viewBtn + ' ' + banStallBtns;
+}
+
+async function banUser(id, name){
+  if(!confirm(`Permanently ban ${name || 'this user'}? This blocks their login immediately and ends any active session, and does not expire on its own.`)) return;
+  const reason = prompt('Reason for the ban (optional, shown in the audit log):') || null;
+  const { error } = await modSb.rpc('admin_ban_user', { target_user_id: id, reason });
+  if(error){ alert('Could not ban: ' + error.message); return; }
+  logRecentAction(`Banned ${escF(name || 'a user')}`);
+  loadUsers();
+}
+
+async function stallUser(id, name){
+  const hoursRaw = prompt(`Stall ${name || 'this user'} for how many hours? (e.g. 24 for one day, 168 for one week)`);
+  if(hoursRaw === null) return;
+  const hours = parseInt(hoursRaw, 10);
+  if(!Number.isFinite(hours) || hours <= 0){ alert('Enter a positive number of hours.'); return; }
+  const reason = prompt('Reason for the stall (optional):') || null;
+  const { error } = await modSb.rpc('admin_stall_user', { target_user_id: id, hours, reason });
+  if(error){ alert('Could not stall: ' + error.message); return; }
+  logRecentAction(`Stalled ${escF(name || 'a user')} for ${hours}h`);
+  loadUsers();
+}
+
+async function reactivateUser(id){
+  const { error } = await modSb.rpc('admin_unban_user', { target_user_id: id });
+  if(error){ alert('Could not reactivate: ' + error.message); return; }
+  logRecentAction('Reactivated a user');
+  loadUsers();
+}
+
+// Supabase Auth itself stops blocking login the instant a temporary stall's
+// banned_until passes - this just catches the profiles.status/ban_type
+// fields up to match, so the badge doesn't keep showing "suspended" forever.
+async function healExpiredStalls(users){
+  const now = Date.now();
+  const expired = (users || []).filter(u => u.ban_type === 'temporary' && u.stalled_until && new Date(u.stalled_until).getTime() <= now);
+  if(!expired.length) return;
+  for(const u of expired){
+    await modSb.rpc('admin_unban_user', { target_user_id: u.id }).catch(()=>{});
+  }
+  loadUsers();
+}
+
+/* ── View profile: pulls the same admin_student_full_detail /
+   admin_instructor_full_detail RPCs the admin dashboard uses, since
+   is_admin() already covers superuser - no separate founder RPC needed. */
+function pfItem(label, value){
+  if(value === null || value === undefined || value === '') return '';
+  return `<div class="pf-item"><b>${esc(label)}</b><small>${esc(value)}</small></div>`;
+}
+function pfSection(title, html){
+  return `<div class="pf-section"><h3>${esc(title)}</h3>${html || '<div class="pf-item" style="color:var(--body-quiet-color)">Nothing here yet</div>'}</div>`;
+}
+function closeProfile(){ document.getElementById('pfOverlay').classList.remove('open'); }
+
+async function viewProfile(id, role){
+  const overlay = document.getElementById('pfOverlay');
+  const title = document.getElementById('pfTitle');
+  const body = document.getElementById('pfBody');
+  title.textContent = role === 'student' ? 'Student profile' : 'Instructor profile';
+  body.innerHTML = '<div class="pf-item">Loading…</div>';
+  overlay.classList.add('open');
+  try{
+    const fn = role === 'student' ? 'admin_student_full_detail' : 'admin_instructor_full_detail';
+    const argName = role === 'student' ? 'target_student_id' : 'target_instructor_id';
+    const { data, error } = await modSb.rpc(fn, { [argName]: id });
+    if(error) throw error;
+    const p = data.profile || {};
+
+    const identity = [
+      pfItem('Name', p.full_name),
+      pfItem('Email', p.email),
+      pfItem('Country / City', [p.country, p.city].filter(Boolean).join(' / ')),
+      pfItem('Status', p.status)
+    ].join('');
+
+    let html = pfSection('Identity', identity);
+
+    if(role === 'student'){
+      const enroll = [
+        pfItem('Phone', p.phone),
+        pfItem('Timezone', p.timezone),
+        pfItem('Grade level', p.grade_level),
+        pfItem('School', p.school_name),
+        pfItem('Guardian email', p.guardian_email),
+        pfItem('Learning goal', p.learning_goal),
+        pfItem('Preferred language', p.learning_preferred_language),
+        pfItem('Profile visibility', p.profile_visibility),
+        pfItem('Student code', p.student_code)
+      ].join('');
+      html += pfSection('Entered at enrollment', enroll);
+      html += pfSection('Enrollments', (data.enrollments||[]).map(e =>
+        `<div class="pf-item"><b>${esc(e.course_title)}</b><small>${esc(e.instructor_name)} · ${esc(e.enrollment_status)} · ${e.progress_percent||0}% progress</small></div>`).join(''));
+      html += pfSection('Exam results', (data.examResults||[]).map(e =>
+        `<div class="pf-item"><b>${esc(e.exam_title)}</b><small>${esc(e.status)} · score ${e.score_percent??'not graded'}%</small></div>`).join(''));
+      html += pfSection('Certificates', (data.certificates||[]).map(c =>
+        `<div class="pf-item"><b>${esc(c.verification_code)}</b><small>${esc(c.status)} · issued ${new Date(c.issued_at||Date.now()).toLocaleDateString()}</small></div>`).join(''));
+    } else {
+      html += pfSection('Courses', (data.courses||[]).map(c =>
+        `<div class="pf-item"><b>${esc(c.title)}</b><small>${esc(c.status)} · ${c.enrollments||0} enrollments · ${c.view_count||0} views</small></div>`).join(''));
+      html += pfSection('Subscriptions', (data.subscriptions||[]).map(s =>
+        `<div class="pf-item"><b>${esc(s.plan)}</b><small>${esc(s.status)}</small></div>`).join(''));
+    }
+    body.innerHTML = html;
+  }catch(error){
+    body.innerHTML = `<div class="pf-item" style="color:var(--bad)">Could not load: ${esc(error.message || error)}</div>`;
+  }
+}
+
+function renderFilters(){
+  const roleCounts = {}; const statusCounts = {};
+  USERS.forEach(u=>{ roleCounts[u.role]=(roleCounts[u.role]||0)+1; statusCounts[u.status]=(statusCounts[u.status]||0)+1; });
+  const roleList = document.getElementById('roleFilterList');
+  roleList.innerHTML = `<li><a href="#" class="${activeRoleFilter===''?'selected':''}" onclick="setRoleFilter('');return false;">All (${USERS.length})</a></li>` +
+    ROLES.map(r=>`<li><a href="#" class="${activeRoleFilter===r?'selected':''}" onclick="setRoleFilter('${r}');return false;">${r} (${roleCounts[r]||0})</a></li>`).join('');
+  const statusList = document.getElementById('statusFilterList');
+  statusList.innerHTML = `<li><a href="#" class="${activeStatusFilter===''?'selected':''}" onclick="setStatusFilter('');return false;">All (${USERS.length})</a></li>` +
+    STATUSES.map(s=>`<li><a href="#" class="${activeStatusFilter===s?'selected':''}" onclick="setStatusFilter('${s}');return false;">${s} (${statusCounts[s]||0})</a></li>`).join('');
+}
+
+function setRoleFilter(r){ activeRoleFilter=r; renderFilters(); renderTable(); }
+function setStatusFilter(s){ activeStatusFilter=s; renderFilters(); renderTable(); }
+
+function renderKpis(){
+  const counts = {};
+  USERS.forEach(u => { counts[u.role] = (counts[u.role]||0) + 1; });
+  const cards = [
+    ['Total', USERS.length],
+    ['Students', counts.student||0],
+    ['Instructors', counts.instructor||0],
+    ['Institutions', counts.institution||0],
+    ['Admin/Support', (counts.admin||0)+(counts.support||0)],
+    ['Superusers', counts.superuser||0]
+  ];
+  document.getElementById('kpiGrid').innerHTML = cards.map(([l,v])=>`<div class="kpi"><span class="n">${v}</span><span class="l">${l}</span></div>`).join('');
+}
+
+function matchesFilters(u, q){
+  if(activeRoleFilter && u.role !== activeRoleFilter) return false;
+  if(activeStatusFilter && u.status !== activeStatusFilter) return false;
+  if(!q) return true;
+  return (u.full_name||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q);
+}
+
+function renderTable(){
+  const q = (document.getElementById('search').value||'').toLowerCase().trim();
+  const rows = USERS.filter(u=>matchesFilters(u,q));
+  const body = document.getElementById('usersBody');
+  document.getElementById('paginatorText').textContent = `${rows.length} user${rows.length===1?'':'s'}`;
+  if(!rows.length){
+    body.innerHTML = '<tr class="empty-row"><td colspan="8">No users match these filters.</td></tr>';
+    updateSelectedCount();
+    return;
+  }
+  body.innerHTML = rows.map(u=>{
+    const isMe = ME && u.id === ME.id;
+    const options = ROLES.map(r=>`<option value="${r}" ${r===u.role?'selected':''}>${r}</option>`).join('');
+    return `<tr data-id="${u.id}">
+      <td><input type="checkbox" class="row-check" value="${u.id}" onchange="onRowCheck(this)"></td>
+      <td class="field-email"><a href="#" onclick="return false;">${esc(u.email||'—')}</a></td>
+      <td>${esc(u.full_name||'—')}${isMe?'<span class="o-you">YOU</span>':''}</td>
+      <td>${badge(u.role)}</td>
+      <td>${badge(u.status)}${banInfoLine(u)}</td>
+      <td>${esc(u.country||'—')}</td>
+      <td>${fmtDate(u.created_at)}</td>
+      <td><select class="o-role-select" onchange="changeRole('${u.id}', this)">${options}</select></td>
+      <td>${userActions(u)}</td>
+    </tr>`;
+  }).join('');
+  updateSelectedCount();
+}
+
+function toggleSelectAll(checkbox){
+  document.querySelectorAll('.row-check').forEach(cb=>{ cb.checked = checkbox.checked; cb.closest('tr').classList.toggle('selected', checkbox.checked); });
+  updateSelectedCount();
+}
+function onRowCheck(checkbox){
+  checkbox.closest('tr').classList.toggle('selected', checkbox.checked);
+  updateSelectedCount();
+}
+function updateSelectedCount(){
+  const total = document.querySelectorAll('.row-check').length;
+  const selected = document.querySelectorAll('.row-check:checked').length;
+  document.getElementById('selectedCount').textContent = `${selected} of ${total} selected`;
+}
+
+async function changeRole(userId, selectEl){
+  const newRole = selectEl.value;
+  const user = USERS.find(u=>u.id===userId);
+  const oldRole = user?.role;
+  if(newRole === oldRole) return;
+  if(!confirm(`Change ${user?.full_name || user?.email || 'this user'} from "${oldRole}" to "${newRole}"?`)){
+    selectEl.value = oldRole;
+    return;
+  }
+  selectEl.disabled = true;
+  try{
+    await OdysseySupabase.founderSetUserRole(userId, newRole);
+    if(user) user.role = newRole;
+    renderFilters(); renderKpis(); renderTable();
+  }catch(error){
+    alert('Could not change role: ' + (error?.message || error));
+    selectEl.value = oldRole;
+  }finally{
+    selectEl.disabled = false;
+  }
+}
+
+async function applyBulkAction(){
+  const newRole = document.getElementById('bulkAction').value;
+  const ids = [...document.querySelectorAll('.row-check:checked')].map(cb=>cb.value);
+  if(!newRole){ alert('Choose a role to apply first.'); return; }
+  if(!ids.length){ alert('Select at least one user first.'); return; }
+  if(!confirm(`Set role to "${newRole}" for ${ids.length} selected user(s)?`)) return;
+  let failed = 0;
+  for(const id of ids){
+    try{
+      await OdysseySupabase.founderSetUserRole(id, newRole);
+      const u = USERS.find(x=>x.id===id);
+      if(u) u.role = newRole;
+    }catch(error){ failed++; console.error('Bulk role change failed for', id, error); }
+  }
+  renderFilters(); renderKpis(); renderTable();
+  if(failed) alert(`${ids.length - failed} succeeded, ${failed} failed. Check console for details.`);
+}
+
+document.addEventListener('DOMContentLoaded', async ()=>{
+  ME = await requireFounderSession();
+  if(!ME) return;
+  document.getElementById('whoName').textContent = ME.full_name || ME.email || 'Founder';
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('shell').style.display = 'block';
+  // Users/Comments/Site Content/Security each load lazily the first time
+  // their view is opened (via showView below), not all at once on page load.
+});
+
+const VIEW_LABELS = { home:'Home', users:'Users', comments:'Comments', sitecontent:'Site Content', security:'Security' };
+const VIEW_LOADED = {};
+function showView(name){
+  document.querySelectorAll('.o-view').forEach(v => v.classList.remove('active'));
+  const target = document.getElementById('view-' + name);
+  if(target) target.classList.add('active');
+
+  const crumbs = document.getElementById('breadcrumbs');
+  crumbs.innerHTML = name === 'home'
+    ? `<span class="nav-crumb-link" onclick="showView('home')">Home</span>`
+    : `<span class="nav-crumb-link" onclick="showView('home')">Home</span> &rsaquo; ${VIEW_LABELS[name] || name}`;
+
+  if(!VIEW_LOADED[name]){
+    VIEW_LOADED[name] = true;
+    if(name === 'users') loadUsers();
+    if(name === 'comments'){ loadComments(); loadBanned(); }
+    if(name === 'sitecontent') loadSiteContent();
+    if(name === 'security') refreshFounderMfaStatus();
+  }
+}
+
+function logRecentAction(text){
+  const list = document.getElementById('recentActionsList');
+  if(!list) return;
+  if(list.children.length === 1 && list.children[0].textContent.includes('No actions yet')) list.innerHTML = '';
+  const li = document.createElement('li');
+  li.innerHTML = `${text}<small>${new Date().toLocaleTimeString()}</small>`;
+  list.prepend(li);
+}
+
+/* ── Comments / Banned identities / Site Content ──
+   Separate Supabase client from OdysseySupabase, same reasoning as
+   admin_dashboard.html: these tables (course_comments, comment_reactions,
+   course_likes, course_ratings, banned_identities, site_content) aren't
+   part of that wrapper, so this talks to them directly rather than
+   guessing at methods that may not exist. */
+const MOD_URL = 'https://yxewqmemegiogqwyklai.supabase.co';
+const MOD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4ZXdxbWVtZWdpb2dxd3lrbGFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjY3NTksImV4cCI6MjA5NzgwMjc1OX0.dQzu4llCv0WjHs93a4w9SN3zng1c1dW5moOsjwL6dDM';
+const modSb = window.supabase ? window.supabase.createClient(MOD_URL, MOD_KEY) : null;
+let ALL_COMMENTS_F = [];
+let ALL_BANNED_F = [];
+let ALL_CONTENT_F = [];
+
+function escF(v){ return String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+async function loadComments(){
+  if(!modSb) return;
+  const { data, error } = await modSb.from('course_comments')
+    .select('id, course_id, parent_comment_id, display_name, country, body, poster_key, created_at')
+    .order('created_at', { ascending: false })
+    .limit(500);
+  if(error){ console.error('Could not load comments', error); return; }
+  ALL_COMMENTS_F = data || [];
+  renderCommentsF();
+}
+
+function renderCommentsF(){
+  const tbody = document.getElementById('commentsBodyF');
+  if(!tbody) return;
+  const q = (document.getElementById('commentSearchF')?.value || '').toLowerCase();
+  const filtered = !q ? ALL_COMMENTS_F : ALL_COMMENTS_F.filter(c =>
+    [c.display_name, c.body, String(c.course_id)].join(' ').toLowerCase().includes(q));
+  if(!filtered.length){ tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No comments found</td></tr>'; return; }
+  tbody.innerHTML = filtered.map(c => {
+    const isReply = !!c.parent_comment_id;
+    const onLabel = c.course_id < 0 ? `Test #${Math.abs(c.course_id)}` : `Course #${c.course_id}`;
+    return `<tr>
+      <td><b>${escF(c.display_name)}</b>${c.country?`<br><small>${escF(c.country)}</small>`:''}</td>
+      <td>${isReply?'<i>(reply)</i> ':''}${escF((c.body||'').slice(0,140))}${(c.body||'').length>140?'…':''}</td>
+      <td>${onLabel}</td>
+      <td>${new Date(c.created_at).toLocaleString()}</td>
+      <td>
+        <button class="o-inline-btn danger" onclick="deleteCommentF('${c.id}')">Delete</button>
+        ${c.poster_key ? `<button class="o-inline-btn" onclick="banCommenterF('${c.poster_key}','${escF(c.display_name).replace(/'/g,"\\'")}')">Ban author</button>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function deleteCommentF(id){
+  if(!confirm('Delete this comment? Replies and reactions on it are removed too. This cannot be undone.')) return;
+  const { error } = await modSb.from('course_comments').delete().eq('id', id);
+  if(error){ alert('Could not delete: ' + error.message); return; }
+  logRecentAction('Deleted a comment');
+  loadComments();
+}
+
+async function banCommenterF(posterKey, name){
+  if(!confirm(`Ban "${name}" from posting new comments?`)) return;
+  const reason = prompt('Reason (optional):') || null;
+  const { error } = await modSb.from('banned_identities').insert({
+    identity_key: posterKey, display_name: name, reason, banned_by: ME?.email || 'founder dashboard'
+  });
+  if(error){ alert('Could not ban: ' + error.message); return; }
+  logRecentAction(`Banned commenter "${escF(name)}"`);
+  alert(`${name} is now banned from posting new comments.`);
+  loadBanned();
+}
+
+async function loadBanned(){
+  if(!modSb) return;
+  const { data, error } = await modSb.from('banned_identities').select('*').order('banned_at', { ascending: false });
+  if(error){ console.error('Could not load banned identities', error); return; }
+  ALL_BANNED_F = data || [];
+  renderBannedF();
+}
+
+function renderBannedF(){
+  const tbody = document.getElementById('bannedBodyF');
+  if(!tbody) return;
+  if(!ALL_BANNED_F.length){ tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No one is currently banned</td></tr>'; return; }
+  tbody.innerHTML = ALL_BANNED_F.map(b => `<tr>
+    <td>${escF(b.display_name || '—')}</td>
+    <td><code style="font-size:10.5px">${escF(b.identity_key.slice(0,18))}…</code></td>
+    <td>${escF(b.reason || '—')}</td>
+    <td>${new Date(b.banned_at).toLocaleDateString()}</td>
+    <td><button class="o-inline-btn" onclick="unbanIdentityF('${b.id}')">Unban</button></td>
+  </tr>`).join('');
+}
+
+async function unbanIdentityF(id){
+  if(!confirm('Remove this ban? They will be able to comment again.')) return;
+  const { error } = await modSb.from('banned_identities').delete().eq('id', id);
+  if(error){ alert('Could not unban: ' + error.message); return; }
+  logRecentAction('Removed a ban');
+  loadBanned();
+}
+
+async function loadSiteContent(){
+  if(!modSb) return;
+  const { data, error } = await modSb.from('site_content').select('*').order('updated_at', { ascending: false });
+  if(error){ console.error('Could not load site content', error); return; }
+  ALL_CONTENT_F = data || [];
+  renderSiteContentF();
+}
+
+function renderSiteContentF(){
+  const tbody = document.getElementById('contentBodyF');
+  if(!tbody) return;
+  const q = (document.getElementById('contentSearchF')?.value || '').toLowerCase();
+  const filtered = !q ? ALL_CONTENT_F : ALL_CONTENT_F.filter(c =>
+    [c.content_key, c.page, c.override_text].join(' ').toLowerCase().includes(q));
+  if(!filtered.length){ tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No overrides yet — add one above</td></tr>'; return; }
+  tbody.innerHTML = filtered.map(c => `<tr>
+    <td><code>${escF(c.content_key)}</code></td>
+    <td>${escF(c.page || '—')}</td>
+    <td>${escF((c.override_text||'').slice(0,90))}${(c.override_text||'').length>90?'…':''}</td>
+    <td>${new Date(c.updated_at).toLocaleDateString()}</td>
+    <td>
+      <button class="o-inline-btn" onclick="editOverrideF('${c.id}')">Edit</button>
+      <button class="o-inline-btn danger" onclick="deleteOverrideF('${c.id}')">Delete</button>
+    </td>
+  </tr>`).join('');
+}
+
+async function saveOverride(){
+  const key = document.getElementById('ovKey').value.trim();
+  const page = document.getElementById('ovPage').value.trim();
+  const text = document.getElementById('ovText').value.trim();
+  if(!key || !text){ alert('A content key and replacement text are both required.'); return; }
+  const { error } = await modSb.from('site_content').upsert(
+    { content_key: key, page, override_text: text, updated_by: ME?.email || 'founder', updated_at: new Date().toISOString() },
+    { onConflict: 'content_key' }
+  );
+  if(error){ alert('Could not save: ' + error.message); return; }
+  logRecentAction(`Updated site text "${escF(key)}"`);
+  document.getElementById('ovKey').value = '';
+  document.getElementById('ovPage').value = '';
+  document.getElementById('ovText').value = '';
+  loadSiteContent();
+}
+
+function editOverrideF(id){
+  const row = ALL_CONTENT_F.find(c => c.id === id);
+  if(!row) return;
+  document.getElementById('ovKey').value = row.content_key;
+  document.getElementById('ovPage').value = row.page || '';
+  document.getElementById('ovText').value = row.override_text;
+  document.getElementById('ovKey').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+async function deleteOverrideF(id){
+  if(!confirm('Remove this override? The page will show its original built-in text again.')) return;
+  const { error } = await modSb.from('site_content').delete().eq('id', id);
+  if(error){ alert('Could not delete: ' + error.message); return; }
+  logRecentAction('Removed a site text override');
+  loadSiteContent();
+}
+
+/* ── Security: MFA reset (adds to the existing OdysseyMFA/mfa.js system,
+   same reset flow already in admin_dashboard.html) ── */
+let mfaResetFactorIdF = '';
+
+async function refreshFounderMfaStatus(){
+  const pill = document.getElementById('mfaStatusPillF');
+  try{
+    const verified = await OdysseyMFA.verifiedTotpFactor();
+    pill.textContent = verified ? 'Enabled' : 'Not enabled';
+    pill.className = 'o-badge ' + (verified ? 'active' : 'pending');
+  }catch(e){
+    pill.textContent = 'Unknown';
+    pill.className = 'o-badge pending';
+  }
+}
+
+function renderMfaQrF(el, src){
+  // Supabase returns totp.qr_code as raw <svg>...</svg> markup, not a URL.
+  if(/^\s*<svg[\s>]/i.test(src)) el.src = URL.createObjectURL(new Blob([src], {type:'image/svg+xml'}));
+  else el.src = src;
+}
+
+async function resetFounderMfa(){
+  if(!confirm('This shows a new QR code and invalidates your current authenticator entry. Continue?')) return;
+  const btn = document.getElementById('mfaResetBtnF');
+  btn.disabled = true; btn.textContent = 'Preparing…';
+  try{
+    const data = await OdysseyMFA.resetAndEnroll();
+    mfaResetFactorIdF = data.id;
+    renderMfaQrF(document.getElementById('mfaResetQrF'), data.totp?.qr_code || '');
+    document.getElementById('mfaResetPanelF').style.display = 'block';
+    document.getElementById('mfaResetCodeF').focus();
+    logRecentAction('Started an MFA reset');
+  }catch(e){
+    alert('MFA reset failed: ' + (e?.message || e));
+  }finally{
+    btn.disabled = false; btn.textContent = 'Reset MFA';
+  }
+}
+
+async function confirmFounderMfaReset(){
+  const code = document.getElementById('mfaResetCodeF').value.trim();
+  if(code.length !== 6 || !mfaResetFactorIdF) return;
+  try{
+    await OdysseyMFA.verify(mfaResetFactorIdF, code);
+    document.getElementById('mfaResetPanelF').style.display = 'none';
+    document.getElementById('mfaResetCodeF').value = '';
+    logRecentAction('Completed an MFA reset');
+    refreshFounderMfaStatus();
+  }catch(e){
+    alert(e?.message || 'Invalid code. Try the next code from your app.');
+  }
+}
+</script>
+</body>
+</html>

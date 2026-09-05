@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700;6..72,800&display=swap" rel="stylesheet" />
+<script src="js/i18n.js" defer></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<title>An Odyssey story</title>
+<style>
+:root{--ink:#141C2B;--muted:#64708A;--head:Newsreader,Georgia,serif;--body:Manrope,system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--body);color:var(--ink);background:var(--t-bg,#F6F4EF);overflow-x:hidden;transition:background .3s ease}
+
+/* ── FOUR THEMES ── */
+[data-theme="sky_voyager"]{--t-primary:#142C4F;--t-primary2:#2A4A78;--t-accent:#2D9CDB;--t-warm:#E7C88A;--t-bg:#EAF3FB;--t-bg2:#D9ECFA}
+[data-theme="blossom_dream"]{--t-primary:#C2356B;--t-primary2:#9C2A56;--t-accent:#FF8FA3;--t-warm:#F2B441;--t-bg:#FCEEF2;--t-bg2:#FBDCE7}
+[data-theme="jungle_quest"]{--t-primary:#2F6B3A;--t-primary2:#20492A;--t-accent:#C1653D;--t-warm:#D9A441;--t-bg:#F1F6E9;--t-bg2:#E3EED0}
+[data-theme="galaxy_sparkle"]{--t-primary:#4C3A82;--t-primary2:#372a61;--t-accent:#B23A6B;--t-warm:#7C5CFF;--t-bg:#F1EEFB;--t-bg2:#E4DCF9}
+
+nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 24px;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(20,44,79,.1)}
+[data-i18n-switcher]{position:relative}
+.i18n-dropdown{max-width:min(240px,calc(100vw - 32px))!important;z-index:2147483647!important}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--head);font-size:22px;font-weight:800}
+.brand img{width:38px;height:38px;border-radius:13px;object-fit:contain;background:#071c2b;padding:4px}
+.navlinks{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.navlinks a{color:var(--muted);font-weight:800;font-size:13px;text-decoration:none}
+
+/* Big bold floating background - bigger/bolder than the subtle portal version */
+.float-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.float-bg span{position:absolute;font-size:64px;opacity:.22;filter:drop-shadow(0 10px 18px rgba(0,0,0,.10));animation:odyBigDrift 22s ease-in-out infinite}
+.float-bg span:nth-child(1){top:6%;left:6%;font-size:78px;animation-duration:20s}
+.float-bg span:nth-child(2){top:14%;right:8%;font-size:56px;animation-duration:26s;animation-direction:reverse}
+.float-bg span:nth-child(3){bottom:12%;left:10%;font-size:70px;animation-duration:24s}
+.float-bg span:nth-child(4){bottom:20%;right:12%;font-size:60px;animation-duration:28s;animation-direction:reverse}
+.float-bg span:nth-child(5){top:44%;left:46%;font-size:50px;animation-duration:19s}
+.float-bg span:nth-child(6){top:60%;right:38%;font-size:44px;animation-duration:31s;animation-direction:reverse}
+@keyframes odyBigDrift{0%,100%{transform:translate(0,0) rotate(0deg)}33%{transform:translate(24px,-30px) rotate(6deg)}66%{transform:translate(-18px,20px) rotate(-5deg)}}
+@media(prefers-reduced-motion:reduce){.float-bg span{animation:none}}
+
+.wrap{position:relative;z-index:1;width:min(880px,calc(100% - 32px));margin:0 auto 80px}
+
+/* HERO with curved blob photo frame */
+.story-hero{text-align:center;padding:56px 20px 30px}
+.curve-frame-wrap{position:relative;width:220px;height:220px;margin:0 auto 22px}
+.curve-frame{width:100%;height:100%;border-radius:42% 58% 65% 35% / 45% 45% 55% 55%;overflow:hidden;background:linear-gradient(135deg,var(--t-primary),var(--t-accent));box-shadow:0 30px 60px rgba(0,0,0,.18);border:6px solid #fff;display:flex;align-items:center;justify-content:center;animation:frameMorph 12s ease-in-out infinite;position:relative;z-index:2}
+@keyframes frameMorph{0%,100%{border-radius:42% 58% 65% 35% / 45% 45% 55% 55%}50%{border-radius:58% 42% 35% 65% / 55% 60% 40% 45%}}
+.curve-frame img{width:100%;height:100%;object-fit:cover}
+.curve-frame .placeholder-emoji{font-size:76px}
+.curve-frame-ring{position:absolute;inset:-14px;border-radius:42% 58% 65% 35% / 45% 45% 55% 55%;border:3px dashed var(--t-warm);opacity:.6;animation:frameMorph 12s ease-in-out infinite reverse;z-index:1}
+.story-hero .tag{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.08);color:var(--t-primary);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.story-hero h1{font-family:var(--head);font-size:clamp(30px,5vw,50px);margin:0 0 8px;color:var(--t-primary);font-weight:800}
+.story-hero .meta-line{color:var(--muted);font-weight:700;font-size:14px}
+.meta-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px}
+.meta-chip{background:#fff;border:1px solid rgba(0,0,0,.08);padding:7px 13px;border-radius:999px;font-size:12px;font-weight:800;color:var(--t-primary)}
+
+.story-card{position:relative;background:rgba(255,255,255,.88);backdrop-filter:blur(6px);border-radius:26px;padding:32px 30px;box-shadow:0 26px 70px rgba(0,0,0,.10);border:1px solid rgba(0,0,0,.06)}
+.story-card p{font-size:17px;line-height:1.9;color:var(--ink);white-space:pre-wrap;font-family:var(--head)}
+.story-card p:first-letter{font-size:46px;font-family:var(--head);font-weight:800;color:var(--t-primary);float:left;line-height:1;margin:6px 8px 0 0}
+
+.cta-row{display:flex;justify-content:center;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:0;border-radius:14px;padding:12px 20px;background:linear-gradient(135deg,var(--t-primary),var(--t-primary2));color:white;font-weight:900;text-decoration:none;cursor:pointer;box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.btn.secondary{background:#fff;color:var(--t-primary);border:2px solid rgba(0,0,0,.1);box-shadow:none}
+
+.loading,.error-box{text-align:center;padding:80px 20px;color:var(--muted)}
+footer{position:relative;z-index:1;background:#0B1930;color:white;text-align:center;padding:36px 20px;margin-top:40px}
+.footer-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:14px 0}
+.footer-links a{color:rgba(255,255,255,.58);text-decoration:none;font-weight:750;font-size:13px}
+
+@media(max-width:640px){.story-card{padding:24px 18px}.curve-frame-wrap{width:170px;height:170px}}
+</style>  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<div class="float-bg" id="floatBg" aria-hidden="true"><span>🚀</span><span>🌙</span><span>⭐</span><span>☄️</span><span>✨</span><span>🪐</span></div>
+
+<nav><a class="brand" href="index.html"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo"><span>Odyssey</span></a><div class="navlinks"><a href="index.html">Home</a><a href="story_display.html">All stories</a><a href="share-story.html">Share yours</a><span data-i18n-switcher></span></div></nav>
+
+<div class="wrap" id="content">
+  <div class="loading" id="loadingState">Loading story…</div>
+</div>
+
+<footer><strong>Odyssey</strong><div class="footer-links"><a href="story_display.html">Stories</a><a href="share-story.html">Share your story</a><a href="index.html">Home</a></div><p>© 2026 Odyssey · Demo preview</p></footer>
+
+<script>
+const THEME_EMOJI = {
+  sky_voyager: ['🚀','🌙','⭐','☄️','✨','🪐'],
+  blossom_dream: ['🌸','💗','🦋','✨','🌷','💫'],
+  jungle_quest: ['🌴','🦁','🧭','🍃','🐾','🌞'],
+  galaxy_sparkle: ['🌙','⭐','💫','🦄','✨','🌌']
+};
+
+function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+async function init(){
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const content = document.getElementById('content');
+  if(!id){ content.innerHTML = '<div class="error-box"><h2>Story not found</h2><p>No story was specified.</p><a class="btn secondary" href="story_display.html">Back to stories</a></div>'; return; }
+
+  if(!window.OdysseySupabase || !OdysseySupabase.isConfigured()){
+    content.innerHTML = '<div class="error-box">This deployment is not connected to Supabase yet.</div>';
+    return;
+  }
+
+  try {
+    const sb = await OdysseySupabase.client();
+    const { data: story, error } = await sb.from('stories').select('*').eq('id', id).single();
+    if(error || !story) throw error || new Error('Story not found');
+
+    const theme = THEME_EMOJI[story.theme] ? story.theme : 'sky_voyager';
+    document.body.setAttribute('data-theme', theme);
+    document.getElementById('floatBg').innerHTML = THEME_EMOJI[theme].map(e=>`<span>${e}</span>`).join('');
+
+    const photoInner = story.photo_url
+      ? `<img src="${escapeHtml(story.photo_url)}" alt="${escapeHtml(story.name)}'s Odyssey memory">`
+      : `<span class="placeholder-emoji">${THEME_EMOJI[theme][0]}</span>`;
+
+    content.innerHTML = `
+      <section class="story-hero">
+        <div class="curve-frame-wrap">
+          <div class="curve-frame-ring"></div>
+          <div class="curve-frame">${photoInner}</div>
+        </div>
+        <span class="tag">Student story</span>
+        <h1>${escapeHtml(story.name)}'s Odyssey journey</h1>
+        <div class="meta-line">${escapeHtml(story.city||'')}${story.city&&story.country?', ':''}${escapeHtml(story.country||'')}</div>
+        <div class="meta-chips">
+          ${story.field ? `<span class="meta-chip">${escapeHtml(story.field)}</span>` : ''}
+          ${story.subject ? `<span class="meta-chip">${escapeHtml(story.subject)}</span>` : ''}
+          ${story.satisfaction ? `<span class="meta-chip">⭐ ${escapeHtml(story.satisfaction)}</span>` : ''}
+        </div>
+      </section>
+      <section class="story-card"><p>${escapeHtml(story.message)}</p></section>
+      <div class="cta-row">
+        <a class="btn" href="share-story.html">Share your own story</a>
+        <a class="btn secondary" href="story_display.html">Browse more stories</a>
+      </div>
+    `;
+  } catch(err) {
+    console.error(err);
+    content.innerHTML = '<div class="error-box"><h2>Story not found</h2><p>This story may have been removed.</p><a class="btn secondary" href="story_display.html">Back to stories</a></div>';
+  }
+}
+init();
+</script>
+</body></html>

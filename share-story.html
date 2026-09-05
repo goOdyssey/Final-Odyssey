@@ -1,0 +1,213 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<script src="js/i18n.js" defer></script>
+<link rel="stylesheet" href="assets/odyssey-design-system.css" />
+<script defer src="assets/odyssey-scroll-reveal.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth-nav-v4.js?v=20260826-4" defer></script>
+<title>Share your Odyssey story</title>
+<style>
+:root{--ink:#141C2B;--muted:#64708A;--line:rgba(20,44,79,.14);--purple:#142C4F;--pink:#C08A3E;--cyan:#0F7A6C;--green:#2E7D5B;--gold:#C08A3E;--navy:#0B1930;--bg:#F6F4EF;--head:Newsreader,Georgia,serif;--body:Manrope,system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--body);color:var(--ink);background:radial-gradient(circle at 8% 10%,rgba(20,44,79,.16),transparent 28%),radial-gradient(circle at 90% 5%,rgba(192,138,62,.14),transparent 26%),linear-gradient(135deg,#F8F6F1,#F3E9D3 48%,#EFEDE6)}
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 24px;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--head);font-size:22px;font-weight:800}
+.brand img{width:38px;height:38px;border-radius:13px;object-fit:contain;background:#071c2b;padding:4px}
+.navlinks{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.navlinks a{color:var(--muted);font-weight:800;font-size:13px;text-decoration:none}
+.navlinks a:hover{color:var(--purple)}
+.hero{padding:78px 22px 42px;text-align:center}
+.tag{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid rgba(20,44,79,.18);border-radius:999px;background:rgba(255,255,255,.68);color:var(--purple);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.hero h1{font-family:var(--head);font-size:clamp(38px,6vw,76px);line-height:1;margin:18px auto 14px;max-width:920px}
+.hero p{max-width:720px;margin:0 auto;color:var(--muted);line-height:1.75;font-weight:650}
+.wrap{width:min(1120px,calc(100% - 32px));margin:0 auto 70px}
+.card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.80);box-shadow:0 24px 70px rgba(15,23,42,.10);padding:24px}
+.form{display:grid;gap:14px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:grid;gap:7px}
+.field label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;background:white;color:var(--ink);font:inherit}
+textarea{min-height:150px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:0;border-radius:14px;padding:12px 16px;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;font-weight:900;text-decoration:none;cursor:pointer;box-shadow:0 14px 34px rgba(20,44,79,.22)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.secondary{background:#071c2b}
+footer{background:#0B1930;color:white;text-align:center;padding:36px 20px}
+.footer-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:14px 0}
+.footer-links a{color:rgba(255,255,255,.58);text-decoration:none;font-weight:750;font-size:13px}
+.photo-hint{border:1px dashed rgba(20,44,79,.28);border-radius:16px;padding:14px;background:rgba(20,44,79,.045)}
+.photo-hint small{display:block;color:var(--muted);line-height:1.5;margin-top:5px}
+.photo-preview{display:none;width:100%;max-height:260px;object-fit:cover;border-radius:16px;margin-top:10px}
+
+/* Theme picker */
+.theme-picker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.theme-card{border:2px solid var(--line);border-radius:18px;padding:12px;cursor:pointer;background:#fff;transition:.18s;text-align:center}
+.theme-card:hover{transform:translateY(-3px)}
+.theme-card.active{border-color:var(--purple);box-shadow:0 16px 34px rgba(20,44,79,.16);transform:translateY(-3px)}
+.theme-preview{height:64px;border-radius:14px;margin-bottom:9px;display:flex;align-items:center;justify-content:center;font-size:26px;gap:4px}
+.theme-card[data-theme="sky_voyager"] .theme-preview{background:linear-gradient(135deg,#142C4F,#2D9CDB,#E7C88A)}
+.theme-card[data-theme="blossom_dream"] .theme-preview{background:linear-gradient(135deg,#C2356B,#FF8FA3,#F2B441)}
+.theme-card[data-theme="jungle_quest"] .theme-preview{background:linear-gradient(135deg,#2F6B3A,#C1653D,#D9A441)}
+.theme-card[data-theme="galaxy_sparkle"] .theme-preview{background:linear-gradient(135deg,#4C3A82,#B23A6B,#7C5CFF)}
+.theme-card b{display:block;font-family:var(--head);font-size:14px}
+.theme-card small{color:var(--muted);font-size:11px}
+
+/* Login gate */
+.login-gate{text-align:center;padding:50px 24px}
+.login-gate h2{font-family:var(--head);font-size:30px;margin:0 0 10px}
+.login-gate p{color:var(--muted);max-width:440px;margin:0 auto 22px;line-height:1.6}
+.hidden{display:none !important}
+
+@media(max-width:900px){.split,.theme-picker{grid-template-columns:1fr 1fr}.navlinks{justify-content:flex-end}.hero{padding-top:54px}}
+@media(max-width:560px){.theme-picker{grid-template-columns:1fr}}
+</style>  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
+<nav><a class="brand" href="index.html"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo"><span>Odyssey</span></a><div class="navlinks"><a href="index.html" data-i18n="nav_home">Home</a><a href="story_display.html">Stories</a><span data-i18n-switcher></span></div></nav>
+
+<section class="hero" data-reveal="rise"><span class="tag">Student voice</span><h1>Share your learning journey.</h1><p>Tell future learners how Odyssey helped you study, prepare, improve, or keep going when learning felt difficult.</p></section>
+
+<main class="wrap">
+  <section class="card" data-reveal="rise" id="loginGate">
+    <div class="login-gate">
+      <h2>Sign in to share your story</h2>
+      <p>To keep every story on Odyssey attached to a real learner, we ask you to sign in first. It only takes a moment.</p>
+      <a class="btn" href="auth.html?mode=login">Log in to continue</a>
+    </div>
+  </section>
+
+  <section class="card hidden" data-reveal="rise" id="formCard">
+    <form class="form" id="storyForm">
+      <div class="split">
+        <div class="field"><label>Your name</label><input id="storyName" required placeholder="Mina Farhadi"></div>
+        <div class="field"><label>City</label><input id="storyCity" required placeholder="Shiraz"></div>
+      </div>
+      <div class="split">
+        <div class="field"><label>Country</label><input id="storyCountry" required placeholder="Iran"></div>
+        <div class="field"><label>Field studied at Odyssey</label><input id="storyField" required placeholder="Entrance Exam"></div>
+      </div>
+      <div class="split">
+        <div class="field"><label>Subject</label><input id="storySubject" required placeholder="Konkur Biology"></div>
+        <div class="field"><label>Satisfaction</label><select id="storySatisfaction"><option>Excellent</option><option>Very good</option><option>Good</option><option>Needs improvement</option></select></div>
+      </div>
+      <div class="field photo-hint">
+        <label>Odyssey memory photo</label>
+        <input id="storyPhoto" type="file" accept="image/*">
+        <small>Upload a photo that represents your fun time learning with Odyssey or marks a precious Odyssey experience. This appears in the frame at the top of your story page.</small>
+        <img id="storyPhotoPreview" class="photo-preview" alt="Odyssey memory preview">
+      </div>
+      <div class="field">
+        <label>Your experience</label>
+        <textarea id="storyMessage" required placeholder="Write about your progress, your instructor, your course, or the challenge Odyssey helped you overcome."></textarea>
+      </div>
+      <div class="field">
+        <label>Pick a design for your story page</label>
+        <div class="theme-picker" id="themePicker">
+          <div class="theme-card active" data-theme="sky_voyager"><div class="theme-preview">🚀🌙⭐</div><b>Sky Voyager</b><small>Bold blues &amp; gold</small></div>
+          <div class="theme-card" data-theme="blossom_dream"><div class="theme-preview">🌸💗✨</div><b>Blossom Dream</b><small>Playful pinks</small></div>
+          <div class="theme-card" data-theme="jungle_quest"><div class="theme-preview">🌴🦁🧭</div><b>Jungle Quest</b><small>Earthy adventure</small></div>
+          <div class="theme-card" data-theme="galaxy_sparkle"><div class="theme-preview">🌙⭐💫</div><b>Galaxy Sparkle</b><small>Cosmic purples</small></div>
+        </div>
+      </div>
+      <button class="btn" type="submit" id="submitBtn">Submit story</button>
+    </form>
+    <p class="desc" id="storyStatus" style="margin-top:14px;color:var(--muted)"></p>
+  </section>
+</main>
+
+<script>
+let selectedTheme = 'sky_voyager';
+let currentUserId = null;
+let storyPhotoFile = null;
+
+document.querySelectorAll('.theme-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('active'));
+    card.classList.add('active');
+    selectedTheme = card.dataset.theme;
+  });
+});
+
+storyPhoto.addEventListener('change', ()=>{
+  const file = storyPhoto.files && storyPhoto.files[0];
+  storyPhotoFile = file || null;
+  if(!file){ storyPhotoPreview.style.display='none'; return; }
+  const reader = new FileReader();
+  reader.onload = () => { storyPhotoPreview.src = String(reader.result||''); storyPhotoPreview.style.display='block'; };
+  reader.readAsDataURL(file);
+});
+
+async function init(){
+  if(!window.OdysseySupabase || !OdysseySupabase.isConfigured()){
+    document.getElementById('loginGate').querySelector('p').textContent = 'This deployment is not connected to Supabase yet.';
+    return;
+  }
+  const session = await OdysseySupabase.session();
+  if(!session){ return; } // login gate stays visible, form stays hidden
+  currentUserId = session.user.id;
+  document.getElementById('loginGate').classList.add('hidden');
+  document.getElementById('formCard').classList.remove('hidden');
+
+  // Pre-fill name from the account profile as a convenience, still editable.
+  try {
+    const profile = await OdysseySupabase.profile();
+    if(profile?.full_name) storyName.value = profile.full_name;
+    if(profile?.country) storyCountry.value = profile.country;
+    if(profile?.city) storyCity.value = profile.city;
+  } catch(e) { /* non-fatal - form still works without prefill */ }
+}
+init();
+
+document.getElementById('storyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if(!currentUserId){ storyStatus.textContent = 'Please log in first.'; return; }
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  storyStatus.textContent = 'Submitting your story…';
+
+  try {
+    const sb = await OdysseySupabase.client();
+    let photoUrl = null;
+
+    if(storyPhotoFile){
+      storyStatus.textContent = 'Uploading your photo…';
+      const ext = (storyPhotoFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
+      const path = `${currentUserId}/${Date.now()}.${ext}`;
+      const { error: uploadError } = await sb.storage.from('odyssey-stories').upload(path, storyPhotoFile, { upsert: false });
+      if(uploadError) throw uploadError;
+      const { data: urlData } = sb.storage.from('odyssey-stories').getPublicUrl(path);
+      photoUrl = urlData.publicUrl;
+    }
+
+    storyStatus.textContent = 'Saving your story…';
+    const { data: inserted, error: insertError } = await sb.from('stories').insert({
+      user_id: currentUserId,
+      name: storyName.value.trim(),
+      city: storyCity.value.trim(),
+      country: storyCountry.value.trim(),
+      field: storyField.value.trim(),
+      subject: storySubject.value.trim(),
+      satisfaction: storySatisfaction.value,
+      message: storyMessage.value.trim(),
+      photo_url: photoUrl,
+      theme: selectedTheme
+    }).select('id').single();
+    if(insertError) throw insertError;
+
+    storyStatus.textContent = 'Thank you! Your story is live.';
+    setTimeout(() => { location.href = 'story_view.html?id=' + inserted.id; }, 700);
+  } catch(error) {
+    console.error(error);
+    storyStatus.textContent = 'Could not submit your story: ' + (error.message || error);
+    submitBtn.disabled = false;
+  }
+});
+</script>
+
+<footer><strong>Odyssey</strong><div class="footer-links"><a href="subscription.html">Subscriptions</a><a href="share-story.html">Share your story</a><a href="story_display.html">Stories</a><a href="terms.html">Terms</a></div><p>© 2026 Odyssey · Demo preview</p></footer>
+</body></html>

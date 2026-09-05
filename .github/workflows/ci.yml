@@ -1,0 +1,21 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 20}
+      - name: Validate JavaScript syntax
+        run: |
+          find api js -type f -name '*.js' -print0 2>/dev/null | xargs -0 -r -n1 node --check
+      - name: Reject committed secret values
+        run: |
+          ! grep -RInE '(SUPABASE_SERVICE_ROLE_KEY|STRIPE_SECRET_KEY|STRIPE_WEBHOOK_SECRET)=[^$[:space:]][^[:space:]]+' --exclude='.env.example' .
+      - name: Validate JSON
+        run: |
+          find . -type f -name '*.json' -not -path './node_modules/*' -print0 | xargs -0 -n1 jq empty

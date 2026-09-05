@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Log in | Odyssey administration</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/recaptcha-config.js"></script>
+<script src="js/security-guard.js"></script>
+<script src="js/mfa.js"></script>
+<style>
+:root{
+  --primary:#79aec8;--secondary:#417690;--accent:#f5dd5d;--primary-fg:#fff;
+  --body-fg:#333;--header-color:#ffc;--header-bg:var(--secondary);
+  --darkened-bg:#f8f8f8;--border-color:#ccc;--hairline-color:#e8e8e8;
+  --error-fg:#ba2121;--error-bg:#ffefef;
+  --button-fg:#fff;--button-bg:var(--secondary);--button-hover-bg:#205067;
+  --link-fg:#447e9b;--link-hover-color:#036;
+  --font:"Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:var(--font);font-size:14px;color:var(--body-fg);background:var(--darkened-bg);display:flex;flex-direction:column}
+a{color:var(--link-fg);text-decoration:none}
+a:hover{color:var(--link-hover-color)}
+button,input{font-family:inherit;font-size:inherit}
+
+#header{background:var(--header-bg);color:var(--header-color);padding:10px 40px}
+#branding h1{font-size:20px;margin:0;font-weight:400;color:var(--header-color)}
+#branding h1 .accent{color:var(--accent);font-weight:700}
+
+.wrap{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 20px}
+.login-card{background:#fff;border:1px solid var(--hairline-color);border-radius:4px;width:100%;max-width:380px;padding:0;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.login-card h2{background:var(--secondary);color:#fff;font-size:13px;font-weight:700;margin:0;padding:10px 16px;border-radius:4px 4px 0 0;text-transform:uppercase;letter-spacing:.03em}
+.login-body{padding:24px 24px 28px}
+.notice{display:none;background:var(--error-bg);color:var(--error-fg);border:1px solid #e8a3a3;border-radius:4px;padding:10px 12px;font-size:12.5px;font-weight:500;margin-bottom:16px;line-height:1.5}
+.notice.show{display:block}
+.notice.good{background:#e8f6ee;color:#116149;border-color:#a9dcc0}
+.fg{margin-bottom:16px}
+label{display:block;font-size:12.5px;font-weight:700;color:var(--body-fg);margin-bottom:5px}
+input{width:100%;padding:8px 10px;border:1px solid var(--border-color);border-radius:4px;font-size:13.5px;color:var(--body-fg);background:#fff;outline:none}
+input:focus{border-color:var(--secondary);box-shadow:0 0 0 2px rgba(65,118,144,.15)}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:9px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:#888;padding:0}
+button.submit{width:100%;padding:9px;border-radius:4px;border:0;font-size:13.5px;font-weight:700;color:var(--button-fg);background:var(--button-bg);cursor:pointer;margin-top:4px}
+button.submit:hover{background:var(--button-hover-bg)}
+button.submit:disabled{opacity:.6;cursor:not-allowed}
+.foot{max-width:380px;margin:14px auto 0;text-align:center;font-size:11.5px;color:#888;line-height:1.7}
+.foot a{color:#888;text-decoration:underline}
+</style>
+  <script src="js/observability.js" defer></script>
+</head>
+<body>
+<div id="header">
+  <div id="branding"><h1>Odyssey <span class="accent">administration</span></h1></div>
+</div>
+
+<div class="wrap">
+  <div class="login-card">
+    <h2>Staff sign-in</h2>
+    <div class="login-body">
+      <div class="notice" id="notice"></div>
+      <p style="font-size:12.5px;color:#666;margin:0 0 16px;line-height:1.6">This page is for Odyssey staff accounts only. Students and instructors should use the <a href="auth.html?mode=login">regular sign-in page</a>.</p>
+      <form id="adminLoginForm">
+        <div class="fg">
+          <label for="a_email">Staff email</label>
+          <input id="a_email" type="email" autocomplete="username" required />
+        </div>
+        <div class="fg">
+          <label for="a_pw">Password</label>
+          <div class="pw-wrap">
+            <input id="a_pw" type="password" autocomplete="current-password" required />
+            <button class="pw-toggle" type="button" onclick="togglePw()">👁</button>
+          </div>
+        </div>
+        <button class="submit" type="submit" id="submitBtn">Log in</button>
+      </form>
+    </div>
+  </div>
+  <div class="foot">
+    Founder? <a href="founder-login.html">Founder sign-in</a> · Wrong page? <a href="index.html">Return to Odyssey</a><br>
+    Access is restricted and every sign-in is logged.
+  </div>
+</div>
+
+<script>
+function togglePw(){
+  const el = document.getElementById('a_pw');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+function showNotice(message, type){
+  const box = document.getElementById('notice');
+  box.textContent = message;
+  box.className = 'notice show ' + type;
+}
+
+function setBusy(busy){
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = busy;
+  btn.textContent = busy ? 'Signing in...' : 'Log in';
+}
+
+const STAFF_ROLES = ['admin', 'support'];
+
+document.getElementById('adminLoginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const email = document.getElementById('a_email').value.trim().toLowerCase();
+  const password = document.getElementById('a_pw').value;
+
+  if (!email || !password) {
+    showNotice('Enter your staff email and password.', 'bad');
+    return;
+  }
+  if (!window.OdysseySupabase?.isConfigured?.()) {
+    showNotice('Supabase is not configured yet. Add your project keys in js/supabase-config.js.', 'bad');
+    return;
+  }
+  if (!window.OdysseyMFA) {
+    showNotice('This page needs js/mfa.js, which was not found. Make sure it is deployed alongside js/supabase-client.js.', 'bad');
+    return;
+  }
+
+  setBusy(true);
+  try {
+    const guard = await OdysseySecurity.check(email, 'admin_login');
+    if (!guard.allowed) { showNotice(guard.message, 'bad'); return; }
+
+    const result = await OdysseySupabase.signIn(email, password);
+    const role = result?.profile?.role;
+
+    if (!STAFF_ROLES.includes(role)) {
+      // Do not leave a session behind for a non-staff account that happened to
+      // wander onto this page, and do not hint at the real reason - "wrong
+      // password" and "not staff" should look the same from the outside.
+      await OdysseySupabase.signOut();
+      OdysseySecurity.record(email, 'failure');
+      throw new Error('Invalid staff credentials.');
+    }
+
+    OdysseySecurity.record(email, 'success');
+
+    const nextUrl = 'admin_dashboard.html';
+    const factor = await OdysseyMFA.verifiedTotpFactor();
+    if (!factor) {
+      showNotice('Signed in. Two-factor setup required…', 'good');
+      setTimeout(() => { location.href = 'mfa-setup.html?next=' + encodeURIComponent(nextUrl); }, 300);
+      return;
+    }
+    const level = await OdysseyMFA.assurance();
+    if (level.currentLevel !== 'aal2') {
+      showNotice('Signed in. Verifying two-factor code…', 'good');
+      setTimeout(() => { location.href = 'mfa-verify.html?next=' + encodeURIComponent(nextUrl); }, 300);
+      return;
+    }
+    showNotice('Signed in. Opening the admin portal…', 'good');
+    setTimeout(() => { location.href = nextUrl; }, 300);
+  } catch (error) {
+    OdysseySecurity.record(email, 'failure');
+    showNotice(error?.message || 'Invalid staff credentials.', 'bad');
+  } finally {
+    setBusy(false);
+  }
+});
+</script>
+</body>
+</html>
