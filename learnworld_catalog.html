@@ -486,7 +486,7 @@ nav{background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.10);
 <div class="sh-inner">
 <span class="sh-label" data-i18n="catalog_tag">Course discovery</span>
 <h1 data-i18n="catalog_title">Find your perfect course</h1>
-<p class="sh-sub" data-i18n="catalog_sub">840,000+ courses · Use the smart filters below to narrow by field, discipline, subject, country and level</p>
+<p class="sh-sub" data-i18n="catalog_sub">Published courses · Use the smart filters below to narrow by field, discipline, subject, country and level</p>
 <div class="search-wrap">
 <!-- Text search -->
 <div class="search-row">
@@ -509,7 +509,7 @@ nav{background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.10);
 <option data-i18n="fld_entrance" value="Entrance Exam">📝 Entrance Exams</option>
 <option data-i18n="fld_language" value="Language Exam">🗣️ Language Exams</option>
 <option data-i18n="fld_olympiad" value="Olympiad">🏅 Olympiads &amp; Competitions</option>
-<option data-i18n="fld_professional" value="Professional">💼 Professional Certification</option>
+<option data-i18n="fld_professional" value="Professional">💼 Professional Certification</option><option data-i18n="fld_university_exams" value="University &amp; Professional Exams">🎓 University &amp; Professional Exams</option>
 </select>
 <div class="cs-val" id="val1"></div>
 </div>
@@ -561,7 +561,7 @@ nav{background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.10);
 <!-- CATEGORY QUICK TABS -->
 <div class="cat-type-bar">
 <div class="cat-type-inner">
-<button class="cat-btn active" data-cat="all" onclick="quickCat('all',this)"><span data-i18n="qtab_all">🌐 All</span> <span class="cc">840K</span></button>
+<button class="cat-btn active" data-cat="all" onclick="quickCat('all',this)"><span data-i18n="qtab_all">🌐 All</span> <span class="cc">0</span></button>
 <div class="cat-divider"></div>
 <button class="cat-btn" data-cat="K-12" onclick="quickCat('K-12',this)"><span data-i18n="qtab_k12">🏫 K–12</span> <span class="cc" id="cnt-k12"></span></button>
 <button class="cat-btn" data-cat="University" onclick="quickCat('University',this)"><span data-i18n="qtab_university">🎓 University</span> <span class="cc" id="cnt-uni"></span></button>
@@ -574,45 +574,43 @@ nav{background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.10);
 <div class="main">
 <!-- SIDEBAR -->
 <aside class="sidebar">
-<div class="sidebar-section">
+<div class="sidebar-section" id="productionFilters">
 <span class="sidebar-title" data-i18n="sb_price">Price</span>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_free_only">Free only</span></label><span class="sidebar-cnt">12,400</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_under20">Under $20</span></label><span class="sidebar-cnt">94,200</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_20_50">$20–$50</span></label><span class="sidebar-cnt">138,700</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_50plus">$50+</span></label><span class="sidebar-cnt">41,000</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="price" data-filter-value="free" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_free_only">Free only</span></label><span class="sidebar-cnt" data-count-filter="price:free">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="price" data-filter-value="under20" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_under20">Under $20</span></label><span class="sidebar-cnt" data-count-filter="price:under20">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="price" data-filter-value="20_50" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_20_50">$20–$50</span></label><span class="sidebar-cnt" data-count-filter="price:20_50">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="price" data-filter-value="50plus" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_50plus">$50+</span></label><span class="sidebar-cnt" data-count-filter="price:50plus">0</span></div>
 </div>
 <div class="sidebar-section">
 <span class="sidebar-title" data-i18n="sb_rating">Rating</span>
-<div class="rating-row">⭐⭐⭐⭐⭐ <span data-i18n="sb_rating5" style="font-size:11px;color:var(--muted2)">5.0 only</span></div>
-<div class="rating-row">⭐⭐⭐⭐½ <span data-i18n="sb_rating45" style="font-size:11px;color:var(--muted2)">4.5 &amp; above</span></div>
-<div class="rating-row">⭐⭐⭐⭐ <span data-i18n="sb_rating40" style="font-size:11px;color:var(--muted2)">4.0 &amp; above</span></div>
-<div class="rating-row">⭐⭐⭐ <span data-i18n="sb_rating30" style="font-size:11px;color:var(--muted2)">3.0 &amp; above</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="rating" data-filter-value="5" onchange="selectSidebarFilter(this)" type="checkbox"/><span>★★★★★ <span data-i18n="sb_rating5">5.0 only</span></span></label><span class="sidebar-cnt" data-count-filter="rating:5">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="rating" data-filter-value="4.5" onchange="selectSidebarFilter(this)" type="checkbox"/><span>★★★★½ <span data-i18n="sb_rating45">4.5 &amp; above</span></span></label><span class="sidebar-cnt" data-count-filter="rating:4.5">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="rating" data-filter-value="4" onchange="selectSidebarFilter(this)" type="checkbox"/><span>★★★★ <span data-i18n="sb_rating40">4.0 &amp; above</span></span></label><span class="sidebar-cnt" data-count-filter="rating:4">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="rating" data-filter-value="3" onchange="selectSidebarFilter(this)" type="checkbox"/><span>★★★ <span data-i18n="sb_rating30">3.0 &amp; above</span></span></label><span class="sidebar-cnt" data-count-filter="rating:3">0</span></div>
 </div>
 <div class="sidebar-section">
 <span class="sidebar-title" data-i18n="sb_duration">Duration</span>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_under5h">Under 5 hrs</span></label><span class="sidebar-cnt">28K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_5_20h">5–20 hrs</span></label><span class="sidebar-cnt">112K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_20_50h">20–50 hrs</span></label><span class="sidebar-cnt">76K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_50plush">50+ hrs</span></label><span class="sidebar-cnt">41K</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="duration" data-filter-value="under5" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_under5h">Under 5 hrs</span></label><span class="sidebar-cnt" data-count-filter="duration:under5">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="duration" data-filter-value="5_20" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_5_20h">5–20 hrs</span></label><span class="sidebar-cnt" data-count-filter="duration:5_20">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="duration" data-filter-value="20_50" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_20_50h">20–50 hrs</span></label><span class="sidebar-cnt" data-count-filter="duration:20_50">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="duration" data-filter-value="50plus" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_50plush">50+ hrs</span></label><span class="sidebar-cnt" data-count-filter="duration:50plus">0</span></div>
 </div>
 <div class="sidebar-section">
 <span class="sidebar-title" data-i18n="sb_language">Language</span>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_english">English</span></label><span class="sidebar-cnt">420K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_hindi">Hindi</span></label><span class="sidebar-cnt">98K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_arabic">Arabic</span></label><span class="sidebar-cnt">64K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_persian">Persian (Farsi)</span></label><span class="sidebar-cnt">38K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_french">French</span></label><span class="sidebar-cnt">48K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_mandarin">Mandarin</span></label><span class="sidebar-cnt">82K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_portuguese">Portuguese</span></label><span class="sidebar-cnt">36K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_spanish">Spanish</span></label><span class="sidebar-cnt">54K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="lang_swahili">Swahili</span></label><span class="sidebar-cnt">12K</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="English" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_english">English</span></label><span class="sidebar-cnt" data-count-filter="language:English">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="Hindi" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_hindi">Hindi</span></label><span class="sidebar-cnt" data-count-filter="language:Hindi">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="Arabic" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_arabic">Arabic</span></label><span class="sidebar-cnt" data-count-filter="language:Arabic">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="Persian / Farsi" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_persian">Persian (Farsi)</span></label><span class="sidebar-cnt" data-count-filter="language:Persian / Farsi">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="French" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_french">French</span></label><span class="sidebar-cnt" data-count-filter="language:French">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="Mandarin" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_mandarin">Mandarin</span></label><span class="sidebar-cnt" data-count-filter="language:Mandarin">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="Portuguese" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_portuguese">Portuguese</span></label><span class="sidebar-cnt" data-count-filter="language:Portuguese">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="Spanish" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_spanish">Spanish</span></label><span class="sidebar-cnt" data-count-filter="language:Spanish">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="language" data-filter-value="Swahili" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="lang_swahili">Swahili</span></label><span class="sidebar-cnt" data-count-filter="language:Swahili">0</span></div>
 </div>
 <div class="sidebar-section">
 <span class="sidebar-title" data-i18n="sb_features">Features</span>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_live_classes">Live classes</span></label><span class="sidebar-cnt">34K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_certificate">Certificate</span></label><span class="sidebar-cnt">210K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_offline">Offline download</span></label><span class="sidebar-cnt">118K</span></div>
-<div class="sidebar-opt"><label><input onchange="applyFilters()" type="checkbox"/><span data-i18n="sb_practice_tests">Practice tests</span></label><span class="sidebar-cnt">62K</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="feature" data-filter-value="certificate" onchange="selectSidebarFilter(this)" type="checkbox"/><span data-i18n="sb_certificate">Certificate</span></label><span class="sidebar-cnt" data-count-filter="feature:certificate">0</span></div>
+<div class="sidebar-opt"><label><input data-filter-kind="feature" data-filter-value="interaction" onchange="selectSidebarFilter(this)" type="checkbox"/><span>Instructor interaction</span></label><span class="sidebar-cnt" data-count-filter="feature:interaction">0</span></div>
 </div>
 <div class="sidebar-card">
 <h2 data-i18n="sb_teach_title">Teach on Odyssey</h2>
@@ -632,7 +630,7 @@ nav{background:rgba(23,32,44,.96);border-bottom:1px solid rgba(255,255,255,.10);
 <div class="drift scroll square" style="width:15px;height:15px;background:var(--navy);top:24%;right:8%;animation-delay:-5s" aria-hidden="true"></div>
 <div class="drift scroll tri" style="width:16px;height:16px;background:#2E7D5B;top:74%;right:14%;animation-delay:-3s" aria-hidden="true"></div>
 <div class="catalog-header">
-<div class="catalog-count" id="catalogCount"><strong>840,000</strong> courses found</div>
+<div class="catalog-count" id="catalogCount"><strong>0</strong> courses found</div>
 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
 <select class="sort-select" onchange="applyFilters()">
 <option data-i18n="sort_popular">Most popular</option><option data-i18n="sort_rated">Highest rated</option>
@@ -760,6 +758,19 @@ const TAXONOMY = {
 };
 
 
+Object.assign(TAXONOMY, {
+  'University & Professional Exams': {
+    'Medicine & Health': ['USMLE Step 1','USMLE Step 2 CK','USMLE Step 3','PLAB','AMC Clinical Examination','NCLEX-RN','NAPLEX'],
+    'Engineering': ['FE Chemical','FE Civil','FE Electrical & Computer','FE Environmental','FE Industrial & Systems','FE Mechanical','FE Other Disciplines','PE Civil','PE Electrical & Computer','PE Mechanical'],
+    'Computer Science & IT': ['AWS Certified Cloud Practitioner','AWS Solutions Architect – Associate','Cisco CCNA','CompTIA A+','CompTIA Security+','Microsoft Azure Fundamentals','Google Cloud Digital Leader'],
+    'Business, Finance & Accounting': ['CFA Level I','CFA Level II','CFA Level III','CPA Exam','ACCA','CIMA','FRM'],
+    'Law & Public Policy': ['Bar Examination','MPRE','LSAT'],
+    'Architecture & Design': ['ARE – Architecture Registration Examination'],
+    'Teaching & Education': ['Praxis Core','Praxis Subject Assessments','Praxis CKT'],
+    'Actuarial Science': ['SOA Actuarial Exams','CAS Actuarial Exams']
+  }
+});
+
 // Phase 3D final expansion: broaden catalog disciplines across every field.
 Object.assign(TAXONOMY['K-12'], {
   'Primary School Foundations': ['Early Numeracy','Early Literacy','Science Basics','Reading Comprehension','Handwriting','Foundational English','Foundational Math'],
@@ -838,7 +849,7 @@ async function loadCourses(){
     }
     const sb = await OdysseySupabase.client();
     const { data, error } = await sb.from('courses')
-      .select('id, title, field, discipline, subject, country, level, price_cents, interaction_price_cents, qa_price_cents, session_count, rating, enrolled_count, certificate_enabled, includes_student_interaction, instructor:instructor_id(full_name)')
+      .select('id, title, field, discipline, subject, country, level, language, price_cents, interaction_price_cents, qa_price_cents, session_count, rating, enrolled_count, certificate_enabled, includes_student_interaction, instructor:instructor_id(full_name)')
       .eq('status','published')
       .order('created_at',{ascending:false});
     if(error) throw error;
@@ -850,6 +861,7 @@ async function loadCourses(){
       subject:c.subject||'',
       country:c.country||'',
       level:c.level||'',
+      language:c.language||'',
       instructor:c.instructor?.full_name||'Odyssey instructor',
       flag:COUNTRY_FLAGS[c.country]||'🌍',
       emoji:FIELD_EMOJI[c.field]||'🎓',
@@ -1093,6 +1105,29 @@ function quickCat(cat, btn) {
 // ════════════════════════════════════════════════
 // FILTERING
 // ════════════════════════════════════════════════
+function matchesSidebarFilter(c, filter){
+  if(!filter) return true;
+  const {kind,value}=filter;
+  const price=Number(c.price||0), rating=Number(c.rating||0), hours=Number(c.hours||0);
+  if(kind==='price') return value==='free'?price===0:value==='under20'?price>0&&price<20:value==='20_50'?price>=20&&price<=50:price>50;
+  if(kind==='rating') return value==='5'?rating>=4.95:rating>=Number(value);
+  if(kind==='duration') return value==='under5'?hours<5:value==='5_20'?hours>=5&&hours<20:value==='20_50'?hours>=20&&hours<50:hours>=50;
+  if(kind==='language') return String(c.language||'').toLowerCase()===String(value).toLowerCase();
+  if(kind==='feature') return value==='certificate'?!!c.cert:value==='interaction'?Number(c.interactionPrice||0)>0:false;
+  return true;
+}
+function selectSidebarFilter(input){
+  document.querySelectorAll('.sidebar-opt input[data-filter-kind]').forEach(el=>{if(el!==input)el.checked=false});
+  sidebarFilter=input.checked?{kind:input.dataset.filterKind,value:input.dataset.filterValue}:null;
+  currentPage=1;applyFilters();updateChips();
+}
+function updateSidebarCounts(){
+  document.querySelectorAll('[data-count-filter]').forEach(el=>{
+    const [kind,...rest]=el.dataset.countFilter.split(':');const value=rest.join(':');
+    el.textContent=COURSES.filter(c=>matchesSidebarFilter(c,{kind,value})).length.toLocaleString();
+  });
+}
+
 function getFiltered() {
   const q = state.q.toLowerCase();
   return COURSES.filter(c => {
@@ -1101,7 +1136,8 @@ function getFiltered() {
     if (state.subject && c.subject !== state.subject) return false;
     if (state.country && c.country !== state.country) return false;
     if (state.level && c.level !== state.level) return false;
-    if (q && ![c.title,c.instructor,c.subject,c.country,c.field,c.discipline].some(x=>x.toLowerCase().includes(q))) return false;
+    if (sidebarFilter && !matchesSidebarFilter(c, sidebarFilter)) return false;
+    if (q && ![c.title,c.instructor,c.subject,c.country,c.field,c.discipline,c.language].filter(Boolean).some(x=>String(x).toLowerCase().includes(q))) return false;
     return true;
   });
 }
@@ -1120,10 +1156,14 @@ function updateCounts() {
     const el = document.getElementById(id);
     if(el) el.textContent = COURSES.filter(c=>c.field===f).length;
   });
+  const allCount=document.querySelector('[data-cat="all"] .cc');if(allCount)allCount.textContent=COURSES.length.toLocaleString();
+  updateSidebarCounts();
 }
 
 function clearAllFilters() {
   state = {field:'',discipline:'',subject:'',country:'',level:'',q:''};
+  sidebarFilter=null;
+  document.querySelectorAll('.sidebar-opt input[data-filter-kind]').forEach(el=>el.checked=false);
   selectedCountryObj = null;
   document.getElementById('searchInput').value = '';
   document.getElementById('selField').value = '';
@@ -1228,7 +1268,7 @@ function countryLabel(value, code){
   }
   const key=slugKey('country', value); const label=T(key); return (!label || label===key || /^country[_\s-]/i.test(label)) ? value : label;
 }
-function fieldLabel(value){ const local=localCatalogTerm(value); if(local) return local; const key={'K-12':'fld_k12','University':'fld_university','Vocational':'fld_vocational','Entrance Exam':'fld_entrance','Language Exam':'fld_language','Olympiad':'fld_olympiad','Professional':'fld_professional'}[value] || slugKey('tax', value); const label=T(key); return (!label || /^(fld|flt|tax)[_\s-]/i.test(label)) ? value : label; }
+function fieldLabel(value){ const local=localCatalogTerm(value); if(local) return local; const key={'K-12':'fld_k12','University':'fld_university','Vocational':'fld_vocational','Entrance Exam':'fld_entrance','Language Exam':'fld_language','Olympiad':'fld_olympiad','Professional':'fld_professional','University & Professional Exams':'fld_university_exams'}[value] || slugKey('tax', value); const label=T(key); return (!label || /^(fld|flt|tax)[_\s-]/i.test(label)) ? value : label; }
 function optionHTML(value, label){ return `<option value="${String(value).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">${label || taxLabel(value)}</option>`; }
 function currentLang(){ return localStorage.getItem('odyssey_lang') || 'en'; }
 function rebuildCatalogSelectLabels(){

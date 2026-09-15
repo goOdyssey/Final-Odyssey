@@ -596,16 +596,6 @@ function engagementKey(test){
   return id;
 }
 
-function buildInstructorNote(test){
-  const templates = [
-    `I wrote every question in this ${test.subject} test around the mistakes I've actually seen students make — not just theory for its own sake.`,
-    `This test is timed the way the real ${test.subject} exam is timed, on purpose. Pacing is half the battle.`,
-    `My goal with this ${test.subject} test is to show you exactly where you stand before exam day, honestly and specifically.`
-  ];
-  const seed = String(test.id || '').split('').reduce((sum,ch)=>sum + ch.charCodeAt(0),0);
-  return templates[seed % templates.length];
-}
-
 async function renderRelated(test){
   const grid = document.getElementById('relatedGrid');
   document.getElementById('relatedFieldLabel').textContent = test.field;
@@ -665,8 +655,15 @@ async function render(){
   document.getElementById('testDescription').textContent = test.description;
   document.getElementById('testTags').innerHTML = [...test.features, test.language].map(f=>`<span class="tag-pill">${f}</span>`).join('');
 
-  document.getElementById('instructorNote').textContent = '"' + buildInstructorNote(test) + '"';
-  document.getElementById('instructorWho').textContent = `${test.instructor} · ${test.subject} examiner`;
+  const noteEl=document.getElementById('instructorNote');
+  const whoEl=document.getElementById('instructorWho');
+  if(test.description){
+    noteEl.textContent=test.description;
+    whoEl.textContent=`Course/test information from ${test.instructor}`;
+  }else{
+    noteEl.textContent='No instructor note has been published for this test yet.';
+    whoEl.textContent=test.instructor;
+  }
 
   document.getElementById('infoTime').textContent = test.time + ' minutes, timed';
   document.getElementById('infoQuestions').textContent = test.questions + ' questions';

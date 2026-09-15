@@ -18,7 +18,7 @@
 
   let sequence = 0;
   let subscription = null;
-  let running = false;
+  let lastSyncAt = 0;
 
   function escapeHtml(value) {
     return String(value ?? '')
@@ -117,7 +117,9 @@
       if (token !== sequence) return;
       if (!identity) return;
 
-      const role = identity.profile?.role || identity.user.user_metadata?.role || 'student';
+      // Never use Auth user_metadata.role as an authorization source.
+      // Portal routing must come from the verified server-side profile role.
+      const role = identity.profile?.role || 'student';
       render(`<a class="nav-cta" href="${portalFor(role)}">Hi, ${getFirstName(identity.user, identity.profile)} →</a>`);
     } catch (error) {
       if (token !== sequence) return;
@@ -142,17 +144,24 @@
     } catch (error) {
       console.warn('Odyssey auth nav listener unavailable.', error);
     }
+    lastSyncAt = Date.now();
     await sync();
   }
 
-  window.addEventListener('focus', sync);
-  window.addEventListener('pageshow', sync);
-  window.addEventListener('odyssey:auth-changed', sync);
+  function refreshOnReturn() {
+    const now = Date.now();
+    if (now - lastSyncAt < 15000) return;
+    lastSyncAt = now;
+    sync();
+  }
+  window.addEventListener('focus', refreshOnReturn);
+  window.addEventListener('pageshow', refreshOnReturn);
+  window.addEventListener('odyssey:auth-changed', () => { lastSyncAt = Date.now(); sync(); });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once: true });
   } else {
     init();
-  document.addEventListener('odyssey:languageChanged', () => { render(loggedOutHtml()); });
   }
+  document.addEventListener('odyssey:languageChanged', () => { render(loggedOutHtml()); });
 }());

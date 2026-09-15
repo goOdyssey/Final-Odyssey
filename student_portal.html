@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" name="viewport"/>
 <title data-i18n="student_portal_title">Odyssey - Student Portal</title>
-<link href="https://fonts.googleapis.com" rel="preconnect" />
-<link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&amp;family=IBM+Plex+Mono:wght@400;600&amp;display=swap" rel="stylesheet"/>
 <script src="js/supabase-config.js"></script>
 <script src="js/supabase-client.js"></script>
 <style>
@@ -47,9 +48,24 @@ button,input,textarea,select{font:inherit}
 .brand{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;margin:0 6px 18px}
 .brand-mark{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:white;font-weight:800;font-size:13px;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 12px 26px rgba(20,44,79,.20)}
 .brand strong{font-family:var(--font);font-size:16.5px;font-weight:800;letter-spacing:-.01em}
+.sidebar-profile-stack{display:flex;flex-direction:column;align-items:center;text-align:center;margin:0 0 8px;padding:4px 0 6px}
+.sidebar-photo-frame{width:82px;height:120px;margin:0 auto;position:relative}
+.sidebar-photo-frame .student-photo-frame{width:82px;height:82px;border-radius:50%;margin:0 auto;cursor:zoom-in}
+.sidebar-photo-frame:hover .student-photo-frame{box-shadow:0 22px 46px rgba(15,23,42,.26)}
+.sidebar-photo-frame .sidebar-avatar-actions{bottom:8px}
+.sidebar-profile-name{width:100%;margin-top:-20px;padding:0 8px 5px}
+.sidebar-profile-name span{display:block;color:var(--muted);font-size:11px;line-height:1.35;font-weight:700;overflow-wrap:anywhere}
+.sidebar-id-block{display:flex;justify-content:center;margin:0 0 10px;padding:0 6px;position:relative;z-index:2}
+.sidebar-id-block .student-member-id{display:inline-flex;align-items:center;justify-content:center;min-height:26px;padding:5px 11px;border:1px solid rgba(192,138,62,.30);border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(231,246,243,.72));color:var(--primary);font-size:10px;font-weight:900;letter-spacing:.04em;white-space:nowrap;box-shadow:0 5px 14px rgba(15,23,42,.05)}
+[data-theme="dark"] .sidebar-id-block .student-member-id{background:rgba(255,255,255,.07);color:#E7C88A;border-color:rgba(231,200,138,.28)}
+.navbtn .nav-ico{width:28px;height:28px;display:grid;place-items:center;flex:0 0 28px;border-radius:10px;background:linear-gradient(135deg,rgba(15,122,108,.16),rgba(24,78,119,.12));font-size:14px}
+.navbtn .logout-ico{background:rgba(178,58,72,.12)}
+.sidebar [data-i18n-switcher]{width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin-bottom:8px}
+.sidebar .i18n-switcher{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important}
+.sidebar .i18n-switcher button{width:100%!important;min-height:38px!important;justify-content:center!important}
 .tools-label{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin:16px 9px 8px}
 .navbtn{width:100%;display:flex;align-items:center;gap:9px;border:0;background:transparent;color:var(--text);padding:8px 10px;border-radius:11px;font-weight:650;letter-spacing:.005em;cursor:pointer;text-align:left;margin-bottom:2px;transition:.15s;text-decoration:none}
-.navbtn:hover,.navbtn.active{background:rgba(20,44,79,.10);color:var(--primary);transform:translateX(2px)}
+.navbtn:hover,.navbtn.active{background:rgba(20,44,79,.10);color:var(--primary);transform:translateX(2px)}.portal-home-btn{margin:8px 0 12px!important;padding:10px 11px!important;border:1px solid var(--line)!important;background:linear-gradient(135deg,rgba(20,44,79,.07),rgba(15,122,108,.07))!important;border-radius:14px!important;box-shadow:0 8px 20px rgba(15,23,42,.06)}.portal-home-btn .home-glyph{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 7px 15px rgba(20,44,79,.18)}.portal-home-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.portal-home-btn:hover{transform:translateX(3px) translateY(-1px)!important;box-shadow:0 12px 26px rgba(15,23,42,.1)}
 .logout{margin-top:14px;background:rgba(220,38,38,.09);color:var(--danger)}
 .main{position:relative;padding:26px;overflow:hidden}
 .welcome{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:28px;padding:30px;background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.54)),var(--panel);box-shadow:var(--shadow);margin-bottom:22px}
@@ -77,12 +93,16 @@ button,input,textarea,select{font:inherit}
 .cert-seal{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--warm),var(--accent));color:white;font-family:var(--head);font-size:26px;font-weight:900}.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.share-row a{font-size:12px;font-weight:900;color:var(--primary);text-decoration:none;background:rgba(20,44,79,.09);border-radius:999px;padding:6px 10px}
 .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn{border:0;border-radius:13px;padding:10px 13px;font-weight:900;cursor:pointer;background:var(--primary);color:white;text-decoration:none;display:inline-flex;align-items:center;gap:7px;justify-content:center}.btn.secondary{background:rgba(20,44,79,.10);color:var(--primary)}.btn.danger{background:rgba(220,38,38,.11);color:var(--danger)}.btn.small{padding:6px 10px;font-size:12px;border-radius:9px}.btn.tiny{padding:5px 9px;font-size:11.5px;border-radius:8px}.btn:disabled{opacity:.5;cursor:not-allowed}
 .list{display:grid;gap:10px}.item{padding:12px 13px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.42);font-size:14px;color:var(--muted)}[data-theme="dark"] .item{background:rgba(255,255,255,.04)}.item b{display:block;color:var(--text);margin-bottom:3px}
-.catalog-connect{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:stretch}.catalog-art{min-height:230px;border-radius:20px;background:linear-gradient(135deg,rgba(20,44,79,.92),rgba(15,118,110,.86)),url("assets/odyssey-global-learning-fast.jpg") center/cover;position:relative;overflow:hidden}.catalog-art::after{content:"Explore 840K+ courses";position:absolute;left:18px;bottom:18px;color:white;font-family:var(--head);font-size:28px;line-height:1.05;max-width:280px}
+.catalog-connect{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:stretch}.catalog-art{min-height:230px;border-radius:20px;background:linear-gradient(135deg,rgba(20,44,79,.92),rgba(15,118,110,.86)),url("assets/odyssey-global-learning-fast.jpg") center/cover;position:relative;overflow:hidden}.catalog-art::after{content:"Explore published courses";position:absolute;left:18px;bottom:18px;color:white;font-family:var(--head);font-size:28px;line-height:1.05;max-width:280px}
 .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:var(--panel-strong);color:var(--text)}textarea{min-height:104px;resize:vertical}.check-list{display:grid;gap:10px}.check-list label{display:flex;align-items:center;gap:9px;color:var(--muted);font-weight:700}.check-list input{width:auto}
 .theme-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.theme-card{border:1px solid var(--line);border-radius:18px;padding:13px;cursor:pointer;background:var(--panel-strong);transition:.18s}.theme-card:hover,.theme-card.active{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 18px 42px rgba(15,23,42,.10)}.theme-preview{height:58px;border-radius:14px;margin-bottom:9px}.theme-card[data-scheme="voyager"] .theme-preview{background:linear-gradient(135deg,#0B1E3D,#2D6CDF,#7C8DA6)}.theme-card[data-scheme="blossom"] .theme-preview{background:linear-gradient(135deg,#C2356B,#FF8FA3,#F2B441)}.theme-card[data-scheme="nebula"] .theme-preview{background:linear-gradient(135deg,#2E1F52,#7C5CFF,#4FD1E0)}.theme-card[data-scheme="meadow"] .theme-preview{background:linear-gradient(135deg,#3D5A28,#D9A441,#C1653D)}
 .mode-toggle{border:1px solid var(--line);background:var(--panel-strong);color:var(--text)}.mode-toggle.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent;box-shadow:0 16px 36px rgba(15,23,42,.14)}
 .footer-note{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 8px}
 .student-photo-frame{width:82px;height:82px;border-radius:50%;margin:0 auto 14px;border:3px solid rgba(255,255,255,.72);background:linear-gradient(135deg,var(--primary),var(--accent),var(--warm));display:grid;place-items:center;overflow:hidden;color:white;font-family:var(--head);font-size:24px;font-weight:900;box-shadow:0 18px 42px rgba(15,23,42,.18)}.student-photo-frame img{width:100%;height:100%;object-fit:cover;display:block}.brand strong{font-size:20px;font-weight:650}.brand-id{display:block;margin-top:2px;font-size:11px;font-weight:760;color:var(--muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.navbtn{font-size:12.5px;font-weight:650}.tools-label,.stat-card span,.field label{font-size:10.5px}.welcome h1{font-size:clamp(28px,3.45vw,46px);font-weight:650;line-height:1.08}.welcome p{font-size:15px}.stat-card strong{font-size:24px;font-weight:650}.card h2{font-size:20px;font-weight:650}.course h3{font-size:16px;font-weight:650}.catalog-art::after{font-size:24px;font-weight:650}.btn{font-size:13.5px;font-weight:760}.item,.desc,.meta{font-size:13px}.theme-card b{font-weight:750}
+/* Compact functional student command center */
+.student-command{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:22px;align-items:stretch;margin-bottom:18px;padding:24px 26px;border:1px solid var(--line);border-radius:26px;background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(232,246,243,.78) 48%,rgba(255,244,225,.78)),var(--panel);box-shadow:0 18px 48px rgba(15,23,42,.09)}
+[data-theme="dark"] .student-command{background:linear-gradient(135deg,#15243A,#17354A 50%,#293044),var(--panel)}
+.student-command-copy{position:relative;z-index:2;min-width:0}.student-command h1{font-family:var(--head);font-size:clamp(28px,3.4vw,46px);line-height:1.04;margin:10px 0 8px;max-width:720px;overflow-wrap:anywhere}.student-command p{margin:0;color:var(--muted);line-height:1.55;max-width:680px}.student-command .command-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.student-command-proof{position:relative;z-index:2;align-self:stretch;min-width:0;padding:17px;border-radius:20px;background:linear-gradient(145deg,var(--primary),var(--accent));color:#fff;box-shadow:0 18px 38px rgba(20,44,79,.18)}.student-command-proof .proof-top{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;opacity:.92}.student-command-proof>strong{display:block;font-family:var(--head);font-size:34px;line-height:1;margin:22px 0 4px}.student-command-proof>span{font-size:11px;opacity:.88}.student-command-proof .proof-mini{display:flex;justify-content:space-between;gap:10px;margin-top:13px;padding-top:10px;border-top:1px solid rgba(255,255,255,.2);font-size:11px}.student-command-proof .proof-mini b{font-size:13px}.student-command-pattern{position:absolute;inset:0;pointer-events:none;overflow:hidden}.student-command-pattern span{position:absolute;font-size:24px;color:var(--accent);opacity:.18;animation:studentCommandFloat 16s ease-in-out infinite}.student-command-pattern span:nth-child(1){top:14%;left:46%}.student-command-pattern span:nth-child(2){top:66%;left:62%;animation-delay:-4s}.student-command-pattern span:nth-child(3){top:22%;right:30%;animation-delay:-8s}.student-command-pattern span:nth-child(4){bottom:12%;right:10%;animation-delay:-11s}.student-command-pattern span:nth-child(5){top:8%;right:42%;animation-delay:-6s}@keyframes studentCommandFloat{0%,100%{transform:translate3d(0,0,0) rotate(0deg)}50%{transform:translate3d(0,-8px,0) rotate(7deg)}}
 .ambient-float{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;border-radius:inherit}
 .ambient-float span{position:absolute;border-radius:50%;filter:blur(38px);opacity:.15}
 .ambient-float span:nth-child(1){width:220px;height:220px;background:var(--primary);top:-50px;left:4%;animation:odyFloatA 26s ease-in-out infinite}
@@ -90,11 +110,6 @@ button,input,textarea,select{font:inherit}
 .ambient-float span:nth-child(3){width:140px;height:140px;background:var(--warm);bottom:4%;left:16%;animation:odyFloatA 30s ease-in-out infinite reverse}
 .ambient-float span:nth-child(4){width:110px;height:110px;background:var(--accent);top:6%;right:26%;animation:odyFloatB 20s ease-in-out infinite reverse}
 .ambient-float span:nth-child(5){width:190px;height:190px;background:var(--primary);bottom:-40px;right:10%;animation:odyFloatA 34s ease-in-out infinite}
-.ambient-float span:nth-child(6){width:130px;height:130px;background:var(--warm);top:52%;left:44%;animation:odyFloatB 27s ease-in-out infinite}
-.ambient-float span:nth-child(7){width:95px;height:95px;background:var(--primary);top:14%;left:34%;animation:odyFloatA 19s ease-in-out infinite reverse}
-.ambient-float span:nth-child(8){width:160px;height:160px;background:var(--accent);bottom:10%;left:2%;animation:odyFloatB 31s ease-in-out infinite reverse}
-.ambient-float span:nth-child(9){width:105px;height:105px;background:var(--warm);top:44%;right:38%;animation:odyFloatA 23s ease-in-out infinite}
-.ambient-float span:nth-child(10){width:150px;height:150px;background:var(--primary);bottom:22%;right:44%;animation:odyFloatB 25s ease-in-out infinite}
 @keyframes odyFloatA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(22px,-16px) scale(1.08)}}
 @keyframes odyFloatB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-18px,20px) scale(.94)}}
 @media(prefers-reduced-motion:reduce){.ambient-float span{animation:none}}
@@ -118,7 +133,7 @@ button,input,textarea,select{font:inherit}
 .nav-burger.open span::before,.nav-burger.open span::after{background:#E7C88A}
 .nav-burger.open span::before{transform:translateY(0) rotate(45deg)}
 .nav-burger.open span::after{transform:translateY(0) rotate(-45deg)}
-.sidebar-scrim{position:fixed;inset:0;background:rgba(7,17,28,.42);z-index:190;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility 0s linear .3s}
+.sidebar-scrim{position:fixed;inset:0;background:rgba(7,17,28,.12);z-index:190;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility 0s linear .3s}
 .sidebar-scrim.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .3s ease,visibility 0s linear 0s}
 @media(max-width:1000px){
   .portal{grid-template-columns:1fr}
@@ -138,9 +153,8 @@ button,input,textarea,select{font:inherit}
 /* Language switcher: clamp width and anchor explicitly so its dropdown can't
    render wider than the sidebar and poke out past the page's edge. */
 [data-i18n-switcher]{position:relative;max-width:100%}
-.i18n-dropdown{max-width:min(260px,calc(100vw - 32px))!important;left:0!important;right:auto!important;box-sizing:border-box}
 .sidebar [data-i18n-switcher],.portal-topbar [data-i18n-switcher]{overflow:visible}
-@media(max-width:620px){.quick-stats,.theme-grid{grid-template-columns:1fr}.welcome{padding:22px}.catalog-art::after{font-size:22px}.navbtn:hover,.navbtn.active{transform:none}}
+@media(max-width:620px){.student-command{grid-template-columns:1fr;padding:19px}.student-command .command-actions .btn{width:100%}.quick-stats,.theme-grid{grid-template-columns:1fr}.welcome{padding:22px}.catalog-art::after{font-size:22px}.navbtn:hover,.navbtn.active{transform:none}}
 .crop-overlay{display:none;position:fixed;inset:0;background:rgba(7,17,28,.62);z-index:9999;align-items:center;justify-content:center;padding:20px}
 .crop-overlay.open{display:flex}
 .crop-modal{background:var(--panel-strong);border-radius:20px;width:100%;max-width:480px;box-shadow:0 30px 90px rgba(0,0,0,.35);overflow:hidden}
@@ -230,200 +244,248 @@ button,input,textarea,select{font:inherit}
 .photo-frame-wrap:hover .photo-hover-actions,.photo-frame-wrap:focus-within .photo-hover-actions{opacity:1;pointer-events:auto}
 .photo-action-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--primary);display:grid;place-items:center;cursor:pointer;padding:0;transition:background .18s ease,color .18s ease,transform .15s ease}
 .photo-action-btn:hover{background:var(--primary);color:#fff;transform:scale(1.08)}
-.photo-action-btn.remove{color:var(--danger);border-color:rgba(178,58,72,.3)}
+.photo-action-btn.upload{color:#12A58E}.photo-action-btn.upload:hover{background:#12A58E;color:#fff}.photo-action-btn.remove{color:var(--danger);border-color:rgba(178,58,72,.3)}
 .photo-action-btn.remove:hover{background:var(--danger);color:#fff}
 .photo-lightbox{display:none;position:fixed;inset:0;background:rgba(7,17,28,.78);z-index:9998;align-items:center;justify-content:center;padding:24px}
 .photo-lightbox.open{display:flex}
 .photo-lightbox img{max-width:min(420px,86vw);max-height:80vh;border-radius:20px;box-shadow:0 30px 90px rgba(0,0,0,.45);border:4px solid rgba(255,255,255,.85)}
 .photo-lightbox-close{position:absolute;top:22px;right:26px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:18px;cursor:pointer}
 .photo-lightbox-close:hover{background:rgba(255,255,255,.26)}
-</style>
-<link rel="stylesheet" href="assets/odyssey-design-system.css" />
-<script defer src="assets/odyssey-scroll-reveal.js"></script>
 
-  <script src="js/observability.js" defer></script>
+/* Performance pass: keep the visual language but avoid continuous GPU/CPU work. */
+.student-portal .ambient-float{contain:paint}.student-portal .ambient-float span{will-change:auto}.student-portal .student-command-pattern span{will-change:auto}
+@media (prefers-reduced-motion:reduce){.student-command-pattern span{animation:none!important}.student-portal .ambient-float span{animation:none!important}}
+
+/* Premium learner settings controls: richer fields, tabs, dropdowns and date/time surfaces. */
+.student-portal #settings .card{border-color:rgba(20,44,79,.12);background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(236,246,243,.62));box-shadow:0 18px 48px rgba(15,23,42,.08)}
+.student-portal #settings .field{padding:10px 12px;border:1px solid rgba(20,44,79,.09);border-radius:15px;background:rgba(255,255,255,.46);margin-bottom:10px}
+.student-portal #settings .field:focus-within{border-color:rgba(18,165,142,.45);box-shadow:0 0 0 4px rgba(18,165,142,.08)}
+.student-portal #settings .field label{color:var(--primary);font-weight:900;letter-spacing:.07em}
+.student-portal #settings input:not([type="checkbox"]):not([type="radio"]),.student-portal #settings select,.student-portal #settings textarea{border:1.5px solid rgba(20,44,79,.14);background:linear-gradient(180deg,#fff,rgba(244,249,248,.96));border-radius:13px;min-height:46px;box-shadow:0 5px 16px rgba(20,44,79,.045);transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+.student-portal #settings input:not([type="checkbox"]):not([type="radio"]):hover,.student-portal #settings select:hover,.student-portal #settings textarea:hover{border-color:rgba(18,165,142,.45)}
+.student-portal #settings input:not([type="checkbox"]):not([type="radio"]):focus,.student-portal #settings select:focus,.student-portal #settings textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(18,165,142,.10),0 10px 24px rgba(20,44,79,.08);transform:translateY(-1px)}
+.student-portal #settings select{cursor:pointer}
+.student-portal #settings input[type="date"],.student-portal #settings input[type="time"]{font-variant-numeric:tabular-nums}
+.student-portal #settings .navbtn,.student-portal #settings .theme-card{border:1px solid rgba(20,44,79,.10)}
+.student-portal #settings .item{background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(18,165,142,.05));border-color:rgba(20,44,79,.10)}
+[data-theme="dark"] .student-portal #settings .card{background:linear-gradient(145deg,#15243a,#1b3041)}
+[data-theme="dark"] .student-portal #settings .field{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .student-portal #settings input:not([type="checkbox"]):not([type="radio"]),[data-theme="dark"] .student-portal #settings select,[data-theme="dark"] .student-portal #settings textarea{background:linear-gradient(180deg,#1b2b43,#16243a);color:#fff;border-color:rgba(255,255,255,.16)}
+</style>
+<style id="portal-final-polish">
+/* Final performance / overflow polish */
+.theme-object-layer{contain:strict}
+.theme-object-layer span{filter:none!important;will-change:auto!important}
+@media(max-width:780px){
+  .sidebar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .portal-topbar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .sidebar-scrim{background:rgba(7,17,28,.10)!important}
+  [data-i18n-switcher]{display:block;width:100%;max-width:100%;min-width:0}
+  .i18n-switcher{display:block;width:100%;max-width:100%;min-width:0}
+  .i18n-current{width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis}
+  .portal-topbar{overflow:visible}
+  .main{overflow:visible}
+}
+@media(max-width:420px){.portal-topbar{padding-inline:10px}.portal-topbar .brand strong{font-size:15px}.nav-burger{width:36px;height:36px;flex-basis:36px}.sidebar{width:min(292px,88vw)}}
+@media(prefers-reduced-motion:reduce){.theme-object-layer span{animation:none!important}}
+</style>
+<link href="assets/odyssey-design-system.css" rel="stylesheet"/>
+<script defer="" src="assets/odyssey-scroll-reveal.js"></script>
+<script defer="" src="js/observability.js"></script>
 </head>
-<body class="student-portal"><div class="od-ambient" data-parallax aria-hidden="true"><span class="od-orb od-orb-1"></span><span class="od-orb od-orb-2"></span><span class="od-orb od-orb-3"></span></div>
+<body class="student-portal">
 <div class="portal-topbar">
-  <a class="brand" href="index.html"><span class="brand-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></span><span><strong>Odyssey student</strong></span></a>
-  <button class="nav-burger" id="portalBurger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="portalSidebar"><span></span></button>
+<a class="brand" href="index.html"><span class="brand-mark"><img alt="Odyssey logo" src="assets/odyssey-logo-mark.jpg" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"/></span><span><strong>Odyssey student</strong></span></a>
+<button aria-controls="portalSidebar" aria-expanded="false" aria-label="Toggle menu" class="nav-burger" id="portalBurger" type="button"><span></span></button>
 </div>
 <div class="sidebar-scrim" id="portalScrim"></div>
 <div class="portal">
-  <aside class="sidebar" id="portalSidebar">
-    <div class="photo-frame-wrap" id="photoFrameWrap">
-      <div class="student-photo-frame" id="studentPhotoFrame" onclick="openPhotoLightbox()">OS</div>
-      <div class="photo-hover-actions">
-        <button type="button" class="photo-action-btn edit" title="Edit photo" onclick="event.stopPropagation();openEditPhotoModal();"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
-        <button type="button" class="photo-action-btn remove" title="Remove photo" onclick="event.stopPropagation();removeProfilePhoto();"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button>
-      </div>
-    </div>
-    <a class="brand" href="index.html"><span class="brand-mark"><img src="assets/odyssey-logo-mark.jpg" alt="Odyssey logo" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block;padding:3px;background:#071c2b"></span><span><strong>Odyssey student</strong><small class="brand-id" id="studentSignedName">Signed in learner</small><small class="brand-id" id="studentIdBadge" style="display:none">Student ID: —</small></span></a>
-    <div data-i18n-switcher></div>
-    <a class="navbtn" href="index.html" style="margin-bottom:10px">🏡 <span>Home</span></a>
-    <div class="tools-label" data-i18n="portal_sidebar_label">Student tools</div>
-    <button class="navbtn active" data-target="dashboard">🏠 <span data-i18n="portal_dashboard">Dashboard</span></button>
-    <a class="navbtn" href="learnworld_catalog.html">🔎 <span data-i18n="portal_catalog">Course catalog</span></a>
-    <button class="navbtn" data-target="courses">🎓 <span data-i18n="portal_enrolled">Enrolled courses</span></button>
-    <button class="navbtn" data-target="cart">🛒 <span>Cart</span></button>
-    <button class="navbtn" data-target="billing">🧾 <span>Billing &amp; purchases</span></button>
-    <button class="navbtn" data-target="progress">📈 <span data-i18n="portal_progress">Course progression</span></button>
-    <button class="navbtn" data-target="certificates">🏅 <span>Certificates</span></button>
-    <button class="navbtn" data-target="messages">💬 <span data-i18n="portal_messages">Messages</span></button>
-    <button class="navbtn" data-target="exams">📝 <span data-i18n="portal_exams">Examination portal</span></button>
-    <button class="navbtn" data-target="notifications">🔔 <span data-i18n="portal_notifications">Notifications</span></button>
-    <button class="navbtn" data-target="homework">📚 <span data-i18n="portal_homework">Homework</span></button>
-    <button class="navbtn" data-target="settings">⚙️ <span data-i18n="portal_settings">Account settings</span></button>
-    <button class="navbtn" data-target="appearance">🎛️ <span data-i18n="portal_appearance">Appearance</span></button>
-    <button class="navbtn logout" onclick="logoutPortal()">🚪 <span data-i18n="portal_logout">Log out</span></button>
-  </aside>
-  <main class="main">
-    <div class="ambient-float" id="ambientFloat"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-    <div class="theme-object-layer" id="themeObjectLayer"></div>
-    <section class="welcome">
-      <h1 data-i18n="portal_welcome">Welcome back to your learning journey</h1>
-      <p data-i18n="portal_welcome_sub">Everything you need to learn, practise, message your instructors, and track progress is here.</p>
-    </section>
-    <section class="quick-stats" id="summaryStats"></section>
-
-    <section id="dashboard" class="panel active">
-      <div class="grid">
-        <div class="card"><h2 data-i18n="portal_my_courses">My enrolled courses</h2><div id="courseList"></div></div>
-        <div class="list">
-          <div class="card"><h2 data-i18n="portal_notif_title">Notification Center</h2><div id="notifList"></div></div>
-          <div class="card"><h2 data-i18n="portal_homework_title">Homework board</h2><div id="homeworkList"></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="catalog" class="panel">
-      <div class="card catalog-connect">
-        <div>
-          <h2>Connect with the course catalog</h2>
-          <p class="desc">Jump from your portal into Odyssey discovery with your interests pre-shaped around exams, countries, levels, and disciplines.</p>
-          <div class="split" style="margin:16px 0">
-            <div class="field"><label>Learning path</label><select id="catalogPath"><option value="">All fields</option><option value="Language Exam">Language exams</option><option value="Entrance Exam">Entrance exams</option><option value="University">University</option><option value="Vocational">Vocational skills</option></select></div>
-            <div class="field"><label>Focus country</label><input id="catalogCountry" placeholder="United States, India, Germany..." /></div>
-          </div>
-          <button class="btn" onclick="connectCatalog()">Open tailored catalog</button>
-          <a class="btn secondary" href="learnworld_catalog.html">Browse everything</a>
-        </div>
-        <div class="catalog-art" aria-hidden="true"></div>
-      </div>
-    </section>
-
-    <section id="courses" class="panel"><div class="card"><h2 data-i18n="portal_my_courses">My enrolled courses</h2><div id="courseList2"></div></div></section>
-    <section id="cart" class="panel">
-      <div class="card">
-        <h2>Your cart</h2>
-        <p class="desc">Courses you're considering. Nothing here is purchased until you pay - buy items one at a time whenever you're ready, or pay for everything at once.</p>
-        <div class="field" style="max-width:360px">
-          <label>Promo code (optional, applies to the next single-item purchase)</label>
-          <div style="display:flex;gap:8px;align-items:stretch">
-            <input id="cartPromoCode" placeholder="e.g. WELCOME20" style="text-transform:uppercase">
-            <button type="button" class="btn secondary" onclick="applyPromoCode()">Apply</button>
-          </div>
-          <div id="promoStatus" class="desc" aria-live="polite" style="margin-top:6px"></div>
-        </div>
-        <div id="cartList" style="margin-top:10px"></div>
-        <div id="cartSummary" style="margin:14px 0;font-weight:800"></div>
-        <button class="btn" onclick="checkoutAllCart()">Checkout all (1 payment)</button>
-      </div>
-    </section>
-    <section id="billing" class="panel">
-      <div class="card">
-        <h2>Billing &amp; purchases</h2>
-        <p class="desc">Every real payment on your account, one row per transaction.</p>
-        <div class="split" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-          <div class="field"><label>From</label><input id="billingFrom" type="date"></div>
-          <div class="field"><label>To</label><input id="billingTo" type="date"></div>
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-          <button class="btn secondary" onclick="renderBillingHistory()">Apply filter</button>
-          <button class="btn secondary" onclick="exportBillingExcel()">Export Excel</button>
-          <button class="btn secondary" onclick="exportBillingPDF()">Export PDF</button>
-        </div>
-        <div id="billingList"></div>
-      </div>
-    </section>
-    <section id="progress" class="panel"><div class="card"><h2 data-i18n="portal_progress">Course progression</h2><div id="progressList"></div></div></section>
-    <section id="certificates" class="panel"><div class="card"><h2>Certificates</h2><p class="desc">Download your verified Odyssey certificates as PDF files or share them with employers, institutions, and social networks.</p><div id="certificateList" style="margin-top:14px"></div></div></section>
-    <section id="messages" class="panel">
-      <div class="card" style="padding:0;overflow:hidden">
-        <div class="chat-shell">
-          <div class="chat-list-pane">
-            <div class="chat-list-head">
-              <h2 style="margin:0" data-i18n="portal_message_center">Messages</h2>
-              <select id="newChatTarget" onchange="startNewConversation(this.value)">
-                <option value="">+ New chat…</option>
-              </select>
-            </div>
-            <div id="chatList" class="chat-list"></div>
-          </div>
-          <div class="chat-thread-pane">
-            <div id="chatThreadEmpty" class="chat-thread-empty">Select a conversation, or start a new one, to begin chatting.</div>
-            <div id="chatThreadActive" class="chat-thread-active" style="display:none">
-              <div class="chat-thread-head">
-                <span class="comment-avatar" id="chatThreadAvatar" style="width:34px;height:34px;font-size:12px"></span>
-                <b id="chatThreadName"></b>
-              </div>
-              <div id="chatMessages" class="chat-messages"></div>
-              <div class="chat-compose">
-                <div id="chatEditorMount"></div>
-                <button class="btn" style="margin-top:8px" onclick="sendChatMessage()">Send</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="exams" class="panel"><div class="card"><h2 data-i18n="portal_exam_title">Examination portal</h2><p class="desc" data-i18n="portal_exam_body">Enter a focused exam room with shuffled questions, answer tracking, review flags, timer controls, and exam integrity signals.</p><div id="purchasedExamList" style="margin-top:14px"></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><a class="btn secondary" href="tests_marketplace.html">Browse more exams</a><a class="btn secondary" href="exam_portal.html" data-i18n="portal_exam_button">Open demo exam</a></div></div></section>
-    <section id="notifications" class="panel"><div class="card"><h2 data-i18n="portal_notif_title">Notification Center</h2><div id="notifList2"></div></div></section>
-    <section id="homework" class="panel"><div class="card"><h2 data-i18n="portal_homework_title">Homework board</h2><div id="homeworkList2"></div></div></section>
-
-    <section id="settings" class="panel">
-      <div class="grid">
-        <div class="card">
-          <h2 data-i18n="portal_account_title">Account settings</h2>
-          <div class="field"><label>Student ID</label><div class="ro-value" id="profileStudentId" style="padding:9px 11px;border-radius:9px;background:var(--soft);font-size:13px;color:var(--muted)">—</div></div>
-          <div class="field"><label>Profile photo</label><input id="profilePhoto" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png"><small id="profilePhotoStatus">Upload a JPG or PNG image up to 2 MB.</small></div>
-
-
-          <div class="split"><div class="field"><label data-i18n="portal_full_name">Full name</label><input id="profileName"></div><div class="field"><label data-i18n="portal_email">Email address</label><input id="profileEmail"></div></div>
-          <div class="split"><div class="field"><label>Phone number</label><input id="profilePhone" placeholder="+1 555 0100"></div><div class="field"><label data-i18n="portal_city">City / Region</label><input id="profileCity"></div></div>
-          <div class="split"><div class="field"><label>Time zone</label><select id="profileTimezone"></select></div><div class="field"><label>Preferred study language</label><select id="profileStudyLang"><option>English</option><option>Arabic</option><option>Persian</option><option>French</option><option>Spanish</option></select></div></div>
-          <div class="field"><label>Learning goal</label><textarea id="profileGoal" placeholder="Prepare for IELTS, complete machine learning, improve math fundamentals..."></textarea></div>
-          <button class="btn" onclick="saveProfile()" data-i18n="portal_save_profile">Save profile</button>
-        </div>
-        <div class="list">
-          <div class="card"><h2>Security</h2><div class="field"><label>Password</label><input type="password" value="placeholder"></div><button class="btn secondary" onclick="alert('Password reset workflow will be connected to the backend.')">Change password</button></div>
-          <div class="card"><h2>Notifications & privacy</h2><div class="check-list"><label><input id="emailDigest" type="checkbox" checked> Weekly progress digest</label><label><input id="liveReminder" type="checkbox" checked> Live class reminders</label><label><input id="profilePrivate" type="checkbox"> Keep profile private</label><label><input id="ckAnalytics" type="checkbox"> Learning analytics cookies</label><label><input id="ckFunctional" type="checkbox" checked> Functional preference cookies</label></div><br><button class="btn secondary" onclick="saveCookies()" data-i18n="portal_save_cookies">Save cookie preferences</button></div>
-	          <div class="card"><h2>Billing & certificates</h2><div class="item"><b>Payment method</b>No card stored in this demo.</div><div class="item"><b>Certificates</b>2 certificates in progress.</div></div>
-	          <div class="card"><h2>Your data</h2><p class="desc">Download a machine-readable copy of your Odyssey account, learning, certificate, communication, and transaction records.</p><button class="btn secondary" onclick="OdysseyPrivacy.download()">Download my data</button><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><div id="privacyDeletionStatus" class="item">Checking deletion status...</div><div class="split" style="margin-top:12px"><button class="btn secondary" onclick="OdysseyPrivacy.requestDeletion('privacyDeletionStatus')">Request deletion</button><button class="btn secondary" onclick="OdysseyPrivacy.cancelDeletion('privacyDeletionStatus')">Cancel deletion</button></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="appearance" class="panel">
-      <div class="card">
-        <h2 data-i18n="portal_appearance_title">Appearance & themes</h2>
-        <div class="split"><button class="btn secondary mode-toggle" data-mode="light" onclick="setPortalMode('light')" data-i18n="portal_light_mode">Light mode</button><button class="btn secondary mode-toggle" data-mode="dark" onclick="setPortalMode('dark')" data-i18n="portal_dark_mode">Dark mode</button></div>
-        <br>
-        <h3 style="margin:0 0 4px;font-family:var(--head);font-size:16px">Pick your vibe</h3>
-        <p class="desc" style="margin:0 0 12px">Personalize your dashboard with a fun theme and floating decorations - just for you.</p>
-        <div class="theme-grid">
-          <div class="theme-card" data-scheme="voyager"><div class="theme-preview"></div><b>Voyager</b><p class="desc">Deep navy with sneakers, cars, and headphones drifting by.</p></div>
-          <div class="theme-card" data-scheme="blossom"><div class="theme-preview"></div><b>Blossom</b><p class="desc">Warm pink with hearts, butterflies, and blooms.</p></div>
-          <div class="theme-card" data-scheme="nebula"><div class="theme-preview"></div><b>Nebula</b><p class="desc">Deep space violet with planets, stars, and rockets.</p></div>
-          <div class="theme-card" data-scheme="meadow"><div class="theme-preview"></div><b>Meadow</b><p class="desc">Earthy green and gold with leaves and sunflowers.</p></div>
-        </div>
-      </div>
-    </section>
-    <div class="footer-note" data-i18n="portal_footer_note">Odyssey student portal - built for focused learning worldwide.</div>
-  </main>
+<aside class="sidebar" id="portalSidebar">
+<div class="sidebar-profile-stack">
+<div class="photo-frame-wrap sidebar-photo-frame" id="photoFrameWrap">
+<div class="student-photo-frame" id="studentPhotoFrame" onclick="openPhotoLightbox()" title="View profile photo">OS</div>
+<div class="photo-hover-actions sidebar-avatar-actions">
+<button class="photo-action-btn upload" aria-label="Upload new photo" onclick="event.stopPropagation();profilePhoto.click();" title="Upload new photo" type="button"><svg fill="none" height="15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24" width="15"><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M5 20h14"></path></svg></button>
+<button class="photo-action-btn edit" aria-label="Edit photo" onclick="event.stopPropagation();openEditPhotoModal();" title="Edit photo" type="button"><svg fill="none" height="15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24" width="15"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+<button class="photo-action-btn remove" aria-label="Remove photo" onclick="event.stopPropagation();removeProfilePhoto();" title="Remove photo" type="button"><svg fill="none" height="15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24" width="15"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button>
 </div>
-<script src="js/i18n.js" defer></script>
-<script src="js/site-content.js" defer></script>
+</div>
+<div class="sidebar-profile-name"><span id="studentSignedName">Signed in learner</span></div>
+</div>
+<div class="sidebar-id-block"><small aria-label="Student ID" class="brand-id student-member-id" id="studentIdBadge">Student ID · assigning…</small></div>
+<div data-i18n-switcher=""></div>
+<a aria-label="Go to Odyssey home" class="navbtn portal-home-btn" href="index.html"><span aria-hidden="true" class="home-glyph"><svg viewbox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8"></path><path d="M5.5 9.5V20h13V9.5"></path><path d="M9.5 20v-6h5v6"></path></svg></span><span data-i18n="portal_home">Odyssey home</span></a>
+<div class="tools-label" data-i18n="portal_sidebar_student">Student tools</div>
+<button class="navbtn active" data-target="dashboard"><span aria-hidden="true" class="nav-ico">📊</span><span data-i18n="portal_dashboard">Dashboard</span></button>
+<a class="navbtn" href="learnworld_catalog.html"><span aria-hidden="true" class="nav-ico">🔎</span><span data-i18n="portal_catalog">Course catalog</span></a>
+<button class="navbtn" data-target="courses"><span aria-hidden="true" class="nav-ico">📚</span><span data-i18n="portal_enrolled">Enrolled courses</span></button>
+<button class="navbtn" data-target="cart"><span aria-hidden="true" class="nav-ico">🛒</span><span data-i18n="portal_cart">Cart</span></button>
+<button class="navbtn" data-target="billing"><span aria-hidden="true" class="nav-ico">🧾</span><span data-i18n="portal_billing">Billing &amp; purchases</span></button>
+<button class="navbtn" data-target="progress"><span aria-hidden="true" class="nav-ico">📈</span><span data-i18n="portal_progress">Course progression</span></button>
+<button class="navbtn" data-target="certificates"><span aria-hidden="true" class="nav-ico">🏆</span><span data-i18n="portal_certificates">Certificates</span></button>
+<button class="navbtn" data-target="messages"><span aria-hidden="true" class="nav-ico">💬</span><span data-i18n="portal_messages">Messages</span></button>
+<button class="navbtn" data-target="exams"><span aria-hidden="true" class="nav-ico">📝</span><span data-i18n="portal_exams_student">Examination portal</span></button>
+<button class="navbtn" data-target="notifications"><span aria-hidden="true" class="nav-ico">🔔</span><span data-i18n="portal_notifications">Notifications</span></button>
+<button class="navbtn" data-target="homework"><span aria-hidden="true" class="nav-ico">📚</span><span data-i18n="portal_homework">Homework</span></button>
+<button class="navbtn" data-target="settings"><span aria-hidden="true" class="nav-ico">⚙️</span><span data-i18n="portal_settings">Account settings</span></button>
+<button class="navbtn" data-target="appearance"><span aria-hidden="true" class="nav-ico">🎨</span><span data-i18n="portal_appearance">Appearance</span></button>
+<button class="navbtn logout" onclick="logoutPortal()"><span aria-hidden="true" class="nav-ico logout-ico"><svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path></svg></span><span data-i18n="portal_logout">Log out</span></button>
+</aside>
+<main class="main">
+<div class="ambient-float" id="ambientFloat"><span></span><span></span><span></span><span></span><span></span></div>
+<div class="theme-object-layer" id="themeObjectLayer"></div>
+<section aria-label="Student command center" class="student-command">
+<div aria-hidden="true" class="student-command-pattern"><span>✦</span><span>◆</span><span>●</span><span>✧</span><span>＋</span></div>
+<div class="student-command-copy">
+<div class="eyebrow">Student command center</div>
+<h1>Keep learning. See what matters now.</h1>
+<p>Jump straight into your courses, check today's work, or pick up where you left off.</p>
+<div class="command-actions">
+<button class="btn" onclick="showPanel('courses')" type="button">🎓 Continue learning</button>
+<button class="btn secondary" onclick="showPanel('homework')" type="button">📚 Check homework</button>
+<button class="btn warm" onclick="showPanel('messages')" type="button">💬 Message instructor</button>
+</div>
+</div>
+<div class="student-command-proof">
+<div class="proof-top"><span>Learning pulse</span><b>Live</b></div>
+<strong id="studentCommandCourses">0</strong><span>enrolled courses</span>
+<div class="proof-mini"><span data-i18n="portal_progress_label">Progress</span><b id="studentCommandProgress">0%</b></div>
+<div class="proof-mini"><span>Next action</span><b id="studentCommandAction">Ready</b></div>
+</div>
+</section>
+<section class="quick-stats" id="summaryStats"></section>
+<section class="panel active" id="dashboard">
+<div class="grid">
+<div class="card"><h2 data-i18n="portal_my_courses">My enrolled courses</h2><div id="courseList"></div></div>
+<div class="list">
+<div class="card"><h2 data-i18n="portal_notif_title">Notification Center</h2><div id="notifList"></div></div>
+<div class="card"><h2 data-i18n="portal_homework_title">Homework board</h2><div id="homeworkList"></div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="catalog">
+<div class="card catalog-connect">
+<div>
+<h2>Connect with the course catalog</h2>
+<p class="desc">Jump from your portal into Odyssey discovery with your interests pre-shaped around exams, countries, levels, and disciplines.</p>
+<div class="split" style="margin:16px 0">
+<div class="field"><label>Learning path</label><select id="catalogPath"><option value="">All fields</option><option data-i18n="footer_language_exams" value="Language Exam">Language exams</option><option data-i18n="footer_entrance" value="Entrance Exam">Entrance exams</option><option value="University">University</option><option data-i18n="footer_vocational" value="Vocational">Vocational skills</option></select></div>
+<div class="field"><label>Focus country</label><input id="catalogCountry" placeholder="United States, India, Germany..."/></div>
+</div>
+<button class="btn" onclick="connectCatalog()">Open tailored catalog</button>
+<a class="btn secondary" href="learnworld_catalog.html">Browse everything</a>
+</div>
+<div aria-hidden="true" class="catalog-art"></div>
+</div>
+</section>
+<section class="panel" id="courses"><div class="card"><h2 data-i18n="portal_my_courses">My enrolled courses</h2><div id="courseList2"></div></div></section>
+<section class="panel" id="cart">
+<div class="card">
+<h2>Your cart</h2>
+<p class="desc">Courses you're considering. Nothing here is purchased until you pay - buy items one at a time whenever you're ready, or pay for everything at once.</p>
+<div class="field" style="max-width:360px">
+<label>Promo code (optional, applies to the next single-item purchase)</label>
+<div style="display:flex;gap:8px;align-items:stretch">
+<input id="cartPromoCode" placeholder="e.g. WELCOME20" style="text-transform:uppercase"/>
+<button class="btn secondary" onclick="applyPromoCode()" type="button">Apply</button>
+</div>
+<div aria-live="polite" class="desc" id="promoStatus" style="margin-top:6px"></div>
+</div>
+<div id="cartList" style="margin-top:10px"></div>
+<div id="cartSummary" style="margin:14px 0;font-weight:800"></div>
+<button class="btn" onclick="checkoutAllCart()">Checkout all (1 payment)</button>
+</div>
+</section>
+<section class="panel" id="billing">
+<div class="card">
+<h2>Billing &amp; purchases</h2>
+<p class="desc">Every real payment on your account, one row per transaction.</p>
+<div class="split" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+<div class="field"><label>From</label><input id="billingFrom" type="date"/></div>
+<div class="field"><label>To</label><input id="billingTo" type="date"/></div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+<button class="btn secondary" onclick="renderBillingHistory()">Apply filter</button>
+<button class="btn secondary" onclick="exportBillingExcel()">Export Excel</button>
+<button class="btn secondary" onclick="exportBillingPDF()">Export PDF</button>
+</div>
+<div id="billingList"></div>
+</div>
+</section>
+<section class="panel" id="progress"><div class="card"><h2 data-i18n="portal_progress">Course progression</h2><div id="progressList"></div></div></section>
+<section class="panel" id="certificates"><div class="card"><h2 data-i18n="accred_card_verified_sub">Certificates</h2><p class="desc">Download your verified Odyssey certificates as PDF files or share them with employers, institutions, and social networks.</p><div id="certificateList" style="margin-top:14px"></div></div></section>
+<section class="panel" id="messages">
+<div class="card" style="padding:0;overflow:hidden">
+<div class="chat-shell">
+<div class="chat-list-pane">
+<div class="chat-list-head">
+<h2 data-i18n="portal_message_center" style="margin:0">Messages</h2>
+<select id="newChatTarget" onchange="startNewConversation(this.value)">
+<option value="">+ New chat…</option>
+</select>
+</div>
+<div class="chat-list" id="chatList"></div>
+</div>
+<div class="chat-thread-pane">
+<div class="chat-thread-empty" id="chatThreadEmpty">Select a conversation, or start a new one, to begin chatting.</div>
+<div class="chat-thread-active" id="chatThreadActive" style="display:none">
+<div class="chat-thread-head">
+<span class="comment-avatar" id="chatThreadAvatar" style="width:34px;height:34px;font-size:12px"></span>
+<b id="chatThreadName"></b>
+</div>
+<div class="chat-messages" id="chatMessages"></div>
+<div class="chat-compose">
+<div id="chatEditorMount"></div>
+<button class="btn" onclick="sendChatMessage()" style="margin-top:8px">Send</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="panel" id="exams"><div class="card"><h2 data-i18n="portal_exam_title">Examination portal</h2><p class="desc" data-i18n="portal_exam_body">Enter a focused exam room with shuffled questions, answer tracking, review flags, timer controls, and exam integrity signals.</p><div id="purchasedExamList" style="margin-top:14px"></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><a class="btn secondary" href="tests_marketplace.html">Browse more exams</a><a class="btn secondary" data-i18n="portal_exam_button" href="exam_portal.html">Open demo exam</a></div></div></section>
+<section class="panel" id="notifications"><div class="card"><h2 data-i18n="portal_notif_title">Notification Center</h2><div id="notifList2"></div></div></section>
+<section class="panel" id="homework"><div class="card"><h2 data-i18n="portal_homework_title">Homework board</h2><div id="homeworkList2"></div></div></section>
+<section class="panel" id="settings">
+<div class="grid">
+<div class="card">
+<h2 data-i18n="portal_account_title">Account settings</h2>
+<div class="field"><label>Student ID</label><div class="ro-value" id="profileStudentId" style="padding:9px 11px;border-radius:9px;background:var(--soft);font-size:13px;color:var(--muted)">—</div></div>
+<div class="field"><label>Profile photo</label><input accept=".jpg,.jpeg,.png,image/jpeg,image/png" id="profilePhoto" type="file"/><small id="profilePhotoStatus">Upload a JPG or PNG image up to 2 MB.</small></div>
+<div class="split"><div class="field"><label data-i18n="portal_full_name">Full name</label><input id="profileName"/></div><div class="field"><label data-i18n="portal_email">Email address</label><input id="profileEmail"/></div></div>
+<div class="split"><div class="field"><label data-i18n="auto_auth_phone_number_1f8261d1">Phone number</label><input id="profilePhone" placeholder="+1 555 0100"/></div><div class="field"><label data-i18n="portal_city">City / Region</label><input id="profileCity"/></div></div>
+<div class="split"><div class="field"><label>Time zone</label><select id="profileTimezone"></select></div><div class="field"><label>Preferred study language</label><select id="profileStudyLang"><option>English</option><option>Arabic</option><option>Persian</option><option>French</option><option>Spanish</option></select></div></div>
+<div class="field"><label>Learning goal</label><textarea id="profileGoal" placeholder="Prepare for IELTS, complete machine learning, improve math fundamentals..."></textarea></div>
+<button class="btn" data-i18n="portal_save_profile" onclick="saveProfile()">Save profile</button>
+</div>
+<div class="list">
+<div class="card"><h2>Security</h2><div class="field"><label data-i18n="auto_auth_password_dc647eb6">Password</label><input type="password" value="placeholder"/></div><button class="btn secondary" onclick="alert('Password reset workflow will be connected to the backend.')">Change password</button></div>
+<div class="card"><h2>Notifications &amp; privacy</h2><div class="check-list"><label><input checked="" id="emailDigest" type="checkbox"/> Weekly progress digest</label><label><input checked="" id="liveReminder" type="checkbox"/> Live class reminders</label><label><input id="profilePrivate" type="checkbox"/> Keep profile private</label><label><input id="ckAnalytics" type="checkbox"/> <span data-i18n="portal_odyssey_analytics">Odyssey analytics</span></label><label><input checked="" id="ckFunctional" type="checkbox"/> Functional preference cookies</label></div><br/><button class="btn secondary" data-i18n="portal_save_cookies" onclick="saveCookies()">Save cookie preferences</button></div>
+<div class="card"><h2>Billing &amp; certificates</h2><div class="item"><b>Payment method</b>No card stored in this demo.</div><div class="item"><b data-i18n="accred_card_verified_sub">Certificates</b>2 certificates in progress.</div></div>
+<div class="card"><h2>Your data</h2><p class="desc">Download a machine-readable copy of your Odyssey account, learning, certificate, communication, and transaction records.</p><button class="btn secondary" onclick="OdysseyPrivacy.downloadPDF()">Download my data</button><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"/><div class="item" id="privacyDeletionStatus">Checking deletion status...</div><div class="split" style="margin-top:12px"><button class="btn secondary" onclick="OdysseyPrivacy.requestDeletion('privacyDeletionStatus')">Request deletion</button><button class="btn secondary" onclick="OdysseyPrivacy.cancelDeletion('privacyDeletionStatus')">Cancel deletion</button></div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="appearance">
+<div class="card">
+<h2 data-i18n="portal_appearance_title">Appearance &amp; themes</h2>
+<div class="split"><button class="btn secondary mode-toggle" data-i18n="portal_light_mode" data-mode="light" onclick="setPortalMode('light')">Light mode</button><button class="btn secondary mode-toggle" data-i18n="portal_dark_mode" data-mode="dark" onclick="setPortalMode('dark')">Dark mode</button></div>
+<br/>
+<h3 style="margin:0 0 4px;font-family:var(--head);font-size:16px">Pick your vibe</h3>
+<p class="desc" style="margin:0 0 12px">Personalize your dashboard with a fun theme and floating decorations - just for you.</p>
+<div class="theme-grid">
+<div class="theme-card" data-scheme="voyager"><div class="theme-preview"></div><b>Voyager</b><p class="desc">Deep navy with sneakers, cars, and headphones drifting by.</p></div>
+<div class="theme-card" data-scheme="blossom"><div class="theme-preview"></div><b>Blossom</b><p class="desc">Warm pink with hearts, butterflies, and blooms.</p></div>
+<div class="theme-card" data-scheme="nebula"><div class="theme-preview"></div><b>Nebula</b><p class="desc">Deep space violet with planets, stars, and rockets.</p></div>
+<div class="theme-card" data-scheme="meadow"><div class="theme-preview"></div><b>Meadow</b><p class="desc">Earthy green and gold with leaves and sunflowers.</p></div>
+</div>
+</div>
+</section>
+<div class="footer-note" data-i18n="portal_footer_note">Odyssey student portal - built for focused learning worldwide.</div>
+</main>
+</div>
+<script defer="" src="js/i18n.js"></script>
+<script defer="" src="js/site-content.js"></script>
 <script src="js/storage-client.js"></script>
 <script src="js/rich-editor.js"></script>
 <script src="js/privacy-client.js"></script>
@@ -443,22 +505,53 @@ let CERTIFICATES=[];
 let PURCHASED_EXAMS=[];
 
 async function requireStudentSession(){
+  const loginUrl='auth.html?mode=login&role=student&redirect=student_portal.html';
+  if(!window.OdysseySupabase?.isConfigured?.()){
+    console.warn('Supabase is not configured - the portal cannot verify who you are.');
+    location.replace(loginUrl);
+    return null;
+  }
   try{
-    if(!window.OdysseySupabase?.isConfigured?.()){
-      console.warn('Supabase is not configured - the portal cannot verify who you are.');
-      location.href='auth.html?mode=login&role=student&redirect=student_portal.html';
+    const sb=await OdysseySupabase.client();
+    const {data:{session:localSession}={}}=await sb.auth.getSession();
+    if(!localSession){location.replace(loginUrl);return null}
+
+    // getUser() performs server-side token validation. Retry once because a browser
+    // back/forward navigation or a short network hiccup must not become a login loop.
+    let session=null;
+    for(let attempt=0;attempt<2 && !session;attempt++){
+      try{ session=await OdysseySupabase.session(); }
+      catch(error){
+        if(attempt===0) await new Promise(resolve=>setTimeout(resolve,160));
+        else console.warn('Remote session verification is temporarily unavailable.',error);
+      }
+    }
+    if(!session){
+      // Only clear/redirect if Supabase itself says the local session disappeared.
+      const {data:{session:stillLocal}={}}=await sb.auth.getSession();
+      if(!stillLocal){location.replace(loginUrl);return null}
+    }
+
+    let profile=null,profileError=null;
+    for(let attempt=0;attempt<2 && !profile;attempt++){
+      try{ profile=await OdysseySupabase.profile(); profileError=null; }
+      catch(error){ profileError=error; if(attempt===0) await new Promise(resolve=>setTimeout(resolve,160)); }
+    }
+    if(!profile){
+      console.error('Could not load the student profile without losing the active session.',profileError);
+      const main=document.querySelector('main')||document.body;
+      const notice=document.createElement('div');
+      notice.style.cssText='margin:18px;padding:18px;border-radius:18px;background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;font-weight:700';
+      notice.innerHTML='Your sign-in is still active, but profile data could not be loaded. <button type="button" onclick="location.reload()" style="margin-left:8px;border:0;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer">Retry</button>';
+      main.prepend(notice);
       return null;
     }
-    const session=await OdysseySupabase.session();
-    if(!session){location.href='auth.html?mode=login&role=student&redirect=student_portal.html';return null}
-    const profile=await OdysseySupabase.profile();
-    if(!profile){location.href='auth.html?mode=login&role=student&redirect=student_portal.html';return null}
-    if(profile.role==='instructor'||profile.role==='institution'){location.href='instructor_portal.html';return null}
-    if(profile.role==='admin'||profile.role==='support'){location.href='admin_dashboard.html';return null}
+    if(profile.role==='instructor'||profile.role==='institution'){location.replace('instructor_portal.html');return null}
+    if(profile.role==='admin'||profile.role==='support'){location.replace('admin_dashboard.html');return null}
     return profile;
   }catch(error){
     console.error('Could not verify session.',error);
-    location.href='auth.html?mode=login&role=student&redirect=student_portal.html';
+    // Do not bounce an authenticated user through auth.html on a transient exception.
     return null;
   }
 }
@@ -553,6 +646,7 @@ function takePurchasedExam(id){location.href='exam_portal.html?exam='+encodeURIC
 
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 let CHAT_CONVERSATIONS = [];
+let CHAT_ELIGIBLE_INSTRUCTOR_IDS = new Set();
 let ACTIVE_CHAT_USER_ID = null;
 let chatEditor = null;
 
@@ -603,9 +697,12 @@ async function loadConversations(){
     const msgs = byPartner[pid].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
     const last = msgs[msgs.length-1];
     const profile = profilesById[pid] || { full_name: 'Odyssey user' };
+    if(profile.role==='instructor' && !CHAT_ELIGIBLE_INSTRUCTOR_IDS.has(pid)) return null;
+    if(profile.role!=='instructor') return null;
     const avatarUrl = await loadAvatarFor(pid);
     return { partnerId: pid, name: profile.full_name || 'Odyssey user', role: profile.role, memberCode: profile.member_code||'', messages: msgs, lastMessage: last, avatarUrl };
   }));
+  CHAT_CONVERSATIONS=CHAT_CONVERSATIONS.filter(Boolean);
   CHAT_CONVERSATIONS.sort((a,b)=>new Date(b.lastMessage.created_at)-new Date(a.lastMessage.created_at));
   renderChatList();
   await loadInstructorDirectory();
@@ -678,6 +775,7 @@ async function openConversation(partnerId){
 
 async function sendChatMessage(){
   if(!ACTIVE_CHAT_USER_ID){ alert('Choose a conversation first.'); return; }
+  if(!CHAT_ELIGIBLE_INSTRUCTOR_IDS.has(ACTIVE_CHAT_USER_ID)){ alert('Instructor help is not enabled for this conversation.'); return; }
   const editor = ensureChatEditor();
   if(editor.isEmpty()) return;
   const body = editor.getHTML();
@@ -706,18 +804,27 @@ async function loadInstructorDirectory(){
   if(!sel) return;
   try{
     const sb = await OdysseySupabase.client();
-    const { data } = await sb.from('profiles').select('id, full_name, role, member_code')
-      .in('role', ['instructor','admin','support']).neq('id', CURRENT_PROFILE.id).order('full_name');
+    const { data: enrollments, error: eError } = await sb.from('enrollments').select('course_id').eq('user_id', CURRENT_PROFILE.id);
+    if(eError) throw eError;
+    const courseIds=[...new Set((enrollments||[]).map(e=>e.course_id).filter(Boolean))];
+    let eligibleIds=[];
+    if(courseIds.length){
+      CHAT_ELIGIBLE_INSTRUCTOR_IDS=new Set();
+      const { data:courses, error:cError } = await sb.from('courses').select('id,instructor_id,includes_student_interaction').in('id',courseIds).eq('includes_student_interaction',true);
+      if(cError) throw cError;
+      eligibleIds=[...new Set((courses||[]).map(c=>c.instructor_id).filter(Boolean))];
+      CHAT_ELIGIBLE_INSTRUCTOR_IDS=new Set(eligibleIds);
+    }
+    const { data } = eligibleIds.length ? await sb.from('profiles').select('id, full_name, role, member_code').in('id',eligibleIds).neq('id',CURRENT_PROFILE.id).order('full_name') : {data:[]};
     const existing = new Set(CHAT_CONVERSATIONS.map(c=>c.partnerId));
     const options = (data||[]).filter(p => !existing.has(p.id));
-    sel.innerHTML = '<option value="">+ New chat…</option>' +
-      (options.length ? options.map(p=>`<option value="${p.id}">${escapeHtml(p.full_name)} (${p.role}${p.member_code?' · '+p.member_code:''})</option>`).join('')
-        : '<option value="" disabled>No instructors available yet</option>');
-  }catch(e){ console.warn('Could not load instructor directory', e); }
+    sel.innerHTML = '<option value="">+ New chat…</option>' + (options.length ? options.map(p=>`<option value="${p.id}">${escapeHtml(p.full_name)} (${p.role}${p.member_code?' · '+p.member_code:''})</option>`).join('') : '<option value="" disabled>No instructors with help enabled</option>');
+  }catch(e){ console.warn('Could not load eligible instructor directory',e); sel.innerHTML='<option value="">+ New chat…</option><option value="" disabled>Chat availability could not be loaded</option>'; }
 }
 
 async function startNewConversation(partnerId){
   if(!partnerId) return;
+  if(!CHAT_ELIGIBLE_INSTRUCTOR_IDS.has(partnerId)){ document.getElementById('newChatTarget').value=''; return; }
   if(!CHAT_CONVERSATIONS.find(c=>c.partnerId===partnerId)){
     const sb = await OdysseySupabase.client();
     const { data: profile } = await sb.from('profiles').select('id, full_name, role, member_code').eq('id', partnerId).single();
@@ -733,11 +840,9 @@ function renderNotifications(notifs){
   ['notifList','notifList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html})
 }
 
-// Homework isn't backed by a real table yet, so it's clearly labeled as sample content
-// rather than pretending to be real assignment data.
+// Homework has no production table yet. Never show fabricated assignments.
 function renderHomeworkSample(){
-  const hw=[T('portal_sample_homework_1'),T('portal_sample_homework_2'),T('portal_sample_homework_3')];
-  ['homeworkList','homeworkList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=hw.map((x,i)=>`<div class="item"><b>${T('portal_due')}: ${['Friday','Monday','Wednesday'][i]}</b>${x} <i>(sample - homework tracking isn't built yet)</i></div>`).join('')})
+  ['homeworkList','homeworkList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="item"><b>No homework assigned</b>Your instructor-assigned work will appear here when homework tracking is connected.</div>'})
 }
 
 function openCourse(id){location.href='course_player.html?course='+encodeURIComponent(id)}
@@ -784,19 +889,22 @@ async function submitRefundRequest(){
   const btn=document.getElementById('refundSubmitBtn');
   btn.disabled=true;btn.textContent='Submitting…';
   try{
-    const sb=await OdysseySupabase.client();
-    const {error}=await sb.from('refund_requests').insert({
-      student_user_id:CURRENT_PROFILE.id,
-      enrollment_id:REFUND_ENROLLMENT_ID,
-      course_id:course.id,
-      course_progress_percent:course.progress||0,
-      reason,
-      refund_destination:destination,
-      card_brand:cardBrand,
-      alt_card_last4:destination==='different'?altLast4:null,
-      alt_cardholder_name:destination==='different'?altName:null
+    const session=await OdysseySupabase.session();
+    if(!session?.access_token)throw new Error('Your login session expired. Please sign in again.');
+    const response=await fetch('/api/refund-request',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+      body:JSON.stringify({
+        enrollmentId:REFUND_ENROLLMENT_ID,
+        reason,
+        refundDestination:destination,
+        cardBrand,
+        altCardLast4:destination==='different'?altLast4:null,
+        altCardholderName:destination==='different'?altName:null
+      })
     });
-    if(error)throw error;
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok)throw Object.assign(new Error(result.error||'Could not submit your refund request.'),{code:result.code});
     closeRefundModal();
     document.getElementById('refundToast').classList.add('open');
   }catch(error){
@@ -825,8 +933,14 @@ async function saveProfile(){
 function renderStudentPhoto(name, url){
   const frame=document.getElementById('studentPhotoFrame');
   if(!frame)return;
-  if(url){frame.innerHTML=`<img src="${url}" alt="${name} profile photo">`;frame.dataset.hasPhoto='1'}
-  else{frame.textContent=(name||'Odyssey Student').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'OS';frame.dataset.hasPhoto=''}
+  const initials=(name||'Odyssey Student').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'OS';
+  frame.replaceChildren();
+  if(url){
+    const img=document.createElement('img');
+    img.src=String(url); img.alt=`${name||'Odyssey Student'} profile photo`; img.loading='eager'; img.decoding='async'; img.referrerPolicy='no-referrer';
+    img.onerror=()=>{frame.replaceChildren();frame.textContent=initials;frame.dataset.hasPhoto='';};
+    frame.appendChild(img); frame.dataset.hasPhoto='1';
+  }else{frame.textContent=initials;frame.dataset.hasPhoto=''}
 }
 
 // The photo lives entirely server-side (storage_objects + a resolved view
@@ -1187,6 +1301,8 @@ async function saveCroppedPhoto(){
     const previewUrl = URL.createObjectURL(croppedFile);
     CURRENT_PHOTO_URL = previewUrl;
     renderStudentPhoto(CURRENT_PROFILE?.full_name, previewUrl);
+    try{ CURRENT_PHOTO_URL = await OdysseyStorage.getViewUrl(object.id); renderStudentPhoto(CURRENT_PROFILE?.full_name, CURRENT_PHOTO_URL); }catch(viewError){ console.warn('Could not refresh saved profile photo URL.',viewError); }
+    setTimeout(()=>URL.revokeObjectURL(previewUrl),30000);
     if(previousDisplayId && previousDisplayId !== object.id){
       OdysseyStorage.deleteObject(previousDisplayId).catch(()=>{});
     }
@@ -1271,6 +1387,7 @@ function renderThemeObjects(scheme){
   const positions=[['8%','12%'],['82%','10%'],['14%','78%'],['76%','70%'],['46%','30%']];
   layer.innerHTML=icons.map((icon,i)=>`<span style="left:${positions[i][0]};top:${positions[i][1]}">${icon}</span>`).join('');
 }
+function showPanel(id){document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.target===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));loadPortalSection(id);document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
 function refreshAppearanceControls(){
   document.querySelectorAll('.mode-toggle').forEach(btn=>btn.classList.toggle('active',btn.dataset.mode===document.documentElement.dataset.theme));
   document.querySelectorAll('.theme-card').forEach(card=>card.classList.toggle('active',card.dataset.scheme===document.documentElement.dataset.scheme));
@@ -1307,10 +1424,10 @@ async function loadStudentId(){
     const badge=document.getElementById('studentIdBadge');
     const field=document.getElementById('profileStudentId');
     if(/^\d{8}$/.test(code)){
-      if(badge){badge.textContent='Student ID: '+code;badge.style.display='block'}
+      if(badge){badge.textContent='Student ID · '+code;badge.style.display='inline-flex'}
       if(field){field.textContent=code}
     }else{
-      if(badge)badge.style.display='none';
+      if(badge){badge.textContent='Student ID · assigning…';badge.style.display='inline-flex'}
       if(field)field.textContent='—';
     }
   }catch(error){
@@ -1326,11 +1443,12 @@ async function loadPortalSection(section){
   if(PORTAL_LOADERS[section]) return PORTAL_LOADERS[section];
   PORTAL_LOADERS[section]=(async()=>{
     if(section==='dashboard'){
-      if(!ENROLLMENTS.length) ENROLLMENTS=await fetchEnrollments();
+      const [enrollments,notifs]=await Promise.all([ENROLLMENTS.length?Promise.resolve(ENROLLMENTS):fetchEnrollments(),fetchNotifications()]);
+      ENROLLMENTS=enrollments;
       renderStats(ENROLLMENTS);
       const el=document.getElementById('courseList');
       if(el)el.innerHTML=ENROLLMENTS.length?ENROLLMENTS.map(c=>renderCourse(c)).join(''):`<div class="item">${T('portal_empty_courses')}</div>`;
-      const notifs=await fetchNotifications(); renderNotifications(notifs); renderHomeworkSample();
+      renderNotifications(notifs); renderHomeworkSample();
     } else if(section==='courses'||section==='progress'){
       if(!ENROLLMENTS.length) ENROLLMENTS=await fetchEnrollments();
       if(section==='courses'){
@@ -1360,7 +1478,15 @@ async function loadPortalSection(section){
   })();
   return PORTAL_LOADERS[section];
 }
-async function renderAll(){ await loadPortalSection('dashboard'); }
+function updateStudentCommand(){
+  const courses=Array.isArray(ENROLLMENTS)?ENROLLMENTS:[];
+  const total=courses.length;
+  const completed=courses.filter(x=>Number(x.progress_percent??x.progress??0)>=100).length;
+  const avg=total?Math.round(courses.reduce((sum,x)=>sum+Math.min(100,Math.max(0,Number(x.progress_percent??x.progress??0))),0)/total):0;
+  const a=document.getElementById('studentCommandCourses'),b=document.getElementById('studentCommandProgress'),c=document.getElementById('studentCommandAction');
+  if(a)a.textContent=String(total); if(b)b.textContent=avg+'%'; if(c)c.textContent=total?(completed===total?'Complete':'Continue'):'Explore';
+}
+async function renderAll(){ await loadPortalSection('dashboard'); updateStudentCommand(); }
 
 // ---- Cart promo-code validation (merged from the alternate portal build). ----
 let APPLIED_PROMO=null;
@@ -1603,103 +1729,99 @@ document.addEventListener('DOMContentLoaded',async()=>{
   void loadStudentId();
   void applyPrivacyPreferences(CURRENT_PROFILE);
   await renderAll();
-  document.addEventListener('odyssey:languageChanged',renderAll)
+  document.addEventListener('odyssey:languageChanged',()=>{if(ENROLLMENTS.length){renderStats(ENROLLMENTS);updateStudentCommand()}})
 })
 </script>
-<script src="assets/odyssey-dashboard-refinement.js" defer></script>
-
+<script defer="" src="assets/odyssey-dashboard-refinement.js"></script>
 <!-- Photo crop/lightbox overlays: intentionally OUTSIDE any .panel section so
      they still work no matter which dashboard tab is active. They previously
      lived inside the hidden Settings panel and were invisible everywhere else. -->
-  <div class="crop-overlay" id="cropOverlay">
-    <div class="crop-modal">
-      <div class="crop-modal-head">
-        <h3 id="cropModalTitle">Edit profile photo</h3>
-        <p id="cropModalHint">Drag to reposition, scroll or pinch to zoom.</p>
-      </div>
-      <div class="crop-stage" id="cropStage">
-        <canvas id="cropCanvas" width="300" height="300"></canvas>
-        <div class="crop-empty" id="cropEmpty">
-          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"></path><circle cx="12" cy="13" r="3.4"></circle></svg>
-          <span>No photo yet</span>
-        </div>
-      </div>
-      <div class="crop-controls">
-        <button type="button" class="upload" id="cropUploadBtn" title="Upload a new photo" onclick="event.stopPropagation();profilePhoto.click();">⤒ Upload new photo</button>
-        <span class="spacer"></span>
-        <button type="button" id="cropRotateLeft" title="Rotate left" onclick="cropRotate(-90)">↺</button>
-        <button type="button" id="cropRotateRight" title="Rotate right" onclick="cropRotate(90)">↻</button>
-        <button type="button" id="cropZoomOut" title="Zoom out" onclick="cropZoom(-0.1)">−</button>
-        <button type="button" id="cropZoomIn" title="Zoom in" onclick="cropZoom(0.1)">+</button>
-        <button type="button" id="cropResetBtn" title="Reset" onclick="cropReset()">⟲</button>
-      </div>
-      <div class="crop-actions">
-        <button type="button" class="cancel" onclick="closeCropModal()">Cancel</button>
-        <button type="button" class="save" id="cropSaveBtn" onclick="saveCroppedPhoto()">Save photo</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="photo-lightbox" id="photoLightbox" onclick="closePhotoLightbox(event)">
-    <button type="button" class="photo-lightbox-close" onclick="closePhotoLightbox(event)">✕</button>
-    <img id="photoLightboxImg" alt="Profile photo, full size">
-  </div>
-
-  <div class="refund-overlay" id="refundOverlay" onclick="if(event.target===this)closeRefundModal()">
-    <div class="refund-modal">
-      <div class="refund-head">
-        <h3>Request a refund</h3>
-        <p>Tell us a bit about your request. Our team reviews every refund request individually.</p>
-      </div>
-      <div class="refund-error" id="refundError"></div>
-      <div class="refund-body">
-        <div class="refund-field"><label>Course</label><div class="ro" id="refundCourseName"></div></div>
-        <div class="refund-field"><label>Date of enrollment</label><div class="ro" id="refundEnrolledAt"></div></div>
-        <div class="refund-field">
-          <label for="refundReason">Reason for your refund request</label>
-          <textarea id="refundReason" placeholder="A short message about why you're requesting a refund…" maxlength="800"></textarea>
-        </div>
-        <div class="refund-field">
-          <label for="refundDestination">Preferred refund method</label>
-          <select id="refundDestination" onchange="onRefundDestinationChange()">
-            <option value="original">Return to the card I originally paid with</option>
-            <option value="different">Return to a different card</option>
-          </select>
-        </div>
-        <div class="refund-field">
-          <label for="refundCardBrand">Card type</label>
-          <select id="refundCardBrand">
-            <option value="visa">Visa</option>
-            <option value="mastercard">Mastercard</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div id="refundAltCardFields" style="display:none">
-          <div class="refund-field">
-            <label for="refundAltLast4">Last 4 digits of the different card</label>
-            <input id="refundAltLast4" inputmode="numeric" maxlength="4" placeholder="1234">
-            <small class="hint">For your security we only ever ask for the last 4 digits — never a full card number. Refunds to a different card need manual verification by our team before they're processed.</small>
-          </div>
-          <div class="refund-field">
-            <label for="refundAltName">Name on that card</label>
-            <input id="refundAltName" placeholder="Full name as it appears on the card">
-          </div>
-        </div>
-      </div>
-      <div class="refund-actions">
-        <button type="button" class="cancel" onclick="closeRefundModal()">Cancel</button>
-        <button type="button" class="submit" id="refundSubmitBtn" onclick="submitRefundRequest()">Submit request</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast-overlay" id="refundToast">
-    <div class="toast-modal">
-      <div class="icon">✓</div>
-      <h3>Request submitted</h3>
-      <p>Your refund request is in. Our team will review it and get back to you shortly — no need to submit it again.</p>
-      <button type="button" onclick="document.getElementById('refundToast').classList.remove('open')">Got it</button>
-    </div>
-  </div>
+<div class="crop-overlay" id="cropOverlay">
+<div class="crop-modal">
+<div class="crop-modal-head">
+<h3 id="cropModalTitle">Edit profile photo</h3>
+<p id="cropModalHint">Drag to reposition, scroll or pinch to zoom.</p>
+</div>
+<div class="crop-stage" id="cropStage">
+<canvas height="300" id="cropCanvas" width="300"></canvas>
+<div class="crop-empty" id="cropEmpty">
+<svg fill="none" height="34" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24" width="34"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"></path><circle cx="12" cy="13" r="3.4"></circle></svg>
+<span>No photo yet</span>
+</div>
+</div>
+<div class="crop-controls">
+<button class="upload" id="cropUploadBtn" onclick="event.stopPropagation();profilePhoto.click();" title="Upload a new photo" type="button">⤒ Upload new photo</button>
+<span class="spacer"></span>
+<button id="cropRotateLeft" onclick="cropRotate(-90)" title="Rotate left" type="button">↺</button>
+<button id="cropRotateRight" onclick="cropRotate(90)" title="Rotate right" type="button">↻</button>
+<button id="cropZoomOut" onclick="cropZoom(-0.1)" title="Zoom out" type="button">−</button>
+<button id="cropZoomIn" onclick="cropZoom(0.1)" title="Zoom in" type="button">+</button>
+<button id="cropResetBtn" onclick="cropReset()" title="Reset" type="button">⟲</button>
+</div>
+<div class="crop-actions">
+<button class="cancel" onclick="closeCropModal()" type="button">Cancel</button>
+<button class="save" id="cropSaveBtn" onclick="saveCroppedPhoto()" type="button">Save photo</button>
+</div>
+</div>
+</div>
+<div class="photo-lightbox" id="photoLightbox" onclick="closePhotoLightbox(event)">
+<button class="photo-lightbox-close" onclick="closePhotoLightbox(event)" type="button">✕</button>
+<img alt="Profile photo, full size" id="photoLightboxImg"/>
+</div>
+<div class="refund-overlay" id="refundOverlay" onclick="if(event.target===this)closeRefundModal()">
+<div class="refund-modal">
+<div class="refund-head">
+<h3>Request a refund</h3>
+<p>Tell us a bit about your request. Our team reviews every refund request individually.</p>
+</div>
+<div class="refund-error" id="refundError"></div>
+<div class="refund-body">
+<div class="refund-field"><label>Course</label><div class="ro" id="refundCourseName"></div></div>
+<div class="refund-field"><label>Date of enrollment</label><div class="ro" id="refundEnrolledAt"></div></div>
+<div class="refund-field">
+<label for="refundReason">Reason for your refund request</label>
+<textarea id="refundReason" maxlength="800" placeholder="A short message about why you're requesting a refund…"></textarea>
+</div>
+<div class="refund-field">
+<label for="refundDestination">Preferred refund method</label>
+<select id="refundDestination" onchange="onRefundDestinationChange()">
+<option value="original">Return to the card I originally paid with</option>
+<option value="different">Return to a different card</option>
+</select>
+</div>
+<div class="refund-field">
+<label for="refundCardBrand">Card type</label>
+<select id="refundCardBrand">
+<option value="visa">Visa</option>
+<option value="mastercard">Mastercard</option>
+<option value="other">Other</option>
+</select>
+</div>
+<div id="refundAltCardFields" style="display:none">
+<div class="refund-field">
+<label for="refundAltLast4">Last 4 digits of the different card</label>
+<input id="refundAltLast4" inputmode="numeric" maxlength="4" placeholder="1234"/>
+<small class="hint">For your security we only ever ask for the last 4 digits — never a full card number. Refunds to a different card need manual verification by our team before they're processed.</small>
+</div>
+<div class="refund-field">
+<label for="refundAltName">Name on that card</label>
+<input id="refundAltName" placeholder="Full name as it appears on the card"/>
+</div>
+</div>
+</div>
+<div class="refund-actions">
+<button class="cancel" onclick="closeRefundModal()" type="button">Cancel</button>
+<button class="submit" id="refundSubmitBtn" onclick="submitRefundRequest()" type="button">Submit request</button>
+</div>
+</div>
+</div>
+<div class="toast-overlay" id="refundToast">
+<div class="toast-modal">
+<div class="icon">✓</div>
+<h3>Request submitted</h3>
+<p>Your refund request is in. Our team will review it and get back to you shortly — no need to submit it again.</p>
+<button onclick="document.getElementById('refundToast').classList.remove('open')" type="button">Got it</button>
+</div>
+</div>
 </body>
 </html>

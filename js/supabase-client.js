@@ -85,7 +85,12 @@
     const sb = await client();
     if (!sb || !user?.id) return null;
     const meta = authMetadata(user);
-    const role = normalizeRole(meta.role || fallbackRole || 'student');
+    // Only public onboarding roles may be requested by the browser. Privileged
+    // roles must be granted by trusted server-side/admin controls.
+    const requestedRole = normalizeRole(fallbackRole || 'student');
+    const role = ['student', 'instructor', 'institution'].includes(requestedRole)
+      ? requestedRole
+      : 'student';
     const baseProfile = {
       id: user.id,
       role,
@@ -120,7 +125,8 @@
         user_id: user.id,
         title: meta.title || null,
         bio: meta.bio || null,
-        teaching_languages: meta.teaching_languages ? String(meta.teaching_languages).split(',').map(v=>v.trim()).filter(Boolean) : ['English']
+        teaching_languages: meta.teaching_languages ? String(meta.teaching_languages).split(',').map(v=>v.trim()).filter(Boolean) : ['English'],
+        study_track: meta.study_track || null
       }, { onConflict: 'user_id' });
     } else if (role === 'institution') {
       await sb.from('institution_profiles').upsert({
@@ -209,10 +215,12 @@
       p = await profile();
       if (!p && data.user) p = await ensureProfile(data.user);
     } catch (profileError) {
-      console.warn('Odyssey profile sync failed after login. Falling back to auth metadata.', profileError);
+      console.warn('Odyssey profile sync failed after login. Continuing without a server profile.', profileError);
     }
+    // Never use Auth user_metadata.role for authorization. The server-side
+    // profiles row is the only source of an existing user's role.
     const meta = authMetadata(data.user);
-    const role = p?.role || meta.role || 'student';
+    const role = p?.role || 'student';
     return { user: data.user, profile: p || { role, full_name: meta.full_name || data.user?.email || '', email: data.user?.email || email, country: meta.country || '', city: meta.city || '' }, redirectTo: routeForRole(role) };
   }
 

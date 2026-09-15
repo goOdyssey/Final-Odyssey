@@ -514,18 +514,6 @@ function initials(name){
 // real academic policy per course whenever you have it.
 const THRESHOLD_BY_LEVEL = {Beginner:60,Intermediate:65,'Upper-Intermediate':65,Advanced:70,Expert:75};
 
-function buildInstructorNote(course){
-  const templates = [
-    `I built this course from what actually trips students up in ${course.subject} — not just the theory, but the exact mistakes I've seen thousands of times.`,
-    `${course.subject} clicked for me once I stopped memorising and started practising the right way. That's what I want for you here.`,
-    `My goal with this course is simple: by the end, ${course.subject} should feel manageable, not mysterious.`
-  ];
-  const key = String(course.id ?? '');
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
-  return templates[hash % templates.length];
-}
-
 const FIELD_BADGE_CLASS = {'Vocational':'badge-voc','University':'badge-uni','K-12':'badge-k12','Entrance Exam':'badge-ent','Language Exam':'badge-lng'};
 const FIELD_EMOJI = {'Vocational':'🛠️','University':'🎓','K-12':'📘','Entrance Exam':'📝','Language Exam':'🗣️'};
 const COUNTRY_FLAGS = {'India':'🇮🇳','China':'🇨🇳','France':'🇫🇷','Nigeria':'🇳🇬','United Kingdom':'🇬🇧','Germany':'🇩🇪','United States':'🇺🇸','Kenya':'🇰🇪','Brazil':'🇧🇷','Japan':'🇯🇵','Iran':'🇮🇷','Saudi Arabia':'🇸🇦','Ghana':'🇬🇭','Spain':'🇪🇸','Italy':'🇮🇹','Canada':'🇨🇦','Mexico':'🇲🇽','South Africa':'🇿🇦','Egypt':'🇪🇬','Turkey':'🇹🇷','Pakistan':'🇵🇰','Bangladesh':'🇧🇩','Indonesia':'🇮🇩','South Korea':'🇰🇷','Australia':'🇦🇺'};
@@ -539,11 +527,11 @@ function mapCourseRow(c){
     hours:c.session_count||0, price:Math.round((c.price_cents||0)/100),
     interactionPrice: c.includes_student_interaction ? Math.round((c.interaction_price_cents ?? c.qa_price_cents ?? 0)/100) : undefined,
     badge:FIELD_BADGE_CLASS[c.field]||'badge-voc', badgeLabel:c.field||'',
-    cert:!!c.certificate_enabled, practice:false
+    cert:!!c.certificate_enabled, practice:false, description:c.description||''
   };
 }
 
-const COURSE_SELECT = 'id, title, field, discipline, subject, country, level, price_cents, interaction_price_cents, qa_price_cents, session_count, rating, enrolled_count, certificate_enabled, includes_student_interaction, instructor:instructor_id(full_name)';
+const COURSE_SELECT = 'id, title, description, field, discipline, subject, country, level, price_cents, interaction_price_cents, qa_price_cents, session_count, rating, enrolled_count, certificate_enabled, includes_student_interaction, instructor:instructor_id(full_name)';
 
 async function getCourse(){
   const params = new URLSearchParams(window.location.search);
@@ -597,6 +585,27 @@ function renderCurriculum(course){
     </div>`).join('');
 }
 
+
+async function enrollFromDetail(course){
+  try{
+    const session=await OdysseySupabase.session();
+    if(!session?.access_token){
+      const back='course_detail.html?id='+encodeURIComponent(course.id);
+      localStorage.setItem('odyssey_after_login',back);
+      location.href='auth.html?mode=login&role=student&redirect='+encodeURIComponent(back);
+      return;
+    }
+    if(Number(course.price||0)>0){
+      const response=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({courseId:course.id})});
+      const payload=await response.json().catch(()=>({}));
+      if(!response.ok||!payload.url)throw new Error(payload.error||'Checkout could not be started.');
+      location.href=payload.url;
+      return;
+    }
+    await OdysseySupabase.enrollInCourse(course.id);
+    location.href='student_portal.html';
+  }catch(error){alert('Could not continue: '+(error?.message||'please try again.'))}
+}
 async function render(){
   const course = await getCourse();
   if(!course){
@@ -622,16 +631,14 @@ async function render(){
   document.getElementById('priceBase').textContent = course.price===0 ? 'Free' : '$'+course.price;
   document.getElementById('priceInteractive').textContent = '$'+interaction;
   document.getElementById('enrollBtn').textContent = course.price===0 ? 'Start free course' : `Enrol — $${course.price}`;
-  document.getElementById('enrollBtn').onclick = () => {
-    localStorage.setItem('odyssey_pending_course_id', String(course.id));
-    window.location.href = 'auth.html?mode=signup';
-  };
+  document.getElementById('enrollBtn').onclick = () => enrollFromDetail(course);
 
-  document.getElementById('viewCount').textContent = (Math.round(course.students*3.4)/1000).toFixed(1)+'K';
-  document.getElementById('completionRate').textContent = Math.min(94, 60 + Math.round(course.students % 20)) + '%';
+  // Do not manufacture engagement metrics that do not exist in the live schema.
+  document.getElementById('viewCount').textContent = '—';
+  document.getElementById('completionRate').textContent = '—';
 
-  document.getElementById('instructorNote').textContent = '"' + buildInstructorNote(course) + '"';
-  document.getElementById('instructorWho').textContent = `${course.instructor} · ${course.subject} instructor`;
+  document.getElementById('instructorNote').textContent = course.description || 'No instructor note has been published for this course yet.';
+  document.getElementById('instructorWho').textContent = course.instructor;
 
   document.getElementById('infoDuration').textContent = `${course.hours} hours total`;
   document.getElementById('infoLevel').textContent = course.level;

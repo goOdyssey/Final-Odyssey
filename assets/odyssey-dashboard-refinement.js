@@ -80,7 +80,7 @@
       el.setAttribute('placeholder',translated || el.dataset.odysseyPortalRefinePlaceholder);
     });
   }
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(walk,180));
-  document.addEventListener('odyssey:languageChanged',()=>setTimeout(walk,60));
-  document.addEventListener('click',event=>{ if(event.target.closest('.subscription-nav') || event.target.closest('#subscriptionModal')) setTimeout(walk,80); });
+  const idle=window.requestIdleCallback||((cb)=>setTimeout(cb,600));
+  document.addEventListener('DOMContentLoaded',()=>idle(walk),{once:true});
+  document.addEventListener('odyssey:languageChanged',()=>idle(walk));
 })();

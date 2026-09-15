@@ -218,8 +218,7 @@ footer .i18n-dropdown{position:absolute;bottom:calc(100% + 8px);top:auto;max-hei
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #1d4ed8;outline-offset:2px;border-radius:4px}
 .skip-link{position:absolute;top:-100px;left:12px;background:#142C4F;color:#fff;padding:10px 18px;border-radius:8px;font-weight:800;font-size:13px;z-index:9999;text-decoration:none;transition:top .2s}
 .skip-link:focus{top:12px}
-</style>
-<style>
+
 .about-hero{min-height:74vh;padding:140px 24px 70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;background:linear-gradient(160deg,#F6F4EF 0%,#F3EEE3 55%,#F6F4EF 100%)}
 .hero-inner{position:relative;z-index:2;max-width:740px;margin:0 auto}
 .about-hero h1{font-family:var(--ff-head);font-size:clamp(38px,6vw,68px);font-weight:900;line-height:1.06;letter-spacing:-2px;margin-bottom:18px}
@@ -275,11 +274,35 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 
 @media(max-width:900px){.mission-inner{grid-template-columns:1fr}.values-grid{grid-template-columns:1fr 1fr}.mission-visual{margin-top:28px}}
 @media(max-width:640px){.values-grid{grid-template-columns:1fr}}
+
+/* About-page ambient objects: landing-page language, original text colors preserved. */
+.about-float-layer{position:fixed;inset:0;z-index:20;pointer-events:none;overflow:hidden;contain:layout paint;opacity:.52}
+.about-float-object{position:absolute;display:block;will-change:transform;filter:drop-shadow(0 8px 16px rgba(20,44,79,.08));animation:aboutFloat 16s ease-in-out infinite}
+.about-float-object.shape{border-radius:10px;opacity:.22}
+.about-float-object.dot{border-radius:50%;opacity:.42}
+.about-float-object.ring{border:2px solid currentColor;border-radius:50%;opacity:.20}
+.about-float-object svg{width:100%;height:100%;display:block}
+@keyframes aboutFloat{0%,100%{transform:translate3d(0,0,0) rotate(-5deg)}50%{transform:translate3d(12px,-22px,0) rotate(7deg)}}
+@media(max-width:760px){.about-float-layer{opacity:.36}.about-float-object:nth-child(n+9){display:none}}
+@media(prefers-reduced-motion:reduce){.about-float-object{animation:none}}
 </style>
 <script defer="" src="js/i18n.js"></script>
   <script src="js/observability.js" defer></script>
 </head>
 <body>
+<div class="about-float-layer" aria-hidden="true">
+  <span class="about-float-object ring" style="width:86px;height:86px;left:4%;top:14%;color:var(--teal);animation-delay:-2s"></span>
+  <span class="about-float-object shape" style="width:24px;height:24px;left:12%;top:48%;background:var(--gold);animation-delay:-7s"></span>
+  <span class="about-float-object dot" style="width:9px;height:9px;left:28%;top:76%;background:var(--clay);animation-delay:-4s"></span>
+  <span class="about-float-object" style="width:34px;height:34px;right:12%;top:18%;color:var(--navy);animation-delay:-5s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 4 2 9l10 5 10-5-10-5Z"/><path d="M6 11.5V16c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.5"/><path d="M22 9v6"/></svg></span>
+  <span class="about-float-object ring" style="width:130px;height:130px;right:3%;top:43%;color:var(--gold);animation-delay:-9s"></span>
+  <span class="about-float-object" style="width:28px;height:28px;right:19%;top:68%;color:var(--teal);animation-delay:-3s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 5c2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0V5Z"/><path d="M20 5c-2-1.3-5-1.3-8 0v14c3-1.3 6-1.3 8 0V5Z"/></svg></span>
+  <span class="about-float-object dot" style="width:7px;height:7px;left:43%;top:24%;background:var(--teal);animation-delay:-8s"></span>
+  <span class="about-float-object shape" style="width:18px;height:18px;left:52%;top:61%;background:var(--navy);transform:rotate(45deg);animation-delay:-6s"></span>
+  <span class="about-float-object" style="width:30px;height:30px;left:8%;top:84%;color:var(--clay);animation-delay:-10s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M17 3l4 4L9 19l-5 1 1-5L17 3Z"/><path d="M14 6l4 4"/></svg></span>
+  <span class="about-float-object dot" style="width:8px;height:8px;right:35%;top:88%;background:var(--gold);animation-delay:-1s"></span>
+</div>
+
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
 <nav>
@@ -316,25 +339,25 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <div class="page-tag" data-i18n="about_tag">Our story</div>
 <h1><span class="grad">inspired by resilience.</span></h1>
 <p>A personal setback became the beginning of a platform built to keep students moving forward.</p>
-<blockquote class="founder-quote">"Resilience became the first brick in the platform I wanted to build."<span>Nima Khoei, Founder of Odyssey</span></blockquote>
+<blockquote class="founder-quote">"Resilience became the first brick in the platform I wanted to build."<span>My story behind Odyssey</span></blockquote>
 </div>
 </div>
 <!-- MISSION -->
 <div class="mission reveal">
 <div class="story-panel">
 <h2>From a setback to a mission for educational equality</h2>
-<p>Odyssey was born from a moment when its founder, <strong>Nima Khoei</strong>, experienced how fragile a student's academic path can become. A serious ankle injury forced him away from school during an important period of preparation, while his peers continued studying and moving forward.</p>
+<p>I started Odyssey after experiencing how fragile a student's academic path can become. A serious ankle injury forced me away from school during an important period of preparation, while my peers continued studying and moving forward. That experience changed the way I thought about access to education: talent and ambition should not disappear simply because life interrupts the classroom.</p>
 <p>The setback was painful, but the deeper wound was the fear of falling behind simply because learning still depended too much on physical access to classrooms, school buildings, and local resources. In that period, a single idea became impossible to ignore: <strong>students should not lose opportunity because life places a barrier between them and education.</strong></p>
-<p>That experience transformed frustration into purpose. Nima began imagining a platform where high-quality courses could reach students wherever they were, whether they were recovering from injury, living far from strong educational centers, facing financial pressure, or preparing for demanding exams without enough support.</p>
-<p>Odyssey carries that promise forward. It is built to make learning more accessible, more flexible, and more humane, so that students can keep pursuing their ambitions even when their circumstances become difficult.</p>
+<p>That experience transformed frustration into purpose. I began imagining a platform where high-quality courses could reach students wherever they were, whether they were recovering from injury, living far from strong educational centers, facing financial pressure, or preparing for demanding exams without enough support.</p>
+<p>That experience became the promise behind Odyssey. I wanted to build a learning platform that is more accessible, more flexible, and more humane, so students can keep pursuing their ambitions even when circumstances become difficult. I believe education should travel with the learner, not disappear when the learner cannot reach the classroom.</p>
 <div class="founder-signature">"The advent of Odyssey will revolutionize education and eliminate the barriers of knowledge."<span>A promise for students everywhere</span></div>
 </div>
 <div class="mission-inner">
 <div class="mission-text">
 <div class="section-tag">Our mission</div>
 <h2>Opportunity should survive hardship.</h2>
-<p>Odyssey exists to remove the barriers that stand between determined students and the education they need. Our goal is to make excellent exam preparation, academic courses, and skill-based learning accessible at reasonable prices, with the flexibility students need when life becomes unpredictable.</p>
-<p>We are especially inspired by students who cannot easily reach elite classrooms: students outside major cities, students recovering from illness or injury, students with limited income, and students preparing for demanding exams without proper support.</p>
+<p>I built Odyssey to remove the barriers that stand between determined students and the education they need. My goal is to make excellent exam preparation, academic courses, and skill-based learning accessible at reasonable prices, with the flexibility students need when life becomes unpredictable.</p>
+<p>I am especially inspired by students who cannot easily reach elite classrooms: students outside major cities, students recovering from illness or injury, students with limited income, and students preparing for demanding exams without proper support. Odyssey is my attempt to make that distance matter less.</p>
 <p>Our mission is to help them keep moving, even when the path becomes difficult.</p>
 </div>
 <div class="mission-visual">
@@ -368,11 +391,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <div class="drift dot" style="width:5px;height:5px;background:#fff;top:20%;left:14%" aria-hidden="true"></div>
 <div class="drift dot" style="width:4px;height:4px;background:var(--gold);top:70%;right:16%;animation-delay:-3s" aria-hidden="true"></div>
 <div class="team-inner">
-<h2>The people behind Odyssey</h2>
+<h2 data-i18n="about_my_story_title">The story behind Odyssey</h2>
 <div class="team-sub">This section is intentionally reserved for the real team after launch.</div>
 <div class="dark-empty">
 <b>Team profiles coming soon</b>
-<p>We will add verified names, roles, photos, and background information here after Odyssey is published.</p>
+<p data-i18n="about_my_story_body">I am building Odyssey around a simple idea: knowledge should move freely across borders, languages, incomes, and circumstances. This is the story I want the platform to keep telling as it grows.</p>
 </div>
 </div>
 </div>
